@@ -1,7 +1,5 @@
 ﻿/**
- * Created by Aymeric de Martin de Viviés
- * For GSD L&D Operations
- * Date: February 2012
+ * Created by Aymeric
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/
  * Licence: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
