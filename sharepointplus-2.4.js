@@ -2,7 +2,9 @@
  * Created by Aymeric de Martin de Viviés
  * For GSD L&D Operations
  * Date: February 2012
- * Contact aymeric_de_martin@dell.com / aymeric@kodono.info
+ * Contact: http://kodono.info
+ * Documentation: http://aymkdn.github.com/SharepointPlus/
+ * Licence: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
  */
 if(!Array.indexOf){
   /**
