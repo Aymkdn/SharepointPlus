@@ -4,8 +4,10 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SharepointPlus :: Quick Start</title>
-  <link rel="stylesheet" type="text/css" href="symbols/css/bootstrap.css" />
+  <link rel="stylesheet" type="text/css" href="symbols/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="symbols/css/bootstrap-responsive.min.css" />
   <link rel="stylesheet" type="text/css" href="symbols/css/prettify.css" />
   <link rel="stylesheet" type="text/css" href="symbols/css/sunburst.css" />
   <link rel="stylesheet" type="text/css" href="symbols/css/default.css" />
@@ -118,9 +120,11 @@
     
   <div class="container-fluid">
     <div class="row-fluid">
-      <div class="span2"> <!-- left side bar -->
+      <div class="span2 hidden-tablet hidden-phone"> <!-- left side bar -->
         <ul class="nav nav-list">
-          <li class="nav-header">Index</li>
+          <li class="nav-header">Download</li>
+          <li><a href="https://github.com/Aymkdn/SharepointPlus">GitHub Repository</a></li>
+          <li class="nav-header">API</li>
           
           
           <li><a href="symbols/%24SP.html">$SP</a></li>
@@ -140,19 +144,19 @@
       </div>
 
       <div class="span10"> <!-- content -->
-        <div class="alert alert-error"><strong>This is a work in progress, and it's not fully published yet!</strong></div>
         <h1>SharepointPlus</h1>
         <h2>Description</h2>
         <p>SharepointPlus ($SP) is a JavaScript library which offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
         <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
+        <p>I've developed this API for my needs during my job at <a href="http://www.dell.com">Dell</a> and we thought it could be useful for the community too, so here it is !</p>
         <h2>Quick Start</h2>
         <h3>Requirements</h3>
         <p>For now SharepointPlus needs <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work, mainly because of the Ajax features, and because I already use it on my sites. But one day it'll be jQuery-free.</p>
-        <div class="row"><div class="span4 alert alert-info">SharepointPlus 2.4 works great with jQuery 1.7.1+</div></div>
+        <div class="row"><div class="span4 alert alert-info">SharepointPlus 2.5 works great with jQuery 1.7.1+</div></div>
         <h3>The basics</h3>
         <p>Just add two lines to call jQuery and SharepointPlus:</p>
 <pre class="prettyprint lang-js">&lt;script type="text/javascript" src="jquery-1.7.1.min.js">&lt;/script>
-&lt;script type="text/javascript" src="sharepointplus-2.4.min.js">&lt;/script></pre>
+&lt;script type="text/javascript" src="sharepointplus-2.5.min.js">&lt;/script></pre>
         <h4><small>Lists</small></h4>
         <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
         <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
@@ -204,11 +208,12 @@ $SP.list('{list-ID}').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate(
       </div>
     </div>
     <footer class="footer">
-  <p class="pull-right"><a href="#">Back to top</a></p>
-  <p>Built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>).</p>
-  <p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>..</p>
-  <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
-</footer>
+    <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>).</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>..</p>
+<p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
+    <p>Automatically generated with JSDoc on Wed, 21 Mar 2012 16:04:14 GMT</p>
+    </footer>
   </div>
   <script type="text/javascript">
   $('.dropdown-toggle').dropdown()

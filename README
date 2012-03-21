@@ -1,4 +1,5 @@
-# SharepointPlus
+SharepointPlus
+==============
 
 SharepointPlus ($SP) is a JavaScript library which offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.
 

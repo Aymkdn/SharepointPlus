@@ -7,3 +7,12 @@ hr  { border-color:#000 }
 div.name > b[data-param^="setup."]:before { content:"\21AA " }
 .parameters .parameter:nth-child(odd) { background-color:#f4f4f4 }
 .footer { border-top:1px solid #E5E5E5; margin-top:45px; padding:35px 0 36px }
+.visible-phone { display:none }
+.visible-tablet { display:none }
+.visible-desktop { display:block }
+.hidden-phone { display:block }
+.hidden-tablet { display:block }
+.hidden-desktop { display:none }
+@media (max-width: 768px) {
+  .hidden-tablet,.hidden-phone { display:none !important }
+}

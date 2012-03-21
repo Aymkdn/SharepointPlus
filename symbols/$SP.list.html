@@ -4,8 +4,10 @@
   <meta charset="utf-8" />
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SharepointPlus Documentation :: $SP.list</title>
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" />
   <link rel="stylesheet" type="text/css" href="css/prettify.css" />
   <link rel="stylesheet" type="text/css" href="css/sunburst.css" />
   <link rel="stylesheet" type="text/css" href="css/default.css" />
@@ -121,9 +123,11 @@
     
   <div class="container-fluid">
     <div class="row-fluid">
-      <div class="span2"> <!-- left side bar -->
+      <div class="span2 hidden-tablet hidden-phone"> <!-- left side bar -->
         <ul class="nav nav-list">
-          <li class="nav-header">Index</li>
+          <li class="nav-header">Download</li>
+          <li><a href="https://github.com/Aymkdn/SharepointPlus">GitHub Repository</a></li>
+          <li class="nav-header">API</li>
           
           
           <li><a href="../symbols/%24SP.html">$SP</a></li>
@@ -172,7 +176,6 @@
       </div>
 
       <div class="span10"> <!-- content -->
-        <div class="alert alert-error"><strong>This is a work in progress, and it's not fully published yet!</strong></div>
         <h1 class="classTitle">$SP.list</h1>
         <div class="classheader"></div>
         
@@ -227,6 +230,12 @@
               <div class="type span1">{Boolean} </div>
               <div class="name span4"><b data-param="setup.async">setup.async</b> <i>Optional, Default: true</i></div>
               <div class="param_description span7">Determines if we want asynchrous request</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{Function} </div>
+              <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>
+              <div class="param_description span7">(current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps</div>
             </div>
             
             <div class="parameter row-fluid">
@@ -972,11 +981,12 @@ $SP.list("{ABCD-1234-XXXX-0000}").views(function(view) {
       </div>
     </div>
     <footer class="footer">
-  <p class="pull-right"><a href="#">Back to top</a></p>
-  <p>Built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>).</p>
-  <p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>..</p>
-  <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
-</footer>
+    <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>).</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>..</p>
+<p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
+    <p>Automatically generated with JSDoc on Wed, 21 Mar 2012 16:04:14 GMT</p>
+    </footer>
   </div>
   <script type="text/javascript">
   $('.dropdown-toggle').dropdown()
