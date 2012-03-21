@@ -299,7 +299,8 @@ _SP_SCHEDULED=4;
       
       // if we have [Me]/[Today] in the WHERE, or we want to use the GROUPBY,
       // then we want to use the Lists.asmx service
-      var useOWS = ( setup.groupby!="" || /\[Me\]|\[Today\]/.test(setup.where) || setup.forceOWS===true );
+      // also for Sharepoint 2010
+      var useOWS = ( setup.groupby!="" || /\[Me\]|\[Today\]/.test(setup.where) || setup.forceOWS===true || typeof SP=="object");
       
       // what about the fields ?
       this.fields="";
@@ -881,6 +882,7 @@ _SP_SCHEDULED=4;
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.async=true] Determines if we want asynchrous request
+        @param {Function} [setup.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Function} [setup.success] A function with the items added sucessfully
         @param {Function} [setup.error] A function with the items not added
         @param {Function} [setup.after] A function that will be executed at the end of the request
@@ -921,15 +923,29 @@ _SP_SCHEDULED=4;
       setup.error   = setup.error || (function() {});
       setup.after   = setup.after || (function() {});
       setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
+      setup.progress= setup.progress || (function() {});
       
       if (jQuery.type(items) == "object") items = [ items ];
+      var itemsLength=items.length;
       
+      // define current and max for the progress
+      setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spAdd"+(""+Math.random()).slice(2)};
       // we cannot add more than 15 items in the same time, so split by 15 elements
-      while (items.length > 15) {
-        var nextPacket = items.slice(0,15);
-        items.splice(0,15);
-        this.add(list, nextPacket, setup);
-      }
+      // and also to avoid surcharging the server
+      if (itemsLength > 15) {
+        var nextPacket=items.slice(0);
+        var cutted=nextPacket.splice(0,15);
+        var _this=this;
+        $(document).on(setup.progressVar.eventID,function(event) {
+          $(document).off(setup.progressVar.eventID);
+          _this.add(nextPacket,event.setup);
+        });
+        this.add(cutted,setup);
+        return this;
+      } else if (itemsLength == 0) throw "'add': nothing to add!";
+      
+      // increment the progress
+      setup.progressVar.current += itemsLength;
       
       // build a part of the request
       var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
@@ -972,7 +988,7 @@ _SP_SCHEDULED=4;
                    success:function(data) {
                      var result = data.getElementsByTagName('Result');
                      var len=result.length;
-                     var passed = [], failed = [];
+                     var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
                      for (var i=0; i < len; i++) {
                        if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") { // success
                          items[i].ID = result[i].getElementsByTagName('z:row')[0].getAttribute("ows_ID");
@@ -982,9 +998,16 @@ _SP_SCHEDULED=4;
                          failed.push(items[i]);
                        }
                      }
-                     if (passed.length>0) setup.success(passed);
-                     if (failed.length>0) setup.error(failed);
-                     setup.after();
+                     
+                     setup.progress(setup.progressVar.current,setup.progressVar.max);
+                     // check if we have some other packets that are waiting to be treated
+                     if (setup.progressVar.current < setup.progressVar.max)
+                       $(document).trigger({type:setup.progressVar.eventID,setup:setup});
+                     else {
+                       if (passed.length>0) setup.success(passed);
+                       if (failed.length>0) setup.error(failed);
+                       setup.after();
+                     }
                    }
                  });
       return this;
