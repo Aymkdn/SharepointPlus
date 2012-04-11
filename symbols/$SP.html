@@ -35,10 +35,12 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP (9)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP (11)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
+              
+                <li><a href="../symbols/%24SP.html#.addressbook">addressbook</a></li>
               
                 <li><a href="../symbols/%24SP.html#.createFile">createFile</a></li>
               
@@ -49,6 +51,8 @@
                 <li><a href="../symbols/%24SP.html#.lists">lists</a></li>
               
                 <li><a href="../symbols/%24SP.html#.parse">parse</a></li>
+              
+                <li><a href="../symbols/%24SP.html#.people">people</a></li>
               
                 <li><a href="../symbols/%24SP.html#.toCurrency">toCurrency</a></li>
               
@@ -152,6 +156,8 @@
         <ul class="nav nav-list">
           <li class="nav-header">Methods</li>
           
+          <li><a href="../symbols/%24SP.html#.addressbook">addressbook</a></li>
+          
           <li><a href="../symbols/%24SP.html#.createFile">createFile</a></li>
           
           <li><a href="../symbols/%24SP.html#.each">each</a></li>
@@ -161,6 +167,8 @@
           <li><a href="../symbols/%24SP.html#.lists">lists</a></li>
           
           <li><a href="../symbols/%24SP.html#.parse">parse</a></li>
+          
+          <li><a href="../symbols/%24SP.html#.people">people</a></li>
           
           <li><a href="../symbols/%24SP.html#.toCurrency">toCurrency</a></li>
           
@@ -180,6 +188,82 @@
         <div class="classheader">This is the object uses for all SharepointPlus related actions</div>
         
         <h1 id="methods">Methods</h1>
+        
+        <div class="member">
+          <h2><a href="#.addressbook" name=".addressbook" title="Direct link to the method 'addressbook'">addressbook</a></h2>
+          <div>
+            <div class="method well">addressbook(word, setup, result)</div>
+          </div>
+          <blockquote class="description">Find an user based on a part of his name</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{String} </div>
+              <div class="name span4"><b data-param="word">word</b> </div>
+              <div class="param_description span7">A part of the name from the guy you're looking for</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{Object} </div>
+              <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>
+              <div class="param_description span7">Options (see below)</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{String} </div>
+              <div class="name span4"><b data-param="setup.limit">setup.limit</b> <i>Optional, Default: 10</i></div>
+              <div class="param_description span7">Number of results returned</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{String} </div>
+              <div class="name span4"><b data-param="setup.type">setup.type</b> <i>Optional, Default: 'User'</i></div>
+              <div class="param_description span7">Possible values are: 'All', 'DistributionList', 'SecurityGroup', 'SharePointGroup', 'User', and 'None' (see http://msdn.microsoft.com/en-us/library/people.spprincipaltype.aspx)</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{String} </div>
+              <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>
+              <div class="param_description span7">The website url</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{Function} </div>
+              <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>
+              <div class="param_description span7">() A function that will be executed at the end of the request with a param that is an array with the result (typically: AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType)</div>
+            </div>
+            
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP.addressbook("john", {limit:25}, function(people) {
+  for (var i=0; i &lt; people.length; i++) {
+    for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[people[i][j]]);
+  }
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
         
         <div class="member">
           <h2><a href="#.createFile" name=".createFile" title="Direct link to the method 'createFile'">createFile</a></h2>
@@ -412,6 +496,68 @@ $SP.lists(function(list) {
           <pre class="prettyprint lang-js">
 $SP.parse('ContentType="My Content Type" OR Description&lt;>null AND Fiscal_x0020_Week >= 43');
 // -> return &lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;isNotNull>&lt;FieldRef Name="Description" />&lt;/isNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And></pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.people" name=".people" title="Direct link to the method 'people'">people</a></h2>
+          <div>
+            <div class="method well">people(username, setup, result)</div>
+          </div>
+          <blockquote class="description">Find the user details like manager, email, colleagues, ...</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{String} </div>
+              <div class="name span4"><b data-param="username">username</b> <i>Optional</i></div>
+              <div class="param_description span7">With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{Object} </div>
+              <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>
+              <div class="param_description span7">Options (see below)</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{String} </div>
+              <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>
+              <div class="param_description span7">The website url</div>
+            </div>
+            
+            <div class="parameter row-fluid">
+              <div class="type span1">{Function} </div>
+              <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>
+              <div class="param_description span7">() A function that will be executed at the end of the request with a param that is an array with the result</div>
+            </div>
+            
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP.people("john_doe",{url:"http://my.si.te/subdir/"}, function(people) {
+  for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+});</pre>
           
           
 
@@ -661,7 +807,7 @@ $SP.toCurrency(1500000,2,''); // --> 1,500,000.00</pre>
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-    <p>Automatically generated with JSDoc on Fri, 23 Mar 2012 17:29:48 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 11 Apr 2012 17:49:35 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

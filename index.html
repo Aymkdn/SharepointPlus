@@ -32,10 +32,12 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP (9)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP (11)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
+              
+                <li><a href="symbols/%24SP.html#.addressbook">addressbook</a></li>
               
                 <li><a href="symbols/%24SP.html#.createFile">createFile</a></li>
               
@@ -46,6 +48,8 @@
                 <li><a href="symbols/%24SP.html#.lists">lists</a></li>
               
                 <li><a href="symbols/%24SP.html#.parse">parse</a></li>
+              
+                <li><a href="symbols/%24SP.html#.people">people</a></li>
               
                 <li><a href="symbols/%24SP.html#.toCurrency">toCurrency</a></li>
               
@@ -152,11 +156,11 @@
         <h2>Quick Start</h2>
         <h3>Requirements</h3>
         <p>For now SharepointPlus needs <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work, mainly because of the Ajax features, and because I already use it on my sites. But one day it'll be jQuery-free.</p>
-        <div class="row"><div class="span4 alert alert-info">SharepointPlus 2.5 works great with jQuery 1.7.1+</div></div>
+        <div class="row"><div class="span4 alert alert-info">SharepointPlus 2.5.1 works great with jQuery 1.7.2+</div></div>
         <h3>The basics</h3>
         <p>Just add two lines to call jQuery and SharepointPlus:</p>
-<pre class="prettyprint lang-js">&lt;script type="text/javascript" src="jquery-1.7.1.min.js">&lt;/script>
-&lt;script type="text/javascript" src="sharepointplus-2.5.min.js">&lt;/script></pre>
+<pre class="prettyprint lang-js">&lt;script type="text/javascript" src="jquery-1.7.2.min.js">&lt;/script>
+&lt;script type="text/javascript" src="sharepointplus-2.5.1.min.js">&lt;/script></pre>
         <h4><small>Lists</small></h4>
         <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
         <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
@@ -223,7 +227,7 @@ $SP.list('{list-ID}').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate(
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-    <p>Automatically generated with JSDoc on Tue, 27 Mar 2012 13:52:07 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 11 Apr 2012 17:49:35 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
