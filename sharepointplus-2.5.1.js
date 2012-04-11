@@ -561,7 +561,7 @@ _SP_SCHEDULED=4;
     /**
       @name $SP.list.info
       @function
-      @description Get the information (StaticName, DisplayName, Description, Type, Format, DefaultValue, Choices) - metadata - regarding the list for each column
+      @description Get the information (StaticName, DisplayName, Description, Type, Format, Required, DefaultValue, Choices, SourceID) - metadata - regarding the list for each column
       
       @param {String} [listID] The list ID
       @param {Object} [setup] Options (see below)
@@ -624,6 +624,8 @@ _SP_SCHEDULED=4;
                          aReturn[index]["StaticName"] = arr[i].getAttribute("StaticName");
                          aReturn[index]["DisplayName"] = arr[i].getAttribute("DisplayName");
                          aReturn[index]["Format"] = arr[i].getAttribute("Format");
+                         aReturn[index]["SourceID"] = arr[i].getAttribute("SourceID");
+                         aReturn[index]["Required"] = arr[i].getAttribute("Required");
                          aReturn[index]["Type"] = arr[i].getAttribute("Type");
                          if (aReturn[index]["Type"] == "Choice") {
                            var a=arr[i].getElementsByTagName("CHOICE");
@@ -1444,6 +1446,149 @@ _SP_SCHEDULED=4;
                        if (failed.length>0) setup.error(failed);
                        setup.after();
                      }
+                   }
+                 });
+      return this;
+    },
+    /**
+      @name $SP.people
+      @function
+      @description Find the user details like manager, email, colleagues, ...
+      
+      @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")
+      @param {Object} [setup] Options (see below)
+        @param {String} [setup.url='current website'] The website url
+      @param {Function} [result] () A function that will be executed at the end of the request with a param that is an array with the result
+      
+      @example
+      $SP.people("john_doe",{url:"http://my.si.te/subdir/"}, function(people) {
+        for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+      });
+    */
+    people:function(username, setup, fct) {
+      switch (arguments.length) {
+          case 1: if (jQuery.type(username) === "object") setup=username;
+                  else if (jQuery.type(username) === "function") fct=username;
+                  username=undefined;
+                  break;
+          case 2: if (jQuery.type(username) === "string" && jQuery.type(setup) === "function") { fct=setup; setup=undefined; break; }
+                  if (jQuery.type(username) === "object" && jQuery.type(setup) === "function") { fct=setup; setup=username; username=undefined; break; }
+      }
+      
+      // default values
+      setup         = setup || {};
+      if (setup.url == undefined && typeof L_Menu_BaseUrl == "undefined") throw "Error 'people': not able to find the URL!"; // we cannot determine the url
+      setup.url     = setup.url || (window.location.protocol +"//"+ window.location.host + L_Menu_BaseUrl);
+      fct           = fct || (function() {});
+      username      = username || "";
+      
+      // build the request
+      var body = "<soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'>"
+               + "<soap:Body><GetUserProfileByName xmlns='http://microsoft.com/webservices/SharePointPortalServer/UserProfileService'>"
+               + "<AccountName>"+username+"</AccountName>"
+               + "</GetUserProfileByName></soap:Body></soap:Envelope>";
+               
+      // send the request
+      var url = setup.url + "_vti_bin/UserProfileService.asmx";
+      jQuery.ajax({type: "POST",
+                   cache: false,
+                   url: url,
+                   data: body,
+                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserProfileByName'); },
+                   contentType: "text/xml; charset=utf-8",
+                   dataType: "xml",
+                   success:function(data) {
+                     var aResult=[];
+                     // get the details
+                     data=data.getElementsByTagName('PropertyData');
+                     for (var i=0,len=data.length; i<len; i++) {     
+                       var name=data[i].getElementsByTagName("Name")[0].firstChild.nodeValue;
+                       var value=data[i].getElementsByTagName("Value");
+                       if (value&&value.length>=1) value=value[0].firstChild.nodeValue;
+                       else value="No Value";
+                       aResult.push(name);
+                       aResult[name]=value;
+                     }
+                     fct(aResult);
+                   },statusCode: {
+                     500: function(req) {
+                       fct([]);
+                       // any error ?
+                       var error=req.responseXML.getElementsByTagName("faultstring");
+                       if (error.length==1) throw "Error 'people': "+error[0].firstChild.nodeValue;
+                     }
+                   }
+                 });
+      return this;
+    },
+    /**
+      @name $SP.addressbook
+      @function
+      @description Find an user based on a part of his name
+      
+      @param {String} word A part of the name from the guy you're looking for
+      @param {Object} [setup] Options (see below)
+        @param {String} [setup.limit=10] Number of results returned
+        @param {String} [setup.type='User'] Possible values are: 'All', 'DistributionList', 'SecurityGroup', 'SharePointGroup', 'User', and 'None' (see http://msdn.microsoft.com/en-us/library/people.spprincipaltype.aspx)
+        @param {String} [setup.url='current website'] The website url
+      @param {Function} [result] () A function that will be executed at the end of the request with a param that is an array with the result (typically: AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType)
+      
+      @example
+      $SP.addressbook("john", {limit:25}, function(people) {
+        for (var i=0; i &lt; people.length; i++) {
+          for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[people[i][j]]);
+        }
+      });
+    */
+    addressbook:function(username, setup, fct) {
+      switch (arguments.length) {
+          case 1: if (jQuery.type(username) === "object") setup=username;
+                  else if (jQuery.type(username) === "function") fct=username;
+                  username=undefined;
+                  break;
+          case 2: if (jQuery.type(username) === "string" && jQuery.type(setup) === "function") { fct=setup; setup=undefined; break; }
+                  if (jQuery.type(username) === "object" && jQuery.type(setup) === "function") { fct=setup; setup=username; username=undefined; break; }
+      }
+      
+      // default values
+      setup         = setup || {};
+      if (setup.url == undefined && typeof L_Menu_BaseUrl == "undefined") throw "Error 'addressbook': not able to find the URL!"; // we cannot determine the url
+      setup.url     = setup.url || (window.location.protocol +"//"+ window.location.host + L_Menu_BaseUrl);
+      setup.limit   = setup.limit || 10;
+      setup.type    = setup.type || "User";
+      fct           = fct || (function() {});
+      username      = username || "";
+      
+      // build the request
+      var body = "<soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'>"
+               + "<soap:Body><SearchPrincipals xmlns='http://schemas.microsoft.com/sharepoint/soap/'>"
+               + "<searchText>"+username+"</searchText><maxResults>"+setup.limit+"</maxResults><principalType>"+setup.type+"</principalType></SearchPrincipals></soap:Body></soap:Envelope>";
+               
+      // send the request
+      var url = setup.url + "_vti_bin/People.asmx";
+      jQuery.ajax({type: "POST",
+                   cache: false,
+                   url: url,
+                   data: body,
+                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/SearchPrincipals'); },
+                   contentType: "text/xml; charset=utf-8",
+                   dataType: "xml",
+                   success:function(data) {
+                     var aResult=[];
+                     // get the details
+                     data=data.getElementsByTagName('PrincipalInfo');
+                     for (var i=0,lenR=data.length; i<lenR; i++) {
+                       var children=data[i].childNodes;
+                       aResult[i]=[];
+                       for (var j=0,lenC=children.length; j<lenC; j++) {
+                         var name=children[j].nodeName;
+                         var value=children[j].firstChild;
+                         if (value) value=value.nodeValue;
+                         aResult[i].push(name);
+                         aResult[i][name]=value;
+                       }
+                     }
+                     fct(aResult);
                    }
                  });
       return this;
