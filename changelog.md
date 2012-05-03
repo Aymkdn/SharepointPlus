@@ -1,5 +1,11 @@
 # Changelog
 
+**Change Log v2.5.2**
+- Add more properties from the $SP.list().info() function
+- Better support for Date into a WHERE clause
+- Fix issue with Chrome and $SP.list().get() function
+- Fix issue with simple quote inside the WHERE clause (you now need to use \\' when using ' inside '')
+
 **Change Log v2.5.1**  
 - Add $SP.people() to find the user details based on a name  
 - Add $SP.addressbook() to find someone in the Active Directory based on a part of his name  
