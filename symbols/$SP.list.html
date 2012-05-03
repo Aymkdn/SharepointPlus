@@ -335,7 +335,7 @@ $SP.list("{ABCD-1234-XXXX-0000}").add({Title:"John is the Tom's Manager",Manager
             <div class="parameter row-fluid">
               <div class="type span1">{String} </div>
               <div class="name span4"><b data-param="setup.where">setup.where</b> <i>Optional, Default: ""</i></div>
-              <div class="param_description span7">The query string (like SQL syntax)</div>
+              <div class="param_description span7">The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below)</div>
             </div>
             
             <div class="parameter row-fluid">
@@ -395,7 +395,7 @@ $SP.get("{ABCD-1234-XXXX-0000}", {fields: "Title,Organization", orderby: "Title 
   for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
 });
 
-$SP.list("{ABCD-1234-XXXX-0000}").get({fields:"Title", where:"Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50"}).each(function(index, row) {
+$SP.list("{ABCD-1234-XXXX-0000}").get({fields:"Title", where:"Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = 'O\\'Sullivan, James'"}).each(function(index, row) {
   console.log(row.getAttribute("Title"));
 });
 
@@ -1000,7 +1000,7 @@ $SP.list("{ABCD-1234-XXXX-0000}").views(function(view) {
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-    <p>Automatically generated with JSDoc on Wed, 11 Apr 2012 17:49:35 GMT</p>
+    <p>Automatically generated with JSDoc on Thu, 03 May 2012 10:41:28 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
