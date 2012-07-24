@@ -1,4 +1,4 @@
-﻿/**
+﻿?/**
  * Created by Aymeric (@aymkdn)
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/

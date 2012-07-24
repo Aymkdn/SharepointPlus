@@ -1,5 +1,14 @@
 # Changelog
 
+**Change Log v3.0.1**
+- Add warning for when we want to use a field with a comma in formfields()
+- Add support for Multiple Lookup Selection in formfields()
+- Add "Lookup" result for $SP().list().info() -- with "Choices" you now have an object {list:"List from where the values are coming from",field:"Name of the field to retrieve"}
+- Add "distributionLists" that returns the user's distribution lists
+- Add "groupMembers" that returns the members of a group
+- Add "isMember" that will say if an user is part of a Sharepoint group (we could do it with usegroups() however in some cases, like with the distribution lists, the usergroups() will be useless)
+- NOTE: with all these new USER features I'm going to review the way to call them... something like $SP().user().xxx
+
 **Change Log v3.0**
 - MAJOR CHANGE: you must now call SharepointPlus with $SP() instead of $SP
 - ATTENTION: the listID as parameter for the functions is deprecated... you have to use the $SP().list() to define the list
