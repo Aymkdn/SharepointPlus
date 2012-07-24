@@ -21,7 +21,7 @@
 
 
 
-  <div class="navbar">
+  <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -35,7 +35,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (12)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (15)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -44,9 +44,15 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
+              
                 <li><a href="../symbols/%24SP%28%29.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.isMember">isMember</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.lists">lists</a></li>
               
@@ -208,7 +214,7 @@
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="listID">listID</b> <i>Optional</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The list ID</div></div><div class="parameter row-fluid">  <div class="type span1">Object|Array</div>  <div class="name span4"><b data-param="items">items</b> </div>  <div class="param_description span7">List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.async">setup.async</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">(depreciated since v3.0) Determines if we want asynchrous request</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">(current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional</i></div>  <div class="param_description span7">A function with the items added sucessfully</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional</i></div>  <div class="param_description span7">A function with the items not added</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.escapeChar">setup.escapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="listID">listID</b> <i>Optional</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The list ID</div></div><div class="parameter row-fluid">  <div class="type span1">Object|Array</div>  <div class="name span4"><b data-param="items">items</b> </div>  <div class="param_description span7">List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.async">setup.async</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">(depreciated since v3.0) Determines if we want asynchrous request</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">(current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional</i></div>  <div class="param_description span7">A function with the items added sucessfully</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional</i></div>  <div class="param_description span7">A function with the items not added</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.escapeChar">setup.escapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')</div></div>
           </div>
           
           
@@ -409,7 +415,7 @@ $SP().list("My List").getAttachment("98", function(data) {
           <div>
             <div class="method well">info(listID, setup, function())</div>
           </div>
-          <blockquote class="description">Get the information (StaticName, DisplayName, Description, Type, Format, Required, DefaultValue, Choices, SourceID) - metadata - regarding the list for each column</blockquote>
+          <blockquote class="description">Get the information (StaticName, DisplayName, Description, Type, Format, Required ("TRUE", "FALSE", null), DefaultValue, Choices, SourceID) - metadata - regarding the list for each column</blockquote>
           
           
           
@@ -686,7 +692,7 @@ $SP().list("My List").views(function(view) {
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-    <p>Automatically generated with JSDoc on Tue, 03 Jul 2012 09:59:10 GMT</p>
+    <p>Automatically generated with JSDoc on Tue, 24 Jul 2012 15:16:13 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

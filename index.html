@@ -18,7 +18,7 @@
   <script type="text/javascript" src="symbols/js/bootstrap-dropdown.js"></script>
 </head>
 <body onload="prettyPrint()">
-  <div class="navbar">
+  <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -32,7 +32,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (12)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (15)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -41,9 +41,15 @@
               
                 <li><a href="symbols/%24SP%28%29.html#.createFile">createFile</a></li>
               
+                <li><a href="symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
+              
                 <li><a href="symbols/%24SP%28%29.html#.each">each</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.isMember">isMember</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.lists">lists</a></li>
               
@@ -160,11 +166,11 @@
         <h2>Quick Start</h2>
         <h3>Requirements</h3>
         <p>For now SharepointPlus needs <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work, mainly because of the Ajax features, and because I already use it on my sites. But one day it'll be jQuery-free.</p>
-        <div class="row"><div class="span4 alert alert-info">SharepointPlus 3.0 works great with jQuery 1.7.2+ and previous</div></div>
+        <div class="row"><div class="span4 alert alert-info">SharepointPlus 3.0.1 works great with jQuery 1.7.2+ and previous</div></div>
         <h3>The basics</h3>
         <p>Just add two lines to call jQuery and SharepointPlus:</p>
 <pre class="prettyprint lang-js">&lt;script type="text/javascript" src="jquery-1.7.2.min.js">&lt;/script>
-&lt;script type="text/javascript" src="sharepointplus-3.0.min.js">&lt;/script></pre>
+&lt;script type="text/javascript" src="sharepointplus-3.0.1.min.js">&lt;/script></pre>
         <h4><small>Lists</small></h4>
         <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
         <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
@@ -230,7 +236,7 @@ $SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-    <p>Automatically generated with JSDoc on Tue, 03 Jul 2012 09:59:10 GMT</p>
+    <p>Automatically generated with JSDoc on Tue, 24 Jul 2012 15:16:13 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
