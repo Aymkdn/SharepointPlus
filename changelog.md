@@ -1,5 +1,12 @@
 # Changelog
 
+**Change Log v3.0.2**
+- Add "encoded" option for $SP().createFile() when the content is already base64-encoded
+- Add $SP().checkin() to Check In a file
+- Change $SP().list().remove() to be able to delete a file into a shared document library
+- NOTE: I'll probably soon change the API to have something like $SP().file().xxxx for all files related actions...
+
+
 **Change Log v3.0.1**
 - Add warning for when we want to use a field with a comma in formfields()
 - Add support for Multiple Lookup Selection in formfields()
