@@ -35,12 +35,14 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (15)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (16)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
               
                 <li><a href="../symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.checkin">checkin</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
               
@@ -512,7 +514,7 @@ $SP().list("Other List").moderate({ID:43, ApprovalStatus:"Approved"}, {
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="listID">listID</b> <i>Optional</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The list ID</div></div><div class="parameter row-fluid">  <div class="type span1">Objet|Array</div>  <div class="name span4"><b data-param="itemsID">itemsID</b> </div>  <div class="param_description span7">List of items ID (e.g. [{ID:1}, {ID:22}])</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.async">setup.async</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">(depreciated since v3.0) Determines if we want asynchrous request</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">Two parameters: 'current' and 'max' -- If you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional</i></div>  <div class="param_description span7">One parameter: 'passedItems' -- a function with the items updated sucessfully</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional</i></div>  <div class="param_description span7">(One parameter: 'failedItems' -- a function with the items not updated</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="listID">listID</b> <i>Optional</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The list ID</div></div><div class="parameter row-fluid">  <div class="type span1">Objet|Array</div>  <div class="name span4"><b data-param="itemsID">itemsID</b> </div>  <div class="param_description span7">List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">(depreciated since v3.0 -- use list() instead) The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.async">setup.async</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">(depreciated since v3.0) Determines if we want asynchrous request</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">Two parameters: 'current' and 'max' -- If you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional</i></div>  <div class="param_description span7">One parameter: 'passedItems' -- a function with the items updated sucessfully</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional</i></div>  <div class="param_description span7">(One parameter: 'failedItems' -- a function with the items not updated</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request</div></div>
           </div>
           
           
@@ -537,7 +539,10 @@ $SP().list("List Name", "http://my.sharepoint.com/sub/dir/").remove([{ID:5}, {ID
 // example about how to use the "error" callback
 $SP().list("List").remove({ID:43, Title:"My title"}, {error:function(items) {
   for (var i=0; i &lt; items.length; i++) console.log("Error with:"+items[i].ID+" ("+items[i].errorMessage+")"); // only .ID and .errorMessage are available
-}});</pre>
+}});
+
+// example for deleting a file
+$SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared Documents/something.xls"});</pre>
           
           
 
@@ -692,7 +697,7 @@ $SP().list("My List").views(function(view) {
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-    <p>Automatically generated with JSDoc on Tue, 24 Jul 2012 15:16:13 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 26 Sep 2012 14:29:44 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

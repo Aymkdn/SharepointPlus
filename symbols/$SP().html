@@ -35,12 +35,14 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (15)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (16)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
               
                 <li><a href="../symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.checkin">checkin</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
               
@@ -167,6 +169,8 @@
           
           <li><a href="../symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
           
+          <li><a href="../symbols/%24SP%28%29.html#.checkin">checkin</a></li>
+          
           <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
@@ -247,6 +251,46 @@ $SP().addressbook("john", {limit:25}, function(people) {
         </div>
         
         <div class="member">
+          <h2><a href="#.checkin" name=".checkin" title="Direct link to the method 'checkin'">checkin</a></h2>
+          <div>
+            <div class="method well">checkin(setup)</div>
+          </div>
+          <blockquote class="description">Checkin a file</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.destination">setup.destination</b> </div>  <div class="param_description span7">The full path to the file to check in</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.comments">setup.comments</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The comments related to the check in</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered when there is success</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered if there is an error</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().checkin({
+  destination:"http://mysite/Shared Documents/myfile.txt",
+  comments:"Automatic check in with SharepointPlus",
+  after:function() { alert("Done"); }
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
           <h2><a href="#.createFile" name=".createFile" title="Direct link to the method 'createFile'">createFile</a></h2>
           <div>
             <div class="method well">createFile(setup)</div>
@@ -259,7 +303,7 @@ $SP().addressbook("john", {limit:25}, function(people) {
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.content">setup.content</b> </div>  <div class="param_description span7">The file content</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.destination">setup.destination</b> </div>  <div class="param_description span7">The full path to the file to create</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.content">setup.content</b> </div>  <div class="param_description span7">The file content</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.destination">setup.destination</b> </div>  <div class="param_description span7">The full path to the file to create</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.encoded">setup.encoded</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Set to true if the content passed is already base64-encoded</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
           </div>
           
           
@@ -288,7 +332,19 @@ $SP().createFile({
   after:function() {
     window.location.href="http://mysite/Shared Documents/myfile.xls";
   }
-});</pre>
+});
+
+// You can use https://github.com/Aymkdn/FileToDataURI if you want to be able to read a local file
+// and then upload it to a document library, via Javascript/Flash
+// We'll use "encoded:true" to say our content is alreadu a base64 string
+$SP().createFile({
+  content:"*your stuff with FileToDataURI that returns a base64 string*",
+  encoded:true,
+  destination:"http://mysite/Shared Documents/myfile.xls",
+  url:"http://mysite/"
+});
+
+// NOTE: in some cases the file are automatically checked out, so you have to use $SP().checkin()</pre>
           
           
 
@@ -837,7 +893,7 @@ $SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-    <p>Automatically generated with JSDoc on Tue, 24 Jul 2012 15:16:12 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 26 Sep 2012 14:29:44 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
