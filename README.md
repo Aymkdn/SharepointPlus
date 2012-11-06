@@ -5,4 +5,6 @@ SharepointPlus ($SP) is a JavaScript library which offers some extended features
 
 Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (like the SQL syntax) and you'll find examples for each method.
 
-See: http://aymkdn.github.com/SharepointPlus/
+See the documentation: http://aymkdn.github.com/SharepointPlus/
+
+You can minify the file with http://refresh-sf.com/yui/#output
