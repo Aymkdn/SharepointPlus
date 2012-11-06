@@ -1,5 +1,21 @@
 # Changelog
 
+**Change Log v3.0.3**
+
+- Better compatibility with Sharepoint 2010
+- Because of the Sharepoint 2010 list view throttling (that limit a query to 5,000 items) you can now use the $SP().list().get() with an array for the WHERE clause (see the documentation)
+- A "progress" option is now available for $SP().list().get() when using an array for the "where" option
+- Add the $SP().cleanResult() function
+- Change $SP().toDate() to work with SP2010 format
+- Fix the fact we can use either $SP().list().remove() or $SP().list().del()
+- Fix an issue with $SP().formfields() applied to a field with several radio buttons
+- Add the $SP().noConflict() function that permits to use _$SP instead of $SP (undocumented)
+- Fix: you can now get all the fields from a list with leaving "fields" empty or undefined (e.g. $SP().list("My List").get({where:"ID = 1"},function(data) {}))
+- $SP().cleanResult(str) now returns "" when 'str' is null or undefined
+- Change the license to GPL v2
+- Change the Array.prototype.indexOf function
+- Add the SharepointPlus version --> $SP().getVersion();
+
 **Change Log v3.0.2**
 - Add "encoded" option for $SP().createFile() when the content is already base64-encoded
 - Add $SP().checkin() to Check In a file
