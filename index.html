@@ -17,16 +17,16 @@
   <script type="text/javascript" src="symbols/js/bootstrap-scrollspy.js"></script>
   <script type="text/javascript" src="symbols/js/bootstrap-dropdown.js"></script>
   <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-30296916-1']);
-    _gaq.push(['_trackPageview']);
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30296916-1']);
+  _gaq.push(['_trackPageview']);
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
 </head>
 <body onload="prettyPrint()">
   <div class="navbar navbar-fixed-top">
@@ -43,7 +43,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (16)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (17)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -51,6 +51,8 @@
                 <li><a href="symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.checkin">checkin</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.createFile">createFile</a></li>
               
@@ -171,7 +173,7 @@
 
       <div class="span10"> <!-- content -->
         <h1>SharepointPlus</h1>
-        <div class="alert alert-error">Introducing v3.0 of SharepointPlus -- major changes since v2.x, please make sure to read the documentation and <a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md" style="text-decoration:underline">changelog</a></div>
+        <div class="alert alert-error" style="display:none">Introducing v3.0 of SharepointPlus -- major changes since v2.x, please make sure to read the documentation and <a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md" style="text-decoration:underline">changelog</a></div>
         <h2>Description</h2>
         <p>SharepointPlus ($SP) is a JavaScript library which offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
         <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
@@ -179,11 +181,11 @@
         <h2>Quick Start</h2>
         <h3>Requirements</h3>
         <p>For now SharepointPlus needs <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work, mainly because of the Ajax features, and because I already use it on my sites. But one day it'll be jQuery-free.</p>
-        <div class="row"><div class="span4 alert alert-info">SharepointPlus 3.0.2 works great with jQuery 1.7.2+ and previous</div></div>
+        <div class="row"><div class="span4 alert alert-info">SharepointPlus 3.0.3 works great with all the jQuery versions, and is compatible with all the web browsers.</div></div>
         <h3>The basics</h3>
         <p>Just add two lines to call jQuery and SharepointPlus:</p>
-<pre class="prettyprint lang-js">&lt;script type="text/javascript" src="jquery-1.7.2.min.js">&lt;/script>
-&lt;script type="text/javascript" src="sharepointplus-3.0.2.min.js">&lt;/script></pre>
+<pre class="prettyprint lang-js">&lt;script type="text/javascript" src="jquery-1.8.2.min.js">&lt;/script>
+&lt;script type="text/javascript" src="sharepointplus-3.0.3.js">&lt;/script></pre>
         <h4><small>Lists</small></h4>
         <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
         <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
@@ -235,10 +237,11 @@ $SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate
     </div>
     <footer class="footer">
     <p class="pull-right"><a href="#">Back to top</a></p>
-<p>Built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>).</p>
-<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>..</p>
+<p>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://code.google.com/p/jsdoc-toolkit/">JSDoc Toolkit</a>.</p>
+<p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
-    <p>Automatically generated with JSDoc on Wed, 26 Sep 2012 14:29:44 GMT</p>
+
+    <p>Automatically generated with JSDoc on Tue, 06 Nov 2012 09:01:35 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

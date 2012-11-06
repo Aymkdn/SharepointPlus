@@ -35,7 +35,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (16)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (17)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -43,6 +43,8 @@
                 <li><a href="../symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.checkin">checkin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
               
@@ -171,6 +173,8 @@
           
           <li><a href="../symbols/%24SP%28%29.html#.checkin">checkin</a></li>
           
+          <li><a href="../symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
+          
           <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
@@ -237,7 +241,7 @@
           <pre class="prettyprint lang-js">
 $SP().addressbook("john", {limit:25}, function(people) {
   for (var i=0; i &lt; people.length; i++) {
-    for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[people[i][j]]);
+    for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[i][people[i][j]]);
   }
 });</pre>
           
@@ -280,6 +284,46 @@ $SP().checkin({
   comments:"Automatic check in with SharepointPlus",
   after:function() { alert("Done"); }
 });</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.cleanResult" name=".cleanResult" title="Direct link to the method 'cleanResult'">cleanResult</a></h2>
+          <div>
+            <div class="method well">cleanResult(string)</div>
+          </div>
+          <blockquote class="description">clean a string returned by a GET (remove ";#" and "string;#" and null becomes "")</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="string">string</b> </div>  <div class="param_description span7">The string to clean</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span1"></div>
+              <div class="span11">the cleaned string</div>
+              
+            </div>
+          </div>
+          
+          
+          
           
           
 
@@ -879,21 +923,11 @@ $SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(
     </div>
     <footer class="footer">
     <p class="pull-right"><a href="#">Back to top</a></p>
-<p>Built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>).</p>
-<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>..</p>
+<p>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://code.google.com/p/jsdoc-toolkit/">JSDoc Toolkit</a>.</p>
+<p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-30296916-1']);
-  _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-    <p>Automatically generated with JSDoc on Wed, 26 Sep 2012 14:29:44 GMT</p>
+    <p>Automatically generated with JSDoc on Tue, 06 Nov 2012 09:01:35 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
