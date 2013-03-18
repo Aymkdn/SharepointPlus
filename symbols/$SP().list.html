@@ -35,7 +35,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (17)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (19)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -50,8 +50,6 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
               
-                <li><a href="../symbols/%24SP%28%29.html#.each">each</a></li>
-              
                 <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
@@ -64,6 +62,10 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.people">people</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+              
                 <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.toDate">toDate</a></li>
@@ -74,6 +76,8 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+              
               </ul>
               
             </li>
@@ -81,10 +85,14 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (4)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (6)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.description">description</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
               
@@ -412,7 +420,7 @@ $SP().list("Sessions").get({
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="itemID">itemID</b> </div>  <div class="param_description span7">The item IDs separated by a coma</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function with the data from the request as first argument</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="itemID">itemID</b> </div>  <div class="param_description span7">The item IDs separated by a coma (ATTENTION: one request is done for each ID)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function with the data from the request as first argument</div></div>
           </div>
           
           
@@ -424,7 +432,7 @@ $SP().list("Sessions").get({
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().list("My List","http://my.site.com/mydir/").getAttachment("1,15,24",function(data) {
+$SP().list("My List","http://my.site.com/mydir/").getAttachment([1,15,24],function(data) {
   for (var i=0; i&lt;data.length; i++) console.log(data[i]);
 });
 
@@ -446,7 +454,7 @@ $SP().list("My List").getAttachment("98", function(data) {
           <div>
             <div class="method well">info(function())</div>
           </div>
-          <blockquote class="description">Get the information (StaticName, DisplayName, Description, Type, Format, Required ("TRUE", "FALSE", null), DefaultValue, Choices, SourceID) - metadata - regarding the list for each column</blockquote>
+          <blockquote class="description">Get the information (StaticName, DisplayName, Description, Required ("TRUE", "FALSE", null), DefaultValue, Choices, etc...) - metadata - regarding the list for each column</blockquote>
           
           
           
@@ -716,7 +724,7 @@ $SP().list("My List").views(function(view) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 06 Nov 2012 09:01:35 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 18 Mar 2013 10:15:26 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

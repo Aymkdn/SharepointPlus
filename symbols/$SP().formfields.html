@@ -35,7 +35,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (17)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (19)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -50,8 +50,6 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
               
-                <li><a href="../symbols/%24SP%28%29.html#.each">each</a></li>
-              
                 <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
@@ -64,6 +62,10 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.people">people</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+              
                 <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.toDate">toDate</a></li>
@@ -74,6 +76,8 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+              
               </ul>
               
             </li>
@@ -81,10 +85,14 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (4)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (6)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.description">description</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
               
@@ -169,6 +177,10 @@
         <ul class="nav nav-list">
           <li class="nav-header">Methods</li>
           
+          <li><a href="../symbols/%24SP%28%29.formfields.html#.description">description</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
+          
           <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
           
           <li><a href="../symbols/%24SP%28%29.formfields.html#.row">row</a></li>
@@ -189,18 +201,11 @@
         <h1 id="methods">Methods</h1>
         
         <div class="member">
-          <h2><a href="#.elem" name=".elem" title="Direct link to the method 'elem'">elem</a></h2>
+          <h2><a href="#.description" name=".description" title="Direct link to the method 'description'">description</a></h2>
           <div>
-            <div class="method well">elem()</div>
+            <div class="method well">description()</div>
           </div>
-          <blockquote class="description">Get the jQuery element(s) tied with the field(s) selected by "formfields"
-       Here is the list of different HTMLElement returned:
-       - one "INPUT TEXT" for a free text field;
-       - one "SELECT" for a list of options (dropdown box);
-       - all the "INPUT CHECKBOX" for a multipe selection by checkboxes;
-       - one "TEXTAREA" for a large free text field;
-       - one "DIV" for a people picker field;
-       - one "INPUT CHECKBOX" for a yes/no radio button.</blockquote>
+          <blockquote class="description">Get the description of the field(s) selected by "formfields"</blockquote>
           
           
           
@@ -212,8 +217,8 @@
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">jQuery</div>
-              <div class="span11">Null is returned if nothing is found, or a jQuery object is returned for all HTMLElements found for the selected fields</div>
+              <div class="span1">String|Array</div>
+              <div class="span11">Returns the description of the field(s)</div>
               
             </div>
           </div>
@@ -225,8 +230,75 @@
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().formfields("Title").elem(); // return a jQuery object of the INPUT HTMLElement
-$SP().formfields("List of options").elem(); // return a jQuery object of the SELECT HTMLEelement</pre>
+$SP().formfields("Title").type(); // return "This is the description of this field"
+$SP().formfields("List of options").type(); // return "", it means no description</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.each" name=".each" title="Direct link to the method 'each'">each</a></h2>
+          <div>
+            <div class="method well">each()</div>
+          </div>
+          <blockquote class="description">Permits to go thru the different fields</blockquote>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.elem" name=".elem" title="Direct link to the method 'elem'">elem</a></h2>
+          <div>
+            <div class="method well">elem()</div>
+          </div>
+          <blockquote class="description">Get the HTML element(s) tied with the field(s) selected by "formfields"</blockquote>
+          
+          
+          
+          
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span1">Array|HTMLElement|jQuery</div>
+              <div class="span11">Null is returned if nothing is found, or the found elements... if jQuery is defined then the HTML elements will be jQueryrize</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().formfields("Title").elem(); 
+$SP().formfields("List of options").elem();</pre>
           
           
 
@@ -242,7 +314,7 @@ $SP().formfields("List of options").elem(); // return a jQuery object of the SEL
           <div>
             <div class="method well">row()</div>
           </div>
-          <blockquote class="description">Get the jQuery TR element(s) tied with the field(s) selected by "formfields"</blockquote>
+          <blockquote class="description">Get the TR element(s) tied with the field(s) selected by "formfields"</blockquote>
           
           
           
@@ -254,8 +326,8 @@ $SP().formfields("List of options").elem(); // return a jQuery object of the SEL
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">jQuery</div>
-              <div class="span11">Null is returned if nothing is found, or a jQuery object is returned for all HTMLElements TR found for the selected fields</div>
+              <div class="span1">Array|HTMLElement|jQuery</div>
+              <div class="span11">Null is returned if nothing is found, or the TR HTMLElement... or a jQuery object is returned if jQuery exists</div>
               
             </div>
           </div>
@@ -267,7 +339,8 @@ $SP().formfields("List of options").elem(); // return a jQuery object of the SEL
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().formfields("Title").row(); // return the TR element that is the parent (= the row)</pre>
+$SP().formfields("Title").row(); // return the TR element that is the parent (= the row)
+$SP().formfields("Title").row().hide(); // because we have jQuery we can apply the hide()</pre>
           
           
 
@@ -285,14 +358,23 @@ $SP().formfields("Title").row(); // return the TR element that is the parent (= 
           </div>
           <blockquote class="description">Get the type of the field(s) selected by "formfields"
        Here is the list of different types returned:
-       - "text" for a free text field;
-       - "select" for a list of options (dropdown box);
-       - "multiple" for a list of options with multiple selection (dropdown box);
-       - "checkbox" for a multipe selection by checkboxes;
-       - "text" for a large free text field;
-       - "people" for a people picker field;
-       - "date" for a date field;
-       - "boolean" for a yes/no radio button.</blockquote>
+       - "text" for the free text field;
+       - "text multiple" for the textarea zone;
+       - "attachments" for the attachments field;
+       - "lookup" for a lookup field (dropdown);
+       - "lookup multiple" for a lookup field with multiple selection (two dropdowns with two buttons);
+       - "content type" for the content type field;
+       - "boolean" for the yes/no checkbox;
+       - "date" for a date only field;
+       - "date time" for a date and time field;
+       - "choices" for a dropdown selection;
+       - "choices plus" for a dropdown selection with an input field to enter our own value;
+       - "choices radio" for the radio buttons selection;
+       - "choices radio plus" for the radio buttons selection with an input field to enter our own value;
+       - "choices checkbox" for the checkboxes field for a selection;
+       - "choices checkbox plus" for the checkboxes field for a selection with an input field to enter our own value;
+       - "people" for the poeple picker field;
+       - "url" for the link/url/picture field.</blockquote>
           
           
           
@@ -304,8 +386,8 @@ $SP().formfields("Title").row(); // return the TR element that is the parent (= 
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">String</div>
-              <div class="span11">Returns the type of the fields</div>
+              <div class="span1">String|Array</div>
+              <div class="span11">Returns the type of the field(s)</div>
               
             </div>
           </div>
@@ -318,7 +400,7 @@ $SP().formfields("Title").row(); // return the TR element that is the parent (= 
           
           <pre class="prettyprint lang-js">
 $SP().formfields("Title").type(); // return "text"
-$SP().formfields("List of options").type(); // return "checkbox"</pre>
+$SP().formfields("List of options").type(); // return "choices"</pre>
           
           
 
@@ -332,7 +414,7 @@ $SP().formfields("List of options").type(); // return "checkbox"</pre>
         <div class="member">
           <h2><a href="#.val" name=".val" title="Direct link to the method 'val'">val</a></h2>
           <div>
-            <div class="method well">val(value)</div>
+            <div class="method well">val(value, identity)</div>
           </div>
           <blockquote class="description">Set or Get the value(s) for the field(s) selected by "formfields"</blockquote>
           
@@ -342,7 +424,7 @@ $SP().formfields("List of options").type(); // return "checkbox"</pre>
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="value">value</b> <i>Optional, Default: empty</i></div>  <div class="param_description span7">If "str" is specified, then it means we want to set a value, if "str" is not specified then it means we want to get the value</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="value">value</b> <i>Optional, Default: empty</i></div>  <div class="param_description span7">If "str" is specified, then it means we want to set a value, if "str" is not specified then it means we want to get the value</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="identity">identity</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If set to TRUE then the return values will be a hashmap with "field name" => "field value"</div></div>
           </div>
           
           
@@ -353,6 +435,9 @@ $SP().formfields("List of options").type(); // return "checkbox"</pre>
               
               <div class="span1">String|Array</div>
               <div class="span11">A string or an array of the values found</div>
+              
+              <div class="span1">String|Array|Object</div>
+              <div class="span11">Return the value of the field(s)</div>
               
             </div>
           </div>
@@ -366,7 +451,19 @@ $SP().formfields("List of options").type(); // return "checkbox"</pre>
           <pre class="prettyprint lang-js">
 $SP().formfields("Title").val(); // return "My project"
 $SP().formfields("Title").val("My other project");
-$SP().formfields("Title").val(); // return "My other project"</pre>
+$SP().formfields("Title").val(); // return "My other project"
+
+// it will set "Choice 1" and "Choice 2" for the "Make your choice" field, and "2012/12/31" for the "Booking Date" field
+$SP().formfields("Make your choice,Booking Date").val([ ["Choice 1","Choice 2"], "2012/12/31" ]);
+
+// it will set "My Value" for all the fields
+$SP().formfields("Make your choice,Title,Other Field").val("My Value");
+
+// it will return an array; each item represents a field
+$SP().formfields("Make your choice,Title,Other Field").val(); // -> [ ["My Value"], "My Value", "Other Field" ]
+
+// it will return a hashmap
+$SP().formfields("Make your choice,Title,Other Field").val({identity:true}); // -> {"Make your choice":["My Value"], "Title":"My Value", "Other Field":"My Value"}</pre>
           
           
 
@@ -387,7 +484,7 @@ $SP().formfields("Title").val(); // return "My other project"</pre>
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 06 Nov 2012 09:01:35 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 18 Mar 2013 10:15:26 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

@@ -43,7 +43,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (17)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (19)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -58,8 +58,6 @@
               
                 <li><a href="symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
               
-                <li><a href="symbols/%24SP%28%29.html#.each">each</a></li>
-              
                 <li><a href="symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
@@ -72,6 +70,10 @@
               
                 <li><a href="symbols/%24SP%28%29.html#.people">people</a></li>
               
+                <li><a href="symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+              
                 <li><a href="symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.toDate">toDate</a></li>
@@ -82,6 +84,8 @@
               
                 <li><a href="symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
               
+                <li><a href="symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+              
               </ul>
               
             </li>
@@ -89,10 +93,14 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (4)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (6)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.description">description</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
               
@@ -173,7 +181,9 @@
 
       <div class="span10"> <!-- content -->
         <h1>SharepointPlus</h1>
-        <div class="alert alert-error" style="display:none">Introducing v3.0 of SharepointPlus -- major changes since v2.x, please make sure to read the documentation and <a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md" style="text-decoration:underline">changelog</a></div>
+        <div class="alert alert-error">SharepointPlus v3.0.4 is the last release 100% compatible with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility.<br>
+        Starting SharepointPlus v3.0.5 it should be fully compatible with <b>Sharepoint 2010</b>.<br>
+        <b>No test has been performed with Sharepoint 2013</b>.</div>
         <h2>Description</h2>
         <p>SharepointPlus ($SP) is a <strong>JavaScript API for Sharepoint</strong>. This library offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
         <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
@@ -181,11 +191,11 @@
         <h2>Quick Start</h2>
         <h3>Requirements</h3>
         <p>For now SharepointPlus needs <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work, mainly because of the Ajax features, and because I already use it on my sites. But one day it'll be jQuery-free.</p>
-        <div class="row"><div class="span4 alert alert-info">SharepointPlus 3.0.3 works great with all the jQuery versions, and is compatible with all the web browsers.</div></div>
+        <div class="row"><div class="span8 alert alert-info">SharepointPlus 3.0.4 works great with all the jQuery versions, and is compatible with all the web browsers.<div class=""></div></div></div>
         <h3>The basics</h3>
         <p>Just add two lines to call jQuery and SharepointPlus:</p>
 <pre class="prettyprint lang-js">&lt;script type="text/javascript" src="jquery-1.8.2.min.js">&lt;/script>
-&lt;script type="text/javascript" src="sharepointplus-3.0.3.js">&lt;/script></pre>
+&lt;script type="text/javascript" src="sharepointplus-3.0.4.js">&lt;/script> /* Compress it with http://refresh-sf.com/yui/ */</pre>
         <h4><small>Lists</small></h4>
         <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
         <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
@@ -241,7 +251,7 @@ $SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 06 Nov 2012 09:01:35 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 18 Mar 2013 10:15:26 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

@@ -35,7 +35,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (17)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (19)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -50,8 +50,6 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
               
-                <li><a href="../symbols/%24SP%28%29.html#.each">each</a></li>
-              
                 <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
@@ -64,6 +62,10 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.people">people</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+              
                 <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.toDate">toDate</a></li>
@@ -74,6 +76,8 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+              
               </ul>
               
             </li>
@@ -81,10 +85,14 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (4)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (6)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.description">description</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
               
@@ -179,8 +187,6 @@
           
           <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
           
-          <li><a href="../symbols/%24SP%28%29.html#.each">each</a></li>
-          
           <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
@@ -193,6 +199,10 @@
           
           <li><a href="../symbols/%24SP%28%29.html#.people">people</a></li>
           
+          <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+          
           <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.toDate">toDate</a></li>
@@ -202,6 +212,8 @@
           <li><a href="../symbols/%24SP%28%29.html#.toXSLString">toXSLString</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
           
         </ul>
         
@@ -297,7 +309,7 @@ $SP().checkin({
         <div class="member">
           <h2><a href="#.cleanResult" name=".cleanResult" title="Direct link to the method 'cleanResult'">cleanResult</a></h2>
           <div>
-            <div class="method well">cleanResult(string)</div>
+            <div class="method well">cleanResult(str, separator)</div>
           </div>
           <blockquote class="description">clean a string returned by a GET (remove ";#" and "string;#" and null becomes "")</blockquote>
           
@@ -307,7 +319,7 @@ $SP().checkin({
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="string">string</b> </div>  <div class="param_description span7">The string to clean</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="str">str</b> </div>  <div class="param_description span7">The string to clean</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="separator">separator</b> <i>Optional, Default: ";"</i></div>  <div class="param_description span7">When it's a list we may want to have a different output (see examples)</div></div>
           </div>
           
           
@@ -316,7 +328,7 @@ $SP().checkin({
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1"></div>
+              <div class="span1">String</div>
               <div class="span11">the cleaned string</div>
               
             </div>
@@ -324,6 +336,15 @@ $SP().checkin({
           
           
           
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().cleanResult("15;#Paul"); // -> "Paul"
+$SP().cleanResult("string;#Paul"); // -> "Paul"
+$SP().cleanResult(";#Paul;#Jacques;#Aymeric;#"); // -> "Paul;Jacques;Aymeric"
+$SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aymeric"</pre>
           
           
 
@@ -438,31 +459,6 @@ $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, fu
         </div>
         
         <div class="member">
-          <h2><a href="#.each" name=".each" title="Direct link to the method 'each'">each</a></h2>
-          <div>
-            <div class="method well">each()</div>
-          </div>
-          <blockquote class="description">Use the jQuery.each() function on the returned data array</blockquote>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-
-          
-          
-          
-
-          <hr />
-        </div>
-        
-        <div class="member">
           <h2><a href="#.getLookup" name=".getLookup" title="Direct link to the method 'getLookup'">getLookup</a></h2>
           <div>
             <div class="method well">getLookup(text)</div>
@@ -548,7 +544,7 @@ $SP().groupMembers("my group", function(members) {
         <div class="member">
           <h2><a href="#.isMember" name=".isMember" title="Direct link to the method 'isMember'">isMember</a></h2>
           <div>
-            <div class="method well">isMember(setup, user, group, result)</div>
+            <div class="method well">isMember(setup, result)</div>
           </div>
           <blockquote class="description">Find if the user is member of the Sharepoint group</blockquote>
           
@@ -558,7 +554,7 @@ $SP().groupMembers("my group", function(members) {
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="user">user</b> </div>  <div class="param_description span7">Name of the user with (don't forget to use a double \ in the username)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="group">group</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">Return TRUE if the user is a member of the group, FALSE if not.</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.user">setup.user</b> </div>  <div class="param_description span7">Name of the user with (don't forget to use a double \ in the username)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.group">setup.group</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">Return TRUE if the user is a member of the group, FALSE if not.</div></div>
           </div>
           
           
@@ -671,7 +667,7 @@ $SP().parse('ContentType="My Content Type" OR Description&lt;>null AND Fiscal_x0
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> <i>Optional</i></div>  <div class="param_description span7">With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> <i>Optional</i></div>  <div class="param_description span7">With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result, or a String with the error message</div></div>
           </div>
           
           
@@ -684,8 +680,85 @@ $SP().parse('ContentType="My Content Type" OR Description&lt;>null AND Fiscal_x0
           
           <pre class="prettyprint lang-js">
 $SP().people("john_doe",{url:"http://my.si.te/subdir/"}, function(people) {
-  for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+  if (typeof people === "string") {
+    alert(people); // there was a problem so we prompt it
+  } else
+    for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
 });</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.plugin" name=".plugin" title="Direct link to the method 'plugin'">plugin</a></h2>
+          <div>
+            <div class="method well">plugin(pluginName, options)</div>
+          </div>
+          <blockquote class="description">Permits to use a plugin</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="pluginName">pluginName</b> </div>  <div class="param_description span7">The plugin name to call</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">The options for the plugin</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().plugin('test',{message:"This is a test !"})</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.registerPlugin" name=".registerPlugin" title="Direct link to the method 'registerPlugin'">registerPlugin</a></h2>
+          <div>
+            <div class="method well">registerPlugin(pluginName, pluginFct)</div>
+          </div>
+          <blockquote class="description">Permits to register a plugin</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="pluginName">pluginName</b> </div>  <div class="param_description span7">You have to define the plugin name</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="pluginFct">pluginFct</b> </div>  <div class="param_description span7">You have to define the function of the plugin with one parameter that are the options passed</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().registerPlugin('test', function(options) {
+  console.log(options.message);
+})</pre>
           
           
 
@@ -914,6 +987,44 @@ $SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(
           
           
 
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.whoami" name=".whoami" title="Direct link to the method 'whoami'">whoami</a></h2>
+          <div>
+            <div class="method well">whoami(setup, result)</div>
+          </div>
+          <blockquote class="description">Find the current user details like manager, email, colleagues, ...</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
+  for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+});</pre>
+          
+          
+
+          
+          
+          
+
           
         </div>
         
@@ -927,7 +1038,7 @@ $SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 06 Nov 2012 09:01:35 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 18 Mar 2013 10:15:26 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
