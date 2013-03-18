@@ -1,6 +1,6 @@
 # Changelog
 
-**Change Log v3.0.4 ()**
+**Change Log v3.0.4 (March 18, 2013)**
 
  - Rewrite of the $SP.formfields function for better compatibility and performances
  - Fix a bug with an internal function (that returns the current website URL)
