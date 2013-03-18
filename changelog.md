@@ -1,6 +1,17 @@
 # Changelog
 
-**Change Log v3.0.3**
+**Change Log v3.0.4 ()**
+
+ - Rewrite of the $SP.formfields function for better compatibility and performances
+ - Fix a bug with an internal function (that returns the current website URL)
+ - Rewrite the $SP().list().getAttachment() function
+ - Add $SP().whoami() function to get the current user's details
+ - $SP().people() returns the error ("string") when there was a problem
+ - $SP().list().remove() with the WHERE clause can now also directly delete the files from a document library
+ - Fix a bug for $SP().list().update() when using the function with 1 argument
+ - Add the $SP().registerPlugin() and $SP().plugin() (first plugin also done)
+
+**Change Log v3.0.3 (November 2, 2012)**
 
 - Better compatibility with Sharepoint 2010
 - Because of the Sharepoint 2010 list view throttling (that limit a query to 5,000 items) you can now use the $SP().list().get() with an array for the WHERE clause (see the documentation)
