@@ -1,5 +1,19 @@
 # Changelog
 
+**Change Log v3.0.5 (August 5, 2013)**
+
+ - Add the $SP().list().startWorkflow() function to manually start a workflow
+ - Add the $SP().list().getWorkflowID() function (that is internally used)
+ - Fix $SP().formfields().val() for a people picker (Sharepoint 2010 compatibility)
+ - Fix $SP().cleanResult() when no separator was provided
+ - Add another paramer to the return function for $SP().list().get() that is the error message (in case the request to the webservice didn't work)
+ - Fix a bug with the argments mandatory for $SP().list().add()
+ - Fix a bug with $SP().parse() when there was a backslash with a single quote and a bracket for a string 
+ - Change the behavior of $SP().list().add() when you provide an empty array (no more exception returned)
+ - Change the order of calling success/error for $SP().list().add/remove/update() -- now the "error" callback is called before the "sucess" callback
+ - Fix a bug with $SP().lists() (https://github.com/Aymkdn/SharepointPlus/issues/2)
+ - Fix a wrong information in the documentation for $SP().list().get() and "progress"
+
 **Change Log v3.0.4 (March 18, 2013)**
 
  - Rewrite of the $SP.formfields function for better compatibility and performances
