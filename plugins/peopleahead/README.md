@@ -1,12 +1,12 @@
 People Ahead
 ============
 
-This plugin permits to change a simple `&lt;input type="text"&gt;` to a text field connected to the Sharepoint address book where you can type an user name and select him/her from a list.
+This plugin permits to change a simple `<input type="text">` to a text field connected to the Sharepoint address book where you can type an user name and select him/her from a list.
 
 Example
 -------
 
-You have to include jQuery, SharepointPlus and the plugin. Add these lines to your <head>:
+You have to include jQuery, SharepointPlus and the plugin. Add these lines to your `<head>`:
 ````html
 <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="sharepointplus-3.0.5.min.js"></script>
@@ -19,8 +19,10 @@ Include also a text box in your code:
 <input type="text" id="people-picker">
 ````
 
-Now, after this tag, you can add the JavaScript below:
-````javascript
+Now, after this tag, you can add the below JavaScript:
+
+````html
+<script type="text/javascript">
 $SP().plugin('peopleahead',{
   selector:'#people-picker',
   onselect:function() {
@@ -28,13 +30,17 @@ $SP().plugin('peopleahead',{
     alert($this.data('name')+" ("+$this.data('email')+") has been selected");
   }
 });
+</script>
 ````
 
+
 Your simple input text box becomes:
-![alt text](https://github.com/Aymkdn/SharepointPlus/blob/master/plugins/peopleahead/example/_1.png "Textbox")
+
+![alt text](https://raw.github.com/Aymkdn/SharepointPlus/master/plugins/peopleahead/example/_1.png "Textbox")
 
 And if you start typing the name of someone in your company:
-![alt text](https://github.com/Aymkdn/SharepointPlus/blob/master/plugins/peopleahead/example/_2.png "Textbox")
+
+![alt text](https://raw.github.com/Aymkdn/SharepointPlus/master/plugins/peopleahead/example/_2.png "Textbox")
 
 Documentation
 -------------
