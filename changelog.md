@@ -1,12 +1,26 @@
 # Changelog
 
+**Change Log v3.0.6 (November 13, 2013)**
+
+ - Change the default value of "dateInUTC" to false for $SP().list().get()
+ - Change $SP().toDate() to parse correctly the UTC dates
+ - Fix $SP().formfields().val() to select the values passed in the same order as provided for a "lookup multiple" type
+ - Add support for "LookupMulti" for $SP().list().info()
+ - Fix a bug with $SP().toXLSString() when a number is in the first word
+ - Fix a bug with $SP().formfields().val() when the field is a mutiple line of text and we're not on IE
+ - Fix a bug with $SP().formfields().val() when the field is a people picker
+ - Add the $SP().createFolder() function that permits to create a new folder into a Document Library
+ - Add more options to $SP().list().get() to deal with the Document Libraries (see 'folderOptions')
+ - Add another option to $SP().list().get() that permits to overwrite the "<QueryOptions>" part of the query
+ - Add $SP().list().history() to get the versioning content for a field (like the Multiple Lines of Text when versioning is on)
+
 **Change Log v3.0.5 (August 5, 2013)**
 
  - Add the $SP().list().startWorkflow() function to manually start a workflow
  - Add the $SP().list().getWorkflowID() function (that is internally used)
  - Fix $SP().formfields().val() for a people picker (Sharepoint 2010 compatibility)
  - Fix $SP().cleanResult() when no separator was provided
- - Add another paramer to the return function for $SP().list().get() that is the error message (in case the request to the webservice didn't work)
+ - Add another parameter to the return function for $SP().list().get() that is the error message (in case the request to the webservice didn't work)
  - Fix a bug with the argments mandatory for $SP().list().add()
  - Fix a bug with $SP().parse() when there was a backslash with a single quote and a bracket for a string 
  - Change the behavior of $SP().list().add() when you provide an empty array (no more exception returned)
