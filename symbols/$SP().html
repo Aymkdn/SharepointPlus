@@ -5,6 +5,8 @@
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
   <title>SharepointPlus Documentation :: $SP()</title>
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" />
@@ -35,7 +37,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (19)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (20)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -47,6 +49,8 @@
                 <li><a href="../symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.createFolder">createFolder</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
               
@@ -109,7 +113,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (11)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (12)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -121,6 +125,8 @@
                 <li><a href="../symbols/%24SP%28%29.list.html#.getAttachment">getAttachment</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.getWorkflowID">getWorkflowID</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.history">history</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.info">info</a></li>
               
@@ -188,6 +194,8 @@
           <li><a href="../symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.createFolder">createFolder</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
           
@@ -372,7 +380,7 @@ $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aym
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.content">setup.content</b> </div>  <div class="param_description span7">The file content</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.destination">setup.destination</b> </div>  <div class="param_description span7">The full path to the file to create</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.encoded">setup.encoded</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Set to true if the content passed is already base64-encoded</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.content">setup.content</b> </div>  <div class="param_description span7">The file content</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.destination">setup.destination</b> </div>  <div class="param_description span7">The full path to the file to create</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.encoded">setup.encoded</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Set to true if the content passed is already base64-encoded</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
           </div>
           
           
@@ -414,6 +422,60 @@ $SP().createFile({
 });
 
 // NOTE: in some cases the file are automatically checked out, so you have to use $SP().checkin()</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.createFolder" name=".createFolder" title="Direct link to the method 'createFolder'">createFolder</a></h2>
+          <div>
+            <div class="method well">createFolder(setup)</div>
+          </div>
+          <blockquote class="description">Create a folter in a Document library</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.path">setup.path</b> </div>  <div class="param_description span7">The relative path to the new folder</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.library">setup.library</b> </div>  <div class="param_description span7">The name of the Document Library</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+// create a folder called "first" at the root of the Shared Documents library
+// the result should be "http://mysite/Shared Documents/first/"
+$SP().createFolder({
+  path:"first",
+  library:"Shared Documents",
+  url:"http://mysite/",
+  after:function() { alert("Folder created!"); }
+});
+
+// create a folder called "second" under "first" 
+// the result should be "http://mysite/Shared Documents/first/second/"
+// if "first" doesn't exist then it will be created
+$SP().createFolder({
+  path:"first/second",
+  library:"Shared Documents",
+  after:function() { alert("Folder created!"); }
+});
+
+// Note: To delete a folder you can use $SP().list().remove()</pre>
           
           
 
@@ -1042,7 +1104,7 @@ $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Mon, 05 Aug 2013 12:46:24 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 13 Nov 2013 10:05:25 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
