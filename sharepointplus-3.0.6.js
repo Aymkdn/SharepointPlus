@@ -3195,11 +3195,11 @@ _SP_CACHE_FORMFIELDS=null;
           if (fieldName === "Content Type") { // the Content Type field is different !
             if (selectorSupported) obj._elements = document.querySelector('.ms-formbody select[title="Content Type"]');
             else {
-              for (var a=document.getElementsByTagName('td'),aa=0; aa<a.length; aa++) {
-                if (a[aa].className.indexOf("ms-formbody") > -1) {
+              for (var alltd=document.getElementsByTagName('td'),aa=0; aa<alltd.length; aa++) {
+                if (alltd[aa].className.indexOf("ms-formbody") > -1) {
                   for (var b=document.getElementsByTagName("select"),bb=0; bb<b.length; bb++) {
                     if (b[bb].title === "Content Type") {
-                      aa=a.length;
+                      aa=alltd.length;
                       obj._elements = b[bb];
                       break;
                     }
