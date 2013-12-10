@@ -351,7 +351,7 @@ $SP().list("My List","http://my.sharepoint.com/my/site/").get({
 $SP().list("Shared Documents","http://my.share.point.com/my_site/").get({
   fields:"FileLeafRef,File_x0020_Size",
 }, function getData(data) {
-  for (var i=0; i<data.length; i++) console.log("FileName:"+data[i].getAttribute("FileLeafRef"),"FileSize:"+data[i].getAttribute("File_x0020_Size"));
+  for (var i=0; i<&lt;data.length; i++) console.log("FileName:"+data[i].getAttribute("FileLeafRef"),"FileSize:"+data[i].getAttribute("File_x0020_Size"));
 });
 
 // We can join two or more lists together based on a condition
@@ -406,7 +406,7 @@ on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing Li
 // So for example if I do WHERE:'Fiscal_x0020_Year = 2012' it will return an error because I have 6,500 items
 // So I'll do several requests for each Fiscal_x0020_Week into this Fiscal Year
 var query=[],q=[];
-for (var i=1; i<54; i++) {
+for (var i=1; i&lt;54; i++) {
   q.push("Fiscal_x0020_Week = "+i);
   if (i%8==0 || i == 53) {
     query.push("("+q.join(" OR ")+") AND Fiscal_x0020_Year = 2012");
@@ -890,7 +890,7 @@ $SP().list("My List").views(function(view) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Wed, 13 Nov 2013 10:05:25 GMT</p>
+    <p>Automatically generated with JSDoc on Tue, 10 Dec 2013 09:03:21 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
