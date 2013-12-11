@@ -218,7 +218,27 @@
 
       <div class="span10"> <!-- content -->
         <h1 class="classTitle">$SP().list</h1>
-        <div class="classheader"></div>
+        <div class="member">
+          <blockquote class="description">Permits to define the list ID</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="listID">listID</b> </div>  <div class="param_description span7">Ths list ID or the list name</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="url">url</b> <i>Optional</i></div>  <div class="param_description span7">If the list name is provided, then you need to make sure URL is provided too (then no need to define the URL again for the chained functions like 'get' or 'update')</div></div>
+          </div>
+          
+          
+          
+         
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().list("My List");
+$SP().list("My List","http://my.sharpoi.nt/other.directory/");</pre>
+          
+          
+        </div>
+        
         
         <h1 id="methods">Methods</h1>
         
@@ -890,7 +910,7 @@ $SP().list("My List").views(function(view) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Wed, 11 Dec 2013 11:30:50 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 11 Dec 2013 12:09:34 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

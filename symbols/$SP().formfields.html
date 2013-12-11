@@ -206,7 +206,52 @@
 
       <div class="span10"> <!-- content -->
         <h1 class="classTitle">$SP().formfields</h1>
-        <div class="classheader"></div>
+        <div class="member">
+          <blockquote class="description">Retrieve the fields info in the NewForm and in the EditForm</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="fields">fields</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">A list of fields to get (e.g. "field1,other field,field2" or ["field1","other field","field2"]) and by default we take all fields ... ATTENTION if you have a field with "," then use only the Array as a parameter</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.mandatory">setup.mandatory</b> <i>Optional, Default: undefined</i></div>  <div class="param_description span7">Set it to 'true' to look for the mandatory fields (the "false" value has no effect)</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">Array</div>
+              <div class="span10">An array of hash with several keys: name, values, elements, type, and tr</div>
+              
+            </div>
+          </div>
+          
+         
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().formfields(); // return all the fields
+
+$SP().formfields({mandatory:true}).each(function() { // return all the mandatory fields
+  var field = this;
+  if (field.val().length==0) console.log(field.name()+" is empty!");
+});
+$SP().formfields("Title,Contact Name,Email").each(function() { // return these three fields
+  var field = this;
+  console.log(field.name()+" has these values: "+field.val());
+});
+// if you have a field with a comma use an Array
+$SP().formfields(["Title","Long field, isn't it?","Contact Name","Email"]).each(function() {
+  var field = this;
+  console.log(field.name()+" has the description: "+field.description());
+});
+// returns the fields "Title" and "New & York", and also the mandatory fields
+$SP().formfields(["Title", "New & York"],{mandatory:true});</pre>
+          
+          
+        </div>
+        
         
         <h1 id="methods">Methods</h1>
         
@@ -240,8 +285,8 @@
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().formfields("Title").type(); // return "This is the description of this field"
-$SP().formfields("List of options").type(); // return "", it means no description</pre>
+$SP().formfields("Title").description(); // return "This is the description of this field"
+$SP().formfields("List of options").description(); // return "", it means no description</pre>
           
           
 
@@ -504,7 +549,7 @@ $SP().formfields("Make your choice,Title,Other Field").val({identity:true}); // 
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Wed, 11 Dec 2013 11:30:49 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 11 Dec 2013 12:09:34 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
