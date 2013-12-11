@@ -227,8 +227,8 @@
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">String|Array</div>
-              <div class="span11">Returns the description of the field(s)</div>
+              <div class="span2">String|Array</div>
+              <div class="span10">Returns the description of the field(s)</div>
               
             </div>
           </div>
@@ -269,6 +269,16 @@ $SP().formfields("List of options").type(); // return "", it means no descriptio
           
           
           
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+// To print in the console the names of all the fields
+$SP().formfields().each(function() {
+  console.log(this.name()); // -> return the name of the field
+  console.log(this.isMandatory()); // -> returns TRUE if it's a mandatory field
+})</pre>
+          
+          
 
           
           
@@ -294,8 +304,8 @@ $SP().formfields("List of options").type(); // return "", it means no descriptio
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">Array|HTMLElement|jQuery</div>
-              <div class="span11">Null is returned if nothing is found, or the found elements... if jQuery is defined then the HTML elements will be jQueryrize</div>
+              <div class="span2">Array|HTMLElement|jQuery</div>
+              <div class="span10">Null is returned if nothing is found, or the found elements... if jQuery is defined then the HTML elements will be jQueryrize</div>
               
             </div>
           </div>
@@ -307,8 +317,8 @@ $SP().formfields("List of options").type(); // return "", it means no descriptio
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().formfields("Title").elem(); 
-$SP().formfields("List of options").elem();</pre>
+$SP().formfields("Title").elem(); // -> returns a HTML INPUT TEXT
+$SP().formfields("List of options").elem(); / -> returns a HTML SELECT</pre>
           
           
 
@@ -336,8 +346,8 @@ $SP().formfields("List of options").elem();</pre>
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">Array|HTMLElement|jQuery</div>
-              <div class="span11">Null is returned if nothing is found, or the TR HTMLElement... or a jQuery object is returned if jQuery exists</div>
+              <div class="span2">Array|HTMLElement|jQuery</div>
+              <div class="span10">Null is returned if nothing is found, or the TR HTMLElement... or a jQuery object is returned if jQuery exists</div>
               
             </div>
           </div>
@@ -396,8 +406,8 @@ $SP().formfields("Title").row().hide(); // because we have jQuery we can apply t
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">String|Array</div>
-              <div class="span11">Returns the type of the field(s)</div>
+              <div class="span2">String|Array</div>
+              <div class="span10">Returns the type of the field(s)</div>
               
             </div>
           </div>
@@ -443,11 +453,8 @@ $SP().formfields("List of options").type(); // return "choices"</pre>
             <h3>Returns:</h3>
             <div class="row-fluid">
               
-              <div class="span1">String|Array</div>
-              <div class="span11">A string or an array of the values found</div>
-              
-              <div class="span1">String|Array|Object</div>
-              <div class="span11">Return the value of the field(s)</div>
+              <div class="span2">String|Array|Object</div>
+              <div class="span10">Return the value of the field(s)</div>
               
             </div>
           </div>
@@ -497,7 +504,7 @@ $SP().formfields("Make your choice,Title,Other Field").val({identity:true}); // 
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 10 Dec 2013 09:03:21 GMT</p>
+    <p>Automatically generated with JSDoc on Wed, 11 Dec 2013 11:30:49 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
