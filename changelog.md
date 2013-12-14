@@ -1,5 +1,10 @@
 # Changelog
 
+**Change Log v3.0.7 (December 14, 2013)**
+
+ - Fix a bug with $SP().formfields().elem() when it's a boolean-checkbox field (it returned the INPUT and the BR)
+ - Add 'paging' option in $SP().formfields().get() that permits to get data from a very large list (that is useful when there is a list view threshold)
+
 **Change Log v3.0.6 (November 13, 2013)**
 
  - Change the default value of "dateInUTC" to false for $SP().list().get()
