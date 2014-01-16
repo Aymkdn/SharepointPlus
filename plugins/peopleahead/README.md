@@ -6,7 +6,7 @@ This plugin permits to change a simple `<input type="text">` to a text field con
 Example
 -------
 
-You have to include jQuery, SharepointPlus and the plugin. Add these lines to your `<head>`:
+You have to include jQuery, SharepointPlus and the plugin. Add these lines to your `<head>` (make sure you use the last version of SharepointPlus):
 ````html
 <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="sharepointplus-3.0.5.min.js"></script>
