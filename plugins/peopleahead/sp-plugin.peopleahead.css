@@ -37,6 +37,7 @@
   position: absolute;
   max-height:150px;
   overflow:auto;
+  z-index:1;
   border/*\**/:1px solid silver\9;
 }
 .sp-peopleahead img { float:right }
