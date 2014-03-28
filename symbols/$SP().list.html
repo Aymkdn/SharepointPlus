@@ -248,7 +248,7 @@ $SP().list("My List","http://my.sharpoi.nt/other.directory/");</pre>
             <div class="method well">add(items, setup)</div>
           </div>
           <blockquote class="description">Add items into a Sharepoint List
-       note: A Date must be provided as "YYYY-MM-DD hh:mm:ss", or you can use $SP().toSPDate(new Date())
+       note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
        note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
        note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
        note: A URL field must be provided as "http://www.website.com, Name"
@@ -310,7 +310,7 @@ $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Repor
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.fields">setup.fields</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="setup.where">setup.where</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">When using an array for the WHERE then you can call the progress function (see the example)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.whereCAML">setup.whereCAML</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.orderby">setup.orderby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to sort the list result (you can also add "ASC" -default- or "DESC")</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.groupby">setup.groupby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to group by the list result</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.view">setup.view</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="setup.rowlimit">setup.rowlimit</b> <i>Optional, Default: 0</i></div>  <div class="param_description span7">You can define the number of rows you want to receive back (0 is infinite)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.paging">setup.paging</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.expandUserField">setup.expandUserField</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.dateInUTC">setup.dateInUTC</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.folderOptions">setup.folderOptions</b> <i>Optional</i></div>  <div class="param_description span7">Permits to read the content of a Document Library (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.path">setup.folderOptions.path</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">Relative path of the folders we want to explore (by default it's the root of the document library)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.show">setup.folderOptions.show</b> <i>Optional, Default: "FilesAndFolders_InFolder"</i></div>  <div class="param_description span7">Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.queryOptions">setup.queryOptions</b> <i>Optional, Default: undefined</i></div>  <div class="param_description span7">If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems.aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.join">setup.join</b> <i>Optional</i></div>  <div class="param_description span7">Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.list">setup.join.list</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.url">setup.join.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url (if different than the current website)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.on">setup.join.on</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.join.outer">setup.join.outer</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to do an outer join (you can also directly use "outerjoin" instead of "join")</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional, Default: function(data,error)</i></div>  <div class="param_description span7">A function with the data from the request as first argument, and the second argument is the error message in case something went wrong</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.fields">setup.fields</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="setup.where">setup.where</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">When using an array for the WHERE then you can call the progress function (see the example)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.whereCAML">setup.whereCAML</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax (look at the examples below to know how to use it) -- see $SP().parse() for more info</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.whereEscapeChar">setup.whereEscapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.orderby">setup.orderby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to sort the list result (you can also add "ASC" -default- or "DESC")</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.groupby">setup.groupby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to group by the list result</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.view">setup.view</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="setup.rowlimit">setup.rowlimit</b> <i>Optional, Default: 0</i></div>  <div class="param_description span7">You can define the number of rows you want to receive back (0 is infinite)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.paging">setup.paging</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" and "ORDERBY" with this option)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.expandUserField">setup.expandUserField</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.dateInUTC">setup.dateInUTC</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.folderOptions">setup.folderOptions</b> <i>Optional</i></div>  <div class="param_description span7">Permits to read the content of a Document Library (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.path">setup.folderOptions.path</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">Relative path of the folders we want to explore (by default it's the root of the document library)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.show">setup.folderOptions.show</b> <i>Optional, Default: "FilesAndFolders_InFolder"</i></div>  <div class="param_description span7">Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.queryOptions">setup.queryOptions</b> <i>Optional, Default: undefined</i></div>  <div class="param_description span7">If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems.aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.join">setup.join</b> <i>Optional</i></div>  <div class="param_description span7">Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.list">setup.join.list</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.url">setup.join.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url (if different than the current website)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.on">setup.join.on</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.join.outer">setup.join.outer</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to do an outer join (you can also directly use "outerjoin" instead of "join")</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional, Default: function(data,error)</i></div>  <div class="param_description span7">A function with the data from the request as first argument, and the second argument is the error message in case something went wrong</div></div>
           </div>
           
           
@@ -340,8 +340,26 @@ $SP().list("List Name").get(function(data,error) {
   for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
 });
 
-// the WHERE clause must be SQL-like, and think to use double slash \\ if you have a simple quote '
+// the WHERE clause must be SQL-like
 // the field names must be the internal names used by Sharepoint
+// ATTENTION - note that here we open the WHERE string with simple quotes (') and that should be your default behavior each time you use WHERE
+var name = "O'Sullivan, James";
+$SP().list("My List").get({
+  fields:"Title",
+  where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "'+name+'"'
+}),function getData(row) {
+  for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+});
+
+// Same example but this time we write the name directly inside the query...
+// So make sure to use a single backslash (\) if you have a simple quote ' inside your WHERE with a double quotes (") to open/close the string
+$SP().list("My List").get({
+  fields:"Title",
+  where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "O\'Sullivan, James"'
+}),function getData(row) {
+  for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+});
+// Or to use a double backslash (\\) if you have a simple quote ' inside your WHERE with a simple quote (') to open/close the string
 $SP().list("My List").get({
   fields:"Title",
   where:"Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = 'O\\'Sullivan, James'"
@@ -350,10 +368,28 @@ $SP().list("My List").get({
 });
 
 // also in the WHERE clause you can use '[Me]' to filter by the current user,
-// or '[Today]' to filter by the current date
 $SP().list("My List").get({
   fields:"Title",
   where:"Author = '[Me]'"
+},function getData(row) {
+  console.log(row[0].getAttribute("Title"));
+});
+
+// also in the WHERE clause you can use '[Today]' or '[Today-X]' with 'X' a number,
+// Here it will return the records done yesterday
+$SP().list("My List").get({
+  fields:"Title",
+  where:"Created = '[Today-1]'"
+},function getData(row) {
+  console.log(row[0].getAttribute("Title"));
+});
+
+// Since 3.0.8, if you do a WHERE on a Date with the Time included, then it will compare with the tim
+// see http://blogs.syrinx.com/blogs/sharepoint/archive/2008/08/05/caml-queries-with-dates.aspx
+// here it will only show the items created at 2PM exactly -- if you want to check only the today, then use "Created = '2014-03-12'"
+$SP().list("My List").get({
+  fields:"Title",
+  where:"Created = '2014-03-12 14:00:00'"
 },function getData(row) {
   console.log(row[0].getAttribute("Title"));
 });
@@ -368,6 +404,7 @@ $SP().list("My List","http://my.sharepoint.com/my/site/").get({
 });
 
 // use the paging option for the large list to avoid the message "the attempted operation is prohibited because it exceeds the list view threshold enforced by the administrator"
+// ATTENTION: if you use the WHERE option then it could return the "view threshold" error message because the packet from the WHERE is too big and SharePoint is too stupid...
 $SP().list("My List").get({fields:"ID,Title",rowlimit:5000,paging:true}, function(data) {
   console.log(data.length); // -> 23587
 })
@@ -452,6 +489,14 @@ $SP().list("Sessions").get({
   }
 },function getData(data) {
   console.log(data.length); // -> 6,523
+});
+// also regarding the throttling limit, you can query a list on a user column in using the User ID
+// For example if John Doe is recorded as "328;#Doe, John" then you'll have to use the special operator "~="
+$SP().list("Sessions").get({
+  fields:"Title",
+  where:'User ~= 328"
+},function getData(data) {
+  console.log(data.length);
 });
 
 // if you want to list only the files visible into a folder for a Document Library
@@ -586,7 +631,7 @@ $SP().list("List Name").getWorkflowID({ID:15, workflowName:"Workflow for List Na
           
           <pre class="prettyprint lang-js">
 $SP().list("My List").history({ID:1981, Name:"Critical_x0020_Comments"}, function(data) {
-  for (var i=0,len=data.length; i<len; i++) {
+  for (var i=0,len=data.length; i&lt;len; i++) {
     console.log("Date: "+data[i].getAttribute("Modified")); // you can use $SP().toDate() to convert it to a JavaScript Date object
     console.log("Editor: "+data[i].getAttribute("Editor")); // it's the long format type, so the result looks like that "328;#Doe,, John,#DOMAIN\john_doe,#John_Doe@example.com,#,#Doe,, John"
     console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use the field name here
@@ -915,7 +960,7 @@ $SP().list("My List").views(function(view) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Sat, 14 Dec 2013 11:36:38 GMT</p>
+    <p>Automatically generated with JSDoc on Fri, 28 Mar 2014 18:13:20 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

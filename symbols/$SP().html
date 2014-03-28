@@ -694,7 +694,7 @@ $SP().lists(function(list) {
         <div class="member">
           <h2><a href="#.parse" name=".parse" title="Direct link to the method 'parse'">parse</a></h2>
           <div>
-            <div class="method well">parse(where)</div>
+            <div class="method well">parse(where, escapeChar)</div>
           </div>
           <blockquote class="description">Use a WHERE sentence to transform it into a CAML Syntax sentence</blockquote>
           
@@ -704,7 +704,7 @@ $SP().lists(function(list) {
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="where">where</b> </div>  <div class="param_description span7">The WHERE sentence to change</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="where">where</b> </div>  <div class="param_description span7">The WHERE sentence to change</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="escapeChar">escapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')</div></div>
           </div>
           
           
@@ -716,8 +716,25 @@ $SP().lists(function(list) {
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().parse('ContentType="My Content Type" OR Description&lt;>null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
-// -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;Gt>&lt;FieldRef Name="Description&lt;" />&lt;/Gt>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And></pre>
+$SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
+// -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;Gt>&lt;FieldRef Name="Description&lt;" />&lt;/Gt>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
+
+// available operators :
+// "&lt;" : less than
+// "&lt;=" : less than or equal to
+// ">" : greater than
+// ">=" : greater than or equal to
+// "<>" : different
+// "~=" : this must be only used when comparing to a number that represents the User ID (e.g. 'User ~= 328') - that permits to query a list with too many items but with the User column that is indexed
+// " AND "
+// " OR "
+// " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
+
+// in the below example, on the "&" will be escaped
+var bar="Bob & Marley";
+var foo="O'Conney";
+$SP().parse('Bar = "'+bar+'" AND Foo = "'+foo+'"'); // -> &lt;And>&lt;Eq>&lt;FieldRef Name="Bar" />&lt;Value Type="Text">Bob &amp; Marley&lt;/Value>&lt;/Eq>&lt;Eq>&lt;FieldRef Name="Foo" />&lt;Value Type="Text">O'Conney&lt;/Value>&lt;/Eq>&lt;/And>
+$SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney</pre>
           
           
 
@@ -939,7 +956,7 @@ $SP().toCurrency(1500000,2,''); // --> 1,500,000.00</pre>
         <div class="member">
           <h2><a href="#.toSPDate" name=".toSPDate" title="Direct link to the method 'toSPDate'">toSPDate</a></h2>
           <div>
-            <div class="method well">toSPDate(dateObject)</div>
+            <div class="method well">toSPDate(dateObject, includeTime)</div>
           </div>
           <blockquote class="description">Change a Date object into a Sharepoint date string</blockquote>
           
@@ -949,7 +966,7 @@ $SP().toCurrency(1500000,2,''); // --> 1,500,000.00</pre>
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Date</div>  <div class="name span4"><b data-param="dateObject">dateObject</b> <i>Optional</i></div>  <div class="param_description span7">the Sharepoint date string</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Date</div>  <div class="name span4"><b data-param="dateObject">dateObject</b> </div>  <div class="param_description span7">The Date object you want to convert</div></div><div class="parameter row-fluid">  <div class="type span1">Date</div>  <div class="name span4"><b data-param="includeTime">includeTime</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">By default the time is not returned (if the time appears then the WHERE clause will do a time comparison)</div></div>
           </div>
           
           
@@ -970,7 +987,9 @@ $SP().toCurrency(1500000,2,''); // --> 1,500,000.00</pre>
           
           <h3>Example:</h3>
           
-          <pre class="prettyprint lang-js">$SP().toSPDate(new Date("31/Oct/2012")); // --> "2012-10-31 00:00:00"</pre>
+          <pre class="prettyprint lang-js">
+  $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31 00:00:00"
+  $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"</pre>
           
           
 
@@ -1112,7 +1131,7 @@ $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Sat, 14 Dec 2013 11:36:38 GMT</p>
+    <p>Automatically generated with JSDoc on Fri, 28 Mar 2014 18:13:20 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
