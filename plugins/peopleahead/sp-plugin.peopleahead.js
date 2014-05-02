@@ -66,7 +66,7 @@ $SP().registerPlugin('peopleahead', function(options) {
     if ($parent.data('mouseintheplace') != true) {
       $parent.find('img,ul').hide();
       if ($this.data('login') === "") $this[0].className='peopleahead-warning'
-    } else if ($this.data('login') === "") {
+    } else if ($this.val() === "") {
       $parent.find('img,ul').hide();
     }
   })
