@@ -56,7 +56,11 @@ The properties are:
 * {String} [setup.loading] The source of the spin loading image you want to show (by default a data:image/gif;base64 is used)
 * {String} [setup.noresult="No result: Please use 'firstname', or 'lastname', or 'lastname, firstname'"] The message to show when no one is found
 * {Function} [setup.onselect] When selecting someone in the list
-  
+
+**The available data are "userid", "email", "name", "login" and "title" (this is the Job Title).**
+
+You can get more data in adding what you want at [line 101](https://github.com/Aymkdn/SharepointPlus/blob/master/plugins/peopleahead/sp-plugin.peopleahead.js#L101) (but this is depend of what your Sharepoint provides).
+
 ### Example
 
 ````javascript
