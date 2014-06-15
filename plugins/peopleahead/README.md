@@ -71,7 +71,13 @@ You can get more data in adding what you want at [line 101](https://github.com/A
     noresult:'Nothing found... Sorry.',
     onselect:function() {
       // 'this' is the A element that we click which contains in data attribute the "userid", "email", "name", "login" and "title"
-      alert('You have selected '+$(this).data('name')+' and the related email is '+$(this).data('email'));
+      var $this=$(this);
+      alert('You have selected '+$this.data('name')+' and the related email is '+$this.data('email'));
+      // and you can get even more info using $SP().people().
+      // for example if you want to get the WorkPhone you'll do:
+      $SP().people($this.data('login'), function(p) {
+        alert("The email for "+$this.data('name')+" is "+p["WorkPhone"])
+      })
     }
   })
 ````
