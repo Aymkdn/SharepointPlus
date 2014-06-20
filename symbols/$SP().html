@@ -37,7 +37,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (20)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (23)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -56,11 +56,15 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.getUserInfo">getUserInfo</a></li>
+              
                 <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.isMember">isMember</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.lists">lists</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.notify">notify</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.parse">parse</a></li>
               
@@ -69,6 +73,8 @@
                 <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.removeNotify">removeNotify</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
               
@@ -201,11 +207,15 @@
           
           <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
           
+          <li><a href="../symbols/%24SP%28%29.html#.getUserInfo">getUserInfo</a></li>
+          
           <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.isMember">isMember</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.lists">lists</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.notify">notify</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.parse">parse</a></li>
           
@@ -214,6 +224,8 @@
           <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.removeNotify">removeNotify</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
           
@@ -507,7 +519,7 @@ $SP().createFolder({
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">The username with or without the domain (don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">The username with or without the domain (don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Cache the response from the server</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
           </div>
           
           
@@ -578,6 +590,47 @@ $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, fu
         </div>
         
         <div class="member">
+          <h2><a href="#.getUserInfo" name=".getUserInfo" title="Direct link to the method 'getUserInfo'">getUserInfo</a></h2>
+          <div>
+            <div class="method well">getUserInfo(username, setup, result)</div>
+          </div>
+          <blockquote class="description">Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> <i>Optional</i></div>  <div class="param_description span7">That must be "domain\\login"</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an object with the result ({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), or a String with the error message</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}, function(info) {
+  if (typeof info === "string") {
+    alert("Error:"+info); // there was a problem so we show it
+  } else
+    alert("User ID = "+info.ID)
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
           <h2><a href="#.groupMembers" name=".groupMembers" title="Direct link to the method 'groupMembers'">groupMembers</a></h2>
           <div>
             <div class="method well">groupMembers(groupname, setup, result)</div>
@@ -590,7 +643,7 @@ $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, fu
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="groupname">groupname</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="groupname">groupname</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">By default the function will cache the group members (so if you call several times it will use the cache)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
           </div>
           
           
@@ -628,7 +681,7 @@ $SP().groupMembers("my group", function(members) {
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.user">setup.user</b> </div>  <div class="param_description span7">Name of the user with (don't forget to use a double \ in the username)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.group">setup.group</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">Return TRUE if the user is a member of the group, FALSE if not.</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.user">setup.user</b> </div>  <div class="param_description span7">Name of the user with (don't forget to use a double \ in the username)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.group">setup.group</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Cache the response from the server</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">Return TRUE if the user is a member of the group, FALSE if not.</div></div>
           </div>
           
           
@@ -681,6 +734,52 @@ $SP().isMember({user:"mydomain\\john_doe",group:"my group",url:"http://my.site.c
 $SP().lists(function(list) {
   for (var i=0; i&lt;list.length; i++) console.log("List #"+i+": "+list[i]['Name']");
 });</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.notify" name=".notify" title="Direct link to the method 'notify'">notify</a></h2>
+          <div>
+            <div class="method well">notify(message, options)</div>
+          </div>
+          <blockquote class="description">Permits to notify the user using the SP.UI.Notify.addNotification system</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="message">message</b> </div>  <div class="param_description span7">Message to show</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="options.timeout">options.timeout</b> <i>Optional, Default: 5</i></div>  <div class="param_description span7">The number of seconds that the notification is shown</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.override">options.override</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">This option to TRUE permits to remove the previous/current notification that is showing (even if the timeout is not over and even if it's a sticky) and replace it with the new one</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.overrideAll">options.overrideAll</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Same as previously except that it will remove *all* the previous notifications that are currently showing</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.overrideSticky">options.overrideSticky</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">When "overrideAll:true" then even the sticky notifications are removed, but you can block this behavior with "overrideSticky:false"</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.sticky">options.sticky</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Keep the notification on the screen until it's manually removed (or automatically removed with "overrideAll:true" and "overrideSticky:true")</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.name">options.name</b> <i>Optional, Default: random()</i></div>  <div class="param_description span7">You can give a name to the notification (to use it with $SP().removeNotify('name'))</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.after">options.after</b> <i>Optional, Default: function(name,afterDelay){}</i></div>  <div class="param_description span7">You can call this function when the notification is removed -- the argument "name" is the name of the notification (see previous option), the argument "afterDelay" is TRUE when the notification has been removed by the system after it's normal timeout</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().notify('Processing the data...', {sticky:true}); // the notification will stay on the screen until we remove it
+$SP().notify('All done!', {overrideAll:true}); // the "Processing the data..." is removed from the screen and a 5 seconds message says "All done!"
+
+$SP().notify('Please wait 10 seconds...', {
+  name:"My 10 seconds notification",
+  timeout:10,
+  after:function(name,afterDelay) {
+    if (afterDelay) alert("OK, you waited during 10 seconds!")
+    else alert("Something just removed this notification called '"+name+"'' before the timeout :-(")
+  }
+})</pre>
           
           
 
@@ -850,6 +949,52 @@ $SP().plugin('test',{message:"This is a test !"})</pre>
 $SP().registerPlugin('test', function(options) {
   console.log(options.message);
 })</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.removeNotify" name=".removeNotify" title="Direct link to the method 'removeNotify'">removeNotify</a></h2>
+          <div>
+            <div class="method well">removeNotify(name, options)</div>
+          </div>
+          <blockquote class="description">Permits to remove a notification that is shown on the screen</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="name">name</b> <i>Optional</i></div>  <div class="param_description span7">Name of the notification</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">If you pass the options, then the 'name' is ignored</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.all">options.all</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">To TRUE to remove ALL notifications</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.includeSticky">options.includeSticky</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">To FALSE if you don't want to remove the sticky notifications (only works with the "all:true" option)</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().notify('Processing the data...', {sticky:true,name:"Processing data"}); // the notification will stay on the screen until we remove it
+$SP().removeNotify("Processing data"); // the notification is removed
+
+$SP().notify('Doing some stuff...');
+$SP().notify('Doing some other stuff...');
+$SP().removeNotify({all:true}); // all the notifications are removed
+
+$SP().notify('Doing some stuff...');
+$SP().notify('Doing some other stuff...');
+$SP().notify('This is a sticky message', {sticky:true});
+$SP().removeNotify({all:true, includeSticky:false}); // all the notifications are removed except the sticky one</pre>
           
           
 
@@ -1058,7 +1203,7 @@ $SP().toCurrency(1500000,2,''); // --> 1,500,000.00</pre>
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">The username with the domain (don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">The username with the domain (don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Keep a cache of the result</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
           </div>
           
           
@@ -1131,7 +1276,7 @@ $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Fri, 28 Mar 2014 18:13:20 GMT</p>
+    <p>Automatically generated with JSDoc on Fri, 20 Jun 2014 17:52:23 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
