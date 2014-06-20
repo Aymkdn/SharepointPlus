@@ -1,5 +1,16 @@
 # Changelog
 
+**Change Log v3.0.9 (June 20, 2014)**
+
+ - New option "cache" for $SP().groupMembers(),.distributionLists(),isMember(),.usergroups()
+ - New function $SP().getUserInfo()
+ - New options "calendar" and "calendarOptions" for $SP().list().get() to easily deal with the Calendar Lists / Events
+ - Bug fix with $SP().formfields() when we activate the Recurrence in a calendar form
+ - Add $SP().notify() and $SP().removeNotify() to deal more easily with SP.UI.Notify.addNotification
+ - Fix the doc for the DateInUTC option of $SP().list().get()
+ - Add "Node" as a new return for the $SP().list().views() function
+ - Fix the option "path" for "folderOptions" in $SP().list().get() that didn't work
+
 **Change Log v3.0.8 (March 28, 2014)**
 
  - Little bug fix and improvements
