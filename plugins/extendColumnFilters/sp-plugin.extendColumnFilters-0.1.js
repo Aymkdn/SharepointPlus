@@ -133,6 +133,7 @@ $SP().registerPlugin('extendColumnFilters', function(options) {
           $SP().list(_SP_Plugin_extendColumnFilters.list).get({
             "fields":name,
             "paging":true,
+            "view":ctxFilter.view,
             "where":where,
             "groupby":name
           }, function(data) {
