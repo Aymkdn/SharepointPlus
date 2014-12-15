@@ -71,10 +71,13 @@ var _SP_Plugin_extendColumnFilters={"listHeadersToChange":[], "list":"", "conten
 $SP().registerPlugin('extendColumnFilters', function(options) {
   var i, len, listHeadersToChange=[];
 
+  // make sure it's not the datasheet view
+  if (window.location.search.indexOf("howInGrid=True") > -1) return
+
   for (i=0; i<options.headers.length; i++) listHeadersToChange.push(options.headers[i].name);
   _SP_Plugin_extendColumnFilters.listHeadersToChange=listHeadersToChange;
   _SP_Plugin_extendColumnFilters.list = options.list || ctx.listName;
-
+  
   window.addFilterMenuItems_bak=window.addFilterMenuItems;
   
   // a short function to retrieve the params in the url
