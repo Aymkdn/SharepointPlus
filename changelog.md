@@ -1,5 +1,18 @@
 # Changelog
 
+**Change Log v3.0.10 (February 24, 2015)**
+
+  - Fix the $SP().list().get() to not change the original WHERE clause passed to the function when it's an array
+  - Fix a bug with the $SP().list().views() because of a cache issue, and add a "cache" option
+  - Fix the $SP().list().get() when we pass a ViewID
+  - New parameter for $SP().toDate() that permits to force the UTC date
+  - Fix a bug with $SP().list().add() and $SP().list().update() when an error is returned by the server
+  - Add additional option called `useIndexForOrderBy`, for $SP().list().get(), based on this comment: https://spservices.codeplex.com/discussions/280642#post1323410 that permits to  override the list view threshold
+  - Add a `page` option for $SP().list().get()
+  - Add a code that runs automatically to change the Sharepoint complex dropdowns (when it's a lookup with more than 20 values) to a regular SELECT -- IE only
+  - Add `progress` function with the `paging:true` option for $SP().list().get()
+  - Fix a bug with $SP().formfields() when setting a value for a MULTIPLE LINE OF TEXT
+
 **Change Log v3.0.9 (June 20, 2014)**
 
  - New option "cache" for $SP().groupMembers(),.distributionLists(),isMember(),.usergroups()
