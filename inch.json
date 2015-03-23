@@ -1,0 +1,10 @@
+{
+  "files": {
+    "included": [
+      "sharepointplus-*.js"
+    ],
+    "excluded": [
+      "sharepointplus-*.min.js"
+    ]
+  }
+}
