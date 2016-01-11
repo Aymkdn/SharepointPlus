@@ -37,7 +37,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (23)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (24)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -88,6 +88,8 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.workflowStatusToText">workflowStatusToText</a></li>
+              
               </ul>
               
             </li>
@@ -95,7 +97,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (6)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -105,6 +107,10 @@
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.name">name</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.row">row</a></li>
               
@@ -119,7 +125,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (12)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (14)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -129,6 +135,10 @@
                 <li><a href="../symbols/%24SP%28%29.list.html#.get">get</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.getAttachment">getAttachment</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypeInfo">getContentTypeInfo</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypes">getContentTypes</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.getWorkflowID">getWorkflowID</a></li>
               
@@ -238,6 +248,8 @@
           <li><a href="../symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.workflowStatusToText">workflowStatusToText</a></li>
           
         </ul>
         
@@ -602,7 +614,7 @@ $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, fu
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> <i>Optional</i></div>  <div class="param_description span7">That must be "domain\\login"</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an object with the result ({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), or a String with the error message</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">That must be "domain\\login"</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an object with the result ({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), or a String with the error message</div></div>
           </div>
           
           
@@ -1018,7 +1030,7 @@ $SP().removeNotify({all:true, includeSticky:false}); // all the notifications ar
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Number|String</div>  <div class="name span4"><b data-param="number">number</b> </div>  <div class="param_description span7">The number to format</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="decimal">decimal</b> <i>Optional, Default: -1</i></div>  <div class="param_description span7">The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="sign">sign</b> <i>Optional, Default: '$'</i></div>  <div class="param_description span7">The currency sign to add</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Number|String</div>  <div class="name span4"><b data-param="number">number</b> </div>  <div class="param_description span7">The number to format</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="decimal">decimal</b> <i>Optional, Default: -1</i></div>  <div class="param_description span7">The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="sign">sign</b> <i>Optional, Default: '$'</i></div>  <div class="param_description span7">The currency sign to add</div></div>
           </div>
           
           
@@ -1263,6 +1275,42 @@ $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
           
           
 
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.workflowStatusToText" name=".workflowStatusToText" title="Direct link to the method 'workflowStatusToText'">workflowStatusToText</a></h2>
+          <div>
+            <div class="method well">workflowStatusToText(code)</div>
+          </div>
+          <blockquote class="description">Return the text related to a workflow status code</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String|Number</div>  <div class="name span4"><b data-param="code">code</b> </div>  <div class="param_description span7">This is the code returned by a workflow</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().workflowStatusToText(2); // -> "In Progress"</pre>
+          
+          
+
+          
+          
+          
+
           
         </div>
         
@@ -1276,7 +1324,7 @@ $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 24 Feb 2015 08:27:35 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 11 Jan 2016 16:46:14 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

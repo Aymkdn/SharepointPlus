@@ -37,7 +37,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (23)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (24)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -88,6 +88,8 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.workflowStatusToText">workflowStatusToText</a></li>
+              
               </ul>
               
             </li>
@@ -95,7 +97,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (6)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -105,6 +107,10 @@
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.name">name</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.row">row</a></li>
               
@@ -119,7 +125,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (12)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (14)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -129,6 +135,10 @@
                 <li><a href="../symbols/%24SP%28%29.list.html#.get">get</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.getAttachment">getAttachment</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypeInfo">getContentTypeInfo</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypes">getContentTypes</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.getWorkflowID">getWorkflowID</a></li>
               
@@ -198,6 +208,10 @@
           <li><a href="../symbols/%24SP%28%29.list.html#.get">get</a></li>
           
           <li><a href="../symbols/%24SP%28%29.list.html#.getAttachment">getAttachment</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypeInfo">getContentTypeInfo</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypes">getContentTypes</a></li>
           
           <li><a href="../symbols/%24SP%28%29.list.html#.getWorkflowID">getWorkflowID</a></li>
           
@@ -319,7 +333,7 @@ $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Repor
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.fields">setup.fields</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="setup.where">setup.where</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.whereCAML">setup.whereCAML</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.whereEscapeChar">setup.whereEscapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.whereFct">setup.whereFct</b> <i>Optional, Default: function(w){return w}</i></div>  <div class="param_description span7">Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.orderby">setup.orderby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to sort the list result (you can also add "ASC" -default- or "DESC")</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.useIndexForOrderBy">setup.useIndexForOrderBy</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.groupby">setup.groupby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to group by the list result</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.view">setup.view</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="setup.rowlimit">setup.rowlimit</b> <i>Optional, Default: 0</i></div>  <div class="param_description span7">You can define the number of rows you want to receive back (0 is infinite)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.paging">setup.paging</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="setup.page">setup.page</b> <i>Optional, Default: infinite</i></div>  <div class="param_description span7">When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.expandUserField">setup.expandUserField</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.dateInUTC">setup.dateInUTC</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.folderOptions">setup.folderOptions</b> <i>Optional</i></div>  <div class="param_description span7">Permits to read the content of a Document Library (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.path">setup.folderOptions.path</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">Relative path of the folders we want to explore (by default it's the root of the document library)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.show">setup.folderOptions.show</b> <i>Optional, Default: "FilesAndFolders_InFolder"</i></div>  <div class="param_description span7">Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.queryOptions">setup.queryOptions</b> <i>Optional, Default: undefined</i></div>  <div class="param_description span7">If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems.aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.join">setup.join</b> <i>Optional</i></div>  <div class="param_description span7">Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.list">setup.join.list</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.url">setup.join.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url (if different than the current website)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.on">setup.join.on</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.join.outer">setup.join.outer</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to do an outer join (you can also directly use "outerjoin" instead of "join")</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.calendar">setup.calendar</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to get the events from a Calendar List</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.calendarOptions">setup.calendarOptions</b> <i>Optional</i></div>  <div class="param_description span7">Options that will be used when "calendar:true" (see the example to know how to use it)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.calendarOptions.splitRecurrence">setup.calendarOptions.splitRecurrence</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Date</div>  <div class="name span4"><b data-param="setup.calendarOptions.referenceDate">setup.calendarOptions.referenceDate</b> <i>Optional, Default: today</i></div>  <div class="param_description span7">This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.calendarOptions.range">setup.calendarOptions.range</b> <i>Optional, Default: "Month"</i></div>  <div class="param_description span7">By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional, Default: function(data,error)</i></div>  <div class="param_description span7">A function with the data from the request as first argument, and the second argument is the error message in case something went wrong</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.fields">setup.fields</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="setup.where">setup.where</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.whereCAML">setup.whereCAML</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.whereEscapeChar">setup.whereEscapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.whereFct">setup.whereFct</b> <i>Optional, Default: function(w){return w}</i></div>  <div class="param_description span7">Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.orderby">setup.orderby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to sort the list result (you can also add "ASC" -default- or "DESC")</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.useIndexForOrderBy">setup.useIndexForOrderBy</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.groupby">setup.groupby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to group by the list result</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.view">setup.view</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="setup.rowlimit">setup.rowlimit</b> <i>Optional, Default: 0</i></div>  <div class="param_description span7">You can define the number of rows you want to receive back (0 is infinite)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.paging">setup.paging</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="setup.page">setup.page</b> <i>Optional, Default: infinite</i></div>  <div class="param_description span7">When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.listItemCollectionPositionNext">setup.listItemCollectionPositionNext</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">When doing paging, this is the index used by Sharepoint to get the next page</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.expandUserField">setup.expandUserField</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.dateInUTC">setup.dateInUTC</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.folderOptions">setup.folderOptions</b> <i>Optional</i></div>  <div class="param_description span7">Permits to read the content of a Document Library (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.path">setup.folderOptions.path</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">Relative path of the folders we want to explore (by default it's the root of the document library)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.folderOptions.show">setup.folderOptions.show</b> <i>Optional, Default: "FilesAndFolders_InFolder"</i></div>  <div class="param_description span7">Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.queryOptions">setup.queryOptions</b> <i>Optional, Default: undefined</i></div>  <div class="param_description span7">If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems.aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.join">setup.join</b> <i>Optional</i></div>  <div class="param_description span7">Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.list">setup.join.list</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.url">setup.join.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url (if different than the current website)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.join.on">setup.join.on</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.join.outer">setup.join.outer</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to do an outer join (you can also directly use "outerjoin" instead of "join")</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.calendar">setup.calendar</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to get the events from a Calendar List</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.calendarOptions">setup.calendarOptions</b> <i>Optional</i></div>  <div class="param_description span7">Options that will be used when "calendar:true" (see the example to know how to use it)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.calendarOptions.splitRecurrence">setup.calendarOptions.splitRecurrence</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Date</div>  <div class="name span4"><b data-param="setup.calendarOptions.referenceDate">setup.calendarOptions.referenceDate</b> <i>Optional, Default: today</i></div>  <div class="param_description span7">This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.calendarOptions.range">setup.calendarOptions.range</b> <i>Optional, Default: "Month"</i></div>  <div class="param_description span7">By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional, Default: function(data,error)</i></div>  <div class="param_description span7">A function with the data from the request as first argument, and the second argument is the error message in case something went wrong</div></div>
           </div>
           
           
@@ -429,6 +443,13 @@ $SP().list("My List").get({
 // for example you only want the last record from a list that has more than 5,000 items
 $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:1,paging:true,page:1}, function(data) {
   console.log("last ID : "+data[0].getAttribute("ID"));
+})
+// use `listItemCollectionPositionNext` to start from this index
+$SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1}, function(data, nextPageIndex) {
+  // get the next block
+  this.get{fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:nextPageIndex}, function(data, nextPageIndex) {
+    // here we have the 2nd block of data into `data`
+  })
 })
 
 // We can also find the files from a Document Shared Library
@@ -640,11 +661,91 @@ $SP().list("My List").getAttachment("98", function(data) {
         </div>
         
         <div class="member">
+          <h2><a href="#.getContentTypeInfo" name=".getContentTypeInfo" title="Direct link to the method 'getContentTypeInfo'">getContentTypeInfo</a></h2>
+          <div>
+            <div class="method well">getContentTypeInfo(contentType, options, cache, function())</div>
+          </div>
+          <blockquote class="description">Get the Content Type Info for a Content Type into the list</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="contentType">contentType</b> </div>  <div class="param_description span7">The Name or the ID (from $SP().list.getContentTypes) of the Content Type</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="cache">cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Do we use the cache?</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="function()">function()</b> <i>Optional</i></div>  <div class="param_description span7">A function with the data from the request as first argument</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().list("List Name").getContentTypeInfo("Item", function(fields) {
+  for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+});
+
+$SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0F9001", function(fields) {
+  for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.getContentTypes" name=".getContentTypes" title="Direct link to the method 'getContentTypes'">getContentTypes</a></h2>
+          <div>
+            <div class="method well">getContentTypes(options, cache, function())</div>
+          </div>
+          <blockquote class="description">Get the Content Types for the list (returns Name, ID and Description)</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="cache">cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Do we want to use the cache on recall for this function?</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="function()">function()</b> <i>Optional</i></div>  <div class="param_description span7">A function with the data from the request as first argument</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().list("List Name").getContentTypes(function(contentTypes) {
+  for (var i=0; i&lt;contentTypes.length; i++) console.log(contentTypes[i].Name, contentTypes[i].ID, contentTypes[i].Description);
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
           <h2><a href="#.getWorkflowID" name=".getWorkflowID" title="Direct link to the method 'getWorkflowID'">getWorkflowID</a></h2>
           <div>
             <div class="method well">getWorkflowID(setup)</div>
           </div>
-          <blockquote class="description">Find the WorkflowID for a workflow</blockquote>
+          <blockquote class="description">Find the WorkflowID for a workflow, and some other data (fileRef, description, instances, ...)</blockquote>
           
           
           
@@ -885,8 +986,11 @@ $SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared D
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function() {
-  alert("Workflow done!");
+$SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function(error) {
+  if (!error)
+    alert("Workflow done!");
+  else 
+    alert("Error: "+error);
 }});</pre>
           
           
@@ -1036,7 +1140,7 @@ $SP().list("My List").views(function(view) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 24 Feb 2015 08:48:23 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 11 Jan 2016 16:46:14 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

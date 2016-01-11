@@ -37,7 +37,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (23)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (24)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -88,6 +88,8 @@
               
                 <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
               
+                <li><a href="../symbols/%24SP%28%29.html#.workflowStatusToText">workflowStatusToText</a></li>
+              
               </ul>
               
             </li>
@@ -95,7 +97,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (6)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -105,6 +107,10 @@
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.name">name</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.row">row</a></li>
               
@@ -119,7 +125,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (12)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (14)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -129,6 +135,10 @@
                 <li><a href="../symbols/%24SP%28%29.list.html#.get">get</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.getAttachment">getAttachment</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypeInfo">getContentTypeInfo</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypes">getContentTypes</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.list.html#.getWorkflowID">getWorkflowID</a></li>
               
@@ -198,6 +208,10 @@
           <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
           
           <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.formfields.html#.name">name</a></li>
           
           <li><a href="../symbols/%24SP%28%29.formfields.html#.row">row</a></li>
           
@@ -370,6 +384,90 @@ $SP().formfields().each(function() {
           <pre class="prettyprint lang-js">
 $SP().formfields("Title").elem(); // -> returns a HTML INPUT TEXT
 $SP().formfields("List of options").elem(); / -> returns a HTML SELECT</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.isMandatory" name=".isMandatory" title="Direct link to the method 'isMandatory'">isMandatory</a></h2>
+          <div>
+            <div class="method well">isMandatory()</div>
+          </div>
+          <blockquote class="description">Say if a field is mandatory</blockquote>
+          
+          
+          
+          
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">Boolean|Array</div>
+              <div class="span10">Returns the mandatory status of the field(s)</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().formfields("Title").isMandatory(); // return True or False
+$SP().formfields(["Field1", "Field2"]).isMandatory(); // return [ True/False, True/False ]</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.name" name=".name" title="Direct link to the method 'name'">name</a></h2>
+          <div>
+            <div class="method well">name()</div>
+          </div>
+          <blockquote class="description">Return the field name</blockquote>
+          
+          
+          
+          
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String|Array</div>
+              <div class="span10">Returns the name of the field(s)</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().formfields("Title").name(); // return "Title"
+$SP().formfields(["Field1", "Field2"]).name(); // return [ "Field1", "Field2" ]</pre>
           
           
 
@@ -555,7 +653,7 @@ $SP().formfields("Make your choice,Title,Other Field").val({identity:true}); // 
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 24 Feb 2015 08:27:35 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 11 Jan 2016 16:46:14 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
