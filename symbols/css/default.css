@@ -4,7 +4,7 @@ h3 { padding-top:10px; color:#999 }
 hr  { border-color:#000 }
 .method { font-weight:bold }
 .description { white-space:pre }
-div.name > b[data-param^="setup."]:before { content:"\21AA " }
+div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:before { content:"\21AA " }
 .parameters .parameter:nth-child(odd) { background-color:#f4f4f4 }
 .footer { border-top:1px solid #E5E5E5; margin-top:45px; padding:35px 0 36px }
 .visible-phone { display:none }
