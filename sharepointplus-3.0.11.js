@@ -1,9 +1,9 @@
 /*!
  * SharepointPlus v3.0.11
- * Copyright 2014, Aymeric (@aymkdn)
+ * Copyright 2016, Aymeric (@aymkdn)
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/
- * License: GPL v2 (http://aymkdn.github.com/SharepointPlus/license.txt)
+ * License: GPL-3 (http://aymkdn.github.com/SharepointPlus/license.md)
  */
 if (!Array.prototype.indexOf) {
   /**
