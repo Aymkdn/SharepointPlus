@@ -1,5 +1,21 @@
 # Changelog
 
+**Change Log v3.0.11 (January 11, 2016)**
+
+  - Fix $SP().forms() for Sharepoint 2013
+  - Add $SP().formfields().isMandatory() to return the mandatory status of the field(s)
+  - Add $SP().formfields().name() to return the name of the field(s)
+  - Fix $SP().cleanResult() for "float;"
+  - Add $SP().list().getContentTypes() to return the content types for a list
+  - Add $SP().list().getContentTypeInfo() to return the content type info for a list
+  - Add support of the Enhanced Textarea field
+  - Fix $SP().formfields().each() that returns a jQuery object when calling this.elem() and this.row()
+  - Fix $SP()).formfields().val() returning an empty array when no value available, and it now returns an empty string
+  - Add more data returned by $SP().list().getWorkflowID()
+  - Add $SP().workflowStatusToText() to convert the workflow status code to the related message
+  - Add option "listItemCollectionPositionNext" to $SP().list().get() for paging
+  - Fix $SP().list().getWorkflowID() to use ClientContent when permissions are insufficient
+
 **Change Log v3.0.10 (February 24, 2015)**
 
   - Fix the $SP().list().get() to not change the original WHERE clause passed to the function when it's an array
