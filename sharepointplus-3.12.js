@@ -1,21 +1,19 @@
 /*!
- * SharepointPlus v3.0.7
- * Copyright 2013, Aymeric (@aymkdn)
+ * SharepointPlus v3.12
+ * Copyright 2016, Aymeric (@aymkdn)
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/
- * License: GPL v2 (http://aymkdn.github.com/SharepointPlus/license.txt)
+ * License: GPL-3 (http://aymkdn.github.com/SharepointPlus/license.md)
  */
-if (!Array.prototype.indexOf) {
-  /**
-    @ignore
-    @description in IE7- the Array.indexOf doesn't exist!
-  */
-  Array.prototype.indexOf = function (searchElement) {
-    "use strict";
-    if (this == null) {
-      throw new TypeError();
-    }
-    var t = Object(this);
+
+/**
+  @ignore
+  @description Array.indexOf polyfill that won't cause issue with bad Sharepoint code with `for..in`
+*/
+var SPArrayIndexOf = function(arr, searchElement) {
+  "use strict";
+  if (!Array.prototype.indexOf) {
+    var t = Object(arr);
     var len = t.length >>> 0;
     if (len === 0) {
       return -1;
@@ -39,6 +37,8 @@ if (!Array.prototype.indexOf) {
       }
     }
     return -1;
+  } else {
+    return arr.indexOf(searchElement);
   }
 }
 
@@ -52,6 +52,9 @@ if(!String.prototype.trim) {
   };
 }
 
+// add a b64 encoding function
+var _SP_b64_encode = function(a,b,c,d,e,f){b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";c="=";for(d=f='';e&=3,a.charAt(d++)||(b='=',e);f+=b.charAt(63&c>>++e*2))c=c<<8|a.charCodeAt(d-=!e);return f}
+
 // Global
 _SP_APPROVED=0;
 _SP_REJECTED=1;
@@ -59,8 +62,47 @@ _SP_PENDING=2;
 _SP_DRAFT=3;
 _SP_SCHEDULED=4;
 _SP_CACHE_FORMFIELDS=null;
+_SP_CACHE_CONTENTTYPES=[];
+_SP_CACHE_CONTENTTYPE=[];
+__SP_NOTIFY_READY=false;
+__SP_NOTIFY_QUEUE=[];
+__SP_NOTIFY=[];
 
-(function(window) {
+// for each select of lookup with more than 20 values, for IE only
+// see https://bdequaasteniet.wordpress.com/2013/12/03/getting-rid-of-sharepoint-complex-dropdowns/
+// Inspiration for the below code: SPServices
+if (typeof jQuery === "function") {
+  $('.ms-lookuptypeintextbox').each(function() {
+    var $input=$(this);
+    // find the default/selected ID
+    var selectedID=$("#"+$input.attr("optHid")).val();
+    // find the options in the "choices" property from the INPUT
+    var choices = $input.attr("choices").split("|");
+
+    // create a simple dropdown
+    var htmlSelect = '<select id="' + $input.attr("id") + '_Lookup" name="'+$input.attr("name").replace(/\_/g,"$")+'" data-info="This SELECT has been created by SharepointPlus" title="' + $input.attr("title") + '">';
+    for (var i = 0; i < choices.length; i += 2) {
+      htmlSelect += '<option value="' + choices[i+1] + '"' + (choices[i+1] == selectedID ? ' selected="selected"' : '') + '>' + choices[i] + '</option>';
+    }
+    htmlSelect += "</select>";
+
+    // add the new select and hide the other useless elements
+    $input.closest("span").hide().before(htmlSelect);
+
+    // when the select changes then we need to put the selected value...
+    $("#" + $input.attr("id") + "_Lookup").on('change', function() {
+        var $input = $('#'+$(this).attr("id").slice(0,-7));
+        var $optHid = $("#"+$input.attr("optHid"));
+        var val = $(this).val();
+        // set the optHid value with the selected one
+        $optHid.val(val);
+        // and save the selected text to the original input (only if the value is not equal to "0" (None))
+        $input.val($(this).find("option[value='" + (val !== "0" ? val : "") + "']").text());
+    }).trigger("change");
+  })
+}
+
+(function(window, document, undefined) {
   // define a faster way to apply a function to an array
   var fastMap = function(source,fn) {
     var iterations = source.length;
@@ -109,7 +151,7 @@ _SP_CACHE_FORMFIELDS=null;
       
       @return The current version
     */
-   getVersion:function() { return "3.0.4" },
+   getVersion:function() { return "3.12" },
     /**
       @name $SP().list
       @namespace
@@ -222,17 +264,37 @@ _SP_CACHE_FORMFIELDS=null;
       @description Use a WHERE sentence to transform it into a CAML Syntax sentence
       
       @param {String} where The WHERE sentence to change
+      @param {String} [escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
       @example
-      $SP().parse('ContentType="My Content Type" OR Description&lt;>null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
-      // -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;Gt>&lt;FieldRef Name="Description&lt;" />&lt;/Gt>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
+      $SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
+      // -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;IsNotNull>&lt;FieldRef Name="Description" />&lt;/IsNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
+      
+      // available operators :
+      // "&lt;" : less than
+      // "&lt;=" : less than or equal to
+      // ">" : greater than
+      // ">=" : greater than or equal to
+      // "<>" : different
+      // "~=" : this must be only used when comparing to a number that represents the User ID (e.g. 'User ~= 328') - that permits to query a list with too many items but with the User column that is indexed
+      // " AND "
+      // " OR "
+      // " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
+
+      // in the below example, on the "&" will be escaped
+      var bar="Bob & Marley";
+      var foo="O'Conney";
+      $SP().parse('Bar = "'+bar+'" AND Foo = "'+foo+'"'); // -> &lt;And>&lt;Eq>&lt;FieldRef Name="Bar" />&lt;Value Type="Text">Bob &amp; Marley&lt;/Value>&lt;/Eq>&lt;Eq>&lt;FieldRef Name="Foo" />&lt;Value Type="Text">O'Conney&lt;/Value>&lt;/Eq>&lt;/And>
+      $SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney
     */
-    parse:function(q) {
-      var queryString = q.replace(/(\s+)?(=|<=|>=|<>|<|>| LIKE | like )(\s+)?/g,"$2").replace(/""|''/g,"Null").replace(/==/g,"="); // remove unnecessary white space & replace ' 
+    parse:function(q, escapeChar) {
+      var queryString = q.replace(/(\s+)?(=|~=|<=|>=|<>|<|>| LIKE | like )(\s+)?/g,"$2").replace(/""|''/g,"Null").replace(/==/g,"="); // remove unnecessary white space & replace ' 
       var factory = [];
+      escapeChar = (escapeChar===false ? false : true)
       var limitMax = q.length;
       var closeOperator="", closeTag = "", ignoreNextChar=false;
       var lastField = "";
       var parenthesis = {open:0};
+      var lookupId = false;
       for (var i=0; i < queryString.length; i++) {
         var letter = queryString.charAt(i);
         switch (letter) {
@@ -246,7 +308,7 @@ _SP_CACHE_FORMFIELDS=null;
                       // if there is a ' opened then ignore the ) until the next '
                       var charAtI = queryString.charAt(i);
                       if (charAtI=="\\") ignoreNextChar=true; // when we have a backslash \then ignore the next char
-                      else if (!ignoreNextChar && charAtI=="'") openedApos=!openedApos;
+                      else if (!ignoreNextChar && (charAtI=="'" || charAtI=='"')) openedApos=!openedApos;
                       else if (!ignoreNextChar && charAtI==")" && !openedApos) parenthesis.open--;
                       else ignoreNextChar=false;
                     }
@@ -276,6 +338,9 @@ _SP_CACHE_FORMFIELDS=null;
                       closeTag = "</"+(letter==">"?"G":"L")+"t>";
                     }
                     break;
+          case "~": // special operator '~=' for People
+                    if (queryString.charAt(i+1) == "=") lookupId=true
+                    break;
           case "=": factory.push("<Eq>");
                     closeTag = "</Eq>";
                     break;
@@ -299,7 +364,7 @@ _SP_CACHE_FORMFIELDS=null;
                     break;
           case '"': // look now for the next "
           case "'": var apos = letter;
-                    var word = "";
+                    var word = "", other="";
                     while ((letter = queryString.charAt(++i)) != apos && i < limitMax) {
                       if (letter == "\\") letter = queryString.charAt(++i);
                       word+=letter;
@@ -308,14 +373,24 @@ _SP_CACHE_FORMFIELDS=null;
                     factory[lastIndex] += '<FieldRef Name="'+lastField+'" '+(word=="[Me]"?'LookupId="True" ':'')+'/>';
                     lastField = "";
                     var type = "Text"; //(isNaN(word) ? "Text" : "Number"); // check the type
-                    if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})?/.test(word) || word == "[Today]") type="DateTime";
-                    word = this._cleanString(word);
-                    // two special words that are [Today] and [Me]
-                    switch(word) {
-                      case "[Today]": word = '<Today OffsetDays="0" />'; break;
-                      case "[Me]":    word = '<UserID Type="Integer" />'; type = "Integer"; break;
+                    // check automatically if it's a DateTime
+                    if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})?/.test(word)) {
+                      type="DateTime";
+                      // check if we want to evaluate the TIME also
+                      if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})/.test(word)) other=' IncludeTimeValue="TRUE"';
                     }
-                    factory[lastIndex] += '<Value Type="'+type+'">'+word+'</Value>';
+                    if (escapeChar) word = this._cleanString(word);
+                    // special words ([Today] and [Me])
+                    if (word === "[Me]") {
+                       word = '<UserID Type="Integer" />';
+                       type = "Integer";
+                    } else if (word.slice(0,6) == "[Today") {
+                      type="DateTime";
+                      // find the offset if defined
+                      word = '<Today OffsetDays="'+(1*word.slice(6,-1))+'" />';
+                    }
+
+                    factory[lastIndex] += '<Value Type="'+type+'"'+other+'>'+word+'</Value>';
                     factory[lastIndex] += closeTag;
                     closeTag = "";
                     // concat with the first index
@@ -332,9 +407,9 @@ _SP_CACHE_FORMFIELDS=null;
                       var value = letter;
                       while (!isNaN(letter = queryString.charAt(++i)) && i < limitMax) value+=""+letter;
                       lastIndex = factory.length-1;
-                      factory[lastIndex] += '<FieldRef Name="'+lastField+'" />';
+                      factory[lastIndex] += '<FieldRef Name="'+lastField+'"'+(lookupId?' LookupId="True"':'')+' />';
                       lastField = "";
-                      factory[lastIndex] += '<Value Type="Number">'+value.replace(/ $/,"")+'</Value>';
+                      factory[lastIndex] += '<Value Type="'+(lookupId?"Integer":"Number")+'">'+value.replace(/ $/,"")+'</Value>';
                       factory[lastIndex] += closeTag;
                       closeTag = "";
                       // concat with the first index
@@ -430,7 +505,7 @@ _SP_CACHE_FORMFIELDS=null;
     cleanResult:function(str,separator) {
       if (str===null || typeof str==="undefined") return "";
       separator = separator || ";";
-      return (typeof str==="string"?str.replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator).replace(/string;#/,""):str);
+      return (typeof str==="string"?str.replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator).replace(/^(string;|float;)#?/,""):str);
     },
     /**
       @name $SP().list.get
@@ -440,15 +515,20 @@ _SP_CACHE_FORMFIELDS=null;
       @param {Object} [setup] Options (see below)
         @param {String}  [setup.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
         @param {String|Array}  [setup.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
-        @param {Function} [setup.progress] When using an array for the WHERE then you can call the progress function (see the example)
-        @param {Boolean} [setup.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax
+        @param {Function} [setup.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
+        @param {Boolean} [setup.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
+        @param {Boolean} [setup.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
+        @param {Function} [setup.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
         @param {String}  [setup.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
+        @param {Boolean} [setup.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
         @param {String}  [setup.groupby=""] The field used to group by the list result
         @param {String}  [setup.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
         @param {Integer} [setup.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
-        @param {Boolean} [setup.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold
+        @param {Boolean} [setup.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
+        @param {Integer} [setup.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
+        @param {String}  [setup.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
         @param {Boolean} [setup.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
-        @param {Boolean} [setup.dateInUTC=true] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
+        @param {Boolean} [setup.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
         @param {Object} [setup.folderOptions] Permits to read the content of a Document Library (see below)
           @param {String} [setup.folderOptions.path=""] Relative path of the folders we want to explore (by default it's the root of the document library)
           @param {String} [setup.folderOptions.show="FilesAndFolders_InFolder"] Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path
@@ -458,6 +538,11 @@ _SP_CACHE_FORMFIELDS=null;
           @param {String} [setup.join.url='current website'] The website url (if different than the current website)
           @param {String} [setup.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
           @param {Boolean} [setup.join.outer=false] If you want to do an outer join (you can also directly use "outerjoin" instead of "join")
+        @param {Boolean} [setup.calendar=false] If you want to get the events from a Calendar List
+        @param {Object} [setup.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
+          @param {Boolean} [setup.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
+          @param {String|Date} [setup.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String)
+          @param {String} [setup.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
       @param {Function} [result=function(data,error)] A function with the data from the request as first argument, and the second argument is the error message in case something went wrong
       
       @example
@@ -479,24 +564,60 @@ _SP_CACHE_FORMFIELDS=null;
         for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
       });
       
-      // the WHERE clause must be SQL-like, and think to use double slash \\ if you have a simple quote '
+      // the WHERE clause must be SQL-like
       // the field names must be the internal names used by Sharepoint
+      // ATTENTION - note that here we open the WHERE string with simple quotes (') and that should be your default behavior each time you use WHERE
+      var name = "O'Sullivan, James";
+      $SP().list("My List").get({
+        fields:"Title",
+        where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "'+name+'"'
+      }),function getData(row) {
+        for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+      });
+
+      // Same example but this time we write the name directly inside the query...
+      // So make sure to use a single backslash (\) if you have a simple quote ' inside your WHERE with a double quotes (") to open/close the string
+      $SP().list("My List").get({
+        fields:"Title",
+        where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "O\'Sullivan, James"'
+      }),function getData(row) {
+        for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+      });
+      // Or to use a double backslash (\\) if you have a simple quote ' inside your WHERE with a simple quote (') to open/close the string
       $SP().list("My List").get({
         fields:"Title",
         where:"Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = 'O\\'Sullivan, James'"
       }),function getData(row) {
         for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
       });
-      
+
       // also in the WHERE clause you can use '[Me]' to filter by the current user,
-      // or '[Today]' to filter by the current date
       $SP().list("My List").get({
         fields:"Title",
         where:"Author = '[Me]'"
       },function getData(row) {
         console.log(row[0].getAttribute("Title"));
       });
+
+      // also in the WHERE clause you can use '[Today]' or '[Today-X]' with 'X' a number,
+      // Here it will return the records done yesterday
+      $SP().list("My List").get({
+        fields:"Title",
+        where:"Created = '[Today-1]'"
+      },function getData(row) {
+        console.log(row[0].getAttribute("Title"));
+      });
       
+      // Since 3.0.8, if you do a WHERE on a Date with the Time included, then it will compare with the tim
+      // see http://blogs.syrinx.com/blogs/sharepoint/archive/2008/08/05/caml-queries-with-dates.aspx
+      // here it will only show the items created at 2PM exactly -- if you want to check only the today, then use "Created = '2014-03-12'"
+      $SP().list("My List").get({
+        fields:"Title",
+        where:"Created = '2014-03-12 14:00:00'"
+      },function getData(row) {
+        console.log(row[0].getAttribute("Title"));
+      });
+
       // We have a list called "My List" with a view already set that is called "Marketing View" with some FIELDS and a WHERE clause
       // so the function will grab the view information and will get the data from the list with "Author = '[Me]'" and adding the view's WHERE clause too
       $SP().list("My List","http://my.sharepoint.com/my/site/").get({
@@ -507,8 +628,29 @@ _SP_CACHE_FORMFIELDS=null;
       });
 
       // use the paging option for the large list to avoid the message "the attempted operation is prohibited because it exceeds the list view threshold enforced by the administrator"
-      $SP().list("My List").get({fields:"ID,Title",rowlimit:5000,paging:true}, function(data) {
+      // ATTENTION: if you use the WHERE option then it could return the "view threshold" error message because the packet from the WHERE is too big and SharePoint is too stupid...
+      $SP().list("My List").get({
+        fields:"ID,Title",
+        rowlimit:5000,
+        paging:true,
+        progress:function progress(nbItemsLoaded) {
+          // for each new page this function will be called
+          console.log("It's still loading... already "+nbItemsLoaded+" items have been loaded!");
+        }
+      }, function(data) {
         console.log(data.length); // -> 23587
+      })
+      // add the `page` option to stop after a number of requests/pages
+      // for example you only want the last record from a list that has more than 5,000 items
+      $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:1,paging:true,page:1}, function(data) {
+        console.log("last ID : "+data[0].getAttribute("ID"));
+      })
+      // use `listItemCollectionPositionNext` to start from this index
+      $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1}, function(data, nextPageIndex) {
+        // get the next block
+        this.get{fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:nextPageIndex}, function(data, nextPageIndex) {
+          // here we have the 2nd block of data into `data`
+        })
       })
       
       // We can also find the files from a Document Shared Library
@@ -587,10 +729,19 @@ _SP_CACHE_FORMFIELDS=null;
         fields:"Title,Score",
         where:query,
         progress:function progress(current,max) {
+          // when we use an array for the WHERE clause we are able to provide `current` and `max`
           console.log("Progress: "+current+" / "+max);
         }
       },function getData(data) {
         console.log(data.length); // -> 6,523
+      });
+      // also regarding the throttling limit, you can query a list on a user column in using the User ID
+      // For example if John Doe is recorded as "328;#Doe, John" then you'll have to use the special operator "~="
+      $SP().list("Sessions").get({
+        fields:"Title",
+        where:'User ~= 328"
+      },function getData(data) {
+        console.log(data.length);
       });
 
       // if you want to list only the files visible into a folder for a Document Library
@@ -609,6 +760,53 @@ _SP_CACHE_FORMFIELDS=null;
           show:"FilesAndFolders_Recursive"
         }
       });
+
+      // How to retrieve the events from a Calendar List
+      // NOTE -- when "calendar:true" we automatically get some fields: "Title", "EventDate" -- the Start Date --, "EndDate", "RecurrenceData", Duration", fAllDayEvent", "fRecurrence", "ID"
+      $SP().list("My Calendar").get({
+        fields:"Description",
+        calendar:true,
+        calendarOptions:{
+          referenceDate:new Date(2012,4,4),
+          range: "Week"
+        }
+        where:"Category = 'Yellow'"
+      }, function(data) {
+        var events=[];
+        for (var i=0; i&lt;data.length; i++) {
+          // several information are available -- see below
+          events.push({
+            Title:         data[i].getAttribute("Title"),
+            StartDateTime: data[i].getAttribute("EventDate"), // you can use $SP().toDate() to have a JS Date
+            EndDateTime:   data[i].getAttribute("EndDate"), // you can use $SP().toDate() to have a JS Date
+            Recurrence:    (data[i].getAttribute("fRecurrence") == 1 ? true : false),
+            AllDayEvent:   (data[i].getAttribute("fAllDayEvent") == 1 ? true : false),
+            RecurrenceEnd: (data[i].getAttribute("RecurrenceData")||"").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1"), // see the NOTE below
+            ID:            data[i].getAttribute("ID"), // the ID for the recurrence events is special but can be also passed to "Display.aspx?ID="
+            Duration:      1*data[i].getAttribute("Duration") // Duration is in SECONDS
+          })
+          // NOTE: with data[i].getAttribute("RecurrenceData") you'll find more info about the recurrence (like the end date for the serie, and much more),
+          // but because there are a lot of scenario, I won't handle the different cases.
+          // e.g. for a daily recurrence you can find the end date of the serie with: data[i].getAttribute("RecurrenceData").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1")
+          // --> it will return a SP Date
+        }
+      })
+
+      // You can use `useIndexForOrderBy:true` to override the list view threshold -- see https://spservices.codeplex.com/discussions/280642
+      // To make it to work, you need :
+      // 1) to have "ID > 0 AND Another_Index_Column_Filtered" in the WHERE Clause (so at least two filters), and then we can add some other WHERE (even the not indexed columns)
+      // 2) To use `orderby`, with an indexed column
+      // 3) To use `useIndexForOrderBy:true`
+      // see the below example with Trainer an indexed column, and Equipment a column not indexed
+      // NOTE: you need to test your WHERE to see if it works or not, because it's vary a lot depending of the kind of WHERE clause you'll use
+      $SP().list("Calendar",'http://intranet.dell.com/services/Educate/Toolbox/scheduling_tool/').get({
+        fields:"Trainer",
+        where:'ID > 0 AND Trainer <> "" AND Equipment LIKE "Box"',
+        orderby:'Trainer',
+        useIndexForOrderBy:true
+      }, function(d) {
+        console.log(d.length)
+      })
     */
     get:function(setup, fct) {
       // check if we need to queue it
@@ -621,22 +819,35 @@ _SP_CACHE_FORMFIELDS=null;
       if (this.url == undefined) throw "Error 'get': not able to find the URL!"; // we cannot determine the url
       setup.fields    = setup.fields || "";
       setup.where     = setup.where || "";
+      setup.whereFct  = setup.whereFct || function(w) { return w };
       setup.orderby   = setup.orderby || "";
+      setup.useIndexForOrderBy = (setup.useIndexForOrderBy===true ? true : false);
       setup.groupby   = setup.groupby || "";
       setup.rowlimit  = setup.rowlimit || 0;
+      setup.whereEscapeChar= (setup.whereEscapeChar===false ? false : true);
       setup.paging    = (setup.paging===true ? true : false);
+      setup.page      = (setup.paging===false || isNaN(setup.page) ? 5000 : setup.page);
       if (setup.paging && setup.rowlimit === 0) setup.rowlimit = 5000; // if rowlimit is not defined, we set it to 5000 by default
-      setup.expandUserField = (setup.expandUserField===true?"True":"False");
+      setup.expandUserField = (setup.expandUserField===true || setup.expandUserField==="True"?"True":"False");
       setup.dateInUTC = (setup.dateInUTC===true?"True":"False");
       setup.folderOptions = setup.folderOptions || null;
       setup.view      = setup.view || "";
+      setup.calendar  = (setup.calendar===true ? true : false);
+      if (setup.calendar===true) {
+        setup.calendarOptions = setup.calendarOptions || {};
+        setup.calendarOptions.referenceDate = setup.calendarOptions.referenceDate || new Date();
+        if (typeof setup.calendarOptions.referenceDate !== "string") setup.calendarOptions.referenceDate=this.toSPDate(setup.calendarOptions.referenceDate)
+        setup.calendarOptions.splitRecurrence = (setup.calendarOptions.splitRecurrence===false ? "FALSE" : "TRUE");
+        setup.calendarOptions.range = setup.calendarOptions.range || "Month";
+      }
       // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
       setup.results = setup.results || []; // internal use when there is a paging
-      setup.ListItemCollectionPositionNext = setup.ListItemCollectionPositionNext || ""; // internal use when there is paging
+      setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
       
       // if setup.where is an array, then it means we want to do several requests
       // so we keep the first WHERE
       if (typeof setup.where === "object") {
+        setup.where = setup.where.slice(0); // clone the original array
         if (setup.originalWhere==undefined) setup.originalWhere = setup.where.slice(0);
         setup.nextWhere = setup.where.slice(1);
         setup.where = setup.where.shift();
@@ -649,30 +860,30 @@ _SP_CACHE_FORMFIELDS=null;
 
       // if view is defined and is not a GUID, then we need to find the view ID
       if (setup.view !== "") {
-        if (setup.view.charAt(0)!=="{") {
-          var _this=this;
-          // retrieve the View ID based on its name
-          // and find the view details
-          _this.view(setup.view,function(data,viewID) {
-            setup.view=viewID;
-            var where = (setup.whereCAML ? setup.where : _this.parse(setup.where));
-            where += data.whereCAML;
-            if (setup.where !== "" && data.whereCAML !== "") where = "<And>" + where + "</And>";
-            setup.where=where;
-            setup.fields += (setup.fields===""?"":",") + data.fields.join(",");
-            setup.orderby += (setup.orderby===""?"":",") + data.orderby;
-            setup.whereCAML=true;
-            setup.useOWS=true;
-            delete setup.view;
-            return _this.get.call(_this,setup,fct);
-          });
-          return this;
-        }
-
-        if (setup.whereCAML!==true) {
-          setup.where = this.parse(setup.where);
+        var _this=this;
+        // retrieve the View ID based on its name
+        // and find the view details
+        _this.view(setup.view,function(data,viewID) {
+          setup.view=viewID;
+          setup.fields 
+          var where = (setup.whereCAML ? setup.where : _this.parse(setup.where));
+          // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
+          var mtchDateRanges = data.whereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
+          if (mtchDateRanges && mtchDateRanges.length === 3) data.whereCAML = '<And>'+mtchDateRanges[2]+mtchDateRanges[1]+'</And>'
+          where += data.whereCAML;
+          if (setup.where !== "" && data.whereCAML !== "") where = "<And>" + where + "</And>";
+          setup.where=where;
+          setup.fields += (setup.fields===""?"":",") + data.fields.join(",");
+          setup.orderby += (setup.orderby===""?"":",") + data.orderby;
           setup.whereCAML=true;
-        }
+          setup.useOWS=true;
+          // disable the calendar option
+          setup.calendarViaView=setup.calendar;
+          setup.calendar=false;
+          delete setup.view;
+          return _this.get.call(_this,setup,fct);
+        });
+        return this;
       }
       
       // if we have [Me]/[Today] in the WHERE, or we want to use the GROUPBY,
@@ -705,7 +916,8 @@ _SP_CACHE_FORMFIELDS=null;
           }
         }
       }
-      // LookupValue="True"
+      // if calendar:true and no orderby, then we order by the EventDate
+      if ((setup.calendar===true||setup.calendarViaView===true) && orderby==="") orderby = '<FieldRef Name="EventDate" Ascending="ASC" />'
       
       // what about groupby ?
       var groupby="";
@@ -713,6 +925,12 @@ _SP_CACHE_FORMFIELDS=null;
         var gFields = setup.groupby.split(",");
         for (i=0; i<gFields.length; i++)
           groupby += '<FieldRef Name="'+gFields[i]+'" />';
+      }
+
+      // when it's a calendar we want to retrieve some fields by default
+      if (setup.calendar===true || setup.calendarViaView===true) {
+        var tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID"];
+        for (i=0; i<tmpFields.length; i++) fields += '<FieldRef Name="'+tmpFields[i]+'" />';
       }
       
       // forge the parameters
@@ -722,7 +940,7 @@ _SP_CACHE_FORMFIELDS=null;
       // if no queryOptions provided then we set the default ones
       if (setup.queryOptions === undefined) {
         setup._queryOptions = "<DateInUtc>"+setup.dateInUTC+"</DateInUtc>"
-                           + "<Paging ListItemCollectionPositionNext=\""+setup.ListItemCollectionPositionNext+"\"></Paging>"
+                           + "<Paging ListItemCollectionPositionNext=\""+setup.listItemCollectionPositionNext.replace(/&/g,"&amp;")+"\"></Paging>"
                            + "<IncludeAttachmentUrls>True</IncludeAttachmentUrls>"
                            + (fields==="" ? "" : "<IncludeMandatoryColumns>False</IncludeMandatoryColumns>")
                            + "<ExpandUserField>"+setup.expandUserField+"</ExpandUserField>";
@@ -737,11 +955,33 @@ _SP_CACHE_FORMFIELDS=null;
             default: viewAttr="Recursive"
           }
           setup._queryOptions += "<ViewAttributes Scope=\""+viewAttr+"\"></ViewAttributes>"
-          if (setup.folderOptions.path) setup.queryOptions += "<Folder>"+this.url + this.listID + '/' + setup.folderOptions.path+"</Folder>"
+          if (setup.folderOptions.path) setup._queryOptions += "<Folder>"+this.url + '/' + this.listID + '/' + setup.folderOptions.path+"</Folder>"
         } else
           setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>"
       } else setup._queryOptions = setup.queryOptions
+      if (setup.calendarOptions) {
+        setup._queryOptions += "<CalendarDate>" + setup.calendarOptions.referenceDate + "</CalendarDate>"
+                            +  "<RecurrencePatternXMLVersion>v3</RecurrencePatternXMLVersion>"
+                            +  "<ExpandRecurrence>"+setup.calendarOptions.splitRecurrence+"</ExpandRecurrence>";
+      }
 
+      // what about the Where ?
+      var where="";
+      if (setup.where !== "") {
+        if (setup.whereCAML) where=setup.where;
+        else where=this.parse(setup.where);
+      }
+      if (setup.calendar===true) {
+        var whereDateRanges = "<DateRangesOverlap>"
+                            + "<FieldRef Name='EventDate' />"
+                            + "<FieldRef Name='EndDate' />"
+                            + "<FieldRef Name='RecurrenceID' />"
+                            + "<Value Type='DateTime'><" + setup.calendarOptions.range + " /></Value>" /* there is a property called IncludeTimeValue="TRUE" */
+                            + "</DateRangesOverlap>"
+        if (where !== "") where = "<And>" + where + whereDateRanges + "</And>";
+        else where = whereDateRanges;
+      }
+      where = setup.whereFct(where);
       var _this=this;
       if (useOWS) {
         body = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
@@ -754,9 +994,9 @@ _SP_CACHE_FORMFIELDS=null;
               + "<viewName>"+setup.view+"</viewName>"
               + "<query>"
               + "<Query>"
-              + ( setup.where!="" ? "<Where>"+ (setup.whereCAML?setup.where:this.parse(setup.where)) +"</Where>" : "" )
+              + ( where!="" ? "<Where>"+ where +"</Where>" : "" )
               + ( groupby!="" ? "<GroupBy>"+groupby+"</GroupBy>" : "" )
-              + ( orderby!="" ? "<OrderBy>"+orderby+"</OrderBy>" : "" )
+              + ( orderby!="" ? "<OrderBy"+(setup.useIndexForOrderBy ? " UseIndexForOrderBy='TRUE' Override='TRUE'": "")+">"+orderby+"</OrderBy>" : "" )
               + "</Query>"
               + "</query>"
               + "<viewFields>"
@@ -884,7 +1124,7 @@ _SP_CACHE_FORMFIELDS=null;
                              }
                              delete setup.joinData;
                              //call the joined list to grab data and process them
-                             var sp=$SP().list(setup.join.list,setup.join.url||_this.url);
+                             var sp=$SP().list(setup.join.list,setup.join.url||_this.url), nextPage;
                              setup.join.joinData=joinData;
                              setup.join.joinIndex=joinIndex;
                              sp.get(setup.join,fct);
@@ -897,20 +1137,28 @@ _SP_CACHE_FORMFIELDS=null;
                               if (typeof setup.originalWhere !== "string")
                                 setup.progress(setup.originalWhere.length-setup.nextWhere.length,setup.originalWhere.length);
                               
-                              // if we have a paging then we need to do the request again
+                              // if paging we want to return ListItemCollectionPositionNext
                               if (setup.paging) {
-                                // check if we need to go to another request
                                 var collection = data.getElementsByTagName("rs:data")[0];
-                                if (collection.length==0) collection=data.getElementsByTagName("data"); // for Chrome
-                                if (setup.results.length===0) setup.results=aReturn
-                                var nextPage = collection.getAttribute("ListItemCollectionPositionNext");
+                                if (typeof collection === "undefined" || collection.length==0) {
+                                  collection=data.getElementsByTagName("data")[0]; // for Chrome                              
+                                }
+                                if (collection) nextPage = collection.getAttribute("ListItemCollectionPositionNext");
+                              }
+                              
+                              // if we have a paging then we need to do the request again
+                              if (setup.paging && --setup.page > 0) {
+                                // check if we need to go to another request
+                                if (setup.results.length===0) setup.results=aReturn;
+                                // notify that we keep loading
+                                setup.progress(setup.results.length);
                                 if (nextPage) {
                                   // we need more calls
-                                  setup.ListItemCollectionPositionNext=_this._cleanString(collection.getAttribute("ListItemCollectionPositionNext"));
+                                  setup.listItemCollectionPositionNext=_this._cleanString(nextPage);
                                   _this.get(setup,fct)
                                 } else {
                                   // it means we're done, no more call
-                                  if (typeof fct == "function") fct.call(_this,setup.results)
+                                  if (typeof fct == "function") fct.call(_this,setup.results, nextPage)
                                 }
                               } else if (setup.nextWhere.length>0) { // if we need to so some more request
                                 if (setup.results.length===0) setup.results=aReturn
@@ -919,7 +1167,7 @@ _SP_CACHE_FORMFIELDS=null;
                               } else if (typeof fct == "function") {
                                 // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
                                 setup.where = setup.originalWhere;
-                                fct.call(_this,(setup.results.length>0?setup.results:aReturn));
+                                fct.call(_this,(setup.results.length>0?setup.results:aReturn), nextPage);
                               }
                             }
                       },
@@ -1201,6 +1449,8 @@ _SP_CACHE_FORMFIELDS=null;
       $SP().list("My List").getAttachment("98", function(data) {
         for (var i=0; i&lt;data.length; i++) console.log(data[i]);
       });
+
+      // you can also use $SP().list().get() using the "Attachments" field
     */
     getAttachment:function(itemID, fct, passed) {
       // check if we need to queue it
@@ -1248,6 +1498,218 @@ _SP_CACHE_FORMFIELDS=null;
                         // we have more attachments to find
                         _this.getAttachment(itemID,fct,passed)
                       }
+                   }
+                 });
+      return this;
+    },
+    /**
+      @name $SP().list.getContentTypes
+      @function
+      @description Get the Content Types for the list (returns Name, ID and Description)
+      
+      @param {Object} [options]
+        @param {Boolean} [options.cache=true] Do we want to use the cache on recall for this function?
+      @param {Function} [function()] A function with the data from the request as first argument
+      
+      @example
+      $SP().list("List Name").getContentTypes(function(contentTypes) {
+        for (var i=0; i&lt;contentTypes.length; i++) console.log(contentTypes[i].Name, contentTypes[i].ID, contentTypes[i].Description);
+      });
+    */
+    getContentTypes:function(options, fct) {
+      // check if we need to queue it
+      if (this.needQueue) { return this._addInQueue(arguments) }
+      if (this.listID == undefined) throw "Error 'getContentTypes': you have to define the list ID";
+      if (arguments.length === 1 && typeof options === "function") return this.getContentTypes(null, options);
+
+      // default values
+      if (this.url == undefined) throw "Error 'getContentTypes': not able to find the URL!"; // we cannot determine the url
+      
+      // check the Cache
+      if (!options) options={cache:true};
+      if (options.cache) {
+        for (var i=0; i<_SP_CACHE_CONTENTTYPES.length; i++) {
+          if (_SP_CACHE_CONTENTTYPES[i].list === this.listID && _SP_CACHE_CONTENTTYPES[i].url === this.url) {
+            if (typeof fct === "function") fct.call(this,_SP_CACHE_CONTENTTYPES[i].contentTypes);
+            return this;
+          }
+        }
+      }
+
+      // forge the parameters
+      var body = '<?xml version="1.0" encoding="utf-8"?>';
+      body += '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">';
+      body += '  <soap:Body>';
+      body += '    <GetListContentTypes xmlns="http://schemas.microsoft.com/sharepoint/soap/">';
+      body += '      <listName>'+this.listID+'</listName>';
+      body += '    </GetListContentTypes>';
+      body += '  </soap:Body>';
+      body += '</soap:Envelope>';
+      
+      // do the request
+      var _this=this;
+      var url = this.url + "/_vti_bin/lists.asmx";
+      var aReturn = [];
+      jQuery.ajax({type: "POST",
+                   cache: false,
+                   async: true,
+                   url: url,
+                   data: body,
+                   contentType: "text/xml; charset=utf-8",
+                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListContentTypes'); },
+                   dataType: "xml",
+                   success:function(data) {
+                     var arr = data.getElementsByTagName('ContentType');
+                     var ID;
+                     for (var i=0; i < arr.length; i++) {
+                       ID = arr[i].getAttribute("ID");
+                       if (ID) {
+                         aReturn.push({
+                           "ID":ID,
+                           "Name":arr[i].getAttribute("Name"),
+                           "Description":arr[i].getAttribute("Description")
+                         });
+                       }
+                     }
+
+                     // we cache the result
+                     _SP_CACHE_CONTENTTYPES.push({"list":_this.listID, "url":_this.url, "contentTypes":aReturn});
+
+                     if (typeof fct === "function") fct.call(_this,aReturn);
+                   }
+                 });
+      return this;
+    },
+    /**
+      @name $SP().list.getContentTypeInfo
+      @function
+      @description Get the Content Type Info for a Content Type into the list
+      
+      @param {String} contentType The Name or the ID (from $SP().list.getContentTypes) of the Content Type
+      @param {Object} [options]
+        @param {Boolean} [options.cache=true] Do we use the cache?
+      @param {Function} [function()] A function with the data from the request as first argument
+      
+      @example
+      $SP().list("List Name").getContentTypeInfo("Item", function(fields) {
+        for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+      });
+
+      $SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0F9001", function(fields) {
+        for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+      });
+    */
+    getContentTypeInfo:function(contentType, options, fct) {
+      // check if we need to queue it
+      if (this.needQueue) { return this._addInQueue(arguments) }
+      if (this.listID == undefined) throw "Error 'getContentTypeInfo': you have to define the list ID";
+      if (arguments.length >= 1 && typeof contentType !== "string") throw "Error 'getContentTypeInfo': you have to provide the Content Type Name/ID";
+      if (arguments.length === 2 && typeof options === "function") return this.getContentTypeInfo(contentType, null, options);
+      // default values
+      if (this.url == undefined) throw "Error 'getContentTypeInfo': not able to find the URL!"; // we cannot determine the url
+      
+      if (!options) options={cache:true}
+
+      // look at the cache
+      if (options.cache) {
+        for (var i=0; i<_SP_CACHE_CONTENTTYPE.length; i++) {
+          if (_SP_CACHE_CONTENTTYPE[i].list === this.listID && _SP_CACHE_CONTENTTYPE[i].url === this.url && _SP_CACHE_CONTENTTYPE[i].contentType === contentType) {
+            if (typeof fct === "function") fct.call(this,_SP_CACHE_CONTENTTYPE[i].info);
+            return this;
+          }
+        }
+      }
+
+      // do we have a Content Type Name or ID ?
+      if (contentType.slice(0,2) !== "0x") {
+        // it's a Name so get the related ID using $SP.list.getContentTypes
+        this.getContentTypes(options, function(types) {
+          var found=false;
+          for (var i=types.length; i--;) {
+            if (types[i]["Name"]===contentType) {
+              this.getContentTypeInfo(types[i]["ID"], options, fct);
+              found=true;
+              break;
+            }
+          }
+          if (!found) throw "Error 'getContentTypeInfo': not able to find the Content Type called '"+contentType+"' at "+this.url;
+        });
+        return this;
+      }
+
+      // forge the parameters
+      var body = '<?xml version="1.0" encoding="utf-8"?>';
+      body += '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">';
+      body += '  <soap:Body>';
+      body += '    <GetListContentType xmlns="http://schemas.microsoft.com/sharepoint/soap/">';
+      body += '      <listName>'+this.listID+'</listName>';
+      body += '      <contentTypeId>'+contentType+'</contentTypeId>';
+      body += '    </GetListContentType>';
+      body += '  </soap:Body>';
+      body += '</soap:Envelope>';
+      
+      // do the request
+      var _this=this;
+      var url = this.url + "/_vti_bin/lists.asmx";
+      var aReturn = [];
+      jQuery.ajax({type: "POST",
+                   cache: false,
+                   async: true,
+                   url: url,
+                   data: body,
+                   contentType: "text/xml; charset=utf-8",
+                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListContentType'); },
+                   dataType: "xml",
+                   success:function(data) {
+                     var arr = data.getElementsByTagName('Field');
+                     var index = 0, aIndex, attributes, attrName, lenDefault;
+                     for (var i=0; i < arr.length; i++) {
+                       if (arr[i].getAttribute("ID")) {
+                         aReturn[index] = [];
+                         aIndex=aReturn[index];
+                         attributes=arr[i].attributes;
+                         for (var j=attributes.length; j--;) {
+                           attrName=attributes[j].nodeName;
+                           attrValue=attributes[j].nodeValue;
+                           if (attrName==="Type") {
+                             switch (attrValue) {
+                               case "Choice":
+                               case "MultiChoice": {
+                                 aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
+                                 var a=arr[i].getElementsByTagName("CHOICE");
+                                 var r=[];
+                                 for(var k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
+                                 aIndex["Choices"]=r;
+                                 break;
+                               }
+                               case "Lookup":
+                               case "LookupMulti":
+                                 aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
+                                 break;
+                               default:
+                                 aIndex["Choices"] = [];
+                             }
+                           }
+                           aIndex[attrName]= attrValue;
+                         }
+                         
+                         // find the default values
+                         lenDefault=arr[i].getElementsByTagName("Default").length;
+                         if (lenDefault>0) {
+                           nodeDefault=arr[i].getElementsByTagName("Default");
+                           aReturn[index]["DefaultValue"]=[];
+                           for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
+                           if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
+                         } else aReturn[index]["DefaultValue"]=null;
+
+                         index++;
+                       }
+                     }
+                    
+                     // we cache the result
+                     _SP_CACHE_CONTENTTYPE.push({"list":_this.listID, "url":_this.url, "contentType":contentType, "info":aReturn});
+
+                     if (typeof fct == "function") fct.call(_this,aReturn);
                    }
                  });
       return this;
@@ -1384,7 +1846,7 @@ _SP_CACHE_FORMFIELDS=null;
       var savedView = jQuery('body').data('sp-view');
       if (savedView!=undefined) {
         for (var i=savedView.length; i--;) {
-          if (savedView[i].url===this.url && (savedView[i].viewID===viewID || savedView[i].viewName===viewName)) { fct.call(this,savedView[i].data,viewID); return this }
+          if (savedView[i].url===this.url && savedView[i].list===list && (savedView[i].viewID===viewID || savedView[i].viewName===viewName)) { fct.call(this,savedView[i].data,viewID); return this }
         }
       } else savedView=[];
       
@@ -1450,7 +1912,7 @@ _SP_CACHE_FORMFIELDS=null;
                      }
                      
                      // cache the data
-                     savedView.push({url:_this.url,data:aReturn,viewID:viewID,viewName:viewName});
+                     savedView.push({url:_this.url,list:list,data:aReturn,viewID:viewID,viewName:viewName});
                      jQuery('body').data('sp-view',savedView);
                      
                      if (typeof fct == "function") fct.call(_this,aReturn,viewID);
@@ -1461,16 +1923,25 @@ _SP_CACHE_FORMFIELDS=null;
     /**
       @name $SP().list.views
       @function
-      @description Get the views info (ID, Name, Url) for a List
+      @description Get the views info (ID, Name, Url, Node) for a List
       
+      @param {Hash} [options]
+        @param {Boolean} [cache=true] By default the result will be cached for a later use in the page
       @param {Function} [function()] A function with the data from the request as first argument
       
       @example
       $SP().list("My List").views(function(view) {
-        for (var i=0; i&lt;view.length; i++) console.log("View #"+i+": "+view[i]['Name']");
+        for (var i=0; i&lt;view.length; i++) {
+          console.log("View #"+i+": "+view[i]['Name']);
+          // if you want to access to another property, like "Type"
+          console.log("Type: "+view[i]["Node"].getAttribute("Type"));
+        }
       });
+
     */
-    views:function(fct) {
+    views:function(options, fct) {
+      if (typeof options === "function") return this.views({}, options);
+      options.cache = (options.cache === false ? false : true);
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
       if (this.listID == undefined) throw "Error 'views': you have to define the list ID";
@@ -1481,9 +1952,9 @@ _SP_CACHE_FORMFIELDS=null;
             
       // check if we didn't save this information before
       var savedViews = jQuery('body').data('sp-views');
-      if (savedViews!=undefined) {
+      if (savedViews!=undefined && options.cache) {
         for (var i=savedViews.length; i--;) {
-          if (savedViews[i].url==this.url) { fct.call(this,savedViews[i].data); return this }
+          if (savedViews[i].url==this.url && savedViews[i].listID === this.listID) { fct.call(this,savedViews[i].data); return this }
         }
       } else savedViews=[];
       
@@ -1516,11 +1987,14 @@ _SP_CACHE_FORMFIELDS=null;
                       aReturn[i]["ID"] = arr[i].getAttribute("Name");
                       aReturn[i]["Name"] = arr[i].getAttribute("DisplayName");
                       aReturn[i]["Url"] = arr[i].getAttribute("Url");
+                      aReturn[i]["Node"] = arr[i]
                     }
                     
                     // save the data into the DOM for later usage
-                    savedViews.push({url:_this.url,data:aReturn});
-                    jQuery('body').data('sp-views',savedViews);
+                    if (options.cache === true) {
+                      savedViews.push({url:_this.url,listID:this.listID,data:aReturn});
+                      jQuery('body').data('sp-views',savedViews);
+                    }
                     fct.call(_this,aReturn);
                    }
                  });
@@ -1611,11 +2085,14 @@ _SP_CACHE_FORMFIELDS=null;
       @name $SP().list.add
       @function
       @description Add items into a Sharepoint List
-                   note: A Date must be provided as "YYYY-MM-DD hh:mm:ss", or you can use $SP().toSPDate(new Date())
+                   note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
                    note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
                    note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
+                         --> it should also be possible to not pass the value but only the ID, e.g.: "X;#"
                    note: A URL field must be provided as "http://www.website.com, Name"
                    note: A multiple selection must be provided as ";#choice 1;#choice 2;#", or just pass an array as the value and it will do the trick
+                   note: A multiple selection of Lookup must be provided as ";#X;#Choice 1;#Y;#Choice 2;#" (with X the ID for "Choice 1", and "Y" for "Choice 2")
+                         --> it should also be possible to not pass the values but only the ID, e.g.: ";#X;#;#Y;#;#"
                    note: A Yes/No checkbox must be provided as "1" (for TRUE) or "0" (for "False")
                    note: You cannot change the Approval Status when adding, you need to use the $SP().moderate function
       
@@ -1733,9 +2210,11 @@ _SP_CACHE_FORMFIELDS=null;
                        if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") { // success
                          var rows=result[i].getElementsByTagName('z:row');
                          if (rows.length==0) rows=result[i].getElementsByTagName('row'); // for Chrome 'bug'
-                         items[i].ID = rows[0].getAttribute("ows_ID");
-                         passed.push(items[i]);
-                       } else {
+                         if (items[i]) {
+                           items[i].ID = rows[0].getAttribute("ows_ID");
+                           passed.push(items[i]);
+                         }
+                       } else if (items[i]) {
                          items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
                          failed.push(items[i]);
                        }
@@ -1775,7 +2254,7 @@ _SP_CACHE_FORMFIELDS=null;
       $SP().list("My List","http://sharepoint.org/mydir/").update([{ID:5, Title:"Ok"}, {ID: 15, Title:"Good"}]);
                  
       $SP().list("List Name").update({ID:43, Title:"Ok"}, {error:function(items) {
-        for (var i=0; i &lt; items.length; i++) console.log("Error '"+items[i].errorMessage+"' with:"+items[i].Title));
+        for (var i=0; i &lt; items.length; i++) console.log("Error '"+items[i].errorMessage+"' with:"+items[i].Title);
       }});
     */
     update:function(items, setup) {
@@ -1890,9 +2369,9 @@ _SP_CACHE_FORMFIELDS=null;
                      var len=result.length;
                      var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
                      for (var i=0; i < len; i++) {
-                       if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
+                       if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000" && items[i]) // success
                          passed.push(items[i]);
-                       else {
+                       else if (items[i]) {
                          items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
                          failed.push(items[i]);
                        }
@@ -1923,7 +2402,7 @@ _SP_CACHE_FORMFIELDS=null;
 
       @example
       $SP().list("My List").history({ID:1981, Name:"Critical_x0020_Comments"}, function(data) {
-        for (var i=0,len=data.length; i<len; i++) {
+        for (var i=0,len=data.length; i&lt;len; i++) {
           console.log("Date: "+data[i].getAttribute("Modified")); // you can use $SP().toDate() to convert it to a JavaScript Date object
           console.log("Editor: "+data[i].getAttribute("Editor")); // it's the long format type, so the result looks like that "328;#Doe,, John,#DOMAIN\john_doe,#John_Doe@example.com,#,#Doe,, John"
           console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use the field name here
@@ -2155,7 +2634,7 @@ _SP_CACHE_FORMFIELDS=null;
     remove:function(items, setup) {
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
-      
+      var _this=this;      
       // default values
       if (!setup && items.where) { setup=items; items=[]; } // the case when we use the "where"
       setup         = setup || {};
@@ -2172,7 +2651,6 @@ _SP_CACHE_FORMFIELDS=null;
       if (setup.where) {
         // call GET first
         if (itemsLength==1) delete items[0].ID;
-        var _this=this;
         this.get({fields:"ID,FileRef",where:setup.where},function(data) {
           // we need a function to clone the items
           var clone = function(obj){
@@ -2192,7 +2670,7 @@ _SP_CACHE_FORMFIELDS=null;
           delete setup.where;
           _this.remove(aItems,setup);
         });
-        return this;
+        return _this;
       } else if (itemsLength == 0) {
         // nothing to delete
         setup.progress(1,1);
@@ -2291,6 +2769,7 @@ _SP_CACHE_FORMFIELDS=null;
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.error=true] The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)
+        @param {Boolean} [setup.cache=true] Keep a cache of the result
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
       
       @example
@@ -2309,6 +2788,7 @@ _SP_CACHE_FORMFIELDS=null;
       
       // default values
       setup         = setup || {};
+      setup.cache = (setup.cache === false ? false : true);
       if (setup.url == undefined) {
         if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
         else setup.url=this.url;
@@ -2321,10 +2801,12 @@ _SP_CACHE_FORMFIELDS=null;
       // check the cache
       // [ {user:"username", url:"url", data:"the groups"}, ... ]
       var cache=jQuery('body').data("sp-usergroups") || [];
-      for (var i=cache.length; i--;) {
-        if (cache[i].user.toLowerCase() == username && cache[i].url.toLowerCase() == setup.url) {
-          fct.call(this,cache[i].data);
-          return this
+      if (setup.cache) {
+        for (var i=cache.length; i--;) {
+          if (cache[i].user.toLowerCase() == username && cache[i].url.toLowerCase() == setup.url) {
+            fct.call(this,cache[i].data);
+            return this
+          }
         }
       }
 
@@ -2360,16 +2842,44 @@ _SP_CACHE_FORMFIELDS=null;
                      else {
                        // any error ?
                        var error=req.responseXML.getElementsByTagName("errorstring");
-                       if (console) console.error("Error 'usergroups': "+error[0].firstChild.nodeValue);
+                       if (typeof console === "object") console.error("Error 'usergroups': "+error[0].firstChild.nodeValue);
                       }
                    }
                  });
       return this;
     },
     /**
+      @name $SP().workflowStatusToText
+      @function
+      @description Return the text related to a workflow status code
+      
+      @param {String|Number} code This is the code returned by a workflow
+      
+      @example
+      $SP().workflowStatusToText(2); // -> "In Progress"
+     */
+    workflowStatusToText:function(code) {
+      code = code * 1;
+      switch(code) {
+        case 0: return "Not Started";
+        case 1: return "Failed On Start";
+        case 2: return "In Progress";
+        case 3: return "Error Occurred";
+        case 4: return "Stopped By User";
+        case 5: return "Completed";
+        case 6: return "Failed On Start Retrying";
+        case 7: return "Error Occurred Retrying";
+        case 8: return "View Query Overflow";
+        case 15: return "Canceled";
+        case 16: return "Approved";
+        case 17: return "Rejected";
+        default: return "Unknown";
+      }
+    },
+    /**
       @name $SP().list.getWorkflowID
       @function
-      @description Find the WorkflowID for a workflow
+      @description Find the WorkflowID for a workflow, and some other data (fileRef, description, instances, ...)
       
       @param {Object} setup
         @param {Number} setup.ID The item ID that is tied to the workflow
@@ -2413,15 +2923,94 @@ _SP_CACHE_FORMFIELDS=null;
                 dataType: "xml",
                 success:function(data) {
                   // we want to use myElem to change the getAttribute function
+                  var res={},i,row;
                   var rows=data.getElementsByTagName('WorkflowTemplate');
-                  if (rows.length===0) throw "Error 'getWorkflowID': No workflow found for this item";
-                  for (var i=rows.length; i--;) {
-                    if (rows[i].getAttribute("Name") == setup.workflowName) {
-                      setup.after.call(_this, {"fileRef":fileRef, "workflowID":"{"+rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId")+"}"});
-                      return _this
+                  if (rows.length===0) {
+                    // depending of the permissions, we couldn't have the WorkflowTemplate data
+                    // in that case we have to get the workflow ID with another way
+                      var context = SP.ClientContext.get_current();
+                      var lists = context.get_web().get_lists();
+                      var list = lists.getByTitle(_this.listID);
+                      var item = list.getItemById(setup.ID);
+                      var file = item.get_file();
+                      context.load(list);
+                      context.load(item);
+                      var workflows = list.get_workflowAssociations();
+                      context.load(workflows);
+                      context.executeQueryAsync(function() {
+                        var enumerator = workflows.getEnumerator();
+                        while(enumerator.moveNext()) {
+                          var workflow = enumerator.get_current();
+                          if (workflow.get_name() === setup.workflowName) {
+                            res = {
+                              "fileRef":fileRef,
+                              "description":workflow.get_description(),
+                              "workflowID":"{"+workflow.get_id().toString()+"}",
+                              "instances":[]
+                            }
+                            break;
+                          }
+                        }
+                        setup.after.call(_this, res);
+                      },
+                      function() {
+                        throw "Error 'getWorkflowID': Problem while dealing with SP.ClientContext.get_current()";
+                      });
+                  } else {
+                    for (i=rows.length; i--;) {
+                      if (rows[i].getAttribute("Name") == setup.workflowName) {
+                        res = {
+                          "fileRef":fileRef,
+                          "description":rows[i].getAttribute("Description"),
+                          "workflowID":"{"+rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId")+"}",
+                          "instances":[]
+                        };
+                      }
                     }
+                    if (!res.fileRef) {
+                      throw "Error 'getWorkflowID': it seems the requested workflow ('"+setup.workflowName+"') doesn't exist!";
+                    }
+                    rows=data.getElementsByTagName("Workflow");
+                    for (i=0; i<rows.length; i++) {
+                      row=rows[i];
+                      res.instances.push({
+                        "StatusPageUrl":row.getAttribute("StatusPageUrl"),
+                        "Id":row.getAttribute("Id"),
+                        "TemplateId":row.getAttribute("TemplateId"),
+                        "ListId":row.getAttribute("ListId"),
+                        "SiteId":row.getAttribute("SiteId"),
+                        "WebId":row.getAttribute("WebId"),
+                        "ItemId":row.getAttribute("ItemId"),
+                        "ItemGUID":row.getAttribute("ItemGUID"),
+                        "TaskListId":row.getAttribute("TaskListId"),
+                        "AdminTaskListId":row.getAttribute("AdminTaskListId"),
+                        "Author":row.getAttribute("Author"),
+                        "Modified":row.getAttribute("Modified"),
+                        "Created":row.getAttribute("Created"),
+                        "StatusVersion":row.getAttribute("StatusVersion"),
+                        "Status1":{"code":row.getAttribute("Status1"), "text":_this.workflowStatusToText(row.getAttribute("Status1"))},
+                        "Status2":{"code":row.getAttribute("Status2"), "text":_this.workflowStatusToText(row.getAttribute("Status2"))},
+                        "Status3":{"code":row.getAttribute("Status3"), "text":_this.workflowStatusToText(row.getAttribute("Status3"))},
+                        "Status4":{"code":row.getAttribute("Status4"), "text":_this.workflowStatusToText(row.getAttribute("Status4"))},
+                        "Status5":{"code":row.getAttribute("Status5"), "text":_this.workflowStatusToText(row.getAttribute("Status5"))},
+                        "Status6":{"code":row.getAttribute("Status6"), "text":_this.workflowStatusToText(row.getAttribute("Status6"))},
+                        "Status7":{"code":row.getAttribute("Status7"), "text":_this.workflowStatusToText(row.getAttribute("Status7"))},
+                        "Status8":{"code":row.getAttribute("Status8"), "text":_this.workflowStatusToText(row.getAttribute("Status8"))},
+                        "Status9":{"code":row.getAttribute("Status9"), "text":_this.workflowStatusToText(row.getAttribute("Status9"))},
+                        "Status10":{"code":row.getAttribute("Status10"), "text":_this.workflowStatusToText(row.getAttribute("Status10"))},
+                        "TextStatus1":row.getAttribute("TextStatus1"),
+                        "TextStatus2":row.getAttribute("TextStatus2"),
+                        "TextStatus3":row.getAttribute("TextStatus3"),
+                        "TextStatus4":row.getAttribute("TextStatus4"),
+                        "TextStatus5":row.getAttribute("TextStatus5"),
+                        "Modifications":row.getAttribute("Modifications"),
+                        "InternalState":row.getAttribute("InternalState"),
+                        "ProcessingId":row.getAttribute("ProcessingId")
+                      });
+                    }
+                    setup.after.call(_this, res);
                   }
-                  setup.after.call(_this, "Error 'getWorkflowID': impossible to find this workflow name!");
+                  return _this
                 },
                 error:function(jqXHR, textStatus, errorThrown) {
                   throw "Error 'getWorkflowID': Something went wrong with the request over the Workflow Web Service..."
@@ -2444,8 +3033,11 @@ _SP_CACHE_FORMFIELDS=null;
         @param {String} [setup.workflowID] Optional: you can provide the workflowID to avoid calling the $SP().list().getWorkflowID()
       
       @example
-      $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function() {
-        alert("Workflow done!");
+      $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function(error) {
+        if (!error)
+          alert("Workflow done!");
+        else 
+          alert("Error: "+error);
       }});
     **/
     startWorkflow:function(setup) {
@@ -2503,7 +3095,7 @@ _SP_CACHE_FORMFIELDS=null;
             setup.after.call(_this)
           },
           error:function(jqXHR, textStatus, errorThrown) {
-            setup.after.call(_this)
+            setup.after.call(_this, errorThrown)
           }
         });
       }
@@ -2517,6 +3109,7 @@ _SP_CACHE_FORMFIELDS=null;
       @param {String} username The username with or without the domain (don't forget to use a double \ like "mydomain\\john_doe")
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
+        @param {Boolean} [setup.cache=true] Cache the response from the server
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
       
       @example
@@ -2544,13 +3137,16 @@ _SP_CACHE_FORMFIELDS=null;
       
       username = username.toLowerCase();
       setup.url=setup.url.toLowerCase();
+      setup.cache = (setup.cache === false ? false : true)
       // check the cache
       // [ {user:"username", url:"url", data:"the distribution lists"}, ... ]
       var cache=jQuery('body').data("sp-distributionLists") || [];
-      for (var i=cache.length; i--;) {
-        if (cache[i].user === username && cache[i].url === setup.url) {
-          fct.call(this,cache[i].data);
-          return this
+      if (setup.cache) {
+        for (var i=cache.length; i--;) {
+          if (cache[i].user === username && cache[i].url === setup.url) {
+            fct.call(this,cache[i].data);
+            return this
+          }
         }
       }
 
@@ -2583,10 +3179,10 @@ _SP_CACHE_FORMFIELDS=null;
                      fct.call(_this,aResult);
                    },
                    error:function(req, textStatus, errorThrown) {
-                     //fct.call(_this,[]);
+                     fct.call(_this,[]);
                      // any error ?
-                     var error=req.responseXML.getElementsByTagName("errorstring");
-                     if (console) console.error("Error 'distributionLists': "+error[0].firstChild.nodeValue);
+                     //var error=req.responseXML.getElementsByTagName("errorstring");
+                     //if (typeof console === "object") console.error("Error 'distributionLists': "+error[0].firstChild.nodeValue);
                    }
                  });
       return this;
@@ -2600,6 +3196,7 @@ _SP_CACHE_FORMFIELDS=null;
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.error=true] The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)
+        @param {Boolean} [setup.cache=true] By default the function will cache the group members (so if you call several times it will use the cache)
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
       
       @example
@@ -2618,6 +3215,7 @@ _SP_CACHE_FORMFIELDS=null;
       
       // default values
       setup         = setup || {};
+      setup.cache = (setup.cache === undefined ? true : setup.cache);
       if (setup.url == undefined) {
         if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
         else setup.url=this.url;
@@ -2629,11 +3227,14 @@ _SP_CACHE_FORMFIELDS=null;
       setup.url=setup.url.toLowerCase();
       // check the cache
       // [ {user:"username", url:"url", data:"the distribution lists"}, ... ]
-      var cache=jQuery('body').data("sp-groupMembers") || [];
-      for (var i=cache.length; i--;) {
-        if (cache[i].group === groupname && cache[i].url === setup.url) {
-          fct.call(this,cache[i].data);
-          return this
+      var cache=[];
+      if (setup.cache) {
+        cache=jQuery('body').data("sp-groupMembers") || [];
+        for (var i=cache.length; i--;) {
+          if (cache[i].group === groupname && cache[i].url === setup.url) {
+            fct.call(this,cache[i].data);
+            return this
+          }
         }
       }
 
@@ -2668,7 +3269,7 @@ _SP_CACHE_FORMFIELDS=null;
                      else {
                        // any error ?
                        var error=req.responseXML.getElementsByTagName("errorstring");
-                       if (console) console.error("Error 'groupMembers': "+error[0].firstChild.nodeValue);
+                       if (typeof console === "object") console.error("Error 'groupMembers': "+error[0].firstChild.nodeValue);
                       }
                    }
                });
@@ -2683,6 +3284,7 @@ _SP_CACHE_FORMFIELDS=null;
         @param {String} setup.user Name of the user with (don't forget to use a double \ in the username)
         @param {String} setup.group Name of the group
         @param {String} [setup.url='current website'] The website url
+        @param {Boolean} [setup.cache=true] Cache the response from the server
       @param {Function} [result] Return TRUE if the user is a member of the group, FALSE if not.
       
       @example
@@ -2693,6 +3295,7 @@ _SP_CACHE_FORMFIELDS=null;
     isMember:function(setup, fct) {
       // default values
       setup         = setup || {};
+      setup.cache = (setup.cache === false ? false : true)
       if (setup.url == undefined) {
         if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
         else setup.url=this.url;
@@ -2703,22 +3306,22 @@ _SP_CACHE_FORMFIELDS=null;
       
       setup.group = setup.group.toLowerCase();
       // first check with usergroups()
-      this.usergroups(setup.user,{error:false},function(groups) {
+      this.usergroups(setup.user,{cache:setup.cache,error:false},function(groups) {
         for (var i=groups.length; i--;) {
           if (groups[i].toLowerCase() === setup.group) { fct.call(this,true); return this }
         }
-        // if we're jhere then it means we need to keep investigating
+        // if we're there then it means we need to keep investigating
         // look at the members of the group
-        this.groupMembers(setup.group,{error:false},function(m) {
+        this.groupMembers(setup.group,{cache:setup.cache,error:false},function(m) {
           var members=[];
           for (var i=m.length; i--;) members.push(m[i].Name.toLowerCase())
           // and search if our user is part of the members (like a distribution list)
-          this.distributionLists(setup.user, function(distrib) {
+          this.distributionLists(setup.user, {cache:setup.cache}, function(distrib) {
             for (var i=distrib.length; i--;) {
-              if (members.indexOf(distrib[i].DisplayName.toLowerCase()) > -1) { fct.call(this,true); return this }
+              if (SPArrayIndexOf(members, distrib[i].DisplayName.toLowerCase()) > -1) { fct.call(this,true); return this }
             }
 
-            // if we are herit means we found nothing
+            // if we are here it means we found nothing
             fct.call(this,false);
             return this
           });
@@ -2787,7 +3390,7 @@ _SP_CACHE_FORMFIELDS=null;
                      for (var i=0,len=data.length; i<len; i++) {     
                        var name=data[i].getElementsByTagName("Name")[0].firstChild.nodeValue;
                        var value=data[i].getElementsByTagName("Value");
-                       if (value&&value.length>=1) value=value[0].firstChild.nodeValue;
+                       if (value&&value.length>=1&&value[0].firstChild) value=value[0].firstChild.nodeValue;
                        else value="No Value";
                        aResult.push(name);
                        aResult[name]=value;
@@ -2798,6 +3401,72 @@ _SP_CACHE_FORMFIELDS=null;
                      // any error ?
                      var error=req.responseXML.getElementsByTagName("faultstring");
                      fct.call(_this,"Error 'people': "+error[0].firstChild.nodeValue);
+                   }
+                 });
+      return this;
+    },
+/**
+      @name $SP().getUserInfo
+      @function
+      @description Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)
+      
+      @param {String} username That must be "domain\\login"
+      @param {Object} [setup] Options (see below)
+        @param {String} [setup.url='current website'] The website url
+      @param {Function} [result] A function that will be executed at the end of the request with a param that is an object with the result ({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), or a String with the error message
+      
+      @example
+      $SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}, function(info) {
+        if (typeof info === "string") {
+          alert("Error:"+info); // there was a problem so we show it
+        } else
+          alert("User ID = "+info.ID)
+      });
+    */
+    getUserInfo:function(username, setup, fct) {
+      if (typeof username !== "string") throw "Error 'getUserInfo': the first argument must be the username";
+      switch (arguments.length) {
+          case 2: if (typeof setup === "function") return this.getUserInfo(username,{},setup);
+                  if (typeof setup === "object") return this.getUserInfo(username,setup,function() {});
+                  break;
+          case 3: if (typeof setup !== "object" && typeof fct !== "function") throw "Error 'getUserInfo': incorrect arguments, please review the documentation";
+      }
+      
+      // default values
+      setup = setup || {};
+      if (setup.url == undefined) {
+        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
+        else setup.url=this.url;
+      } else this.url=setup.url;
+      fct = fct || (function() {});
+      
+      // build the request
+      var body = '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
+               + '<soap:Body><GetUserInfo xmlns="http://schemas.microsoft.com/sharepoint/soap/directory/">'
+               + '<userLoginName>'+username+'</userLoginName></GetUserInfo></soap:Body></soap:Envelope>';
+               
+      // send the request
+      var _this=this;
+      var url = setup.url + "/_vti_bin/usergroup.asmx";
+      jQuery.ajax({type:"POST",
+                   cache:false,
+                   url:url,
+                   data:body,
+                   contentType: "text/xml; charset=utf-8",
+                   dataType: "xml",
+                   success:function(data) {
+                     var aResult=[];
+                     // get the details
+                     data=data.getElementsByTagName('User');
+                     if (data.length===0)
+                      fct.call(_this,"Error 'getUserInfo': nothing returned?!")
+                     else 
+                      fct.call(_this,{ID:data[0].getAttribute("ID"),Sid:data[0].getAttribute("Sid"),Name:data[0].getAttribute("Name"),LoginName:data[0].getAttribute("LoginName"),Email:data[0].getAttribute("Email"),Notes:data[0].getAttribute("Notes"),IsSiteAdmin:data[0].getAttribute("IsSiteAdmin"),IsDomainGroup:data[0].getAttribute("IsDomainGroup"),Flags:data[0].getAttribute("Flags")})
+                   },
+                   error:function(req, textStatus, errorThrown) {
+                     // any error ?
+                     var error=req.responseXML.getElementsByTagName("errorstring");
+                     fct.call(_this,"Error 'getUserInfo': "+error[0].firstChild.nodeValue);
                    }
                  });
       return this;
@@ -2843,6 +3512,7 @@ _SP_CACHE_FORMFIELDS=null;
       switch (arguments.length) {
           case 1: if (typeof username === "object") return this.addressbook("",username,function(){});
                   else if (typeof username === "function") return this.addressbook("",{},username);
+                  else if (typeof username === "string")  return this.addressbook(username,{},function(){});
                   username=undefined;
                   break;
           case 2: if (typeof username === "string" && typeof setup === "function") return this.addressbook(username,{},setup);
@@ -2908,11 +3578,12 @@ _SP_CACHE_FORMFIELDS=null;
       @function
       @description Change a Sharepoint date (as a string) to a Date Object
       @param {String} textDate the Sharepoint date string
+      @param {Boolean} [forceUTC=false] Permits to force the reading of the date in UTC
       @return {Date} the equivalent Date object for the Sharepoint date string passed
       @example $SP().toDate("2012-10-31T00:00:00").getFullYear(); // 2012
     */
-    toDate:function(strDate) {
-      // 2008-10-31(T)00:00:00(z)
+    toDate:function(strDate, forceUTC) {
+      // 2008-10-31(T)00:00:00(Z)
       if (strDate instanceof Date) return strDate
       if (strDate.length!=19 && strDate.length!=20) throw "toDate: '"+strDate+"' is invalid."
       var year  = strDate.substring(0,4);
@@ -2922,17 +3593,21 @@ _SP_CACHE_FORMFIELDS=null;
       var min   = strDate.substring(14,16);
       var sec   = strDate.substring(17,19);
       // check if we have "Z" for UTC date
-      return (strDate.indexOf("Z") > -1 ? new Date(Date.UTC(year,month-1,day,hour,min,sec)) : new Date(year,month-1,day,hour,min,sec));
+      return (strDate.indexOf("Z") > -1 || forceUTC ? new Date(Date.UTC(year,month-1,day,hour,min,sec)) : new Date(year,month-1,day,hour,min,sec));
     },
     /**
       @name $SP().toSPDate
       @function
       @description Change a Date object into a Sharepoint date string
-      @param {Date} [dateObject] the Sharepoint date string
+      @param {Date} dateObject The Date object you want to convert
+      @param {Date} [includeTime=false] By default the time is not returned (if the time appears then the WHERE clause will do a time comparison)
       @return {String} the equivalent string for the Date object passed
-      @example $SP().toSPDate(new Date("31/Oct/2012")); // --> "2012-10-31 00:00:00"
+
+      @example
+        $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31 00:00:00"
+        $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"
     */
-    toSPDate:function(oDate) {
+    toSPDate:function(oDate, includeTime) {
       var pad = function(p_str){
         if(p_str.toString().length==1){p_str = '0' + p_str;}
         return p_str;
@@ -2943,14 +3618,14 @@ _SP_CACHE_FORMFIELDS=null;
       var hours   = pad(oDate.getHours());
       var minutes = pad(oDate.getMinutes());
       var seconds = pad(oDate.getSeconds());
-      return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+      return year+"-"+month+"-"+day+(includeTime?" "+hours+":"+minutes+":"+seconds : "");
     },
     /**
       @name $SP().toCurrency
       @function
       @description It will return a number with commas, currency sign and a specific number of decimals
       @param {Number|String} number The number to format
-      @param {Number} [decimal=-1] The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00
+      @param {Number} [decimal=-1] The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00)
       @param {String} [sign='$'] The currency sign to add
       
       @return {String} The converted number
@@ -3079,7 +3754,7 @@ _SP_CACHE_FORMFIELDS=null;
       if (limit === bigLimit && !settings.mandatory) settings.includeAll=true; // if we want all of them
 
       // find all the fields, then cache them if not done already
-      if (_SP_CACHE_FORMFIELDS !== null) {
+      if (settings.cache && _SP_CACHE_FORMFIELDS !== null) {
         var allFields = _SP_CACHE_FORMFIELDS.slice(0);
         if (settings.includeAll) {
           this.length=allFields.length;
@@ -3092,11 +3767,11 @@ _SP_CACHE_FORMFIELDS=null;
         for (i=0;i<len;i++) fieldNames.push(allFields[i]._name)
         // search for the fields defined
         for (i=0; i<limit; i++) {
-          idx=fieldNames.indexOf(fields[i]);
+          idx=SPArrayIndexOf(fieldNames, fields[i]);
           if (idx > -1) aReturn.push(allFields[idx])
         }
         for (i=0,len=(settings.mandatory?allFields.length:0); i<len; i++) {
-          if (allFields[i]._isMandatory && fields.indexOf(allFields[i]._name) === -1) aReturn.push(allFields[i])
+          if (allFields[i]._isMandatory && SPArrayIndexOf(fields, allFields[i]._name) === -1) aReturn.push(allFields[i])
         }
         this.length=aReturn.length;
         this.data=aReturn;
@@ -3160,18 +3835,21 @@ _SP_CACHE_FORMFIELDS=null;
         if (settings.includeAll) includeThisField=true;
 
         if (i === -1) { // handle the content type
-          if (includeThisField || fields.indexOf('Content Type') > -1) {
+          if (includeThisField || SPArrayindexOf(fields, 'Content Type') > -1) {
             txt=html="Content Type";
             includeThisField=true;
           }
         } else {
           tr = undefined;
           nobr = a[i];
+          // check if the parent is h3
+          if (nobr.parentNode.tagName.toUpperCase() !== "H3") continue
           html = nobr.innerHTML;
           txt  = getText(nobr); // use this one for the &amp; and others
+
           
           // clean the txt
-          if (html.indexOf("ms-formvalidation") > -1) { // this is a mandatory field
+          if (html.indexOf("ms-formvalidation") > -1 || html.indexOf("ms-accentText") > -1) { // this is a mandatory field
             // remove the <span> with the *
             html = html.slice(0,-39);
             if (html.charAt(html.length-2)=='<' && (html.charAt(html.length-1)=='s'||html.charAt(html.length-1)=='S')) html=html.slice(0,-2); // with IE we don't have "" around the class name
@@ -3223,17 +3901,19 @@ _SP_CACHE_FORMFIELDS=null;
           }
 
           obj.val    = function() {};
-          obj.elem   = function() { return this._elements };
+          obj.elem   = function() { return (typeof jQuery === "function" ? jQuery(this._elements) : this._elements) };
           obj.description = function() { return this._description }
           obj.type = function() { return this._type }; // this function returns the type of the field 
-          obj.row  = function() { return this._tr }; // this function returns the TR parent node 
+          obj.row  = function() { return (typeof jQuery === "function" ? jQuery(this._tr) : this._tr) }; // this function returns the TR parent node 
           obj.name = function() { return this._name };
           obj.isMandatory = function() { return this._isMandatory };
           obj.options = function() {};
           
           // find the HTML elements and other information for that field
           tr = (obj._tr.length ? obj._tr[0] : obj._tr);
-          var td = tr.getElementsByTagName("td")[1].getElementsByTagName("span")[0];
+          var td;
+          tr && (td = tr.getElementsByTagName("td")) && (td.length > 1) && (td = td[1].getElementsByTagName("span")) && (td.length > 0) && (td = td[0]);
+          if (td.length===0) { obj._type="Error" }
           var elem = [];
 
           if (obj._name === "Attachments") {
@@ -3241,6 +3921,8 @@ _SP_CACHE_FORMFIELDS=null;
             elem = td.getElementsByTagName('tr');
           } else if (obj._name === "Content Type") {
             elem = [ obj._elements ];
+          } else if (obj._type === "Error") {
+            elem = tr.getElementsByTagName("td");
           } else {
             var input = td.getElementsByTagName("input");
             var continueToSearch=false; // use this to keep search for other kind of HTML elements
@@ -3333,6 +4015,13 @@ _SP_CACHE_FORMFIELDS=null;
                   elem.push(other[inp]);
                   obj._type="people"
                   break;
+                } else {
+                  // enhanced rich text
+                  if (other[inp].className.indexOf("ms-rtestate-field") > -1) {
+                    elem.push(other[inp]);
+                    obj._type="html multiple";
+                    break;
+                  }
                 }
               }
               other = td.getElementsByTagName("textarea");
@@ -3401,12 +4090,26 @@ _SP_CACHE_FORMFIELDS=null;
                   else return doc.getElementsByTagName('div')[0].innerHTML;
                 } else {
                   if (v !== undefined) {
-                    if (type==="text" || type==="date") e[0].value=v
-                    else e[0].innerHTML=v
+                    e[0].value=v
+                    if (type === "text multiple") e[0].innerHTML=v
                   }
                   else return e[0].value
                 }
                 return this
+              };
+              break;
+            }
+            case "html multiple": {
+              obj.val = function(v) {
+                var e=this.elem();
+                e = e[0].querySelector('div[contenteditable]');
+                if (e) {
+                  if (v !== undefined) {
+                    e.innerHTML=v;
+                  }
+                  else return e.innerHTML.replace(/^<div class="?ExternalClass[0-9A-Z]+"?>([\s\S]*)<\/div>$/i,"$1").replace(/<span id="?ms-rterangecursor-start"?><\/span><span id="?ms-rterangecursor-end"?([^>]+)?><\/span>/gi,"").replace(/^<p>​<\/p>$/,"");
+                }
+                return (v !== undefined ? this : null);
               };
               break;
             }
@@ -3629,7 +4332,7 @@ _SP_CACHE_FORMFIELDS=null;
                 var ret=[],done=[]; // 'done' is the values that have been checked
                 if (typeof v === "string") v=[v];
                 for (var i=0; i<e.length; i++) {
-                  if (v !== undefined && e[i].tagName.toLowerCase() === "label" && v.indexOf(e[i].innerHTML) > -1) {
+                  if (v !== undefined && e[i].tagName.toLowerCase() === "label" && SPArrayindexOf(v, e[i].innerHTML) > -1) {
                     e[i-1].checked=true;
                     done.push(e[i].innerHTML);
                     if (type.slice(0,13) === "choices radio") return this
@@ -3652,7 +4355,7 @@ _SP_CACHE_FORMFIELDS=null;
                     // go thru 'done' to see if a value must go into the INPUT
                     var rest=[];
                     for (var i=v.length; i--;) {
-                      if (done.indexOf(v[i]) === -1) rest.push(v[i])
+                      if (SPArrayindexOf(done, v[i]) === -1) rest.push(v[i])
                     }
                     if (rest.length>0) {
                       e[e.length-3].checked=true;
@@ -3750,6 +4453,7 @@ _SP_CACHE_FORMFIELDS=null;
           if (identity) aReturn[this.name()] = this.val()
           else aReturn.push(this.val())
         })
+        if (aReturn.length === 0) return "";
         return (aReturn.length===1 ? aReturn[0] : aReturn)
       } else if (typeof str !== "object") { // we want to set a simple value
         this.each(function() { this.val(str) });
@@ -3780,7 +4484,8 @@ _SP_CACHE_FORMFIELDS=null;
       var hasJQuery=(typeof jQuery === "function");
       this.each(function() {
         var e = this.elem();
-        aReturn.push(e.length === 1 ? e[0] : e)
+        if (e instanceof jQuery === true) e=e.toArray();
+        aReturn=aReturn.concat(e)
       })
       
       switch(aReturn.length) {
@@ -3803,11 +4508,13 @@ _SP_CACHE_FORMFIELDS=null;
       var aReturn = [];
       var hasJQuery=(typeof jQuery === "function");
       this.each(function() {
-        aReturn.push(this.row())
+        var row=this.row();
+        if (row instanceof jQuery === true) row=row[0]
+        aReturn.push(row)
       })
 
       switch(aReturn.length) {
-        case 0: return null;
+        case 0: return (hasJQuery ? jQuery() : null);
         case 1: return (hasJQuery ? jQuery(aReturn[0]) : aReturn[0]);
         default: return (hasJQuery ? jQuery(aReturn) : aReturn);
       }
@@ -3871,6 +4578,209 @@ _SP_CACHE_FORMFIELDS=null;
         case 1: return aReturn[0];
         default: return aReturn;
       } 
+    },
+    /**
+      @name $SP().formfields.isMandatory
+      @function
+      @description Say if a field is mandatory
+                  
+      @return {Boolean|Array} Returns the mandatory status of the field(s)
+                   
+      @example
+      $SP().formfields("Title").isMandatory(); // return True or False
+      $SP().formfields(["Field1", "Field2"]).isMandatory(); // return [ True/False, True/False ]
+    */
+    isMandatory:function() {
+      var aReturn = [];
+      this.each(function() { aReturn.push(this.isMandatory()) })
+
+      switch(aReturn.length) {
+        case 0: return false;
+        case 1: return aReturn[0];
+        default: return aReturn;
+      } 
+    },
+    /**
+      @name $SP().formfields.name
+      @function
+      @description Return the field name
+                  
+      @return {String|Array} Returns the name of the field(s)
+                   
+      @example
+      $SP().formfields("Title").name(); // return "Title"
+      $SP().formfields(["Field1", "Field2"]).name(); // return [ "Field1", "Field2" ]
+    */
+    name:function() {
+      var aReturn = [];
+      this.each(function() { aReturn.push(this.name()) })
+
+      switch(aReturn.length) {
+        case 0: return "";
+        case 1: return aReturn[0];
+        default: return aReturn;
+      } 
+    },
+    /**
+      @name $SP().notify
+      @function
+      @description Permits to notify the user using the SP.UI.Notify.addNotification system
+                  
+      @param {String} message Message to show
+      @param {Object} [options]
+        @param {Integer}  [options.timeout=5] The number of seconds that the notification is shown
+        @param {Boolean}  [options.override=false] This option to TRUE permits to remove the previous/current notification that is showing (even if the timeout is not over and even if it's a sticky) and replace it with the new one
+        @param {Boolean}  [options.overrideAll=false] Same as previously except that it will remove *all* the previous notifications that are currently showing
+        @param {Boolean}  [options.overrideSticky=true] When "overrideAll:true" then even the sticky notifications are removed, but you can block this behavior with "overrideSticky:false"
+        @param {Boolean}  [options.sticky=false] Keep the notification on the screen until it's manually removed (or automatically removed with "overrideAll:true" and "overrideSticky:true")
+        @param {String}   [options.name=random()] You can give a name to the notification (to use it with $SP().removeNotify('name'))
+        @param {Function} [options.after=function(name,afterDelay){}] You can call this function when the notification is removed -- the argument "name" is the name of the notification (see previous option), the argument "afterDelay" is TRUE when the notification has been removed by the system after it's normal timeout
+                   
+      @example
+      $SP().notify('Processing the data...', {sticky:true}); // the notification will stay on the screen until we remove it
+      $SP().notify('All done!', {overrideAll:true}); // the "Processing the data..." is removed from the screen and a 5 seconds message says "All done!"
+
+      $SP().notify('Please wait 10 seconds...', {
+        name:"My 10 seconds notification",
+        timeout:10,
+        after:function(name,afterDelay) {
+          if (afterDelay) alert("OK, you waited during 10 seconds!")
+          else alert("Something just removed this notification called '"+name+"'' before the timeout :-(")
+        }
+      })
+    */
+    notify:function(message,options) {
+      if (message === undefined) throw "Error 'notify': you must provide the message to show."
+      if (typeof message !== "string") throw "Error 'notify': you must provide a string for the message to show."
+
+      options = options || {};
+      options.timeout = (!isNaN(options.timeout) ? options.timeout : 5);
+      options.override = (options.override === true ? true : false);
+      options.overrideAll = (options.overrideAll === true ? true : false);
+      options.overrideSticky = (options.overrideSticky === false ? false : true);
+      options.sticky = (options.sticky === true ? true : false);
+      options.name = options.name || new Date().getTime();
+      options.after = options.after || function(){};
+
+      // [internal use] "fake" is used just to treat the queue due to the notifications ready
+      options.fake = (options.fake === true ? true : false);
+      // [internal use] "ignoreQueue" is when we want to treat directly the message without flushing the queue
+      options.ignoreQueue = (options.ignoreQueue === true ? true : false);
+
+      if (__SP_NOTIFY_READY === false) {
+        __SP_NOTIFY_QUEUE.push({message:message, options:options});
+        $(document).ready(function() {
+          // we need core.js and sp.js
+          ExecuteOrDelayUntilScriptLoaded(function() {
+            ExecuteOrDelayUntilScriptLoaded(function() {
+              __SP_NOTIFY_READY=true;
+              $SP().notify("fake",{fake:true});
+            }, "core.js")
+          }, "sp.js")
+        })
+        return this
+      } else {
+        // check if we don't have some notifications in queue first
+        if (options.ignoreQueue!==true) {
+          while (__SP_NOTIFY_QUEUE.length > 0) {
+            var a = __SP_NOTIFY_QUEUE.shift();
+            a.options.ignoreQueue=true;
+            $SP().notify(a.message, a.options);
+          }
+        }
+        if (options.fake===true) return;
+
+        // for the override options
+        if (__SP_NOTIFY.length > 0) {
+          if (options.overrideAll)
+            $SP().removeNotify({all:true, includeSticky:options.overrideSticky})
+          else if (options.override)
+            $SP().removeNotify(__SP_NOTIFY[__SP_NOTIFY.length-1].name)
+        }
+        
+        __SP_NOTIFY.push({name:options.name, id:SP.UI.Notify.addNotification(message, true), options:options})
+      }
+
+      // setup a timeout
+      if (!options.sticky) {
+        var _this=this;
+        setTimeout(function() {
+          $SP().removeNotify(options.name, {timeout:true})
+        }, options.timeout*1000)
+      }
+
+      return this;
+    },
+    /**
+      @name $SP().removeNotify
+      @function
+      @description Permits to remove a notification that is shown on the screen
+                  
+      @param {String} [name] Name of the notification
+      @param {Object} [options] If you pass the options, then the 'name' is ignored
+        @param {Boolean} [options.all=false] To TRUE to remove ALL notifications
+        @param {Boolean} [options.includeSticky=true] To FALSE if you don't want to remove the sticky notifications (only works with the "all:true" option)
+                   
+      @example
+      $SP().notify('Processing the data...', {sticky:true,name:"Processing data"}); // the notification will stay on the screen until we remove it
+      $SP().removeNotify("Processing data"); // the notification is removed
+
+      $SP().notify('Doing some stuff...');
+      $SP().notify('Doing some other stuff...');
+      $SP().removeNotify({all:true}); // all the notifications are removed
+
+      $SP().notify('Doing some stuff...');
+      $SP().notify('Doing some other stuff...');
+      $SP().notify('This is a sticky message', {sticky:true});
+      $SP().removeNotify({all:true, includeSticky:false}); // all the notifications are removed except the sticky one
+    */
+    removeNotify:function(name,options) {
+      switch (arguments.length) {
+        case 0: throw "Error 'removeNotify': you must provide 'name' or 'options'."
+        case 2: {
+          if (typeof options !== "object") throw "Error 'removeNotify': you must provide an object for 'options'."
+        }
+      }
+
+      if (arguments.length === 1 && typeof name === "object") {
+        options = name;
+        name = undefined;
+      }
+      options = options || {all:false};
+      // [internal use] timeout is a boolean to say if it's a timeout remove or if we forced it
+      options.timeout = (options.timeout === true ? true : false);
+
+      // make sure we are ready
+      if (__SP_NOTIFY_READY === false && __SP_NOTIFY_QUEUE.length > 0) {
+        setTimeout(function() { $SP().removeNotify(name, options) }, 150)
+        return this;
+      }
+
+      var notif,_this=this;
+      // if we want to delete all the notifications
+      if (options.all === true) {
+        var a=[]
+        while (__SP_NOTIFY.length > 0) {
+          notif = __SP_NOTIFY.shift();
+          if (options.includeSticky === false && notif.options.sticky === true) a.push(notif)
+          else {
+            SP.UI.Notify.removeNotification(notif.id);
+            setTimeout(function() { notif.options.after.call(_this, notif.name, false) }, 150)
+          }
+        }
+        __SP_NOTIFY = a.slice(0); // if we want to keep the sticky notifs
+      } else if (name !== undefined) {
+        // search for the notification
+        for (var i=0,len=__SP_NOTIFY.length; i<len; i++) {
+          if (__SP_NOTIFY[i].name == name) {
+            notif = __SP_NOTIFY.splice(i,1)[0];
+            SP.UI.Notify.removeNotification(notif.id);
+            setTimeout(function() { notif.options.after.call(_this, notif.name, options.timeout) }, 150)
+            return this;
+          }
+        }
+      }
+      return this;
     },
     /**
       @name $SP().registerPlugin
@@ -3938,4 +4848,4 @@ _SP_CACHE_FORMFIELDS=null;
 
   return window.$SP = window.SharepointPlus = SharepointPlus;
 
-})(window);
+})(this,document);

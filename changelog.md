@@ -1,5 +1,11 @@
 # Changelog
 
+**Change Log v3.12 (January 26, 2016)**
+
+  - Fix problem with IE8 and Array.prototype.indexOf ([issue #25](https://github.com/Aymkdn/SharepointPlus/issues/25))
+  - Change the versioning number, from 3.0.11 to 3.12
+  - Add qunit tests
+
 **Change Log v3.0.11 (January 11, 2016)**
 
   - Fix $SP().forms() for Sharepoint 2013
@@ -43,7 +49,7 @@
 **Change Log v3.0.8 (March 28, 2014)**
 
  - Little bug fix and improvements
- - The WHERE clausse of $SP().list().get() now supports "[Today-X]" or "[Today+X]" that is equivalent to the CAML syntax <Today OffsetDays="X">
+ - The WHERE clause of $SP().list().get() now supports "[Today-X]" or "[Today+X]" that is equivalent to the CAML syntax <Today OffsetDays="X">
  - New option `escapeChar` (true by default) for $SP().list().get() that permits to escape special chars (&, < and >) in the WHERE clausse
  - New operator `~=` for $SP().parse() (the function that parses the WHERE clause) that is used to query a large list with an indexed User column (you'll need to know the User ID)
  - ATTENTION : the WHERE clausse of $SP().list().get() is now sensitive to the TIME, so "2012-10-31" will compare only the DATE when "2012-10-31 10:28:19" will compate the DATE AND the TIME (CAML equivalent of "IncludeTimeValue='TRUE'")

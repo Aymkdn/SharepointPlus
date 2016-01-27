@@ -880,7 +880,7 @@ __SP_NOTIFY=[];
             default: viewAttr="Recursive"
           }
           setup._queryOptions += "<ViewAttributes Scope=\""+viewAttr+"\"></ViewAttributes>"
-          if (setup.folderOptions.path) setup._queryOptions += "<Folder>"+this.url + '/' + this.listID + '/' + setup.folderOptions.path+"</Folder>"
+          if (setup.folderOptions.path) setup._queryOptions += "<Folder>"+this.url + this.listID + '/' + setup.folderOptions.path+"</Folder>"
         } else
           setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>"
       } else setup._queryOptions = setup.queryOptions

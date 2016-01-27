@@ -42,10 +42,11 @@ if (!Array.prototype.indexOf) {
   }
 }
 
-/**
-  @ignore 
-*/
 if(!String.prototype.trim) {
+  /**
+    @ignore
+    @escription The trim() feature for String is not always available for all browsers
+  */
   String.prototype.trim = function () {
     return this.replace(/^\s+|\s+$/g,'');
   };

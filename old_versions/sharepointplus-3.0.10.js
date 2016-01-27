@@ -518,7 +518,7 @@ if (typeof jQuery === "function") {
         @param {Boolean} [setup.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
         @param {Function} [setup.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
         @param {String}  [setup.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
-        @parma {Boolean} [setup.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
+        @param {Boolean} [setup.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
         @param {String}  [setup.groupby=""] The field used to group by the list result
         @param {String}  [setup.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
         @param {Integer} [setup.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
