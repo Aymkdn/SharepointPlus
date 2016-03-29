@@ -3,6 +3,8 @@ People Ahead
 
 This plugin permits to change a simple `<input type="text">` to a text field connected to the Sharepoint address book where you can type an user name and select him/her from a list.
 
+**Attention** : jQuery is required for this plugin.
+
 Example
 -------
 
