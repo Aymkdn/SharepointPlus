@@ -1,5 +1,19 @@
 # Changelog
 
+**Change Log v3.13 ()**
+
+  - Fully compatible with Sharepoint 2013!
+  - jQuery is not required anymore!
+  - Add parameters `success` and `error` to `$SP().createFile()` ([issue #26](https://github.com/Aymkdn/SharepointPlus/issues/26))
+  - Add operator "IN" for WHERE clause thru `$SP().parse()` (e.g. 'Location IN ["Los Angeles","San Francisco","New York"]')
+  - Full rewrite of `$SP().formfields()` to be compatible with Sharepoint 2013 (a few things could be now different from previous versions)
+  - Remove option `data-sp-ignore` from `$SP().formfields()`
+  - Set 160 qUnit tests for almost all the functions
+  - Add automatic qUnit test environment creation to make tests easier
+  - Add option `usejQuery` to `$SP().formfields().elem()`
+  - Add `$SP().encode_b64()` and `$SP().decode_b64()`
+  - Add `$SP().getURL()` to return the current base url
+
 **Change Log v3.12 (January 26, 2016)**
 
   - Fix problem with IE8 and Array.prototype.indexOf ([issue #25](https://github.com/Aymkdn/SharepointPlus/issues/25))
