@@ -111,6 +111,7 @@ _SP_BASEURL=void 0;
 _SP_NOTIFY_READY=false;
 _SP_NOTIFY_QUEUE=[];
 _SP_NOTIFY=[];
+_SP_PLUGINS={};
 
 // for each select of lookup with more than 20 values, for IE only
 // see https://bdequaasteniet.wordpress.com/2013/12/03/getting-rid-of-sharepoint-complex-dropdowns/
@@ -217,7 +218,7 @@ if (typeof jQuery === "function") {
       @description Ajax system based on jQuery parameters
     */
     ajax:function(settings) {
-      if (false && typeof jQuery !== "undefined" && jQuery.ajax) {
+      if (typeof jQuery !== "undefined" && jQuery.ajax) {
         fct = jQuery.ajax(settings);
       } else {
         if (typeof nanoajax !== "undefined") {
@@ -241,6 +242,9 @@ if (typeof jQuery === "function") {
               }
             }
           })
+        }
+        else {
+          throw "[SharepointPlus] Fatal Error : No AJAX library has been found... Please use jQuery or nanoajax";
         }
       }
     },
@@ -2117,7 +2121,6 @@ if (typeof jQuery === "function") {
             
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetListCollection", "");
-      
       // check if we didn't save this information before
       var savedLists = _SP_CACHE_SAVEDLISTS;
       if (savedLists!=undefined) {
@@ -2132,9 +2135,9 @@ if (typeof jQuery === "function") {
           }
         }
       } else savedLists=[];
-      
+
       // do the request
-      var url = this.url + "/_vti_bin/lists.asmx";
+      var url = _this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
       _this.ajax({type:"POST",
                    cache:false,
@@ -4903,12 +4906,9 @@ if (typeof jQuery === "function") {
       })
     */
     registerPlugin:function(name,fct) {
-      var $html=$('html');
-      var plugins=$html.data('sp-plugins') || [];
-      if (typeof plugins[name] !== "undefined") 
+      if (typeof _SP_PLUGINS[name] !== "undefined") 
         throw "Error 'registerPlugin': '"+name+"' is already registered.";
-      plugins[name] = fct;
-      $html.data('sp-plugins',plugins);
+      _SP_PLUGINS[name] = fct;
       return true;
     },
     /**
@@ -4923,9 +4923,8 @@ if (typeof jQuery === "function") {
       $SP().plugin('test',{message:"This is a test !"})
     */
     plugin:function(name,options) {
-      var plugins=$('html').data('sp-plugins') || [];
       options = options || {};
-      if (typeof plugins[name] === "function") plugins[name].call(this,options);
+      if (typeof _SP_PLUGINS[name] === "function") _SP_PLUGINS[name].call(this,options);
       else throw "Error $SP().plugin: the plugin '"+name+"' is not registered."
       return this;
     }
@@ -4956,4 +4955,3 @@ if (typeof jQuery === "function") {
   return window.$SP = window.SharepointPlus = SharepointPlus;
 
 })(this,document);
-

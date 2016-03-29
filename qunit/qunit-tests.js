@@ -421,7 +421,7 @@ function initSPtests() {
 
 // source inspiration https://github.com/michelgotta/qunit-blogpost-example
 function loadSPtests() {
-  $q = jQuery.noConflict(true), $ = null, jQuery = null;
+  $q = jQuery.noConflict(true);
   $q(function() { 
     function getSharePointMajorVersion(){
      var deferred = $q.Deferred();
@@ -451,7 +451,7 @@ function loadSPtests() {
     
     $q.when( getSharePointMajorVersion() ).done(function(spversion) {
       // Get the jQuery Object from the original code  
-      $ = window.frames[0].jQuery;
+      $ = jQuery = window.frames[0].jQuery;
       $SP = window.frames[0].SharepointPlus;
       
       test('formfields()', function(assert) {
