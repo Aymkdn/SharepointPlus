@@ -103,6 +103,8 @@ _SP_CACHE_SAVEDLISTS=void 0;
 _SP_CACHE_USERGROUPS=[]
 _SP_CACHE_GROUPMEMBERS=[];
 _SP_CACHE_DISTRIBUTIONLISTS=[];
+_SP_CACHE_REGIONALSETTINGS=void 0;
+_SP_CACHE_DATEFORMAT=void 0;
 _SP_ADD_PROGRESSVAR={};
 _SP_UPDATE_PROGRESSVAR={};
 _SP_MODERATE_PROGRESSVAR={};
@@ -287,7 +289,7 @@ if (typeof jQuery === "function") {
           // try to build it
           if (typeof L_Menu_BaseUrl!=="undefined") this.url=_SP_BASEURL=L_Menu_BaseUrl;
           else {
-            if (_spPageContextInfo && typeof _spPageContextInfo.webServerRelativeUrl !== "undefined") this.url=_SP_BASEURL=_spPageContextInfo.webServerRelativeUrl;
+            if (typeof _spPageContextInfo !== "undefined" && typeof _spPageContextInfo.webServerRelativeUrl !== "undefined") this.url=_SP_BASEURL=_spPageContextInfo.webServerRelativeUrl;
             else {
               // we'll use the Webs.asmx service to find the base URL
               this.needQueue=true;
@@ -360,17 +362,16 @@ if (typeof jQuery === "function") {
       @description (internal use only) Permits to treat the queue
     */
     _testQueue:function() {
-      if (this.needQueue) {
-        var _this=this;
+      var _this=this;
+      if (_this.needQueue) {
         setTimeout(function() { _this._testQueue.call(_this) }, 25);
       } else {
-        if (this.listQueue.length > 0) {
-          var todo = this.listQueue.shift();
-          todo.callee.apply(this, Array.prototype.slice.call(todo));
+        if (_this.listQueue.length > 0) {
+          var todo = _this.listQueue.shift();
+          todo.callee.apply(_this, Array.prototype.slice.call(todo));
         }
-        this.needQueue=(this.listQueue.length>0);
-        if (this.needQueue) {
-          var _this=this;
+        _this.needQueue=(_this.listQueue.length>0);
+        if (_this.needQueue) {
           setTimeout(function() { _this._testQueue.call(_this) }, 25);
         }
       }
@@ -459,6 +460,14 @@ if (typeof jQuery === "function") {
                     factory[lastIndex] += '<FieldRef Name="'+lastField+'" /><Values><Value Type="Text">' + JSON.parse('[' + queryString.substring(start+1, i) + ']').join('</Value><Value Type="Text">') + '</Value></Values>' + closeTag;
                     lastField = "";
                     closeTag = "";
+                    // concat with the first index
+                    if (lastIndex>0) {
+                      if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+                      factory[0] += factory[lastIndex];
+                      if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+                      delete(factory[lastIndex]);
+                      closeOperator = "";
+                    }
                     break;
           case ">":  // look at the operand
           case "<": i++;
@@ -2101,7 +2110,7 @@ if (typeof jQuery === "function") {
       
       @example
       $SP().lists(function(list) {
-        for (var i=0; i&lt;list.length; i++) console.log("List #"+i+": "+list[i]['Name']");
+        for (var i=0; i&lt;list.length; i++) console.log("List #"+i+": "+list[i]['Name']);
       });
     */
     lists:function(setup, fct) {
@@ -3447,7 +3456,7 @@ if (typeof jQuery === "function") {
                  });
       return this;
     },
-/**
+    /**
       @name $SP().getUserInfo
       @function
       @description Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)
@@ -3528,6 +3537,146 @@ if (typeof jQuery === "function") {
     whoami:function(setup, fct) {
       if (typeof setup === "function") { fct=setup; setup = {} }
       return this.people("",setup,fct);
+    },
+    /**
+      @name $SP().regionalSettings
+      @function
+      @description Find the region settings (of the current user) defined with _layouts/regionalsetng.aspx?Type=User (lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek, timeFormat..)
+
+      @param {Function} [callback] A function with one paramater that contains the parameters returned from the server
+
+      @example
+      $SP().regionalSettings(function(region) {
+        if (typeof region === "string") {
+          // something went wrong
+          console.log(region); // returns the error
+        } else {
+          // show the selected timezone, and the working days
+          console.log("timeZone: "+region.timeZone);
+          console.log("working days: "+region.workWeek.days.join(", "))
+        }
+      })
+    */
+    regionalSettings:function(callback) {
+      // find the base URL
+      if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
+      if (typeof callback !== "function") callback = function() {};
+      var _this = this;
+
+      // check cache
+      if (_SP_CACHE_REGIONALSETTINGS) callback.call(_this, _SP_CACHE_REGIONALSETTINGS);
+
+      $SP().ajax({
+        method:'GET',
+        url:_this.url + "/_layouts/regionalsetng.aspx?Type=User",
+        success:function(data) {
+          var result = {lcid:"", cultureInfo:"", timeZone:"", calendar:"", alternateCalendar:""};
+          var div = document.createElement('div');
+          div.innerHTML = data;
+          var tmp, i;
+          var getValue = function(id) {
+            var e = div.querySelector("select[id$='"+id+"']");
+            return e.options[e.selectedIndex].innerHTML;
+          };
+
+          result.lcid = div.querySelector("select[id$='LCID']").value;
+          result.cultureInfo = getValue("LCID");
+          result.timeZone = getValue("TimeZone");
+          result.calendar = getValue("DdlwebCalType");
+          result.alternateCalendar = getValue("DdlwebAltCalType");
+
+          tmp=document.querySelectorAll("input[id*='ChkListWeeklyMultiDays']");
+          result.workWeek = {days:[], firstDayOfWeek:"", firstWeekOfYear:"", startTime:"", endTime:""};
+          for (i=0; i<tmp.length; i++) {
+            if (tmp[i].checked) result.workWeek.days.push(tmp[i].nextSibling.querySelector('abbr').getAttribute("title"))
+          }
+          
+          result.workWeek.firstDayOfWeek = getValue("DdlFirstDayOfWeek");
+          result.workWeek.firstWeekOfYear = getValue("DdlFirstWeekOfYear");
+          result.workWeek.startTime=div.querySelector("select[id$='DdlStartTime']").value;
+          result.workWeek.endTime=div.querySelector("select[id$='DdlEndTime']").value;
+          result.timeFormat = getValue("DdlTimeFormat");
+
+          // cache
+          _SP_CACHE_REGIONALSETTINGS = result;
+
+          callback.call(_this, result);
+        },
+        error:function(jqXHR, textStatus, errorThrown) {
+          callback.call(_this, "Error: ["+textStatus+"] "+errorThrown);
+        }
+      });
+
+      return _this;
+    },
+    /**
+      @name $SP().regionalDateFormat
+      @function
+      @description Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, DD for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)
+      
+      @param {Function} [callback] It will pass the date format 
+      
+      @example
+      // you'll typically need that info when parsing a date from a Date Picker field from a form
+      // we suppose here you're using momentjs
+      // eg. we want to verify start date is before end date
+      var startDate = $SP().formfields("Start Date").val();
+      var endDate = $SP().formfields("End Date").val();
+      $SP().regionalDateFormat(function(dateFormat) {
+        // if the user settings are on French, then dateFormat = "DD/MM/YYYY"
+        if (moment(startDate, dateFormat).isAfter(moment(endDate, dateFormat))) {
+          alert("StartDate must be before EndDate!")
+        }
+      })
+     */
+    regionalDateFormat:function(callback) {
+      // find the base URL
+      if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
+      if (typeof callback !== "function") callback = function() {};
+      var _this = this;
+
+      // check cache
+      if (_SP_CACHE_DATEFORMAT) callback.call(_this, _SP_CACHE_DATEFORMAT);
+
+      // check if we have LCID
+      var lcid = "";
+      if (typeof _spRegionalSettings !== "undefined") lcid=_spRegionalSettings.localeId;
+      else if (_SP_CACHE_REGIONALSETTINGS) lcid=_SP_CACHE_REGIONALSETTINGS.lcid;
+      if (!lcid) {
+        return _this.regionalSettings(function() {
+          _this.regionalDateFormat(callback);
+        })
+      }
+      
+      $SP().ajax({
+        method:'GET',
+        url:_this.url + "/_layouts/iframe.aspx?cal=1&date=1/1/2000&lcid="+lcid,
+        success:function(data) {
+          var div = document.createElement('div');
+          div.innerHTML = data;
+          
+          // div will contain the full datepicker page, for the January 2000
+          // search for 3/January/2000
+          var x = div.querySelector('a[id="20000103"]').getAttribute("href").replace(/javascript:ClickDay\('(.*)'\)/,"$1");
+          // source : http://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
+          var r = /\\u([\d\w]{4})/gi;
+          x = x.replace(r, function (match, grp) { return String.fromCharCode(parseInt(grp, 16)); } );
+          x = unescape(x); // eg: 3.1.2000
+          x = x.replace(/20/, "YY"); // 3.1.YY00
+          x = x.replace(/00/, "YY"); // 3.1.YYYY
+          x = x.replace(/03/, "DD"); // 3.1.YYYY
+          x = x.replace(/3/, "D"); // D.1.YYYY
+          x = x.replace(/01/, "MM"); // D.1.YYYY
+          x = x.replace(/1/, "M"); // D.M.YYYY
+          _SP_CACHE_DATEFORMAT = x;
+          callback.call(_this, x)
+        },
+        error:function(jqXHR, textStatus, errorThrown) {
+          callback.call(_this, "Error: ["+textStatus+"] "+errorThrown)
+        }
+      });
+
+      return _this;
     },
     /**
       @name $SP().addressbook

@@ -13,6 +13,8 @@
   - Add option `usejQuery` to `$SP().formfields().elem()`
   - Add `$SP().encode_b64()` and `$SP().decode_b64()`
   - Add `$SP().getURL()` to return the current base url
+  - Add `$SP().regionalSettings()` to return the user regional settings
+  - Add `$SP().regionalDateFormat()` to return the date format based on the user regional settings (usefull for Date Picker fields manipulation)
 
 **Change Log v3.12 (January 26, 2016)**
 
