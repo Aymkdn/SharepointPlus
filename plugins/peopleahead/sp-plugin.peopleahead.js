@@ -96,9 +96,11 @@ function spPeopleAheadKeyUp() {
     $SP().addressbook($this.val(),{limit:options.limit},function(data) {
       var html='';
       for (var p=0; p<data.length; p++) {
-        var displayName=data[p]["DisplayName"];
-        var title=(data[p]["Title"] ? data[p]["Title"] : "No title");
-        html += '<li><a href="#nogo" data-login="'+data[p]["AccountName"]+'" data-userid="'+data[p]["UserInfoID"]+'" data-email="'+data[p]["Email"]+'" data-name="'+displayName+'" data-title="'+title.replace(/"/g,'&quot;')+'"><b>'+displayName+'</b> (<em>'+title+'</em>)</a></li>';
+        if (data[p]["UserInfoID"] != -1) {
+          var displayName=data[p]["DisplayName"];
+          var title=(data[p]["Title"] ? data[p]["Title"] : "No title");
+          html += '<li><a href="#nogo" data-login="'+data[p]["AccountName"]+'" data-userid="'+data[p]["UserInfoID"]+'" data-email="'+data[p]["Email"]+'" data-name="'+displayName+'" data-title="'+title.replace(/"/g,'&quot;')+'"><b>'+displayName+'</b> (<em>'+title+'</em>)</a></li>';
+        }
       }
       if (data.length===0) html = '<li><a href="#nogo">'+options.noresult+'</a></li>';
       $this.next().show().html(html);

@@ -942,6 +942,7 @@ if (typeof jQuery === "function") {
         }
       })
 
+      // [It doesn't work with Sharepoint 2013 anymore, only for SP2010]
       // You can use `useIndexForOrderBy:true` to override the list view threshold -- see https://spservices.codeplex.com/discussions/280642
       // To make it to work, you need :
       // 1) to have "ID > 0 AND Another_Index_Column_Filtered" in the WHERE Clause (so at least two filters), and then we can add some other WHERE (even the not indexed columns)
@@ -1090,7 +1091,7 @@ if (typeof jQuery === "function") {
       // if no queryOptions provided then we set the default ones
       if (setup.queryOptions === undefined) {
         setup._queryOptions = "<DateInUtc>"+setup.dateInUTC+"</DateInUtc>"
-                           + "<Paging ListItemCollectionPositionNext=\""+setup.listItemCollectionPositionNext.replace(/&/g,"&amp;")+"\"></Paging>"
+                           + "<Paging ListItemCollectionPositionNext=\""+setup.listItemCollectionPositionNext+"\"></Paging>"
                            + "<IncludeAttachmentUrls>True</IncludeAttachmentUrls>"
                            + (fields==="" ? "" : "<IncludeMandatoryColumns>False</IncludeMandatoryColumns>")
                            + "<ExpandUserField>"+setup.expandUserField+"</ExpandUserField>";
@@ -2180,6 +2181,7 @@ if (typeof jQuery === "function") {
       @description Add items into a Sharepoint List
                    note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
                    note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
+                   note SP2013: If "-1;#" doesn't work on Sharepoint 2013, then try with "i:0#.w|" (e.g. "i:0#.w|europe\\foo_bar") ("i:0#.w|" may vary based on your authentification system)
                    note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
                          --> it should also be possible to not pass the value but only the ID, e.g.: "X;#"
                    note: A URL field must be provided as "http://www.website.com, Name"
@@ -2481,7 +2483,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().list.history
       @function
-      @description When a textarea/multiple lines of text has the versioning option, then you can use this function to find the previous values
+      @description When versioning is an active option for your list, then you can use this function to find the previous values for a field
       
       @param {Object} params See below
         @param {String|Number} params.ID The item ID
@@ -3083,7 +3085,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().list.startWorkflow
       @function
-      @description Manually start a work (that has been set to be manually started) (-untested with Sharepoint 2007-)
+      @description Manually start a work (that has been set to be manually started) (for Sharepoint 2010 workflows)
       
       @param {Object} setup
         @param {Number} setup.ID The item ID that tied to the workflow
@@ -3156,6 +3158,93 @@ if (typeof jQuery === "function") {
           }
         });
       }
+      return this;
+    },
+    /**
+      @name $SP().list.startWorkflow2013
+      @function
+      @description Manually start a work (that has been set to be manually started) (for Sharepoint 2013 workflows)
+      
+      @param {Object} setup
+        @param {Number} setup.ID The item ID that tied to the workflow
+        @param {String} setup.workflowName The name of the workflow
+        @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
+        @param {Function} [setup.after] This callback function that is called after the request is done
+      
+      @example
+      // if you want to call a Site Workflow, just leave the list name empty, e.g.:
+      $SP().list("").startWorkflow2013({workflowName:"My Site Workflow"});
+
+      // to start a workflow for a list item
+      $SP().list("List Name").startWorkflow2013({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function(error) {
+        if (!error)
+          alert("Workflow done!");
+        else 
+          alert("Error: "+error);
+      }});
+    **/
+    startWorkflow2013:function(setup) {
+      var _this=this, guid;
+      // check if we need to queue it
+      if (_this.needQueue) { return _this._addInQueue(arguments) }
+      if (_this.url == undefined) throw "Error 'startWorkflow2013': not able to find the URL!";
+      
+      setup = setup || {};
+      setup.after = setup.after || (function() {});
+      if (!setup.workflowName) throw "Error 'startWorkflow2013': Please provide the workflow name!"
+      if (_this.listID && !setup.ID) throw "Error 'startWorkflow2013': Please provide the item ID!"
+
+      // we need "sp.workflowservices.js"
+      if (typeof SP === "undefined" || typeof SP.SOD === "undefined") {
+        throw "Error 'startWorkflow2013': SP.SOD.executeFunc is required (from the Microsoft file called init.js)";
+      }
+
+      SP.SOD.executeFunc("sp.js", "SP.ClientContext" , function(){
+        SP.SOD.registerSod('sp.workflowservices.js', SP.Utilities.Utility.getLayoutsPageUrl('sp.workflowservices.js'));
+        SP.SOD.executeFunc('sp.workflowservices.js', "SP.WorkflowServices.WorkflowServicesManager", function() {
+          var context = new SP.ClientContext(_this.url);
+          var web = context.get_web();
+          var subscriptions;
+          var servicesManager = SP.WorkflowServices.WorkflowServicesManager.newObject(context, web);
+          context.load(servicesManager);
+          // list the existing workflows
+          var subscriptions = servicesManager.getWorkflowSubscriptionService().enumerateSubscriptions();
+          context.load(subscriptions);
+
+          context.executeQueryAsync(function(sender, args) {
+            var subsEnum = subscriptions.getEnumerator(), sub;
+            var initiationParams = {}, i, passed=false;
+            var workflowName = setup.workflowName.toLowerCase();
+            // set the parameters
+            if (setup.parameters) {
+              if (setup.parameters.length === undefined) setup.parameters = [ setup.parameters ];
+              for (i=0; i<setup.parameters.length; i++)
+                initiationParams[setup.parameters[i].name] = setup.parameters[i].value;
+            }
+            // go thru all the workflows to find the one we want to initiate
+            while (subsEnum.moveNext()) {
+              sub = subsEnum.get_current();
+              if (sub.get_name().toLowerCase() === workflowName) {
+                if (setup.ID) servicesManager.getWorkflowInstanceService().startWorkflowOnListItem(sub, setup.ID, initiationParams);
+                else servicesManager.getWorkflowInstanceService().startWorkflow(sub, initiationParams);
+                context.executeQueryAsync(function(sender, args) {
+                  setup.after.call(_this)
+                }, function(sender, args) {
+                  setup.after.call(_this, args.get_message())
+                });
+                passed=true;
+                break;
+              }
+            }
+            if (!passed) {
+              throw "Error 'startWorkflow2013': no workflow found with the name '"+setup.workflowName+"'";
+            }
+          }, function(sender, args) {
+            setup.after.call(_this, args.get_message())
+          });
+        });
+      })  
+      
       return this;
     },
     /**

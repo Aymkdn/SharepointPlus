@@ -15,6 +15,7 @@
   - Add `$SP().getURL()` to return the current base url
   - Add `$SP().regionalSettings()` to return the user regional settings
   - Add `$SP().regionalDateFormat()` to return the date format based on the user regional settings (usefull for Date Picker fields manipulation)
+  - Add `$SP().list().startWorkflow2013()` to start Sharepoint 2013 workflows (the other function remains for Sharepoint 2010 workflows)
 
 **Change Log v3.12 (January 26, 2016)**
 
