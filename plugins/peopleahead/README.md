@@ -1,6 +1,12 @@
 People Ahead
 ============
 
+**For Sharepoint 2013**
+
+You might want to use the SP2013 native People Picker... To do it, [refer to this Gist](https://gist.github.com/Aymkdn/5925efc9f4fecccc40612c6a5db7efc9).
+
+**Otherwise**
+
 This plugin permits to change a simple `<input type="text">` to a text field connected to the Sharepoint address book where you can type an user name and select him/her from a list.
 
 Example
