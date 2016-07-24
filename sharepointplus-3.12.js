@@ -203,7 +203,11 @@ if (typeof jQuery === "function") {
         var body="<soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'><soap:Body><WebUrlFromPageUrl xmlns='http://schemas.microsoft.com/sharepoint/soap/' >"
                 +"<pageUrl>"+window.location.href.replace(/&/g,"&amp;")+"</pageUrl></WebUrlFromPageUrl></soap:Body></soap:Envelope>";
         var url = window.location.protocol + "//" + window.location.host + "/_vti_bin/Webs.asmx";
+        // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+        $.support.cors = true;
         jQuery.ajax({
+          // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+          crossDomain: true,
           type: "POST",
           cache: false,
           async: true,
@@ -1015,7 +1019,12 @@ if (typeof jQuery === "function") {
               + "</soap:Envelope>";
         // do the request
         var url = this.url + "/_vti_bin/Lists.asmx";
-        jQuery.ajax({type: "POST",
+        // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+        $.support.cors = true;
+        jQuery.ajax({
+                     // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                     crossDomain: true,
+                     type: "POST",
                      cache: false,
                      async: true,
                      url: url,
@@ -1208,7 +1217,9 @@ if (typeof jQuery === "function") {
                 + "</soap:Envelope>";
         // do the request
         var url = setup.url + "/_vti_bin/dspsts.asmx";
-        jQuery.ajax({type: "POST",
+        jQuery
+        .ajax({crossD
+        omain: true,type: "POST",
                      cache: false,
                      async: true,
                      url: url,
@@ -1281,6 +1292,90 @@ if (typeof jQuery === "function") {
       if (setup.content == undefined) throw "Error 'createFile': not able to find the file content.";
       if (setup.destination == undefined) throw "Error 'createFile': not able to find the file destination path.";
       setup.url = setup.url || this.url;
+
+      /**
+      
+      NEW ELEMENT - extraFields - by @caleuanhopkins
+
+      @example
+
+        $SP().createFile({
+          content:"*your stuff with FileToDataURI that returns a base64 string*",
+          encoded:true,
+          destination:"http://mysite/Shared Documents/myfile.xls",
+          extraFields: [{Title:{value:"Hello world",type:"Text"}}],
+          url:"http://mysite/"
+        });
+
+      @param {Array} setup.extraFields holds object children for each extra field you want filled when uploading file.
+        @param {Object} Object.keys(setup.extraFields[i]) the name of the column you are placing the data into
+        @param {String} setup.extraFields[i]['Title'].value the value you want to fill the column (see above)
+        @param {String} setup.extraFields[i]['Title'].type the type of data filling this column. This is a set choice of options:
+
+          * Invalid
+          * Integer
+          * Text
+          * Note
+          * DateTime
+          * Counter
+          * Choice
+          * Lookup
+          * Boolean
+          * Number
+          * Currency
+          * URL
+          * Computed
+          * Threading
+          * Guid
+          * MultiChoice
+          * GridChoice
+          * Calculated
+          * File
+          * Attachments
+          * User
+          * Recurrence
+          * CrossProjectLink
+          * ModStat
+          * AllDayEvent
+          * Error
+
+      NOTE: if you have callback function, you can pass a default variable into the function and get the new file's url:
+
+        @example:
+
+          after: function(sharepointFile) {
+            console.log(sharepointFile);
+          }
+
+      */
+
+      /* PolyFill for IE 8 */
+
+      if (!Object.keys) {
+        Object.keys = function(obj) {
+          var keys = [];
+
+          for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+              keys.push(i);
+            }
+          }
+
+          return keys;
+        };
+      }
+
+      /* Polyfill end */
+
+      if(setup.extraFields != undefined){
+        var fields = '';
+        for(i=0; i< setup.extraFields.length; i++){
+          var key = Object.keys(setup.extraFields[i])
+          fields += "<FieldInformation Type='"+setup.extraFields[i][key].type+"' Value='"+setup.extraFields[i][key].value+"' DisplayName='"+key+"' InternalName='"+key+"' />";
+        }
+        setup.extraFields = fields;
+      }
+
       // if we didn't define the url in the parameters, then we need to find it
       if (!setup.url) {
         this._getURL();
@@ -1297,12 +1392,18 @@ if (typeof jQuery === "function") {
                     +"<CopyIntoItems xmlns=\"http://schemas.microsoft.com/sharepoint/soap/\">"
                     +"<SourceUrl>http://null</SourceUrl>"
                     +"<DestinationUrls><string>"+setup.destination+"</string></DestinationUrls>"
-                    +"<Fields><FieldInformation Type='File' /></Fields>"
+                    +"<Fields><FieldInformation Type='File' />"
+                    +setup.extraFields
+                    +"</Fields>"
                     +"<Stream>"+(setup.encoded?setup.content:encode_b64(setup.content))+"</Stream>"
                     +"</CopyIntoItems>"
                     +"</soap:Body>"
                     +"</soap:Envelope>";
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
       jQuery.ajax({
+        // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+        crossDomain: true,
         url: setup.url + "/_vti_bin/copy.asmx",
         type: "POST",
         dataType: "xml",
@@ -1312,7 +1413,7 @@ if (typeof jQuery === "function") {
         success:function(data) {
           var a = data.getElementsByTagName('CopyResult');
           if (a && a[0] && a[0].getAttribute("ErrorCode") != "Success") throw "Error 'createFile': "+a[0].getAttribute("ErrorCode")+" - "+a[0].getAttribute("ErrorMessage");
-          if (typeof setup.after == "function") setup.after.call(_this);
+          if (typeof setup.after == "function") setup.after.call(_this, a[0].getAttribute("DestinationUrl"));
         }
       });
 
@@ -1417,7 +1518,11 @@ if (typeof jQuery === "function") {
       + '<comment>'+setup.comments+'</comment>'
       + '<CheckinType>1</CheckinType></CheckInFile></soap:Body></soap:Envelope>';
 
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
       jQuery.ajax({
+        // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+        crossDomain: true,
         url: setup.url + "/_vti_bin/Lists.asmx",
         type: "POST",
         dataType: "xml",
@@ -1477,7 +1582,12 @@ if (typeof jQuery === "function") {
       var _this=this;
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      jQuery.ajax({type: "POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type: "POST",
                    cache: false,
                    async: true,
                    url: url,
@@ -1550,7 +1660,12 @@ if (typeof jQuery === "function") {
       var _this=this;
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      jQuery.ajax({type: "POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type: "POST",
                    cache: false,
                    async: true,
                    url: url,
@@ -1652,7 +1767,12 @@ if (typeof jQuery === "function") {
       var _this=this;
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      jQuery.ajax({type: "POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type: "POST",
                    cache: false,
                    async: true,
                    url: url,
@@ -1752,7 +1872,12 @@ if (typeof jQuery === "function") {
       var _this=this;
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      jQuery.ajax({type: "POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type: "POST",
                    cache: false,
                    async: true,
                    url: url,
@@ -1881,7 +2006,12 @@ if (typeof jQuery === "function") {
       var url = this.url + "/_vti_bin/Views.asmx";
       var aReturn = ["fields","orderby","whereCAML"];
       var _this=this;
-      jQuery.ajax({type: "POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type: "POST",
                    cache: false,
                    async: true,
                    url: url,
@@ -1972,7 +2102,12 @@ if (typeof jQuery === "function") {
       var url = this.url + "/_vti_bin/Views.asmx";
       var aReturn = [];
       var _this=this;
-      jQuery.ajax({type: "POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type: "POST",
                    cache: false,
                    async: true,
                    url: url,
@@ -2055,7 +2190,12 @@ if (typeof jQuery === "function") {
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
       var _this=this;
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    async:true,
                    url:url,
@@ -2194,7 +2334,12 @@ if (typeof jQuery === "function") {
       // send the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var _this=this;     
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    async:true,
                    url:url,
@@ -2356,7 +2501,12 @@ if (typeof jQuery === "function") {
       // send the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var _this=this;
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    async:true,
                    url:url,
@@ -2431,7 +2581,12 @@ if (typeof jQuery === "function") {
       // send the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var _this=this;
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    async:true,
                    url:url,
@@ -2561,7 +2716,12 @@ if (typeof jQuery === "function") {
       // send the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var _this=this;
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    async:true,
                    url:url,
@@ -2725,7 +2885,12 @@ if (typeof jQuery === "function") {
       // send the request
       var _this=this;
       var url = this.url + "/_vti_bin/lists.asmx";
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    async:true,
                    url:url,
@@ -2819,7 +2984,12 @@ if (typeof jQuery === "function") {
       // send the request
       var _this=this;
       var url = setup.url + "/_vti_bin/usergroup.asmx";
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    url:url,
                    data:body,
@@ -2912,7 +3082,11 @@ if (typeof jQuery === "function") {
                + '<item>'+fileRef+'</item>'
                + '</GetWorkflowDataForItem></soap:Body></soap:Envelope>';
               var _this=this;
+              // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+              $.support.cors = true;
               jQuery.ajax({
+                // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                crossDomain: true,
                 type: "POST",
                 cache: false,
                 async: true,
@@ -3082,7 +3256,11 @@ if (typeof jQuery === "function") {
         // do the request
         var _this=this;
         var url = this.url + "/_vti_bin/Workflow.asmx";
+        // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+        $.support.cors = true;
         jQuery.ajax({
+          // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+          crossDomain: true,
           type: "POST",
           cache: false,
           async: true,
@@ -3158,7 +3336,12 @@ if (typeof jQuery === "function") {
       // send the request
       var _this=this;
       var url = setup.url + "/_vti_bin/UserProfileService.asmx";
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    url:url,
                    data:body,
@@ -3246,7 +3429,12 @@ if (typeof jQuery === "function") {
       // send the request
       var _this=this;
       var url = setup.url + "/_vti_bin/usergroup.asmx";
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    url:url,
                    data:body,
@@ -3376,7 +3564,12 @@ if (typeof jQuery === "function") {
       // send the request
       var _this=this;
       var url = setup.url + "/_vti_bin/UserProfileService.asmx";
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    url:url,
                    data:body,
@@ -3448,7 +3641,12 @@ if (typeof jQuery === "function") {
       // send the request
       var _this=this;
       var url = setup.url + "/_vti_bin/usergroup.asmx";
-      jQuery.ajax({type:"POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type:"POST",
                    cache:false,
                    url:url,
                    data:body,
@@ -3538,7 +3736,12 @@ if (typeof jQuery === "function") {
       // send the request
       var _this=this;
       var url = setup.url + "/_vti_bin/People.asmx";
-      jQuery.ajax({type: "POST",
+      // $.support.cors = true; - allows CORS in IE 8 to CORS enabled servers
+      $.support.cors = true;
+      jQuery.ajax({
+                   // crossDomain:true - allows CORS in IE 8 to CORS enabled servers
+                   crossDomain: true,
+                   type: "POST",
                    cache:false,
                    url:url,
                    data:body,
