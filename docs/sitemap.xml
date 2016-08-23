@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+<url>
+  <loc>http://aymkdn.github.io/SharepointPlus/</loc>
+  <lastmod>2013-08-05T14:04:15+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://aymkdn.github.io/SharepointPlus/./</loc>
+  <lastmod>2013-08-05T14:33:16+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://aymkdn.github.io/SharepointPlus/symbols/%24SP%28%29.html</loc>
+  <lastmod>2013-08-05T14:33:16+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://aymkdn.github.io/SharepointPlus/symbols/%24SP%28%29.formfields.html</loc>
+  <lastmod>2013-08-05T14:33:16+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://aymkdn.github.io/SharepointPlus/symbols/%24SP%28%29.list.html</loc>
+  <lastmod>2013-08-05T14:33:16+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://aymkdn.github.io/SharepointPlus/index.html</loc>
+  <lastmod>2013-08-05T14:33:16+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+</urlset>

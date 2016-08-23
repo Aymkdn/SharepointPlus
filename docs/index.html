@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SharepointPlus :: JavaScript API for Sharepoint</title>
+  <link rel="shortcut icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="symbols/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="symbols/css/bootstrap-responsive.min.css" />
+  <link rel="stylesheet" type="text/css" href="symbols/css/prettify.css" />
+  <link rel="stylesheet" type="text/css" href="symbols/css/sunburst.css" />
+  <link rel="stylesheet" type="text/css" href="symbols/css/default.css" />
+  <script type="text/javascript" src="symbols/js/prettify.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript" src="symbols/js/bootstrap-collapse.js"></script>
+  <script type="text/javascript" src="symbols/js/bootstrap-scrollspy.js"></script>
+  <script type="text/javascript" src="symbols/js/bootstrap-dropdown.js"></script>
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30296916-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body onload="prettyPrint()">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href=".">SharepointPlus</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+          
+            
+            <li class="dropdown">
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (33)<b class="caret"></b></a>
+              
+              <ul class="dropdown-menu">
+              
+              
+                <li><a href="symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.checkin">checkin</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.closeModalDialog">closeModalDialog</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.createFile">createFile</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.createFolder">createFolder</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.decode_b64">decode_b64</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.encode_b64">encode_b64</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.getURL">getURL</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.getUserInfo">getUserInfo</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.getVersion">getVersion</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.isMember">isMember</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.lists">lists</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.notify">notify</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.parse">parse</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.people">people</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.regionalDateFormat">regionalDateFormat</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.regionalSettings">regionalSettings</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.removeNotify">removeNotify</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.showModalDialog">showModalDialog</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.toDate">toDate</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.toSPDate">toSPDate</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.toXSLString">toXSLString</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.waitModalDialog">waitModalDialog</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.workflowStatusToText">workflowStatusToText</a></li>
+              
+              </ul>
+              
+            </li>
+            
+          
+            
+            <li class="dropdown">
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
+              
+              <ul class="dropdown-menu">
+              
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.description">description</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.each">each</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.name">name</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.row">row</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.type">type</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.val">val</a></li>
+              
+              </ul>
+              
+            </li>
+            
+          
+            
+            <li class="dropdown">
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (16)<b class="caret"></b></a>
+              
+              <ul class="dropdown-menu">
+              
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.add">add</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.addAttachment">addAttachment</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.get">get</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.getAttachment">getAttachment</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.getContentTypeInfo">getContentTypeInfo</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.getContentTypes">getContentTypes</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.getWorkflowID">getWorkflowID</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.history">history</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.info">info</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.moderate">moderate</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.remove">remove</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.startWorkflow">startWorkflow</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.startWorkflow2013">startWorkflow2013</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.update">update</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.view">view</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.list.html#.views">views</a></li>
+              
+              </ul>
+              
+            </li>
+            
+          
+            
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span2 hidden-tablet hidden-phone"> <!-- left side bar -->
+        <div style="margin-bottom: 15px; padding-left: 14px; margin-top: 10px;"><img id="logo" src="img/sharepointplus.svg" style="width: 100px"></div>
+        <ul class="nav nav-list">
+          <li class="nav-header">Download</li>
+          <li><a href="https://github.com/Aymkdn/SharepointPlus">GitHub Repository</a></li>
+          <li><a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md">Changelog</a></li>
+          <li><a href="https://github.com/Aymkdn/SharepointPlus/blob/master/plugins/">Plugins</a></li>
+          <li class="nav-header">API</li>
+          
+          
+          <li><a href="symbols/%24SP%28%29.html">$SP()</a></li>
+          
+          
+          
+          <li><a href="symbols/%24SP%28%29.formfields.html">$SP().formfields</a></li>
+          
+          
+          
+          <li><a href="symbols/%24SP%28%29.list.html">$SP().list</a></li>
+          
+          
+          
+          
+        </ul>
+      </div>
+
+      <div class="span10"> <!-- content -->
+        <h1>SharepointPlus 3.13</h1>
+        <a href="https://twitter.com/sp_js" class="twitter-follow-button" data-show-count="false" data-lang="fr" data-dnt="true">Follow @sp_js</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        <h2>Description</h2>
+        <p>SharepointPlus ($SP) is a <strong>JavaScript API for Sharepoint</strong>. This library offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
+        <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
+        <p>I've developed this API for my needs during my job at <a href="http://www.dell.com">Dell</a> and we thought it could be useful for the community too, so here it is !</p>
+        <div class="alert alert-error" style="display:none" aria-hidden="true"><a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release 100% compatible with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility (even if everything should be OK anyway).<br>
+        Starting SharepointPlus v3.0.5 it should be fully compatible with <b>Sharepoint 2010</b>.</div>
+        <h2>Supported Sharepoint</h2>
+        <p>
+          <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release that I have tested with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility<br>
+          <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.4<br>
+          <b>Sharepoint 2013</b> : Compatible since SharepointPlus v3.13<br>
+          <b>Sharepoint Online</b> : I have no plan to test SharepointPlus on Sharepoint Online, but it should be compatible.
+        </p>
+        <h2>Quick Start</h2>
+        <h3>Requirements</h3>
+        <p>Since v3.13, there is no more need of <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work! For older versions, make sure to include jQuery.</p>
+        <div class="row"><div class="span8 alert alert-info">If you don't use jQuery in your project, then SharepointPlus 3.13 will need to use <a href="https://github.com/Aymkdn/SharepointPlus/nanoajax/nanoajax.min.js">nanoajax (811o minified and zipped)</a><div class=""></div></div></div>
+        <h3>The basics</h3>
+        <p>Just add two lines to call either jQuery or nanoajax and SharepointPlus:</p>
+<pre class="prettyprint lang-js">&lt;script type="text/javascript" src="nanoajax.min.js">&lt;/script>
+&lt;script type="text/javascript" src="sharepointplus-3.13.min.js">&lt;/script></pre>
+        <p>You may also want to use a CDN: <a href="http://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a></p>
+        <h4><small>Lists</small></h4>
+        <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
+        <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
+<pre class="prettyprint lang-js">
+// Update all items with an "Amount" value bigger than 1000
+$SP().list('My List Name').update({Title:"Too expensive"},{where:"Amount > 1000",success:function(items) { alert(items.length+" items updated!"); });
+
+// Get all items with "Requestor" is the current user and with "Default Color" is "pink"
+$SP().list('ListName').get({fields:"Title,Size",where:"Requestor = '[Me]' AND Default_x0020_Color = 'pink'",orderby:"Size DESC"},function(data) {
+  var html = "&lt;ul>";
+  for (var i=data.length; i--;)
+    html += "&lt;li>Model '"+data[i].getAttribute("Title")+"' (size: "+data[i].getAttribute("Default_x0020_Color")+")&lt;li>";
+  $('#list').append(html+'&lt;/ul>');
+});
+</pre>
+        <h4><small>Forms</small></h4>
+        <p>SharepointPlus provides few functions to interact with <em>NewForm.aspx</em> and <em>EditForm.aspx</em> of a list:</p>
+<pre class="prettyprint lang-js">
+// hide some fields like "Title", "Next Action"
+$SP().formfields("Title,Next Action").row().hide(); // row() returns a jQuery object that represents the &lt;TR> element
+
+// check if all mandatory fields have a value, and also "Title"
+$SP().formfields("Title",{mandatory:true}).each(function() {
+  if (this.val() == "") {
+    alert(this.name+" is empty!");
+    return false;
+  }
+});
+</pre>
+        <h4><small>Utilities</small></h4>
+        <p>SharepointPlus has also some useful functions:</p>
+<pre class="prettyprint lang-js">
+// create a Excel file
+var table="&lt;table>&lt;tr>&lt;th>Column 1&lt;/th>&lt;th>Column 2&lt;/th>&lt;/tr>&lt;tr>&lt;td>First cell&lt;/td>&lt;td>Other cell&lt;/td>&lt;/tr>&lt;/body>";
+$SP().createFile({content:table,destination:"http://mysite/Shared Documents/myfile.xls",url:"http://mysite/",after:function() { alert("File created!"); }});
+
+// take a number and return it as a currency amount
+$SP().toCurrency(1500000,2,'$'); // --> $1,500,000.00
+
+// when you have to deal with a date from a .get() ...
+$SP().list('My Calendar List').get({fields:"Meeting_x0020_Date"},function(data) {
+  for (var i=data.length; i--;) console.log($SP().toDate(data[i].getAttribute("Meeting_x0020_Date")).getFullYear());
+});
+// ... or to a .add()/.update()
+var nextMeeting = new Date("5/May/2015");
+$SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate(nextMeeting)});
+</pre>
+
+        <h4><small>Promise</small></h4>
+        <p>SharepointPlus is not yet Promise-compatible, however you can use, for example, <a href="http://api.jquery.com/category/deferred-object/">jQuery.Deferred</a>. Find below some examples:</p>
+<pre class="prettyprint lang-js">
+// Call two lists in the same time before doing some stuff with the result
+$.when(
+  (function() {
+    var deferred = jQuery.Deferred();
+    $SP().list("List 1").get({fields:"Title,Other_x0020_Field", where:"Created = [Today]"}, function(data, err) {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        deferred.resolve(data);
+      }
+    })
+    return deferred;
+  }()),
+  (function() {
+    var deferred = jQuery.Deferred();
+    $SP().list("List 2").get({fields:"Title,Cost", where:"Cost > 100"}, function(data, err) {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        deferred.resolve(data);
+      }
+    })
+    return deferred;
+  }())
+).done(function(dataList1, dataList2) {
+  // do some stuff here
+}).fail(function(err) {
+  alert("[ERROR] "+err)
+})
+</pre>
+      </div>
+    </div>
+    <footer class="footer">
+    <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://code.google.com/p/jsdoc-toolkit/">JSDoc Toolkit</a>.</p>
+<p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
+<p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
+
+    <p>Automatically generated with JSDoc on Tue, 23 Aug 2016 09:36:31 GMT</p>
+    </footer>
+  </div>
+  <script type="text/javascript">
+  $('.dropdown-toggle').dropdown()
+  // test SVG
+  function supportsSVG() { return !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', "svg").createSVGRect }
+  if (supportsSVG() === false) $('#logo').attr("src","img/sharepointplus.png")
+  </script>
+</body>
+</html>
