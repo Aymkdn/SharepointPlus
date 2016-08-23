@@ -1,5 +1,27 @@
 # Changelog
 
+**Change Log v3.13 (August 23, 2016)**
+
+  - Fully compatible with Sharepoint 2013!
+  - jQuery is not required anymore!
+  - Rewrite `$SP().createFile()` with new options (see [issue #26](https://github.com/Aymkdn/SharepointPlus/issues/26) and [pull #29](https://github.com/Aymkdn/SharepointPlus/pull/29))
+  - Add operator "IN" for WHERE clause thru `$SP().parse()` (e.g. 'Location IN ["Los Angeles","San Francisco","New York"]')
+  - Add special words "TRUE" and "FALSE" for `$SP().parse()` to use with the Yes/No columns
+  - Full rewrite of `$SP().formfields()` to be compatible with Sharepoint 2013 (a few things could be now different from previous versions)
+  - Remove option `data-sp-ignore` from `$SP().formfields()`
+  - Set 160 qUnit tests for almost all the functions
+  - Add automatic qUnit test environment creation to make tests easier
+  - Add option `usejQuery` to `$SP().formfields().elem()`
+  - Add `$SP().encode_b64()` and `$SP().decode_b64()`
+  - Add `$SP().getURL()` to return the current base url
+  - Add `$SP().regionalSettings()` to return the user regional settings
+  - Add `$SP().regionalDateFormat()` to return the date format based on the user regional settings (usefull for Date Picker fields manipulation)
+  - Add `$SP().list().startWorkflow2013()` to start Sharepoint 2013 workflows (the other function remains for Sharepoint 2010 workflows)
+  - Add Site Workflow start for `$SP().list().startWorkflow()`
+  - Add `$SP().showModalDialog()`, `$SP().closeModalDialog()` and `$SP().waitModalDialog()`
+  - Add two parameters (passedItems, failedItems) to options `after` for `$SP().list().add()`, `$SP().list().update()`, ...
+  - Add `$SP().list().addAttachment()` to attach a document to a list item
+
 **Change Log v3.12 (January 26, 2016)**
 
   - Fix problem with IE8 and Array.prototype.indexOf ([issue #25](https://github.com/Aymkdn/SharepointPlus/issues/25))

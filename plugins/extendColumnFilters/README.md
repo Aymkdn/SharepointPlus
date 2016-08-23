@@ -4,6 +4,8 @@ This is a plugin that is able to extend the default filters available in each co
 
 **It could be improved a lot** but right now it fits my little needs: I have a Document Library under Sharepoint 2010 (untested for the other versions of Sharepoint) and I've noticed that the default views don't permit to filter by the filename when I needed this feature.
 
+**Attention** : jQuery is required for this plugin.
+
 Example:
 
 ![Before](https://raw.githubusercontent.com/Aymkdn/SharepointPlus/master/plugins/extendColumnFilters/images/before.png)

@@ -9,6 +9,8 @@ You might want to use the SP2013 native People Picker... To do it, [refer to thi
 
 This plugin permits to change a simple `<input type="text">` to a text field connected to the Sharepoint address book where you can type an user name and select him/her from a list.
 
+**Attention** : jQuery is required for this plugin.
+
 Example
 -------
 

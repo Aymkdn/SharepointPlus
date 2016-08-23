@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+  <title>SharepointPlus Documentation :: $SP()</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/prettify.css" />
+  <link rel="stylesheet" type="text/css" href="css/sunburst.css" />
+  <link rel="stylesheet" type="text/css" href="css/default.css" />
+  <script type="text/javascript" src="js/prettify.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap-collapse.js"></script>
+  <script type="text/javascript" src="js/bootstrap-scrollspy.js"></script>
+  <script type="text/javascript" src="js/bootstrap-dropdown.js"></script>
+</head>
+<body onload="prettyPrint()">
+
+
+
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="../index.html">SharepointPlus</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+          
+            
+            <li class="dropdown">
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (33)<b class="caret"></b></a>
+              
+              <ul class="dropdown-menu">
+              
+              
+                <li><a href="../symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.checkin">checkin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.closeModalDialog">closeModalDialog</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.createFolder">createFolder</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.decode_b64">decode_b64</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.encode_b64">encode_b64</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.getURL">getURL</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.getUserInfo">getUserInfo</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.getVersion">getVersion</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.isMember">isMember</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.lists">lists</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.notify">notify</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.parse">parse</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.people">people</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.regionalDateFormat">regionalDateFormat</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.regionalSettings">regionalSettings</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.removeNotify">removeNotify</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.showModalDialog">showModalDialog</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.toDate">toDate</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.toSPDate">toSPDate</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.toXSLString">toXSLString</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.waitModalDialog">waitModalDialog</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.workflowStatusToText">workflowStatusToText</a></li>
+              
+              </ul>
+              
+            </li>
+            
+          
+            
+            <li class="dropdown">
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
+              
+              <ul class="dropdown-menu">
+              
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.description">description</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.name">name</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.row">row</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.type">type</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.val">val</a></li>
+              
+              </ul>
+              
+            </li>
+            
+          
+            
+            <li class="dropdown">
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().list (16)<b class="caret"></b></a>
+              
+              <ul class="dropdown-menu">
+              
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.add">add</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.addAttachment">addAttachment</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.get">get</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getAttachment">getAttachment</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypeInfo">getContentTypeInfo</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getContentTypes">getContentTypes</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.getWorkflowID">getWorkflowID</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.history">history</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.info">info</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.moderate">moderate</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.remove">remove</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.startWorkflow">startWorkflow</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.startWorkflow2013">startWorkflow2013</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.update">update</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.view">view</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.list.html#.views">views</a></li>
+              
+              </ul>
+              
+            </li>
+            
+          
+            
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span2 hidden-tablet hidden-phone"> <!-- left side bar -->
+        <ul class="nav nav-list">
+          <li class="nav-header">Download</li>
+          <li><a href="https://github.com/Aymkdn/SharepointPlus">GitHub Repository</a></li>
+          <li><a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md">Changelog</a></li>
+          <li class="nav-header">API</li>
+          
+          
+          <li class="active"><a href="../symbols/%24SP%28%29.html">$SP()</a></li>
+          
+          
+          
+          <li class=""><a href="../symbols/%24SP%28%29.formfields.html">$SP().formfields</a></li>
+          
+          
+          
+          <li class=""><a href="../symbols/%24SP%28%29.list.html">$SP().list</a></li>
+          
+          
+          
+          
+        </ul>
+
+        <!-- ============================== methods summary ======================== -->
+        
+        
+        
+        <ul class="nav nav-list">
+          <li class="nav-header">Methods</li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.addressbook">addressbook</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.checkin">checkin</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.cleanResult">cleanResult</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.closeModalDialog">closeModalDialog</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.createFile">createFile</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.createFolder">createFolder</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.decode_b64">decode_b64</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.distributionLists">distributionLists</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.encode_b64">encode_b64</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.getURL">getURL</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.getUserInfo">getUserInfo</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.getVersion">getVersion</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.groupMembers">groupMembers</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.isMember">isMember</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.lists">lists</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.notify">notify</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.parse">parse</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.people">people</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.plugin">plugin</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.regionalDateFormat">regionalDateFormat</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.regionalSettings">regionalSettings</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.registerPlugin">registerPlugin</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.removeNotify">removeNotify</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.showModalDialog">showModalDialog</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.toCurrency">toCurrency</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.toDate">toDate</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.toSPDate">toSPDate</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.toXSLString">toXSLString</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.usergroups">usergroups</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.waitModalDialog">waitModalDialog</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.whoami">whoami</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.workflowStatusToText">workflowStatusToText</a></li>
+          
+        </ul>
+        
+        
+      </div>
+
+      <div class="span10"> <!-- content -->
+        <h1 class="classTitle">$SP()</h1>
+        <div class="member">
+          <blockquote class="description"></blockquote>
+          
+          
+          
+         
+          
+        </div>
+        
+        
+        <h1 id="methods">Methods</h1>
+        
+        <div class="member">
+          <h2><a href="#.addressbook" name=".addressbook" title="Direct link to the method 'addressbook'">addressbook</a></h2>
+          <div>
+            <div class="method well">addressbook(word, setup, result)</div>
+          </div>
+          <blockquote class="description">Find an user based on a part of his name</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="word">word</b> </div>  <div class="param_description span7">A part of the name from the guy you're looking for</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.limit">setup.limit</b> <i>Optional, Default: 10</i></div>  <div class="param_description span7">Number of results returned</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.type">setup.type</b> <i>Optional, Default: 'User'</i></div>  <div class="param_description span7">Possible values are: 'All', 'DistributionList', 'SecurityGroup', 'SharePointGroup', 'User', and 'None' (see http://msdn.microsoft.com/en-us/library/people.spprincipaltype.aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result (typically: AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType)</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().addressbook("john", {limit:25}, function(people) {
+  for (var i=0; i &lt; people.length; i++) {
+    for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[i][people[i][j]]);
+  }
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.checkin" name=".checkin" title="Direct link to the method 'checkin'">checkin</a></h2>
+          <div>
+            <div class="method well">checkin(setup)</div>
+          </div>
+          <blockquote class="description">Checkin a file</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.destination">setup.destination</b> </div>  <div class="param_description span7">The full path to the file to check in</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.comments">setup.comments</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The comments related to the check in</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered when there is success</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered if there is an error</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().checkin({
+  destination:"http://mysite/Shared Documents/myfile.txt",
+  comments:"Automatic check in with SharepointPlus",
+  after:function() { alert("Done"); }
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.cleanResult" name=".cleanResult" title="Direct link to the method 'cleanResult'">cleanResult</a></h2>
+          <div>
+            <div class="method well">cleanResult(str, separator)</div>
+          </div>
+          <blockquote class="description">clean a string returned by a GET (remove ";#" and "string;#" and null becomes "")</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="str">str</b> </div>  <div class="param_description span7">The string to clean</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="separator">separator</b> <i>Optional, Default: ";"</i></div>  <div class="param_description span7">When it's a list we may want to have a different output (see examples)</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">the cleaned string</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().cleanResult("15;#Paul"); // -> "Paul"
+$SP().cleanResult("string;#Paul"); // -> "Paul"
+$SP().cleanResult("string;#"); // -> ""
+$SP().cleanResult(";#Paul;#Jacques;#Aymeric;#"); // -> "Paul;Jacques;Aymeric"
+$SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aymeric"</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.closeModalDialog" name=".closeModalDialog" title="Direct link to the method 'closeModalDialog'">closeModalDialog</a></h2>
+          <div>
+            <div class="method well">closeModalDialog(dialogResult, returnValue)</div>
+          </div>
+          <blockquote class="description">Close the last modal dialog</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">SP.UI.DialogResult</div>  <div class="name span4"><b data-param="dialogResult">dialogResult</b> <i>Optional</i></div>  <div class="param_description span7">One of the enumeration values specifying the result of the modal dialog</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="returnValue">returnValue</b> <i>Optional</i></div>  <div class="param_description span7">The return value of the modal dialog</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().closeModalDialog()</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.createFile" name=".createFile" title="Direct link to the method 'createFile'">createFile</a></h2>
+          <div>
+            <div class="method well">createFile(setup)</div>
+          </div>
+          <blockquote class="description">Create a file and save it to a Document library</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.content">setup.content</b> </div>  <div class="param_description span7">The file content</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.filename">setup.filename</b> </div>  <div class="param_description span7">The relative path (within the document library) to the file to create</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.library">setup.library</b> </div>  <div class="param_description span7">The name of the document library</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.encoded">setup.encoded</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Set to true if the content passed is already base64-encoded</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.fields">setup.fields</b> <i>Optional</i></div>  <div class="param_description span7">If you want to set some other fields for the document</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional, Default: function(fileURL){}</i></div>  <div class="param_description span7">A callback function that will be triggered in case of success; 1 parameter</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: function(fileURL,errorMessage){}</i></div>  <div class="param_description span7">A callback function that will be triggered in case of failure; 2 parameters</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(fileURL,errorMessage){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task whatever it's successful or not; 2 parameters</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+// create a text document
+$SP().createFile({
+  content:"Hello World!",
+  filename:"SubFolder/myfile.txt",
+  library:"Shared Document",
+  fields:{
+    "Title":"My Document",
+    "File_x0020_Description":"This is my file!"
+  },
+  after:function(fileURL, error) {
+    if (error) alert("Error: "+error)
+    else alert("File created at " + fileURL); // fileURL -> http://mysite/Shared Documents/SubFolder/myfile.txt
+  }
+});
+
+// you can remove "library" if you use $SP().list()
+$SP().list("Shared Document").createFile({
+  content:"Hello World!",
+  filename:"SubFolder/myfile.txt",
+  fields:{
+    "Title":"My Document",
+    "File_x0020_Description":"This is my file!"
+  },
+  after:function(fileURL, error) {
+    if (error) alert("Error: "+error)
+    else alert("File created at " + fileURL); // fileURL -> http://mysite/Shared Documents/SubFolder/myfile.txt
+  }
+})
+
+// we can also create an Excel file
+// a good way to export some data to Excel
+$SP().createFile({
+  content:"&lt;table>&lt;tr>&lt;th>Column A&lt;/th>&lt;th>Column B&lt;/th>&lt;/tr>&lt;tr>&lt;td>Hello&lt;/td>&lt;td>World!&lt;/td>&lt;/tr>&lt;/table>",
+  filename:"myfile.xls",
+  library:"Excel Exports",
+  after:function(fileURL) {
+    window.location.href=fileURL;
+  }
+});
+
+// You can use https://github.com/Aymkdn/FileToDataURI if you want to be able to read a local file
+// and then upload it to a document library, via Javascript/Flash
+// We'll use "encoded:true" to say our content is already a base64 string
+$SP().createFile({
+  content:"U2hhcmVwb2ludFBsdXMgUm9ja3Mh",
+  encoded:true,
+  filename:"Demo/HelloWorld.txt",
+  library:"Documents",
+  url:"http://my.other.site/website/"
+});
+
+// NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.createFolder" name=".createFolder" title="Direct link to the method 'createFolder'">createFolder</a></h2>
+          <div>
+            <div class="method well">createFolder(setup)</div>
+          </div>
+          <blockquote class="description">Create a folter in a Document library</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.path">setup.path</b> </div>  <div class="param_description span7">The relative path to the new folder</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.library">setup.library</b> </div>  <div class="param_description span7">The name of the Document Library</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+// create a folder called "first" at the root of the Shared Documents library
+// the result should be "http://mysite/Shared Documents/first/"
+$SP().createFolder({
+  path:"first",
+  library:"Shared Documents",
+  url:"http://mysite/",
+  after:function() { alert("Folder created!"); }
+});
+
+// create a folder called "second" under "first" 
+// the result should be "http://mysite/Shared Documents/first/second/"
+// if "first" doesn't exist then it will be created
+$SP().createFolder({
+  path:"first/second",
+  library:"Shared Documents",
+  after:function() { alert("Folder created!"); }
+});
+
+// Note: To delete a folder you can use $SP().list().remove()</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.decode_b64" name=".decode_b64" title="Direct link to the method 'decode_b64'">decode_b64</a></h2>
+          <div>
+            <div class="method well">decode_b64(toDecode)</div>
+          </div>
+          <blockquote class="description">Permits to decode a Base 64 string</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="toDecode">toDecode</b> </div>  <div class="param_description span7">It's the Base 64 string to decode</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">The decoded string</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.distributionLists" name=".distributionLists" title="Direct link to the method 'distributionLists'">distributionLists</a></h2>
+          <div>
+            <div class="method well">distributionLists(username, setup, result)</div>
+          </div>
+          <blockquote class="description">Find the distribution lists where the specified user is member of</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">The username with or without the domain (don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Cache the response from the server</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(mailing) {
+  for (var i=0; i &lt; mailing.length; i++) console.log(mailing[i]); // -> {SourceReference: "cn=listname,ou=distribution lists,ou=rainbow,dc=com", DisplayName:"listname", MailNickname:"List Name", Url:"mailto:listname@rainbow.com"}
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.encode_b64" name=".encode_b64" title="Direct link to the method 'encode_b64'">encode_b64</a></h2>
+          <div>
+            <div class="method well">encode_b64(toEncode)</div>
+          </div>
+          <blockquote class="description">Permits to encode in Base 64</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="toEncode">toEncode</b> </div>  <div class="param_description span7">It's the string to encode into Base 64</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">The encoded string</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.getLookup" name=".getLookup" title="Direct link to the method 'getLookup'">getLookup</a></h2>
+          <div>
+            <div class="method well">getLookup(text)</div>
+          </div>
+          <blockquote class="description">Split the ID and Value</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="text">text</b> </div>  <div class="param_description span7">The string to retrieve data</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">Object</div>
+              <div class="span10">.id returns the ID, and .value returns the value</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().getLookup("328;#Foo"); // --> {id:328, value:"Foo"}</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.getURL" name=".getURL" title="Direct link to the method 'getURL'">getURL</a></h2>
+          <div>
+            <div class="method well">getURL()</div>
+          </div>
+          <blockquote class="description">Return the current base URL website</blockquote>
+          
+          
+          
+          
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">The current base URL website</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.getUserInfo" name=".getUserInfo" title="Direct link to the method 'getUserInfo'">getUserInfo</a></h2>
+          <div>
+            <div class="method well">getUserInfo(username, setup, result)</div>
+          </div>
+          <blockquote class="description">Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">That must be "domain\\login" for Sharepoint 2010, or something like "i:0#.w|domain\\login" for Sharepoint 2013</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an object with the result ({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), or a String with the error message</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}, function(info) {
+  if (typeof info === "string") {
+    alert("Error:"+info); // there was a problem so we show it
+  } else
+    alert("User ID = "+info.ID)
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.getVersion" name=".getVersion" title="Direct link to the method 'getVersion'">getVersion</a></h2>
+          <div>
+            <div class="method well">getVersion()</div>
+          </div>
+          <blockquote class="description">Returns the SP version</blockquote>
+          
+          
+          
+          
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">The current SharepointPlus version</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.groupMembers" name=".groupMembers" title="Direct link to the method 'groupMembers'">groupMembers</a></h2>
+          <div>
+            <div class="method well">groupMembers(groupname, setup, result)</div>
+          </div>
+          <blockquote class="description">Find the members of a Sharepoint group</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="groupname">groupname</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">By default the function will cache the group members (so if you call several times it will use the cache)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().groupMembers("my group", function(members) {
+  for (var i=0; i &lt; members.length; i++) console.log(members[i]); // -> {ID:"1234", Name:"Doe, John", LoginName:"mydomain\john_doe", Email:"john_doe@rainbow.com"}
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.isMember" name=".isMember" title="Direct link to the method 'isMember'">isMember</a></h2>
+          <div>
+            <div class="method well">isMember(setup, result)</div>
+          </div>
+          <blockquote class="description">Find if the user is member of the Sharepoint group</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.user">setup.user</b> </div>  <div class="param_description span7">Username with domain ("domain\\login" for Sharepoint 2010, or "i:0#.w|domain\\login" for Sharepoint 2013)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.group">setup.group</b> </div>  <div class="param_description span7">Name of the group</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Cache the response from the server</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">Return TRUE if the user is a member of the group, FALSE if not.</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().isMember({user:"mydomain\\john_doe",group:"my group",url:"http://my.site.com/"}, function(isMember) {
+  if (isMember) alert("OK !")
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.lists" name=".lists" title="Direct link to the method 'lists'">lists</a></h2>
+          <div>
+            <div class="method well">lists(setup, function())</div>
+          </div>
+          <blockquote class="description">Get the lists from the site (for each list we'll have "ID", "Name", "Description", "Url")</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="function()">function()</b> <i>Optional</i></div>  <div class="param_description span7">A function with the data from the request as first argument</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().lists(function(list) {
+  for (var i=0; i&lt;list.length; i++) console.log("List #"+i+": "+list[i]['Name']);
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.notify" name=".notify" title="Direct link to the method 'notify'">notify</a></h2>
+          <div>
+            <div class="method well">notify(message, options)</div>
+          </div>
+          <blockquote class="description">Permits to notify the user using the SP.UI.Notify.addNotification system</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="message">message</b> </div>  <div class="param_description span7">Message to show</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="options.timeout">options.timeout</b> <i>Optional, Default: 5</i></div>  <div class="param_description span7">The number of seconds that the notification is shown</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.override">options.override</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">This option to TRUE permits to remove the previous/current notification that is showing (even if the timeout is not over and even if it's a sticky) and replace it with the new one</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.overrideAll">options.overrideAll</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Same as previously except that it will remove *all* the previous notifications that are currently showing</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.overrideSticky">options.overrideSticky</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">When "overrideAll:true" then even the sticky notifications are removed, but you can block this behavior with "overrideSticky:false"</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.sticky">options.sticky</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Keep the notification on the screen until it's manually removed (or automatically removed with "overrideAll:true" and "overrideSticky:true")</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.name">options.name</b> <i>Optional, Default: random()</i></div>  <div class="param_description span7">You can give a name to the notification (to use it with $SP().removeNotify('name'))</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.after">options.after</b> <i>Optional, Default: function(name,afterDelay){}</i></div>  <div class="param_description span7">You can call this function when the notification is removed -- the argument "name" is the name of the notification (see previous option), the argument "afterDelay" is TRUE when the notification has been removed by the system after it's normal timeout</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().notify('Processing the data...', {sticky:true}); // the notification will stay on the screen until we remove it
+$SP().notify('All done!', {overrideAll:true}); // the "Processing the data..." is removed from the screen and a 5 seconds message says "All done!"
+
+$SP().notify('Please wait 10 seconds...', {
+  name:"My 10 seconds notification",
+  timeout:10,
+  after:function(name,afterDelay) {
+    if (afterDelay) alert("OK, you waited during 10 seconds!")
+    else alert("Something just removed this notification called '"+name+"'' before the timeout :-(")
+  }
+})</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.parse" name=".parse" title="Direct link to the method 'parse'">parse</a></h2>
+          <div>
+            <div class="method well">parse(where, escapeChar)</div>
+          </div>
+          <blockquote class="description">Use a WHERE sentence to transform it into a CAML Syntax sentence</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="where">where</b> </div>  <div class="param_description span7">The WHERE sentence to change</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="escapeChar">escapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
+// -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;IsNotNull>&lt;FieldRef Name="Description" />&lt;/IsNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
+
+// available operators :
+// "&lt;" : less than
+// "&lt;=" : less than or equal to
+// ">" : greater than
+// ">=" : greater than or equal to
+// "<>" : different
+// "~=" : this must be only used when comparing to a number that represents the User ID (e.g. 'User ~= 328') - that permits to query a list with too many items but with the User column that is indexed
+// " AND "
+// " OR "
+// " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
+// " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"'
+
+// special words:
+// '[Me]' : for the current user
+// '[Today]' : to use the today date
+// '[Today+X]' : to use today + X days
+// Null : for the Null value
+// TRUE : for the Yes/No columns
+// FALSE : for the Yes/No columns
+
+// in the below example, on the "&" will be escaped
+var bar="Bob & Marley";
+var foo="O'Conney";
+$SP().parse('Bar = "'+bar+'" AND Foo = "'+foo+'"'); // -> &lt;And>&lt;Eq>&lt;FieldRef Name="Bar" />&lt;Value Type="Text">Bob &amp; Marley&lt;/Value>&lt;/Eq>&lt;Eq>&lt;FieldRef Name="Foo" />&lt;Value Type="Text">O'Conney&lt;/Value>&lt;/Eq>&lt;/And>
+$SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.people" name=".people" title="Direct link to the method 'people'">people</a></h2>
+          <div>
+            <div class="method well">people(username, setup, result)</div>
+          </div>
+          <blockquote class="description">Find the user details like manager, email, colleagues, ...</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> <i>Optional</i></div>  <div class="param_description span7">With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result, or a String with the error message</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().people("john_doe",{url:"http://my.si.te/subdir/"}, function(people) {
+  if (typeof people === "string") {
+    alert(people); // there was a problem so we prompt it
+  } else
+    for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.plugin" name=".plugin" title="Direct link to the method 'plugin'">plugin</a></h2>
+          <div>
+            <div class="method well">plugin(pluginName, options)</div>
+          </div>
+          <blockquote class="description">Permits to use a plugin</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="pluginName">pluginName</b> </div>  <div class="param_description span7">The plugin name to call</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">The options for the plugin</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().plugin('test',{message:"This is a test !"})</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.regionalDateFormat" name=".regionalDateFormat" title="Direct link to the method 'regionalDateFormat'">regionalDateFormat</a></h2>
+          <div>
+            <div class="method well">regionalDateFormat(callback)</div>
+          </div>
+          <blockquote class="description">Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, DD for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="callback">callback</b> <i>Optional</i></div>  <div class="param_description span7">It will pass the date format</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+// you'll typically need that info when parsing a date from a Date Picker field from a form
+// we suppose here you're using momentjs
+// eg. we want to verify start date is before end date
+var startDate = $SP().formfields("Start Date").val();
+var endDate = $SP().formfields("End Date").val();
+$SP().regionalDateFormat(function(dateFormat) {
+  // if the user settings are on French, then dateFormat = "DD/MM/YYYY"
+  if (moment(startDate, dateFormat).isAfter(moment(endDate, dateFormat))) {
+    alert("StartDate must be before EndDate!")
+  }
+})</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.regionalSettings" name=".regionalSettings" title="Direct link to the method 'regionalSettings'">regionalSettings</a></h2>
+          <div>
+            <div class="method well">regionalSettings(callback)</div>
+          </div>
+          <blockquote class="description">Find the region settings (of the current user) defined with _layouts/regionalsetng.aspx?Type=User (lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek, timeFormat..)</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="callback">callback</b> <i>Optional</i></div>  <div class="param_description span7">A function with one paramater that contains the parameters returned from the server</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().regionalSettings(function(region) {
+  if (typeof region === "string") {
+    // something went wrong
+    console.log(region); // returns the error
+  } else {
+    // show the selected timezone, and the working days
+    console.log("timeZone: "+region.timeZone);
+    console.log("working days: "+region.workWeek.days.join(", "))
+  }
+})</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.registerPlugin" name=".registerPlugin" title="Direct link to the method 'registerPlugin'">registerPlugin</a></h2>
+          <div>
+            <div class="method well">registerPlugin(pluginName, pluginFct)</div>
+          </div>
+          <blockquote class="description">Permits to register a plugin</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="pluginName">pluginName</b> </div>  <div class="param_description span7">You have to define the plugin name</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="pluginFct">pluginFct</b> </div>  <div class="param_description span7">You have to define the function of the plugin with one parameter that are the options passed</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().registerPlugin('test', function(options) {
+  console.log(options.message);
+})</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.removeNotify" name=".removeNotify" title="Direct link to the method 'removeNotify'">removeNotify</a></h2>
+          <div>
+            <div class="method well">removeNotify(name, options)</div>
+          </div>
+          <blockquote class="description">Permits to remove a notification that is shown on the screen</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="name">name</b> <i>Optional</i></div>  <div class="param_description span7">Name of the notification</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">If you pass the options, then the 'name' is ignored</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.all">options.all</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">To TRUE to remove ALL notifications</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.includeSticky">options.includeSticky</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">To FALSE if you don't want to remove the sticky notifications (only works with the "all:true" option)</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().notify('Processing the data...', {sticky:true,name:"Processing data"}); // the notification will stay on the screen until we remove it
+$SP().removeNotify("Processing data"); // the notification is removed
+
+$SP().notify('Doing some stuff...');
+$SP().notify('Doing some other stuff...');
+$SP().removeNotify({all:true}); // all the notifications are removed
+
+$SP().notify('Doing some stuff...');
+$SP().notify('Doing some other stuff...');
+$SP().notify('This is a sticky message', {sticky:true});
+$SP().removeNotify({all:true, includeSticky:false}); // all the notifications are removed except the sticky one</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.showModalDialog" name=".showModalDialog" title="Direct link to the method 'showModalDialog'">showModalDialog</a></h2>
+          <div>
+            <div class="method well">showModalDialog(options)</div>
+          </div>
+          <blockquote class="description">Show a modal dialog (based on SP.UI.ModalDialog.showModalDialog) but provides some advanced functions and better management of the modals (for example when you launch several modals)</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.html">options.html</b> <i>Optional</i></div>  <div class="param_description span7">We can directly provide the HTML code as a string</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.width">options.width</b> <i>Optional</i></div>  <div class="param_description span7">If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.height">options.height</b> <i>Optional</i></div>  <div class="param_description span7">If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.closePrevious">options.closePrevious</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">It permits to close a previous modal dialog before opening this one</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.wait">options.wait</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If we want to show a Wait Screen (alias for $SP().waitModalDialog())</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.callback">options.callback</b> <i>Optional</i></div>  <div class="param_description span7">A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().showModalDialog({
+  title:"Dialog",
+  html:'<h1>Hello World</h1><p><button type="button" onclick="$SP().closeModialDialog('here')">Close</button></p>',
+  callback:function(dialogResult, returnValue) {
+    alert("Result="+dialogResult); // -> "here"
+  }
+})
+
+// show a waiting message
+$SP().waitModalDialog("Working...");
+// --- do some stuff ---
+// close the waiting message and open a new modal dialog
+$SP().showModalDialog({
+  closePrevious:true,
+  title:"Success",  
+  html:'<h1>Done!</h1>'
+})</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.toCurrency" name=".toCurrency" title="Direct link to the method 'toCurrency'">toCurrency</a></h2>
+          <div>
+            <div class="method well">toCurrency(number, decimal, sign)</div>
+          </div>
+          <blockquote class="description">It will return a number with commas, currency sign and a specific number of decimals</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Number|String</div>  <div class="name span4"><b data-param="number">number</b> </div>  <div class="param_description span7">The number to format</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="decimal">decimal</b> <i>Optional, Default: -1</i></div>  <div class="param_description span7">The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="sign">sign</b> <i>Optional, Default: '$'</i></div>  <div class="param_description span7">The currency sign to add</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">The converted number</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+
+$SP().toCurrency(1500000); // --> $1,500,000
+$SP().toCurrency(1500000,2,''); // --> 1,500,000.00</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.toDate" name=".toDate" title="Direct link to the method 'toDate'">toDate</a></h2>
+          <div>
+            <div class="method well">toDate(textDate, forceUTC)</div>
+          </div>
+          <blockquote class="description">Change a Sharepoint date (as a string) to a Date Object</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="textDate">textDate</b> </div>  <div class="param_description span7">the Sharepoint date string</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="forceUTC">forceUTC</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Permits to force the reading of the date in UTC</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">Date</div>
+              <div class="span10">the equivalent Date object for the Sharepoint date string passed</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().toDate("2012-10-31T00:00:00").getFullYear(); // 2012</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.toSPDate" name=".toSPDate" title="Direct link to the method 'toSPDate'">toSPDate</a></h2>
+          <div>
+            <div class="method well">toSPDate(dateObject, includeTime)</div>
+          </div>
+          <blockquote class="description">Change a Date object into a Sharepoint date string</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Date</div>  <div class="name span4"><b data-param="dateObject">dateObject</b> </div>  <div class="param_description span7">The Date object you want to convert</div></div><div class="parameter row-fluid">  <div class="type span1">Date</div>  <div class="name span4"><b data-param="includeTime">includeTime</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">By default the time is not returned (if the time appears then the WHERE clause will do a time comparison)</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">the equivalent string for the Date object passed</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+  $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31 00:00:00"
+  $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.toXSLString" name=".toXSLString" title="Direct link to the method 'toXSLString'">toXSLString</a></h2>
+          <div>
+            <div class="method well">toXSLString(text)</div>
+          </div>
+          <blockquote class="description">Change a string into a XSL format string</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="text">text</b> </div>  <div class="param_description span7">The string to change</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String</div>
+              <div class="span10">the XSL version of the string passed</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().toXSLString("Big Title"); // --> "Big_x0020_Title"</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.usergroups" name=".usergroups" title="Direct link to the method 'usergroups'">usergroups</a></h2>
+          <div>
+            <div class="method well">usergroups(username, setup, result)</div>
+          </div>
+          <blockquote class="description">Find the Sharepoint groups where the specified user is member of</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="username">username</b> </div>  <div class="param_description span7">The username with the domain (don't forget to use a double \ like "mydomain\\john_doe")</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Keep a cache of the result</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(groups) {
+  for (var i=0; i &lt; groups.length; i++) console.log(groups[i]); // -> "Roadmap Admin", "Global Viewers", ...
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.waitModalDialog" name=".waitModalDialog" title="Direct link to the method 'waitModalDialog'">waitModalDialog</a></h2>
+          <div>
+            <div class="method well">waitModalDialog(title, subtitle, height, width)</div>
+          </div>
+          <blockquote class="description">Shortcut for SP.UI.ModalDialog.showWaitScreenWithNoClose()</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="title">title</b> <i>Optional, Default: "Working on it..."</i></div>  <div class="param_description span7">The main message with the loading spin</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="subtitle">subtitle</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The subtitle</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="height">height</b> <i>Optional</i></div>  <div class="param_description span7">The modal height</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="width">width</b> <i>Optional</i></div>  <div class="param_description span7">The modal width</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.whoami" name=".whoami" title="Direct link to the method 'whoami'">whoami</a></h2>
+          <div>
+            <div class="method well">whoami(setup, result)</div>
+          </div>
+          <blockquote class="description">Find the current user details like manager, email, colleagues, ...</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="result">result</b> <i>Optional</i></div>  <div class="param_description span7">A function that will be executed at the end of the request with a param that is an array with the result</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
+  for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+});</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.workflowStatusToText" name=".workflowStatusToText" title="Direct link to the method 'workflowStatusToText'">workflowStatusToText</a></h2>
+          <div>
+            <div class="method well">workflowStatusToText(code)</div>
+          </div>
+          <blockquote class="description">Return the text related to a workflow status code</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String|Number</div>  <div class="name span4"><b data-param="code">code</b> </div>  <div class="param_description span7">This is the code returned by a workflow</div></div>
+          </div>
+          
+          
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().workflowStatusToText(2); // -> "In Progress"</pre>
+          
+          
+
+          
+          
+          
+
+          
+        </div>
+        
+
+        
+      </div>
+    </div>
+    <footer class="footer">
+    <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://code.google.com/p/jsdoc-toolkit/">JSDoc Toolkit</a>.</p>
+<p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
+<p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
+
+    <p>Automatically generated with JSDoc on Tue, 23 Aug 2016 09:36:31 GMT</p>
+    </footer>
+  </div>
+  <script type="text/javascript">
+  $('.dropdown-toggle').dropdown()
+  </script>
+</body>
+</html>
