@@ -1,6 +1,6 @@
 # Changelog
 
-**Change Log v3.13 ()**
+**Change Log v3.13 (August 23, 2016)**
 
   - Fully compatible with Sharepoint 2013!
   - jQuery is not required anymore!
