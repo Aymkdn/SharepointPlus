@@ -251,7 +251,7 @@
         <p>Since v3.13, there is no more need of <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work! For older versions, make sure to include jQuery.</p>
         <div class="row"><div class="span8 alert alert-info">If you don't use jQuery in your project, then SharepointPlus 3.13 will need to use <a href="https://github.com/Aymkdn/SharepointPlus/nanoajax/nanoajax.min.js">nanoajax (811o minified and zipped)</a><div class=""></div></div></div>
         <h3>The basics</h3>
-        <p>Just add two lines to call either jQuery or nanoajax and SharepointPlus:</p>
+        <p>Just add two lines: one to call either jQuery or nanoajax, and one for SharepointPlus:</p>
 <pre class="prettyprint lang-js">&lt;script type="text/javascript" src="nanoajax.min.js">&lt;/script>
 &lt;script type="text/javascript" src="sharepointplus-3.13.min.js">&lt;/script></pre>
         <p>You may also want to use a CDN: <a href="http://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a></p>
@@ -289,7 +289,7 @@ $SP().formfields("Title",{mandatory:true}).each(function() {
 <pre class="prettyprint lang-js">
 // create a Excel file
 var table="&lt;table>&lt;tr>&lt;th>Column 1&lt;/th>&lt;th>Column 2&lt;/th>&lt;/tr>&lt;tr>&lt;td>First cell&lt;/td>&lt;td>Other cell&lt;/td>&lt;/tr>&lt;/body>";
-$SP().createFile({content:table,destination:"http://mysite/Shared Documents/myfile.xls",url:"http://mysite/",after:function() { alert("File created!"); }});
+$SP().createFile({content:table,library:"Shared Documents",filename:"myfile.xls",after:function() { alert("File created!"); }});
 
 // take a number and return it as a currency amount
 $SP().toCurrency(1500000,2,'$'); // --> $1,500,000.00
@@ -344,7 +344,7 @@ $.when(
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 23 Aug 2016 09:36:31 GMT</p>
+    <p>Automatically generated with JSDoc on Tue, 23 Aug 2016 10:00:36 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

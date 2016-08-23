@@ -13,6 +13,8 @@ div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:b
 .hidden-phone { display:block }
 .hidden-tablet { display:block }
 .hidden-desktop { display:none }
+.alert a { border-bottom:1px solid }
+.alert a:hover { text-decoration:none }
 @media (max-width: 768px) {
   .hidden-tablet,.hidden-phone { display:none !important }
 }
