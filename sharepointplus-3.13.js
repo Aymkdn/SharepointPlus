@@ -114,6 +114,7 @@ _SP_NOTIFY_READY=false;
 _SP_NOTIFY_QUEUE=[];
 _SP_NOTIFY=[];
 _SP_PLUGINS={};
+_SP_MODALDIALOG_LOADED=false;
 
 // for each select of lookup with more than 20 values, for IE only
 // see https://bdequaasteniet.wordpress.com/2013/12/03/getting-rid-of-sharepoint-complex-dropdowns/
@@ -399,6 +400,14 @@ if (typeof jQuery === "function") {
       // " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
       // " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"'
 
+      // special words:
+      // '[Me]' : for the current user
+      // '[Today]' : to use the today date
+      // '[Today+X]' : to use today + X days
+      // Null : for the Null value
+      // TRUE : for the Yes/No columns
+      // FALSE : for the Yes/No columns
+
       // in the below example, on the "&" will be escaped
       var bar="Bob & Marley";
       var foo="O'Conney";
@@ -597,6 +606,23 @@ if (typeof jQuery === "function") {
                         closeOperator = "";
                       }
                     }
+                    else if ((letter.toLowerCase() === "t" && queryString.substring(i,i+4).toLowerCase() === "true") || (letter.toLowerCase() === "f" && queryString.substring(i,i+5).toLowerCase() === "false")) { // when we have TRUE/FALSE as the value
+                      lastIndex = factory.length-1;
+                      i+=3;
+                      if (letter.toLowerCase() === "f") i++;
+                      factory[lastIndex] += '<FieldRef Name="'+lastField+'" /><Value Type="Boolean">'+(letter.toLowerCase() === "t"?1:0)+'</Value>';
+                      lastField = "";
+                      factory[lastIndex] += closeTag;
+                      closeTag = "";
+                      // concat with the first index
+                      if (lastIndex>0) {
+                        if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+                        factory[0] += factory[lastIndex];
+                        if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+                        delete(factory[lastIndex]);
+                        closeOperator = "";
+                      }
+                    }
         }
       }
       return factory.join("");
@@ -649,13 +675,14 @@ if (typeof jQuery === "function") {
       @example
       $SP().cleanResult("15;#Paul"); // -> "Paul"
       $SP().cleanResult("string;#Paul"); // -> "Paul"
+      $SP().cleanResult("string;#"); // -> ""
       $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#"); // -> "Paul;Jacques;Aymeric"
       $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aymeric"
     */
     cleanResult:function(str,separator) {
       if (str===null || typeof str==="undefined") return "";
       separator = separator || ";";
-      return (typeof str==="string"?str.replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator).replace(/^(string;|float;)#?/,""):str);
+      return (typeof str==="string"?str.replace(/^(string;|float;)#?/,"").replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator):str);
     },
     /**
       @name $SP().list.get
@@ -664,19 +691,19 @@ if (typeof jQuery === "function") {
       
       @param {Object} [setup] Options (see below)
         @param {String}  [setup.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
+        @param {String}  [setup.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
         @param {String|Array}  [setup.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
-        @param {Function} [setup.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
         @param {Boolean} [setup.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
         @param {Boolean} [setup.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
         @param {Function} [setup.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
+        @param {Function} [setup.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
         @param {String}  [setup.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
-        @param {Boolean} [setup.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
         @param {String}  [setup.groupby=""] The field used to group by the list result
-        @param {String}  [setup.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
         @param {Integer} [setup.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
         @param {Boolean} [setup.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
         @param {Integer} [setup.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
         @param {String}  [setup.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
+        @param {Boolean} [setup.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
         @param {Boolean} [setup.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
         @param {Boolean} [setup.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
         @param {Object} [setup.folderOptions] Permits to read the content of a Document Library (see below)
@@ -994,6 +1021,8 @@ if (typeof jQuery === "function") {
       // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
       setup.results = setup.results || []; // internal use when there is a paging
       setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
+      // protect & into ListItemCollectionPositionNext
+      if (setup.listItemCollectionPositionNext) setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext.replace(/&/g,"&amp;").replace(/&amp;amp;/g,"&amp;");
       
       // if setup.where is an array, then it means we want to do several requests
       // so we keep the first WHERE
@@ -1381,68 +1410,111 @@ if (typeof jQuery === "function") {
       
       @param {Object} setup Options (see below)
         @param {String} setup.content The file content
-        @param {String} setup.destination The full path to the file to create
+        @param {String} setup.filename The relative path (within the document library) to the file to create
+        @param {String} setup.library The name of the document library
         @param {Boolean} [setup.encoded=false] Set to true if the content passed is already base64-encoded
+        @param {Object} [setup.fields] If you want to set some other fields for the document
         @param {String} [setup.url='current website'] The website url
         @param {Function} [setup.success=function(fileURL){}] A callback function that will be triggered in case of success; 1 parameter
         @param {Function} [setup.error=function(fileURL,errorMessage){}] A callback function that will be triggered in case of failure; 2 parameters
-        @param {Function} [setup.after=function(fileURL){}] A callback function that will be triggered after the task whatever it's successful or not; 1 parameter
+        @param {Function} [setup.after=function(fileURL,errorMessage){}] A callback function that will be triggered after the task whatever it's successful or not; 2 parameters
    
       @example
       // create a text document
       $SP().createFile({
         content:"Hello World!",
-        destination:"http://mysite/Shared Documents/myfile.txt",
-        url:"http://mysite/",
-        after:function() { alert("File created!"); }
+        filename:"SubFolder/myfile.txt",
+        library:"Shared Document",
+        fields:{
+          "Title":"My Document",
+          "File_x0020_Description":"This is my file!"
+        },
+        after:function(fileURL, error) {
+          if (error) alert("Error: "+error)
+          else alert("File created at " + fileURL); // fileURL -> http://mysite/Shared Documents/SubFolder/myfile.txt
+        }
       });
+
+      // you can remove "library" if you use $SP().list()
+      $SP().list("Shared Document").createFile({
+        content:"Hello World!",
+        filename:"SubFolder/myfile.txt",
+        fields:{
+          "Title":"My Document",
+          "File_x0020_Description":"This is my file!"
+        },
+        after:function(fileURL, error) {
+          if (error) alert("Error: "+error)
+          else alert("File created at " + fileURL); // fileURL -> http://mysite/Shared Documents/SubFolder/myfile.txt
+        }
+      })
       
       // we can also create an Excel file
       // a good way to export some data to Excel
       $SP().createFile({
         content:"&lt;table>&lt;tr>&lt;th>Column A&lt;/th>&lt;th>Column B&lt;/th>&lt;/tr>&lt;tr>&lt;td>Hello&lt;/td>&lt;td>World!&lt;/td>&lt;/tr>&lt;/table>",
-        destination:"http://mysite/Shared Documents/myfile.xls",
-        url:"http://mysite/",
-        after:function() {
-          window.location.href="http://mysite/Shared Documents/myfile.xls";
+        filename:"myfile.xls",
+        library:"Excel Exports",
+        after:function(fileURL) {
+          window.location.href=fileURL;
         }
       });
 
       // You can use https://github.com/Aymkdn/FileToDataURI if you want to be able to read a local file
       // and then upload it to a document library, via Javascript/Flash
-      // We'll use "encoded:true" to say our content is alreadu a base64 string
+      // We'll use "encoded:true" to say our content is already a base64 string
       $SP().createFile({
-        content:"*your stuff with FileToDataURI that returns a base64 string*",
+        content:"U2hhcmVwb2ludFBsdXMgUm9ja3Mh",
         encoded:true,
-        destination:"http://mysite/Shared Documents/myfile.xls",
-        url:"http://mysite/"
+        filename:"Demo/HelloWorld.txt",
+        library:"Documents",
+        url:"http://my.other.site/website/"
       });
 
-      // NOTE: in some cases the file are automatically checked out, so you have to use $SP().checkin()
+      // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
     */
     createFile:function(setup) {
+      var _this=this;
       // default values
       setup     = setup || {};
-      if (setup.content == undefined) throw "Error 'createFile': not able to find the file content.";
-      if (setup.destination == undefined) throw "Error 'createFile': not able to find the file destination path.";
-      setup.url = setup.url || this.url;
-      // if we didn't define the url in the parameters, then we need to find it
-      if (!setup.url) {
-        this._getURL();
-        return this._addInQueue(arguments);
+      if (setup.content === undefined) throw "Error 'createFile': not able to find the file content.";
+      if (setup.filename === undefined) throw "Error 'createFile': not able to find the filename.";
+      if (setup.library === undefined) {
+        if (_this.listID === undefined) throw "Error 'createFile': not able to find the library name.";
+        setup.library = _this.listID;
       }
-      if (setup.url == undefined) throw "Error 'createFile': not able to find the URL!"; // we cannot determine the url
+      // if we didn't define the url in the parameters, then we need to find it
+      if (!setup.url && !_this.url) {
+        _this._getURL();
+        return _this._addInQueue(arguments);
+      }
+      setup.url = setup.url || (window.location.protocol + "//" + window.location.host + _this.url);
+      if (setup.url == undefined) throw "Error 'createFile': not able to find the server URL!"; // we cannot determine the url
       setup.after   = setup.after || (function(){});
       setup.success = setup.success || (function() {});
       setup.error   = setup.error || (function() {});
-      setup.encoded = (setup.encoded==undefined?false:setup.encoded);
-      // if setup.destination starts with '/' then we use the current location
-      if (setup.destination.charAt(0) === "/") setup.destination = window.location.protocol + "//" + window.location.host + setup.destination;
-
-      var _this=this;
+      setup.encoded = (setup.encoded===true?true:false);
+      setup.extendedFields = setup.extendedFields || "";
+      // if we have setup.fields, then we need to figure out the Type using $SP().list().info()
+      if (setup.fields && !setup.extendedFields) {
+        if (typeof setup.fields !== "object") throw "Error 'createFile': please refer to the documentation regarding `fields`";
+        _this.list(setup.library).info(function(fields) {
+          // we use extendedFields to define the Type
+          for (var i=fields.length; i--;) {
+            if (setup.fields[fields[i]["StaticName"]]) {
+              setup.extendedFields += '<FieldInformation Type="'+fields[i]["Type"]+'" Value="'+setup.fields[fields[i]["StaticName"]]+'" DisplayName="'+fields[i]["StaticName"]+'" InternalName="'+fields[i]["StaticName"]+'" />'
+            }
+          }
+          if (!setup.extendedFields) delete setup.fields;
+          _this.createFile(setup);
+        });
+        return _this;
+      }
+      var destination = "/" + setup.library + "/" + setup.filename;
+      destination = setup.url + destination.replace(/\/\//g,"/");
       var soapEnv = "<SourceUrl>http://null</SourceUrl>"
-                    +"<DestinationUrls><string>"+setup.destination+"</string></DestinationUrls>"
-                    +"<Fields><FieldInformation Type='File' /></Fields>"
+                    +"<DestinationUrls><string>"+destination+"</string></DestinationUrls>"
+                    +'<Fields><FieldInformation Type="File" />'+setup.extendedFields+'</Fields>'
                     +"<Stream>"+(setup.encoded?setup.content:_this.encode_b64(setup.content))+"</Stream>"
       soapEnv = _this._buildBodyForSOAP("CopyIntoItems", soapEnv);
       _this.ajax({
@@ -1454,21 +1526,23 @@ if (typeof jQuery === "function") {
         contentType: "text/xml; charset=\"utf-8\"",
         success:function(data) {
           var a = data.getElementsByTagName('CopyResult');
+          var error;
           if (a && a[0] && a[0].getAttribute("ErrorCode") !== "Success") {
-            if (typeof setup.error === "function") setup.error.call(_this, setup.destination, "Error 'createFile': "+a[0].getAttribute("ErrorCode")+" - "+a[0].getAttribute("ErrorMessage"));
+            error="Error 'createFile': "+a[0].getAttribute("ErrorCode")+" - "+a[0].getAttribute("ErrorMessage");
+            if (typeof setup.error === "function") setup.error.call(_this, destination, error);
           } else {
-            if (typeof setup.success === "function") setup.success.call(_this, setup.destination);
+            if (typeof setup.success === "function") setup.success.call(_this, destination);
           }
           
-          if (typeof setup.after === "function") setup.after.call(_this, setup.destination);
+          if (typeof setup.after === "function") setup.after.call(_this, destination, error);
         },
         error:function(qXHR, textStatus, errorThrown) {
-          if (typeof setup.error === "function") setup.error.call(_this, setup.destination, "Error 'createFile': "+errorThrown);
-          if (typeof setup.after === "function") setup.after.call(_this, setup.destination);
+          if (typeof setup.error === "function") setup.error.call(_this, destination, errorThrown);
+          if (typeof setup.after === "function") setup.after.call(_this, destination, errorThrown);
         }
       });
 
-      return this;
+      return _this;
     },
     /**
       @name $SP().createFolder
@@ -1577,6 +1651,54 @@ if (typeof jQuery === "function") {
           else setup.success.call(_this);
 
           setup.after.call(_this);
+        }
+      });
+    },
+    /**
+      @name $SP().list.addAttachment
+      @function
+      @description Add an attachment to a Sharepoint List Item
+      
+      @param {Object} setup Options (see below)
+        @param {Number} setup.ID The item ID to attach the file
+        @param {String} setup.filename The name of the file
+        @param {String} setup.attachment A byte array that contains the file to attach by using base-64 encoding
+        @param {Function} [setup.after] A function that will be executed at the end of the request; with one parameter that is the URL to the attached file
+      
+      @example
+      $SP().list("My List").addAttachment({
+        ID:1,
+        filename:"helloworld.txt",
+        attachment:"U2hhcmVwb2ludFBsdXMgUm9ja3Mh",
+        after:function(fileURL) {
+          alert(fileURL)
+        }
+      });
+    */
+    addAttachment:function(setup) {
+      // check if we need to queue it
+      if (this.needQueue) { return this._addInQueue(arguments) }
+      if (arguments.length===0) throw "Error 'addAttachment': the arguments are mandatory";
+      if (this.listID===undefined) throw "Error 'addAttachment': you need to use list() to define the list name.";
+
+      if (typeof setup.ID === "undefined") throw "Error 'addAttachment': the item ID is mandatory";
+      if (typeof setup.filename === "undefined") throw "Error 'addAttachment': the filename is mandatory";
+      if (typeof setup.attachment === "undefined") throw "Error 'addAttachment': the base64-encoded attachment is mandatory";
+      setup.after = setup.after || function() {};
+      var _this=this;
+      var soapEnv = _this._buildBodyForSOAP("AddAttachment", "<listName>"+this.listID+"</listName><listItemID>"+setup.ID+"</listItemID><fileName>"+setup.filename+"</fileName><attachment>"+setup.attachment+"</attachment>");
+      _this.ajax({
+        url: _this.url + "/_vti_bin/Lists.asmx",
+        type: "POST",
+        dataType: "xml",
+        data: soapEnv,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/AddAttachment'); },
+        contentType: "text/xml; charset=utf-8",
+        success:function(data) {
+          var res = data.getElementsByTagName('AddAttachmentResult');
+          var fileURL = "";
+          if (res && res[0]) fileURL = _this.getURL() + "/" + res[0].firstChild.nodeValue;
+          setup.after.call(_this, fileURL);
         }
       });
     },
@@ -2196,7 +2318,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Function} [setup.success] A function with the items added sucessfully
         @param {Function} [setup.error] A function with the items not added
-        @param {Function} [setup.after] A function that will be executed at the end of the request
+        @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
         @param {Boolean} [setup.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
       
       @example
@@ -2250,7 +2372,7 @@ if (typeof jQuery === "function") {
         setup.progress(1,1);
         setup.error([]);
         setup.success([]);
-        setup.after();
+        setup.after([], []);
         return this;
       }
       
@@ -2318,7 +2440,7 @@ if (typeof jQuery === "function") {
                      } else {
                       if (failed.length>0) setup.error.call(_this,failed);
                       if (passed.length>0) setup.success.call(_this,passed);
-                      setup.after.call(_this);
+                      setup.after.call(_this, passed, failed);
                       if (_SP_ADD_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_ADD_PROGRESSVAR[setup.progressVar.eventID];
                      }
                    }
@@ -2336,7 +2458,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- if you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Function} [setup.success] One parameter: 'passedItems' -- a function with the items updated sucessfully
         @param {Function} [setup.error] One parameter: 'failedItems' -- a function with the items not updated
-        @param {Function} [setup.after] A function that will be executed at the end of the request
+        @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
         @param {Boolean} [setup.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
         
       @example
@@ -2409,7 +2531,7 @@ if (typeof jQuery === "function") {
         setup.progress(1,1);
         setup.error([]);
         setup.success([]);
-        setup.after();
+        setup.after([], []);
         return this;
       }
       
@@ -2473,7 +2595,7 @@ if (typeof jQuery === "function") {
                      else {
                        if (failed.length>0) setup.error.call(_this,failed);
                        if (passed.length>0) setup.success.call(_this,passed);
-                       setup.after.call(_this);
+                       setup.after.call(_this, passed, failed);
                        if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID];
                      }
                    }
@@ -2539,7 +2661,7 @@ if (typeof jQuery === "function") {
       @param {Object} [setup] Options (see below)
         @param {Function} [setup.success] A function with the items updated sucessfully
         @param {Function} [setup.error] A function with the items not updated
-        @param {Function} [setup.after] A function that will be executed at the end of the request
+        @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
         @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- if you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
         
       @example
@@ -2593,7 +2715,7 @@ if (typeof jQuery === "function") {
         setup.progress(1,1);
         setup.success([]);
         setup.error([]);
-        setup.after();
+        setup.after([], []);
         return this;
       }
       
@@ -2672,7 +2794,7 @@ if (typeof jQuery === "function") {
                      else {
                        if (passed.length>0) setup.success.call(_this,passed);
                        if (failed.length>0) setup.error.call(_this,failed);
-                       setup.after.call(_this);
+                       setup.after.call(_this, passed, failed);
                        if (_SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID];
                      }
                    }
@@ -2685,12 +2807,14 @@ if (typeof jQuery === "function") {
       @description Delete items from a Sharepoint List
       @note You can also use the key word 'del' instead of 'remove'
       
-      @param {Objet|Array} itemsID List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}
+      @param {Objet|Array} [itemsID] List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}
       @param {Object} [setup] Options (see below)
+        @param {String} [setup.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
+        @param {Number} [setup.packetsize=15] If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
         @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- If you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Function} [setup.success] One parameter: 'passedItems' -- a function with the items updated sucessfully
         @param {Function} [setup.error] (One parameter: 'failedItems' -- a function with the items not updated
-        @param {Function} [setup.after] A function that will be executed at the end of the request
+        @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
       
       @example
       $SP().list("My List").remove({ID:1}); // you must always provide the ID
@@ -2723,6 +2847,7 @@ if (typeof jQuery === "function") {
       setup.success = setup.success || (function() {});
       setup.after   = setup.after || (function() {});
       setup.progress= setup.progress || (function() {});
+      setup.packetsize = setup.packetsize || 15;
            
       if (typeof items === "object" && items.length==undefined) items = [ items ];
       var itemsLength=items.length;
@@ -2756,17 +2881,17 @@ if (typeof jQuery === "function") {
         setup.progress(1,1);
         setup.error.call(_this,[]);
         setup.success.call(_this,[]);
-        setup.after.call(_this)
+        setup.after.call(_this, [], [])
         return _this;
       }
       
       // define current and max for the progress
       setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spRemove"+(""+Math.random()).slice(2)};
-      // we cannot add more than 15 items in the same time, so split by 15 elements
+      // we cannot add more than setup.packetsize items in the same time, so split by setup.packetsize elements
       // and also to avoid surcharging the server
-      if (itemsLength > 15) {
+      if (itemsLength > setup.packetsize) {
         var nextPacket=items.slice(0);
-        var cutted=nextPacket.splice(0,15);
+        var cutted=nextPacket.splice(0,setup.packetsize);
         _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
           _this.remove(nextPacket,setup);
         };
@@ -2821,7 +2946,7 @@ if (typeof jQuery === "function") {
                      } else {
                       if (failed.length>0) setup.error.call(_this,failed);
                       if (passed.length>0) setup.success.call(_this,passed);
-                      setup.after.call(_this);
+                      setup.after.call(_this, passed, failed);
                        if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID];
                      }
                    }
@@ -2973,6 +3098,7 @@ if (typeof jQuery === "function") {
               var c=fileRef.substring(0,fileRef.indexOf("/Lists"))
               var d=this.url.substring(0,this.url.indexOf(c));
               fileRef = d+fileRef;
+              if (fileRef.slice(0,4) !== "http") fileRef = window.location.href.split('/').slice(0,3).join("/") + fileRef;
               var _this=this;
               var body = _this._buildBodyForSOAP("GetWorkflowDataForItem", '<item>'+fileRef+'</item>', "http://schemas.microsoft.com/sharepoint/soap/workflow/");
               _this.ajax({
@@ -3085,17 +3211,21 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().list.startWorkflow
       @function
-      @description Manually start a work (that has been set to be manually started) (for Sharepoint 2010 workflows)
+      @description Manually start a work (that has been set to be manually started) (for "Sharepoint 2010 workflow" as the platform type)
       
       @param {Object} setup
-        @param {Number} setup.ID The item ID that tied to the workflow
         @param {String} setup.workflowName The name of the workflow
+        @param {Number} [setup.ID] The item ID that tied to the workflow
         @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
         @param {Function} [setup.after] This callback function that is called after the request is done
         @param {String} [setup.fileRef] Optional: you can provide the fileRef to avoid calling the $SP().list().getWorkflowID()
         @param {String} [setup.workflowID] Optional: you can provide the workflowID to avoid calling the $SP().list().getWorkflowID()
       
       @example
+      // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
+      $SP().list("").startWorkflow({workflowName:"My Site Workflow"});
+
+      // to start a workflow for a list item
       $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function(error) {
         if (!error)
           alert("Workflow done!");
@@ -3106,9 +3236,13 @@ if (typeof jQuery === "function") {
     startWorkflow:function(setup) {
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
-      if (this.listID == undefined) throw "Error 'startWorkflow': you have to define the list ID/Name";
       if (this.url == undefined) throw "Error 'startWorkflow': not able to find the URL!";
       
+      // if no listID then it's a Site Workflow so we use startWorkflow2013
+      if (!this.listID) {
+        setup.platformType=2010;
+        return this.startWorkflow2013(setup)
+      }
       setup = setup || {};
       setup.after = setup.after || (function() {});
       if (!setup.workflowName && !setup.workflowID) throw "Error 'startWorkflow': Please provide the workflow name!"
@@ -3163,16 +3297,16 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().list.startWorkflow2013
       @function
-      @description Manually start a work (that has been set to be manually started) (for Sharepoint 2013 workflows)
+      @description Manually start a work (that has been set to be manually started) (for "Sharepoint 2013 workflow" as the platform type)
       
       @param {Object} setup
-        @param {Number} setup.ID The item ID that tied to the workflow
+        @param {Number} [setup.ID] The item ID that tied to the workflow
         @param {String} setup.workflowName The name of the workflow
         @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
         @param {Function} [setup.after] This callback function that is called after the request is done
       
       @example
-      // if you want to call a Site Workflow, just leave the list name empty, e.g.:
+      // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
       $SP().list("").startWorkflow2013({workflowName:"My Site Workflow"});
 
       // to start a workflow for a list item
@@ -3191,6 +3325,7 @@ if (typeof jQuery === "function") {
       
       setup = setup || {};
       setup.after = setup.after || (function() {});
+      setup.platformType = setup.platformType || 2013; // internal use when calling Site Workflow from startWorkflow()
       if (!setup.workflowName) throw "Error 'startWorkflow2013': Please provide the workflow name!"
       if (_this.listID && !setup.ID) throw "Error 'startWorkflow2013': Please provide the item ID!"
 
@@ -3205,6 +3340,7 @@ if (typeof jQuery === "function") {
           var context = new SP.ClientContext(_this.url);
           var web = context.get_web();
           var subscriptions;
+          
           var servicesManager = SP.WorkflowServices.WorkflowServicesManager.newObject(context, web);
           context.load(servicesManager);
           // list the existing workflows
@@ -3221,23 +3357,37 @@ if (typeof jQuery === "function") {
               for (i=0; i<setup.parameters.length; i++)
                 initiationParams[setup.parameters[i].name] = setup.parameters[i].value;
             }
-            // go thru all the workflows to find the one we want to initiate
-            while (subsEnum.moveNext()) {
-              sub = subsEnum.get_current();
-              if (sub.get_name().toLowerCase() === workflowName) {
-                if (setup.ID) servicesManager.getWorkflowInstanceService().startWorkflowOnListItem(sub, setup.ID, initiationParams);
-                else servicesManager.getWorkflowInstanceService().startWorkflow(sub, initiationParams);
-                context.executeQueryAsync(function(sender, args) {
-                  setup.after.call(_this)
-                }, function(sender, args) {
-                  setup.after.call(_this, args.get_message())
-                });
-                passed=true;
-                break;
+
+            if (setup.platformType == 2010) {
+              var interopService = servicesManager.getWorkflowInteropService();
+              interopService.startWorkflow(workflowName, null, null, null, initiationParams);
+              context.executeQueryAsync(function(sender, args) {
+                setup.after.call(_this)
+              }, function(sender, args) {
+                var errorMessage = args.get_message();
+                if (errorMessage === "associationName") errorMessage = "No workflow found with the name '"+setup.workflowName+"'";
+                setup.after.call(_this, errorMessage);
+              });
+            } else {
+              // go thru all the workflows to find the one we want to initiate
+              while (subsEnum.moveNext()) {
+                sub = subsEnum.get_current();
+                if (sub.get_name().toLowerCase() === workflowName) {
+                  
+                  if (setup.ID) servicesManager.getWorkflowInstanceService().startWorkflowOnListItem(sub, setup.ID, initiationParams);
+                  else servicesManager.getWorkflowInstanceService().startWorkflow(sub, initiationParams);
+                  context.executeQueryAsync(function(sender, args) {
+                    setup.after.call(_this)
+                  }, function(sender, args) {
+                    setup.after.call(_this, args.get_message())
+                  });
+                  passed=true;
+                  break;
+                }
               }
-            }
-            if (!passed) {
-              throw "Error 'startWorkflow2013': no workflow found with the name '"+setup.workflowName+"'";
+              if (!passed) {
+                setup.after.call(_this, "No workflow found with the name '"+setup.workflowName+"'");
+              }
             }
           }, function(sender, args) {
             setup.after.call(_this, args.get_message())
@@ -5129,6 +5279,213 @@ if (typeof jQuery === "function") {
         }
       }
       return this;
+    },
+    /**
+      @ignore
+      @name $SP()._getPageSize()
+      @function
+      @description Get the doc and viewport size
+      @source https://blog.kodono.info/wordpress/2015/03/23/get-window-viewport-document-height-and-width-javascript/
+     */
+    _getPageSize:function() {
+      var vw = {width:0, height:0};
+      var doc = {width:0, height:0};
+      var w=window, d=document, dde=d.documentElement, db=d.getElementsByTagName('body')[0];
+       
+      // viewport size
+      vw.width  = w.innerWidth||dde.clientWidth||db.clientWidth;
+      vw.height = w.innerHeight||dde.clientHeight||db.clientHeight;
+     
+      // document size
+      doc.width  = Math.max(db.scrollWidth, dde.scrollWidth, db.offsetWidth, dde.offsetWidth, db.clientWidth, dde.clientWidth);
+      doc.height = Math.max(db.scrollHeight, dde.scrollHeight, db.offsetHeight, dde.offsetHeight, db.clientHeight, dde.clientHeight);
+       
+      // if IE8 there is a bug with 4px
+      if (!!(document.all && document.querySelector && !document.addEventListener) && (vw.width+4 == doc.width) && (vw.height+4 == doc.height)) {
+        vw.width=doc.width;
+        vw.height=doc.height;
+      }
+       
+       return {vw:vw, doc:doc};
+    },
+    /**
+      @name $SP().showModalDialog
+      @function
+      @description Show a modal dialog (based on SP.UI.ModalDialog.showModalDialog) but provides some advanced functions and better management of the modals (for example when you launch several modals)
+     
+      @param {Object} [options] Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx
+        @param {String} [options.html] We can directly provide the HTML code as a string
+        @param {String} [options.width] If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width
+        @param {String} [options.height] If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height
+        @param {Boolean} [options.closePrevious=false] It permits to close a previous modal dialog before opening this one
+        @param {Boolean} [options.wait=false] If we want to show a Wait Screen (alias for $SP().waitModalDialog())
+        @param {Function} [options.callback] A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue
+     
+      @example
+      $SP().showModalDialog({
+        title:"Dialog",
+        html:'<h1>Hello World</h1><p><button type="button" onclick="$SP().closeModialDialog('here')">Close</button></p>',
+        callback:function(dialogResult, returnValue) {
+          alert("Result="+dialogResult); // -> "here"
+        }
+      })
+
+      // show a waiting message
+      $SP().waitModalDialog("Working...");
+      // --- do some stuff ---
+      // close the waiting message and open a new modal dialog
+      $SP().showModalDialog({
+        closePrevious:true,
+        title:"Success",        
+        html:'<h1>Done!</h1>'
+      })
+     */
+    showModalDialog:function(options) {
+      // in some weird cases the script is not loaded correctly, so we need to ensure it
+      if (!_SP_MODALDIALOG_LOADED) {
+        _SP_MODALDIALOG_LOADED=(typeof SP === "object" && typeof SP.UI === "object" && typeof SP.UI.ModalDialog === "function" && typeof SP.UI.ModalDialog.showModalDialog === "function");
+        if (!_SP_MODALDIALOG_LOADED) {
+          LoadSodByKey("sp.ui.dialog.js", function() {
+            _SP_MODALDIALOG_LOADED=true;
+            $SP().showModalDialog(options);
+          });
+          return this;
+        }
+      }
+      var size, ohtml, _this=this;
+      if (options.html && typeof options.html === "string") {
+        ohtml = document.createElement('div');
+        ohtml.style.padding="10px";
+        ohtml.innerHTML = options.html;
+        options.html = ohtml;
+      }
+      // if width and height are set to "calculated" then we'll use the viewport size to define them
+      if (options.width === "calculated" || options.height === "calculated") {
+        size = _this._getPageSize();
+        if (options.width === "calculated") {
+          options.width = size.vw.width;
+          if (options.width > 768) {
+            // we want to adjust to use 2/3
+            options.width = 2*options.width/3
+          }
+        }
+        if (options.height === "calculated") {
+          options.height = size.vw.height;
+          if (options.height > 576) {
+            // we want to adjust to use 90%
+            options.height = 90*options.height/100
+          }
+        }
+      }
+      if (options.width === "full" || options.height === "full") {
+        size = _this._getPageSize();
+        if (options.width === "full") options.width = size.vw.width;
+        if (options.height === "full") options.height = size.vw.height;
+      }
+      options.wait = (options.wait === true ? true : false);
+      options.closePrevious = (options.closePrevious === true ? true : false);
+      if (options.closePrevious) _this.closeModalDialog();
+
+      // define our own callback function to properly delete the Modal when it's closed
+      var callback = options.dialogReturnValueCallback || options.callback || function() {};
+      options.dialogReturnValueCallback = function(dialogResult, returnValue) {
+        // if we use .close() then we have only one argument
+        var id, dialog;
+        if (typeof dialogResult === "object" && typeof dialogResult.id !== "undefined") {
+          var args = dialogResult;
+          dialogResult = args.dialogResult;
+          returnValue = args.returnValue;
+          id = args.id;
+        }
+
+        // make sure we remove the correct modal, so if "id" is provided, we look for it
+        if (id) {
+          for (var i=0; i<window.top._SP_MODALDIALOG.length; i++) {
+            if (window.top._SP_MODALDIALOG[i].id === id) {
+              dialog = window.top._SP_MODALDIALOG.splice(i, 1);
+              dialog = dialog[0];
+              break;
+            }
+          }
+        }
+        if (!dialog) dialog = window.top._SP_MODALDIALOG.pop();
+
+        // remove <style> for overlay
+        window.top.document.body.removeChild(window.top.document.getElementById("style_"+dialog.id));
+        callback.call(this, dialogResult, returnValue);
+      };
+
+      var fct = function() {
+        var modal = (options.wait ? SP.UI.ModalDialog.showWaitScreenWithNoClose(options.title, options.message, options.height, options.width) : SP.UI.ModalDialog.showModalDialog(options));
+        // search for the lastest iframe + ms-dlgContent in the top frame body
+        var wt = window.top;
+        var frames = wt.document.querySelectorAll('body > iframe');
+        var frame = frames[frames.length-1];
+        var id = "sp_frame_"+(new Date().getTime());
+        var biggestZ = 0, i, styles = wt.document.querySelectorAll('style[id^="style_sp_frame"]');
+        // we define an attribute to find them later
+        frame.setAttribute("id", id);
+        // record it into a special object
+        if (typeof wt._SP_MODALDIALOG === "undefined") wt._SP_MODALDIALOG=[];
+        
+        wt._SP_MODALDIALOG.push({id:id, modal:modal, zIndex:frame.style.zIndex, options:options});
+        // check the z-index for .ms-dlgOverlay
+        SPArrayForEach(wt._SP_MODALDIALOG, function(val) {
+          if (val.zIndex > biggestZ) biggestZ = val.zIndex;
+        });
+        biggestZ--;
+        wt.document.body.insertAdjacentHTML('beforeend', '<style id="style_'+id+'">.ms-dlgOverlay { z-index:'+biggestZ+' !important }</style>');
+      };
+      SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js');
+    },
+    /**
+      @name $SP().closeModalDialog
+      @function
+      @description Close the last modal dialog
+     
+      @param {SP.UI.DialogResult} [dialogResult] One of the enumeration values specifying the result of the modal dialog
+      @param {Object} [returnValue] The return value of the modal dialog
+
+      @example
+      $SP().closeModalDialog()
+     */
+    closeModalDialog:function(dialogResult, returnValue) {
+      var fct = function() {
+        if (typeof window.top._SP_MODALDIALOG !== "undefined") {
+          var md=window.top._SP_MODALDIALOG;
+          if (md.length>0) {
+            md = md[md.length-1];
+            // close has only one parameter
+            md.modal.close({id:md.id, dialogResult:dialogResult, returnValue:returnValue});
+            // if it's a wait screen, then we need to remove the <style> using options.dialogReturnValueCallBack
+            if (md.options.wait) md.options.dialogReturnValueCallback(dialogResult, returnValue);
+            return false;
+          }
+        }
+        SP.UI.ModalDialog.commonModalDialogClose(dialogResult, returnValue);
+      };
+      SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js');
+
+      return false;
+    },
+    /**
+     * @name $SP().waitModalDialog
+     * @function
+     * @description Shortcut for SP.UI.ModalDialog.showWaitScreenWithNoClose()
+     * 
+     * @param {String} [title="Working on it..."] The main message with the loading spin
+     * @param {String} [subtitle=""] The subtitle
+     * @param {Number} [height] The modal height
+     * @param {Number} [width] The modal width
+     */
+    waitModalDialog:function(title, subtitle, height, width) {
+      return this.showModalDialog({
+        wait:true,
+        title:title||"Working...",
+        message:subtitle,
+        width:width,
+        height:height
+      });
     },
     /**
       @name $SP().registerPlugin
