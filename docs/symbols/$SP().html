@@ -1393,7 +1393,7 @@ $SP().removeNotify({all:true, includeSticky:false}); // all the notifications ar
           <pre class="prettyprint lang-js">
 $SP().showModalDialog({
   title:"Dialog",
-  html:'&gt;h1>Hello World&gt;/h1>&gt;p>&gt;button type="button" onclick="$SP().closeModialDialog('here')">Close&gt;/button>&gt;/p>',
+  html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModialDialog('here')">Close&lt;/button>&lt;/p>',
   callback:function(dialogResult, returnValue) {
     alert("Result="+dialogResult); // -> "here"
   }
@@ -1406,7 +1406,7 @@ $SP().waitModalDialog("Working...");
 $SP().showModalDialog({
   closePrevious:true,
   title:"Success",        
-  html:'&gt;h1>Done!&gt;/h1>'
+  html:'&lt;h1>Done!&lt;/h1>'
 })</pre>
           
           
