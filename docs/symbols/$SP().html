@@ -828,7 +828,8 @@ $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, fu
           
           <h3>Example:</h3>
           
-          <pre class="prettyprint lang-js">var modal = $SP().getModalDialog("MyModal");$SP().closeModalDialog(modal);</pre>
+          <pre class="prettyprint lang-js">var modal = $SP().getModalDialog("MyModal");
+$SP().closeModalDialog(modal);</pre>
           
           
 
@@ -1471,13 +1472,24 @@ $SP().showModalDialog({
   html:'&lt;h1>Done!&lt;/h1>'
 })
 // and use $SP().closeModalDialog() to close it</pre>
-          
-          
+=======
+$SP().showModalDialog({
+  title:"Dialog",
+  html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModialDialog(\'here\')">Close&lt;/button>&lt;/p>',
+  callback:function(dialogResult, returnValue) {
+    alert("Result="+dialogResult); // -> "here"
+  }
+})
 
-          
-          
-          
-
+// show a waiting message
+$SP().waitModalDialog("Working...");
+// --- do some stuff ---
+// close the waiting message and open a new modal dialog
+$SP().showModalDialog({
+  closePrevious:true,
+  title:"Success",        
+  html:'&lt;h1>Done!&lt;/h1>'
+})</pre>
           <hr />
         </div>
         
