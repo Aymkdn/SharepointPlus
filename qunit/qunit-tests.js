@@ -957,13 +957,14 @@ function loadSPtests() {
       });
       
       test('list related stuff', function(assert) {
-        assert.expect(8);
+        assert.expect(9);
       
         var doneLists = assert.async();
         var doneViews = assert.async();
         var doneView = assert.async();
         var doneAdd = assert.async();
         var doneGet = assert.async();
+        var doneGetWithJoin = assert.async();
         var doneUpdate = assert.async();
         var doneRemove = assert.async();
         
@@ -1008,7 +1009,7 @@ function loadSPtests() {
         
         // test .list().add()
         var title = new Date().getTime();
-        $SP().list("SharepointPlus").add({'Title':'Add','Single_x0020_line_x0020_of_x0020':title}, {
+        $SP().list("SharepointPlus").add({'Title':'Add','Single_x0020_line_x0020_of_x0020':title,'Lookup':'2;#Option 2'}, {
           error:function() {
             assert.ok(false, ".add()");
             doneAdd();
@@ -1016,6 +1017,8 @@ function loadSPtests() {
             doneGet();
             assert.ok(false, ".update()");
             doneUpdate();
+            assert.ok(false, ".get() with join");
+            doneGetJoin();
             assert.ok(false, ".remove()");
             doneRemove();
       
@@ -1036,6 +1039,8 @@ function loadSPtests() {
                   error:function() {
                     assert.ok(false, ".update()");
                     doneUpdate();
+                    assert.ok(false, ".get() with join");
+                    doneGetWithJoin();
                     assert.ok(false, ".remove()");
                     doneRemove();
                   },
@@ -1043,17 +1048,27 @@ function loadSPtests() {
                     assert.ok(true, ".update()");
                     doneUpdate();
                     
-                    // test .list().remove()
-                    $SP().list("SharepointPlus").remove({'ID':itemID}, {
-                      error:function() {
-                        assert.ok(false, ".remove()");
-                        doneRemove();
+                    // test .list().get() with 'join'
+                    $SP().list("SharepointPlus").get({
+                      fields:"ID,Lookup",
+                      where:"ID = "+itemID,
+                      outerjoin:{
+                        list:"SharepointPlusLookup",
+                        fields:"ID",
+                        on:"'SharepointPlusLookup'.ID = 'SharepointPlus'.Lookup"
                       },
-                      success:function() {
-                        assert.ok(true, ".remove()");
-                        doneRemove();
-                      }
-                    }); 
+                    }, function(data) {
+                      assert.ok(data.length>0 && data[0].getAttribute("SharepointPlus.Lookup").split(";#")[0]==data[0].getAttribute("SharepointPlusLookup.ID"), ".get() with join");
+                      doneGetWithJoin();
+
+                      // test .list().remove()
+                      $SP().list("SharepointPlus").remove({'ID':itemID}, {
+                        after:function(passed,failed) {
+                          assert.ok(passed.length>0, ".remove()");
+                          doneRemove();
+                        }
+                      });
+                    })
                   }
                 });
               } else {
@@ -1061,6 +1076,8 @@ function loadSPtests() {
                 doneGet();
                 assert.ok(false, ".update()");
                 doneUpdate();
+                assert.ok(false, ".get() with join");
+                doneGetWithJoin();
                 assert.ok(false, ".remove()");
                 doneRemove();
               }
@@ -1076,12 +1093,16 @@ function loadSPtests() {
         var doneCreateFileError = assert.async();
        
         // test createFile()
-        var destination = $SP().getURL() + "/SharepointPlusLibrary/" + new Date().getTime() + ".txt";
+        var filename = new Date().getTime() + ".txt";
+        var library = "SharepointPlusLibrary";
+        var path = library + "/" + filename;
         $SP().createFile({
           content:'Hello World',
-          destination:destination,
+          filename:filename,
+          library:library,
           success:function(fileURL) {
-            assert.ok(fileURL.slice(-destination.length)===destination, 'createFile() Phase 1');
+            fileURL = fileURL.split("/").slice(-2).join("/");
+            assert.ok(fileURL===path, 'createFile() Phase 1');
           },
           after:function() {
             doneCreateFileSuccess();
@@ -1090,10 +1111,11 @@ function loadSPtests() {
         
         $SP().createFile({
           content:'Hello World',
-          destination:"fakeurl",
-          url:"fakeurl",
+          filename:filename,
+          library:"fakelibrary",
           error:function(fileURL, error) {
-            assert.ok(fileURL==="fakeurl", 'createFile() Phase 2');
+            fileURL = fileURL.split("/").slice(-2).join("/");
+            assert.ok(fileURL==="fakelibrary/"+filename, 'createFile() Phase 2');
           },
           after:function() {
             doneCreateFileError();

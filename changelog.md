@@ -1,5 +1,20 @@
 # Changelog
 
+**Change Log v3.14 (March 6, 2017)**
+
+  - Add a sanitize filter for the filename in `$SP().createFile()` because Sharepoint doesn't like some special characters
+  - Fix a bug with "Content Type" field in `SP().formfields()`
+  - Fix a bug with `SP().formfields().elem()` when mixed fieldtypes where used
+  - Handle `callback` even when `showClose:false` in `$SP().showModalDialog()`
+  - Add more documentation for `$SP().showModalDialog()`
+  - Add option `id` for `$SP().showModalDialog()`
+  - Add option `onload` for `$SP().showModalDialog()`
+  - Add function `$SP().getModalDialog()`
+  - Add function `$SP().resizeModalDialog()`
+  - Improve `$SP().parse()` for the `IN` operator
+  - Review the code for `join` and `outerjoin` options within `$SP().list().get()`
+  - Add new option `join.onLookup` for `$SP().list().get()`
+
 **Change Log v3.13 (August 23, 2016)**
 
   - Fully compatible with Sharepoint 2013!

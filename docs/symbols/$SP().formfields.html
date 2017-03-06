@@ -37,7 +37,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (33)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (34)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -61,6 +61,8 @@
                 <li><a href="../symbols/%24SP%28%29.html#.encode_b64">encode_b64</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.getModalDialog">getModalDialog</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.getURL">getURL</a></li>
               
@@ -115,7 +117,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (9)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -125,6 +127,8 @@
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.internalname">internalname</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
               
@@ -230,6 +234,8 @@
           <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
           
           <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.formfields.html#.internalname">internalname</a></li>
           
           <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
           
@@ -410,7 +416,49 @@ $SP().formfields().each(function() {
           
           <pre class="prettyprint lang-js">
 $SP().formfields("Title").elem(); // -> returns a HTML INPUT TEXT
-$SP().formfields("List of options").elem(); / -> returns a HTML SELECT</pre>
+$SP().formfields("List of options").elem(); // -> returns a HTML SELECT</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.internalname" name=".internalname" title="Direct link to the method 'internalname'">internalname</a></h2>
+          <div>
+            <div class="method well">internalname()</div>
+          </div>
+          <blockquote class="description">Return the field internalname</blockquote>
+          
+          
+          
+          
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">String|Array</div>
+              <div class="span10">Returns the internalname of the field(s)</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">
+$SP().formfields("Subject").internalname(); // return "Title"
+$SP().formfields(["Field Name", "My Field"]).internalname(); // return [ "Field_x0020_Name", "My_x0020_Field" ]</pre>
           
           
 
@@ -493,8 +541,8 @@ $SP().formfields(["Field1", "Field2"]).isMandatory(); // return [ True/False, Tr
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().formfields("Title").name(); // return "Title"
-$SP().formfields(["Field1", "Field2"]).name(); // return [ "Field1", "Field2" ]</pre>
+$SP().formfields("Subject").name(); // return "Subject"
+$SP().formfields(["Field Name", "My Field"]).name(); // return [ "Field Name", "My Field" ]</pre>
           
           
 
@@ -688,7 +736,7 @@ $SP().formfields("Manager Name").val(); // -> "Doe, John"</pre>
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 23 Aug 2016 09:36:31 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 06 Mar 2017 17:13:23 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

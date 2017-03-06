@@ -37,7 +37,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (33)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (34)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -61,6 +61,8 @@
                 <li><a href="../symbols/%24SP%28%29.html#.encode_b64">encode_b64</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.html#.getModalDialog">getModalDialog</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.html#.getURL">getURL</a></li>
               
@@ -115,7 +117,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (9)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -125,6 +127,8 @@
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="../symbols/%24SP%28%29.formfields.html#.internalname">internalname</a></li>
               
                 <li><a href="../symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
               
@@ -244,6 +248,8 @@
           <li><a href="../symbols/%24SP%28%29.html#.encode_b64">encode_b64</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+          
+          <li><a href="../symbols/%24SP%28%29.html#.getModalDialog">getModalDialog</a></li>
           
           <li><a href="../symbols/%24SP%28%29.html#.getURL">getURL</a></li>
           
@@ -453,7 +459,7 @@ $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aym
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">SP.UI.DialogResult</div>  <div class="name span4"><b data-param="dialogResult">dialogResult</b> <i>Optional</i></div>  <div class="param_description span7">One of the enumeration values specifying the result of the modal dialog</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="returnValue">returnValue</b> <i>Optional</i></div>  <div class="param_description span7">The return value of the modal dialog</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">SP.UI.DialogResult|Object</div>  <div class="name span4"><b data-param="dialogResult">dialogResult</b> <i>Optional</i></div>  <div class="param_description span7">One of the enumeration values specifying the result of the modal dialog, or the modal object returned by $SP().getModalDialog()</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="returnValue">returnValue</b> <i>Optional</i></div>  <div class="param_description span7">The return value of the modal dialog</div></div>
           </div>
           
           
@@ -465,7 +471,15 @@ $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aym
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">
-$SP().closeModalDialog()</pre>
+// if the user use the cross to close the modal, then `dialogResult` equals to 0 in the callback
+// but you can trigger the close of the modal and pass anything you want
+$SP().showModalDialog({
+  title:"Hello World",
+  html:'<p>This is an example. Click one of the buttons.</p><p class="ms-alignCenter"><button onclick="$SP().closeModalDialog(\'Continue has been clicked\')">Continue</button></p>',
+  callback:function(res) {
+    alert(res)
+  }
+})</pre>
           
           
 
@@ -770,6 +784,52 @@ $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, fu
           <h3>Example:</h3>
           
           <pre class="prettyprint lang-js">$SP().getLookup("328;#Foo"); // --> {id:328, value:"Foo"}</pre>
+          
+          
+
+          
+          
+          
+
+          <hr />
+        </div>
+        
+        <div class="member">
+          <h2><a href="#.getModalDialog" name=".getModalDialog" title="Direct link to the method 'getModalDialog'">getModalDialog</a></h2>
+          <div>
+            <div class="method well">getModalDialog(id)</div>
+          </div>
+          <blockquote class="description">Retrieve the modal object for a special modalDialog</blockquote>
+          
+          
+          
+          
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="id">id</b> </div>  <div class="param_description span7">The ID of the modal</div></div>
+          </div>
+          
+          
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+              
+              <div class="span2">Object</div>
+              <div class="span10">The modal object or NULL if the modal doesnt exist</div>
+              
+            </div>
+          </div>
+          
+          
+          
+          
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">var modal = $SP().getModalDialog("MyModal");
+$SP().closeModalDialog(modal);</pre>
           
           
 
@@ -1089,7 +1149,7 @@ $SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fisca
 // " AND "
 // " OR "
 // " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
-// " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"'
+// " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"' — SP2013 limits each IN to 60 items. If you want to check Lookup IDs instead of text you can use '~' followed by the ID, for example 'Location IN ["~23", "~26", "~30"]'
 
 // special words:
 // '[Me]' : for the current user
@@ -1196,7 +1256,7 @@ $SP().plugin('test',{message:"This is a test !"})</pre>
           <div>
             <div class="method well">regionalDateFormat(callback)</div>
           </div>
-          <blockquote class="description">Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, DD for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)</blockquote>
+          <blockquote class="description">Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, D for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)</blockquote>
           
           
           
@@ -1226,7 +1286,10 @@ $SP().regionalDateFormat(function(dateFormat) {
   if (moment(startDate, dateFormat).isAfter(moment(endDate, dateFormat))) {
     alert("StartDate must be before EndDate!")
   }
-})</pre>
+})
+
+// Here is also an example of how you can parse a string date
+// -> https://gist.github.com/Aymkdn/b17903cf7786578300f04f50460ebe96</pre>
           
           
 
@@ -1379,7 +1442,7 @@ $SP().removeNotify({all:true, includeSticky:false}); // all the notifications ar
           
           <div class="parameters">
             <h3>Parameters:</h3>
-            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.html">options.html</b> <i>Optional</i></div>  <div class="param_description span7">We can directly provide the HTML code as a string</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.width">options.width</b> <i>Optional</i></div>  <div class="param_description span7">If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.height">options.height</b> <i>Optional</i></div>  <div class="param_description span7">If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.closePrevious">options.closePrevious</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">It permits to close a previous modal dialog before opening this one</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.wait">options.wait</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If we want to show a Wait Screen (alias for $SP().waitModalDialog())</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.callback">options.callback</b> <i>Optional</i></div>  <div class="param_description span7">A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue</div></div>
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx with some additional ones or some changes</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.html">options.html</b> <i>Optional</i></div>  <div class="param_description span7">We can directly provide the HTML code as a string</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.width">options.width</b> <i>Optional</i></div>  <div class="param_description span7">If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.height">options.height</b> <i>Optional</i></div>  <div class="param_description span7">If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.closePrevious">options.closePrevious</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">It permits to close a previous modal dialog before opening this one</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.wait">options.wait</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If we want to show a Wait Screen (alias for $SP().waitModalDialog())</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.id">options.id</b> <i>Optional, Default: random()</i></div>  <div class="param_description span7">An unique ID to identify the modal dialog (don't use space or special characters)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.callback">options.callback</b> <i>Optional</i></div>  <div class="param_description span7">A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.onload">options.onload</b> <i>Optional</i></div>  <div class="param_description span7">The modal might be delayed as we need to load some Sharepoint JS files; the `onload` function is called once the modal is shown</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.onurlload">options.onurlload</b> <i>Optional</i></div>  <div class="param_description span7">When we use the "url" parameter, this is triggered when the DOMContent of the iframe is loaded (if it's the same origin)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.title">options.title</b> <i>Optional</i></div>  <div class="param_description span7">The title to give to the modal (if you use `wait:true` then it will be the main text that will appear)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.message">options.message</b> <i>Optional</i></div>  <div class="param_description span7">This parameter is only use if there is `wait:true` and permits to define the subtitle message</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.url">options.url</b> <i>Optional</i></div>  <div class="param_description span7">A string that contains the URL of the page that appears in the dialog. If both url and html are specified, url takes precedence. Either url or html must be specified.</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="options.x">options.x</b> <i>Optional</i></div>  <div class="param_description span7">An integer value that specifies the x-offset of the dialog. This value works like the CSS left value.</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="options.y">options.y</b> <i>Optional</i></div>  <div class="param_description span7">An integer value that specifies the y-offset of the dialog. This value works like the CSS top value.</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.allowMaximize">options.allowMaximize</b> <i>Optional</i></div>  <div class="param_description span7">A Boolean value that specifies whether the dialog can be maximized. true if the Maximize button is shown; otherwise, false.</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.showMaximized">options.showMaximized</b> <i>Optional</i></div>  <div class="param_description span7">A Boolean value that specifies whether the dialog opens in a maximized state. true the dialog opens maximized. Otherwise, the dialog is opened at the requested sized if specified; otherwise, the default size, if specified; otherwise, the autosized size.</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.showClose">options.showClose</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">A Boolean value that specifies whether the Close button appears on the dialog.</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.autoSize">options.autoSize</b> <i>Optional</i></div>  <div class="param_description span7">A Boolean value that specifies whether the dialog platform handles dialog sizing.</div></div>
           </div>
           
           
@@ -1405,16 +1468,28 @@ $SP().waitModalDialog("Working...");
 // close the waiting message and open a new modal dialog
 $SP().showModalDialog({
   closePrevious:true,
+  title:"Success",
+  html:'&lt;h1>Done!&lt;/h1>'
+})
+// and use $SP().closeModalDialog() to close it</pre>
+=======
+$SP().showModalDialog({
+  title:"Dialog",
+  html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModialDialog(\'here\')">Close&lt;/button>&lt;/p>',
+  callback:function(dialogResult, returnValue) {
+    alert("Result="+dialogResult); // -> "here"
+  }
+})
+
+// show a waiting message
+$SP().waitModalDialog("Working...");
+// --- do some stuff ---
+// close the waiting message and open a new modal dialog
+$SP().showModalDialog({
+  closePrevious:true,
   title:"Success",        
   html:'&lt;h1>Done!&lt;/h1>'
 })</pre>
-          
-          
-
-          
-          
-          
-
           <hr />
         </div>
         
@@ -1755,7 +1830,7 @@ $SP().workflowStatusToText(2); // -> "In Progress"</pre>
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 23 Aug 2016 09:36:31 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 06 Mar 2017 17:13:23 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">

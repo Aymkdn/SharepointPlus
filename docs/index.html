@@ -45,7 +45,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (33)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP() (34)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -69,6 +69,8 @@
                 <li><a href="symbols/%24SP%28%29.html#.encode_b64">encode_b64</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.getLookup">getLookup</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.html#.getModalDialog">getModalDialog</a></li>
               
                 <li><a href="symbols/%24SP%28%29.html#.getURL">getURL</a></li>
               
@@ -123,7 +125,7 @@
           
             
             <li class="dropdown">
-              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (8)<b class="caret"></b></a>
+              <a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">$SP().formfields (9)<b class="caret"></b></a>
               
               <ul class="dropdown-menu">
               
@@ -133,6 +135,8 @@
                 <li><a href="symbols/%24SP%28%29.formfields.html#.each">each</a></li>
               
                 <li><a href="symbols/%24SP%28%29.formfields.html#.elem">elem</a></li>
+              
+                <li><a href="symbols/%24SP%28%29.formfields.html#.internalname">internalname</a></li>
               
                 <li><a href="symbols/%24SP%28%29.formfields.html#.isMandatory">isMandatory</a></li>
               
@@ -230,7 +234,7 @@
       </div>
 
       <div class="span10"> <!-- content -->
-        <h1>SharepointPlus 3.13</h1>
+        <h1>SharepointPlus 3.14</h1>
         <a href="https://twitter.com/sp_js" class="twitter-follow-button" data-show-count="false" data-lang="fr" data-dnt="true">Follow @sp_js</a>
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
         <h2>Description</h2>
@@ -239,21 +243,26 @@
         <p>I've developed this API for my needs during my job at <a href="http://www.dell.com">Dell</a> and we thought it could be useful for the community too, so here it is !</p>
         <div class="alert alert-error" style="display:none" aria-hidden="true"><a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release 100% compatible with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility (even if everything should be OK anyway).<br>
         Starting SharepointPlus v3.0.5 it should be fully compatible with <b>Sharepoint 2010</b>.</div>
-        <h2>Supported Sharepoint</h2>
+        <h2>Sharepoint Support</h2>
         <p>
           <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release that I have tested with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility<br>
           <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.4<br>
           <b>Sharepoint 2013</b> : Compatible since SharepointPlus v3.13<br>
           <b>Sharepoint Online</b> : I have no plan to test SharepointPlus on Sharepoint Online, but it should be compatible.
         </p>
+        <h2>Browser Support</h2>
+        <p>
+          <b>IE8+, and all modern browsers (Firefox, Chrome, ....)</b>
+         </p>
         <h2>Quick Start</h2>
         <h3>Requirements</h3>
         <p>Since v3.13, there is no more need of <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work! For older versions, make sure to include jQuery.</p>
-        <div class="row"><div class="span8 alert alert-info">If you don't use jQuery in your project, then SharepointPlus 3.13 will need to use <a href="https://github.com/Aymkdn/SharepointPlus/nanoajax/nanoajax.min.js">nanoajax (811o minified and zipped)</a><div class=""></div></div></div>
+        <div class="row"><div class="span8 alert alert-info">If you don't use jQuery in your project, then SharepointPlus will need to use <a href="https://github.com/Aymkdn/SharepointPlus/nanoajax/nanoajax.min.js">nanoajax (811o minified and zipped)</a><div class=""></div></div></div>
         <h3>The basics</h3>
-        <p>Just add two lines: one to call either jQuery or nanoajax, and one for SharepointPlus:</p>
-<pre class="prettyprint lang-js">&lt;script type="text/javascript" src="nanoajax.min.js">&lt;/script>
-&lt;script type="text/javascript" src="sharepointplus-3.13.min.js">&lt;/script></pre>
+        <p>Just add two lines: one to call <b>either</b> jQuery <b>or</b> nanoajax, and one for SharepointPlus:</p>
+<pre class="prettyprint lang-js">// if you don't already use jQuery, then you need to call 'nanoajax':
+&lt;script type="text/javascript" src="nanoajax.min.js">&lt;/script>
+&lt;script type="text/javascript" src="sharepointplus-3.14.min.js">&lt;/script></pre>
         <p>You may also want to use a CDN: <a href="http://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a></p>
         <h4><small>Lists</small></h4>
         <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
@@ -344,7 +353,7 @@ $.when(
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Tue, 23 Aug 2016 10:00:36 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 06 Mar 2017 17:13:24 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
