@@ -746,12 +746,12 @@ if (typeof jQuery === "function") {
           @param {String|Date} [setup.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String)
           @param {String} [setup.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
       @param {Function} [result=function(data,error)] A function with the data from the request as first argument, and the second argument is the error message in case something went wrong
-      
+
       @example
       $SP().list("List Name").get(function(data) {
         for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
       });
-      
+
       // with some fields and an orderby command
       $SP().list("ListName","http://www.mysharepoint.com/mydir/").get({
         fields:"Title,Organization",
@@ -809,7 +809,7 @@ if (typeof jQuery === "function") {
       },function getData(row) {
         console.log(row[0].getAttribute("Title"));
       });
-      
+
       // Since 3.0.8, if you do a WHERE on a Date with the Time included, then it will compare with the tim
       // see http://blogs.syrinx.com/blogs/sharepoint/archive/2008/08/05/caml-queries-with-dates.aspx
       // here it will only show the items created at 2PM exactly -- if you want to check only the today, then use "Created = '2014-03-12'"
@@ -854,14 +854,14 @@ if (typeof jQuery === "function") {
           // here we have the 2nd block of data into `data`
         })
       })
-      
+
       // We can also find the files from a Document Shared Library
       $SP().list("Shared Documents","http://my.share.point.com/my_site/").get({
         fields:"FileLeafRef,File_x0020_Size",
       }, function getData(data) {
         for (var i=0; i<&lt;data.length; i++) console.log("FileName:"+data[i].getAttribute("FileLeafRef"),"FileSize:"+data[i].getAttribute("File_x0020_Size"));
       });
-      
+
       // We can join two or more lists together based on a condition
       // ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
       // ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
@@ -926,11 +926,11 @@ if (typeof jQuery === "function") {
           }
         }
       }, function(data) {
-        var html = '<table class="table default"><thead><tr><th>Project ID</th><th>Project Name</th><th>Deliverable ID</th><th>Deliverable Name</th><th>Team ID</th><th>Member Name</th></tr></thead><tbody>'
-        for (var i=0;i<data.length; i++) {
-          html += '<tr><td>'+data[i].getAttribute("Projects.ID")+'</td><td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'</td><td>'+data[i].getAttribute("Deliverables.ID")+'</td><td>'+data[i].getAttribute("Deliverables.Name")+'</td><td>'+data[i].getAttribute("Team Members.ID")+'</td><td>'+data[i].getAttribute("Team Members.Name")+'</td></tr>'
+        var html = '&lt;table class="table default">&lt;thead>&lt;tr>&lt;th>Project ID&lt;/th>&lt;th>Project Name&lt;/th>&lt;th>Deliverable ID&lt;/th>&lt;th>Deliverable Name&lt;/th>&lt;th>Team ID&lt;/th>&lt;th>Member Name&lt;/th>&lt;/tr>&lt;/thead>&lt;tbody>'
+        for (var i=0;i&lt;data.length; i++) {
+          html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.Name")+'&lt;/td>&lt;/tr>'
         }
-        html += '</tbody></table>';
+        html += '&lt;/tbody>&lt;/table>';
         $('#part1').html(html);
       })
 

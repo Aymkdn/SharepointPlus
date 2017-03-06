@@ -597,11 +597,11 @@ onLookup:"Deliverable_x0020_ID"
     }
   }
 }, function(data) {
-  var html = '<table class="table default"><thead><tr><th>Project ID</th><th>Project Name</th><th>Deliverable ID</th><th>Deliverable Name</th><th>Team ID</th><th>Member Name</th></tr></thead><tbody>'
-  for (var i=0;i<data.length; i++) {
-    html += '<tr><td>'+data[i].getAttribute("Projects.ID")+'</td><td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'</td><td>'+data[i].getAttribute("Deliverables.ID")+'</td><td>'+data[i].getAttribute("Deliverables.Name")+'</td><td>'+data[i].getAttribute("Team Members.ID")+'</td><td>'+data[i].getAttribute("Team Members.Name")+'</td></tr>'
+  var html = '&lt;table class="table default">&lt;thead>&lt;tr>&lt;th>Project ID&lt;/th>&lt;th>Project Name&lt;/th>&lt;th>Deliverable ID&lt;/th>&lt;th>Deliverable Name&lt;/th>&lt;th>Team ID&lt;/th>&lt;th>Member Name&lt;/th>&lt;/tr>&lt;/thead>&lt;tbody>'
+  for (var i=0;i&lt;data.length; i++) {
+    html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.Name")+'&lt;/td>&lt;/tr>'
   }
-  html += '</tbody></table>';
+  html += '&lt;/tbody>&lt;/table>';
   $('#part1').html(html);
 })
 
@@ -1288,7 +1288,7 @@ $SP().list("My List").views(function(view) {
 <p>This work is licensed under <a rel="license" href="http://aymkdn.github.com/SharepointPlus/license.txt">GPL v2</a>.</p>
 <p>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</p>
 
-    <p>Automatically generated with JSDoc on Mon, 06 Mar 2017 17:13:23 GMT</p>
+    <p>Automatically generated with JSDoc on Mon, 06 Mar 2017 17:29:15 GMT</p>
     </footer>
   </div>
   <script type="text/javascript">
