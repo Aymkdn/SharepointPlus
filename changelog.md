@@ -1,5 +1,7 @@
 # Changelog
 
+**Change Log v4.0 ()**
+
 **Change Log v3.14 (March 6, 2017)**
 
   - Add a sanitize filter for the filename in `$SP().createFile()` because Sharepoint doesn't like some special characters
