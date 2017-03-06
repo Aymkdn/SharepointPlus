@@ -88,6 +88,15 @@ if(!String.prototype.trim) {
   };
 }
 
+/**
+ * @ignore
+ * Permits to cut an array into smaller blocks
+ * @param {Array} b The array to split
+ * @param {Number} e The size of each block
+ * @return {Array} An array that contains several arrays with the required size
+ */
+var SPArrayChunk=function(b,e){var d=[];for(var c=0,a=b.length;c<a;c+=e){d.push(b.slice(c,c+e))}return d}
+
 // Global
 _SP_APPROVED=0;
 _SP_REJECTED=1;
@@ -97,8 +106,8 @@ _SP_SCHEDULED=4;
 _SP_CACHE_FORMFIELDS=null;
 _SP_CACHE_CONTENTTYPES=[];
 _SP_CACHE_CONTENTTYPE=[];
-_SP_CACHE_SAVEDVIEW=void 0;
-_SP_CACHE_SAVEDVIEWS=void 0;
+_SP_CACHE_SAVEDVIEW=[];
+_SP_CACHE_SAVEDVIEWS=[];
 _SP_CACHE_SAVEDLISTS=void 0;
 _SP_CACHE_USERGROUPS=[]
 _SP_CACHE_GROUPMEMBERS=[];
@@ -115,6 +124,7 @@ _SP_NOTIFY_QUEUE=[];
 _SP_NOTIFY=[];
 _SP_PLUGINS={};
 _SP_MODALDIALOG_LOADED=false;
+_SP_MAXWHERE_ONLOOKUP=30;
 
 // for each select of lookup with more than 20 values, for IE only
 // see https://bdequaasteniet.wordpress.com/2013/12/03/getting-rid-of-sharepoint-complex-dropdowns/
@@ -194,15 +204,15 @@ if (typeof jQuery === "function") {
       @name $SP().getVersion
       @function
       @description Returns the SP version
-      
+
       @return {String} The current SharepointPlus version
     */
-    getVersion:function() { return "3.13" },
+    getVersion:function() { return "3.14" },
     /**
       @name $SP().decode_b64
       @function
       @description Permits to decode a Base 64 string
-      
+
       @param {String} toDecode It's the Base 64 string to decode
       @return {String} The decoded string
     */
@@ -398,7 +408,7 @@ if (typeof jQuery === "function") {
       // " AND "
       // " OR "
       // " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
-      // " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"'
+      // " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"' — SP2013 limits each IN to 60 items. If you want to check Lookup IDs instead of text you can use '~' followed by the ID, for example 'Location IN ["~23", "~26", "~30"]'
 
       // special words:
       // '[Me]' : for the current user
@@ -440,9 +450,9 @@ if (typeof jQuery === "function") {
                       else if (!ignoreNextChar && charAtI==")" && !openedApos) parenthesis.open--;
                       else ignoreNextChar=false;
                     }
-                    
+
                     var lastIndex = factory.length-1;
-  
+
                     // concat with the first index
                     if (lastIndex>=0) {
                       if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
@@ -464,9 +474,23 @@ if (typeof jQuery === "function") {
                       else if (!ignoreNextChar && !openedApos && charAtI=="]") break;
                       else ignoreNextChar=false;
                     }
-                    
+
                     var lastIndex = factory.length-1;
-                    factory[lastIndex] += '<FieldRef Name="'+lastField+'" /><Values><Value Type="Text">' + JSON.parse('[' + queryString.substring(start+1, i) + ']').join('</Value><Value Type="Text">') + '</Value></Values>' + closeTag;
+                    var arrIn = JSON.parse('[' + queryString.substring(start+1, i) + ']');
+                    // we want to detect the type for the values
+                    var typeIn = "Text";
+                    switch(typeof arrIn[0]) {
+                      case "number": typeIn = "Number"; break;
+                      default: {
+                        // check if it starts with ~ and then it's a number -- lookupid
+                        if (arrIn[0].charAt(0) === "~" && typeof (arrIn[0].slice(1)*1) === "number") {
+                          typeIn = "Integer";
+                          // change all array values
+                          SPArrayForEach(arrIn, function(e,i) { arrIn[i]=e.slice(1) })
+                        }
+                      }
+                    }
+                    factory[lastIndex] += '<FieldRef Name="'+lastField+'" '+(typeIn==="Integer"?'LookupId="True"':'')+' /><Values><Value Type="'+typeIn+'">' + arrIn.join('</Value><Value Type="'+typeIn+'">') + '</Value></Values>' + closeTag;
                     lastField = "";
                     closeTag = "";
                     // concat with the first index
@@ -714,6 +738,7 @@ if (typeof jQuery === "function") {
           @param {String} [setup.join.list] Permits to establish the link between two lists (see the example below)
           @param {String} [setup.join.url='current website'] The website url (if different than the current website)
           @param {String} [setup.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
+          @param {String} [setup.join.onLookup] Permits to establish the link between two lists based on a lookup field... it's more optimized than the simple `join.on` (see the example below)
           @param {Boolean} [setup.join.outer=false] If you want to do an outer join (you can also directly use "outerjoin" instead of "join")
         @param {Boolean} [setup.calendar=false] If you want to get the events from a Calendar List
         @param {Object} [setup.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
@@ -860,7 +885,7 @@ if (typeof jQuery === "function") {
         for (var i=0; i&lt;data.length; i++)
           console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
       });
-      
+
       // By default "join" is an "inner join", but you can also do an "outerjoin"
       // ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
       // ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
@@ -883,6 +908,30 @@ if (typeof jQuery === "function") {
       },function getData(data) {
         for (var i=0; i&lt;data.length; i++)
           console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
+      })
+
+      // Another example of "outerjoin", but this time with fields tied to a Lookup ID
+      // Here 1 Project can have several Deliverables based on field "Project ID", and 1 Deliverable can have several team members based on "Deliverable ID"
+      $SP().list("Projects").get({
+        fields:"ID,Project_x0020_Name",
+        where:"Status = 'In Progress'",
+        outerjoin:{
+          list:"Deliverables",
+          fields:"ID,Name",
+          onLookup:"Project_x0020_ID",
+          outerjoin:{
+            list:"Team Members",
+            fields:"ID,Deliverable_x0020_ID,Name",
+            onLookup:"Deliverable_x0020_ID"
+          }
+        }
+      }, function(data) {
+        var html = '<table class="table default"><thead><tr><th>Project ID</th><th>Project Name</th><th>Deliverable ID</th><th>Deliverable Name</th><th>Team ID</th><th>Member Name</th></tr></thead><tbody>'
+        for (var i=0;i<data.length; i++) {
+          html += '<tr><td>'+data[i].getAttribute("Projects.ID")+'</td><td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'</td><td>'+data[i].getAttribute("Deliverables.ID")+'</td><td>'+data[i].getAttribute("Deliverables.Name")+'</td><td>'+data[i].getAttribute("Team Members.ID")+'</td><td>'+data[i].getAttribute("Team Members.Name")+'</td></tr>'
+        }
+        html += '</tbody></table>';
+        $('#part1').html(html);
       })
 
       // With Sharepoint 2010 we are limited due to the throttling limit (see here for some very interesting information http://www.glynblogs.com/2011/03/sharepoint-2010-list-view-throttling-and-custom-caml-queries.html)
@@ -991,7 +1040,7 @@ if (typeof jQuery === "function") {
       if (this.needQueue) { return this._addInQueue(arguments) }
       if (this.listID == undefined) throw "Error 'get': you have to define the list ID/Name";
       if (arguments.length === 1 && typeof setup === "function") return this.get({}, setup);
-  
+
       // default values
       setup           = setup || {};
       if (this.url == undefined) throw "Error 'get': not able to find the URL!"; // we cannot determine the url
@@ -1023,7 +1072,7 @@ if (typeof jQuery === "function") {
       setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
       // protect & into ListItemCollectionPositionNext
       if (setup.listItemCollectionPositionNext) setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext.replace(/&/g,"&amp;").replace(/&amp;amp;/g,"&amp;");
-      
+
       // if setup.where is an array, then it means we want to do several requests
       // so we keep the first WHERE
       if (typeof setup.where === "object") {
@@ -1045,7 +1094,6 @@ if (typeof jQuery === "function") {
         // and find the view details
         _this.view(setup.view,function(data,viewID) {
           setup.view=viewID;
-          setup.fields 
           var where = (setup.whereCAML ? setup.where : _this.parse(setup.where));
           // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
           var mtchDateRanges = data.whereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
@@ -1065,13 +1113,13 @@ if (typeof jQuery === "function") {
         });
         return this;
       }
-      
+
       // if we have [Me]/[Today] in the WHERE, or we want to use the GROUPBY,
       // then we want to use the Lists.asmx service
       // also for Sharepoint 2010
       // depreciate since v3.0
       var useOWS = true;//( setup.groupby!="" || /\[Me\]|\[Today\]/.test(setup.where) || setup.forceOWS===true || typeof SP=="object");
-      
+
       // what about the fields ?
       var fields="";
       if (setup.fields == "" || setup.fields == [])
@@ -1082,7 +1130,7 @@ if (typeof jQuery === "function") {
         for (var i=0; i<setup.fields.length; i++) fields += '<FieldRef Name="'+setup.fields[i]+'" />';
           // depreciate since v3.0 fields += '<Field'+(useOWS?'Ref':'')+' Name="'+setup.fields[i]+'" />';
       }
-            
+
       // what about sorting ?
       var orderby="";
       if (setup.orderby != "") {
@@ -1098,7 +1146,7 @@ if (typeof jQuery === "function") {
       }
       // if calendar:true and no orderby, then we order by the EventDate
       if ((setup.calendar===true||setup.calendarViaView===true) && orderby==="") orderby = '<FieldRef Name="EventDate" Ascending="ASC" />'
-      
+
       // what about groupby ?
       var groupby="";
       if (setup.groupby != "") {
@@ -1112,7 +1160,7 @@ if (typeof jQuery === "function") {
         var tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID"];
         for (i=0; i<tmpFields.length; i++) fields += '<FieldRef Name="'+tmpFields[i]+'" />';
       }
-      
+
       // forge the parameters
       var body = "";
       var aReturn = [];
@@ -1192,160 +1240,223 @@ if (typeof jQuery === "function") {
                      async: true,
                      url: url,
                      data: body,
+                     /*xhr:function() {
+                      // get the native XmlHttpRequest object
+                      var xhr = $.ajaxSettings.xhr() ;
+                      // set the onprogress event handler
+                      xhr.onprogress = function(evt){ console.log('progress', evt) } ;
+                      // set the onload event handler
+                      xhr.onload = function(){ console.log('DONE!') } ;
+                      // return the customized object
+                      return xhr ;
+                     },*/
                      contentType: "text/xml; charset=utf-8",
                      dataType: "xml",
                      success:function(data) {
-                            // we want to use myElem to change the getAttribute function
-                            var rows=data.getElementsByTagName('z:row');
-                            if (rows.length==0) rows=data.getElementsByTagName('row'); // for Chrome 'bug'
-                            aReturn = fastMap(rows, function(row) { return myElem(row); });
-                            // we have data from a previous list, so let's merge all together the both of them
-                            if (setup.joinData) {
-                              var on = setup.joinData["noindex"];
-                              var aResult = [];
-                              var prevIndex="";
-                              var listIndexFound={length:0};
-                              if (!on.length) alert("$SP.get() -- Error 'get': you must define the ON clause with JOIN is used.");
-                              // we have a linked list so do some stuff here to tie the two lists together
-                              for (var i=0,stop=aReturn.length; i<stop; i++) {
-                                var index="";
-                                for (var j=0; j<on.length; j++) index += aReturn[i].getAttribute(on[j][_this.listID]);
-                                // check if the index exists in the previous set of data
-                                if (setup.joinData[index]) {
-                                  if (prevIndex!==index) {
-                                    listIndexFound[setup.joinIndex[index]]=true;
-                                    listIndexFound.length++;
-                                    prevIndex=index;
-                                  }
-                                  // we merge the joinData and the aReturn
-                                  for (var j=0,joinDataLen=setup.joinData[index].length; j<joinDataLen; j++) {
-                                    var tmp=[];
-                                    // find the attributes for the current list
-                                    var attributesReturn=aReturn[i].getAttributes();
-                                    for (var attr=attributesReturn.length; attr--;) {
-                                      tmp[_this.listID+"."+attributesReturn[attr].nodeName.slice(4)] = attributesReturn[attr].nodeValue;
+                        var rows, i, j, stop, collection, on, aResult, prevIndex, index, listIndexFound, nextPage,
+                            joinDataLen, tmp, attributesReturn, attr, attributesJoinData, joinIndexLen, idx, sp,
+                            joinData, joinIndex, joinWhereLookup, wh;
+                        // we want to use myElem to change the getAttribute function
+                        rows=data.getElementsByTagName('z:row');
+                        if (rows.length==0) rows=data.getElementsByTagName('row'); // for Chrome 'bug'
+                        aReturn = fastMap(rows, function(row) { return myElem(row); });
+
+                        // if setup.results length is bigger than 0 then it means we need to add the current data
+                        if (setup.results.length>0)
+                          for (i=0,stop=aReturn.length; i<stop; i++) setup.results.push(aReturn[i])
+
+                        // depending of the setup.nextWhere length we update the progress
+                        if (typeof setup.originalWhere !== "string")
+                          setup.progress(setup.originalWhere.length-setup.nextWhere.length,setup.originalWhere.length);
+
+                        // if paging we want to return ListItemCollectionPositionNext
+                        if (setup.paging) {
+                          collection = data.getElementsByTagName("rs:data")[0];
+                          if (typeof collection === "undefined" || collection.length==0) {
+                            collection=data.getElementsByTagName("data")[0]; // for Chrome
+                          }
+                          if (collection) nextPage = collection.getAttribute("ListItemCollectionPositionNext");
+                        }
+
+                        // if we have a paging then we need to do the request again
+                        if (setup.paging && --setup.page > 0) {
+                          // check if we need to go to another request
+                          if (setup.results.length===0) setup.results=aReturn;
+                          // notify that we keep loading
+                          setup.progress(setup.results.length);
+                          if (nextPage) {
+                            // we need more calls
+                            setup.listItemCollectionPositionNext=_this._cleanString(nextPage);
+                            return _this.get(setup,fct)
+                          } else {
+                            aReturn = setup.results
+                            // it means we're done, no more call
+                            //- if (typeof fct == "function") fct.call(_this,setup.results,nextPage)
+                          }
+                        } else if (setup.nextWhere.length>0) { // if we need to so some more request
+                          if (setup.results.length===0) setup.results=aReturn
+                          setup.where = setup.nextWhere.slice(0);
+                          return _this.get(setup,fct)
+                        } else if (typeof fct == "function") {
+                          // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
+                          setup.where = setup.originalWhere;
+                          //-fct.call(_this,(setup.results.length>0?setup.results:aReturn), nextPage);
+                          aReturn = (setup.results.length>0?setup.results:aReturn);
+                        }
+
+                        // we have data from a previous list, so let's merge all together the both of them
+                        if (setup.joinData) {
+                          on = setup.joinData["noindex"];
+                          aResult = [];
+                          prevIndex="";
+                          listIndexFound={length:0};
+                          if (!on.length) alert("$SP.get() -- Error 'get': you must define the ON clause when JOIN is used.");
+                          // we have a linked list so do some stuff here to tie the two lists together
+                          for (i=0,stop=aReturn.length; i<stop; i++) {
+                            index="";
+                            for (j=0; j<on.length; j++) index += "_"+_this.getLookup(aReturn[i].getAttribute(on[j][_this.listID])).id;
+                            // check if the index exists in the previous set of data
+                            if (setup.joinData[index]) {
+                              if (prevIndex!==index) {
+                                if (!listIndexFound[setup.joinIndex[index]]) listIndexFound.length++;
+                                listIndexFound[setup.joinIndex[index]]=true;
+                                prevIndex=index;
+                              }
+                              // we merge the joinData and the aReturn
+                              for (j=0,joinDataLen=setup.joinData[index].length; j<joinDataLen; j++) {
+                                tmp=[];
+                                // find the attributes for the current list
+                                attributesReturn=aReturn[i].getAttributes();
+                                for (attr=attributesReturn.length; attr--;) {
+                                  tmp[_this.listID+"."+attributesReturn[attr].nodeName.slice(4)] = attributesReturn[attr].nodeValue;
+                                }
+                                // now find the attributes for the joinData
+                                attributesJoinData=setup.joinData[index][j].getAttributes();
+                                for (attr in attributesJoinData) {
+                                  tmp[attr] = setup.joinData[index][j].getAttribute(attr);
+                                }
+
+                                aResult.push(new extendMyObject(tmp));
+                              }
+                            }
+                            // for the default options
+                            if (setup.innerjoin) setup.join=setup.innerjoin;
+                            if (setup.outerjoin) {
+                              setup.join=setup.outerjoin;
+                              setup.join.outer=true;
+                            }
+
+                          }
+                          aReturn=aResult;
+
+                          // if there is a WHERE clause then we want to force to an innerjoin
+                          // except where setup.where equals to setup.onLookupWhere
+                          if (setup.where && setup.where!==setup.onLookupWhere && setup.outer) setup.outer=false;
+
+                          // if we want to do an outerjoin we link the missing data
+                          if (setup.outer) {
+                            joinIndexLen=setup.joinIndex.length;
+                            if (listIndexFound.length < joinIndexLen) {
+                              for (i=0; i<joinIndexLen; i++) {
+                                if (listIndexFound[i] !== true) {
+                                  idx = setup.joinIndex[i];
+                                  if (idx===undefined || setup.joinData[idx]===undefined) continue
+                                  for (j=0,joinDataLen=setup.joinData[idx].length; j<joinDataLen; j++) {
+                                    tmp=[];
+                                    attributesJoinData=setup.joinData[idx][j].getAttributes();
+                                    for (attr in attributesJoinData) {
+                                      tmp[attr] = setup.joinData[idx][j].getAttribute(attr);
                                     }
-                                    // now find the attributes for the joinData
-                                    var attributesJoinData=setup.joinData[index][j].getAttributes();
-                                    for (var attr in attributesJoinData) {
-                                      tmp[attr] = setup.joinData[index][j].getAttribute(attr);
-                                    }
-                                    
                                     aResult.push(new extendMyObject(tmp));
                                   }
                                 }
-                                // for the default options
-                                if (setup.innerjoin) setup.join=setup.innerjoin;
-                                if (setup.outerjoin) {
-                                  setup.join=setup.outerjoin;
-                                  setup.join.outer=true;
-                                }
-                                
-                              }
-                              aReturn=aResult;
-                              
-                              // if we want to do an outerjoin we link the missing data
-                              if (setup.outer) {
-                                var joinIndexLen=setup.joinIndex.length;
-                                if (listIndexFound.length < joinIndexLen) {
-                                  for (i=0; i<joinIndexLen; i++) {
-                                    if (listIndexFound[i] !== true) {
-                                      var idx = setup.joinIndex[i];
-                                      if (idx===undefined || setup.joinData[idx]===undefined) continue
-                                      for (var j=0,joinDataLen=setup.joinData[idx].length; j<joinDataLen; j++) {
-                                        var tmp=[];
-                                        var attributesJoinData=setup.joinData[idx][j].getAttributes();
-                                        for (var attr in attributesJoinData) {
-                                          tmp[attr] = setup.joinData[idx][j].getAttribute(attr);
-                                        }
-                                        aResult.push(new extendMyObject(tmp));
-                                      }
-                                    }
-                                  }
-                                }
                               }
                             }
-                            
-                            if (setup.outerjoin) { setup.join=setup.outerjoin; setup.join.outer=true }
-                            else if (setup.innerjoin) setup.join=setup.innerjoin;
-                            // if we join it with another list
-                            if (setup.join) {
-                             var joinData=[],joinIndex=[];
-                             // retrieve the ON clauses
-                             var on=_this._parseOn(setup.join.on);
-                             joinData["noindex"]=on; // keep a copy of it for the next treatment in the tied list
-                             for (var i=0,stop=aReturn.length; i<stop; i++) {
-                               // create an index that will be used in the next list to filter it
-                               var index="",tmp=[];
-                               for (var j=0; j<on.length; j++) index += aReturn[i].getAttribute(on[j][_this.listID]) || aReturn[i].getAttribute(_this.listID+"."+on[j][_this.listID]);
-                               if (!joinData[index]) {
-                                 joinIndex[index]=joinIndex.length;
-                                 joinIndex.push(index);
-                                 joinData[index] = [];
-                               }
-                               // if we are coming from some other join
-                               if (setup.joinData) {
-                                 joinData[index].push(aReturn[i]);
-                               } else {
-                                 var attributes=aReturn[i].getAttributes();
-                                 for (var j=attributes.length; j--;) {
-                                   tmp[_this.listID+"."+attributes[j].nodeName.slice(4)] = attributes[j].nodeValue;
-                                 }
-                                 joinData[index].push(new extendMyObject(tmp));
-                               }
-                             }
-                             delete setup.joinData;
-                             //call the joined list to grab data and process them
-                             var sp=$SP().list(setup.join.list,setup.join.url||_this.url), nextPage;
-                             setup.join.joinData=joinData;
-                             setup.join.joinIndex=joinIndex;
-                             sp.get(setup.join,fct);
+                          }
+                        }
+
+                        if (setup.outerjoin) {
+                          setup.join=setup.outerjoin;
+                          setup.join.outer=true;
+                        }
+                        else if (setup.innerjoin) setup.join=setup.innerjoin;
+                        // if we join it with another list
+                        if (setup.join) {
+                          joinData=[];
+                          joinIndex=[];
+                          joinWhereLookup=[];
+                          // retrieve the ON clauses
+                          if (setup.join.onLookup) setup.join.on="'"+setup.join.list+"'."+setup.join.onLookup+" = '"+_this.listID+"'.ID";
+                          on=_this._parseOn(setup.join.on);
+                          joinData["noindex"]=on; // keep a copy of it for the next treatment in the tied list
+                          for (i=0,stop=aReturn.length; i<stop; i++) {
+                            // create an index that will be used in the next list to filter it
+                            index="",tmp=[];
+                            for (j=0; j<on.length; j++) index += "_"+_this.getLookup(aReturn[i].getAttribute(on[j][_this.listID]) || aReturn[i].getAttribute(_this.listID+"."+on[j][_this.listID])).id;
+                            if (!joinData[index]) {
+                              joinIndex[index]=joinIndex.length;
+                              joinIndex.push(index);
+                              joinData[index] = [];
+                              // if onLookup then we will store the current ID with the ~ to use it in a where clause with IN operator
+                              if (setup.join.onLookup && index!=="_") joinWhereLookup.push("~"+index.slice(1))
+                            }
+                            // if we are coming from some other join
+                            if (setup.joinData) {
+                              joinData[index].push(aReturn[i]);
                             } else {
-                              // if setup.results length is bigger than 0 then it means we need to add the current data
-                              if (setup.results.length>0)
-                                for (var i=0,stop=aReturn.length; i<stop; i++) setup.results.push(aReturn[i])
-                                
-                              // depending of the setup.nextWhere length we update the progress
-                              if (typeof setup.originalWhere !== "string")
-                                setup.progress(setup.originalWhere.length-setup.nextWhere.length,setup.originalWhere.length);
-                              
-                              // if paging we want to return ListItemCollectionPositionNext
-                              if (setup.paging) {
-                                var collection = data.getElementsByTagName("rs:data")[0];
-                                if (typeof collection === "undefined" || collection.length==0) {
-                                  collection=data.getElementsByTagName("data")[0]; // for Chrome                              
-                                }
-                                if (collection) nextPage = collection.getAttribute("ListItemCollectionPositionNext");
+                              attributes=aReturn[i].getAttributes();
+                              for (j=attributes.length; j--;) {
+                                tmp[_this.listID+"."+attributes[j].nodeName.slice(4)] = attributes[j].nodeValue;
                               }
-                              
-                              // if we have a paging then we need to do the request again
-                              if (setup.paging && --setup.page > 0) {
-                                // check if we need to go to another request
-                                if (setup.results.length===0) setup.results=aReturn;
-                                // notify that we keep loading
-                                setup.progress(setup.results.length);
-                                if (nextPage) {
-                                  // we need more calls
-                                  setup.listItemCollectionPositionNext=_this._cleanString(nextPage);
-                                  _this.get(setup,fct)
-                                } else {
-                                  // it means we're done, no more call
-                                  if (typeof fct == "function") fct.call(_this,setup.results, nextPage)
-                                }
-                              } else if (setup.nextWhere.length>0) { // if we need to so some more request
-                                if (setup.results.length===0) setup.results=aReturn
-                                setup.where = setup.nextWhere.slice(0);
-                                _this.get(setup,fct)
-                              } else if (typeof fct == "function") {
-                                // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
-                                setup.where = setup.originalWhere;
-                                fct.call(_this,(setup.results.length>0?setup.results:aReturn), nextPage);
+                              joinData[index].push(new extendMyObject(tmp));
+                            }
+                          }
+                          delete setup.joinData;
+                          // call the joined list to grab data and process them
+                          // if onLookup then we create a WHERE clause with IN operator
+                          if (setup.join.onLookup) {
+                            if (joinWhereLookup.length>0) {
+                              // SP2013 limits to 60 items per IN
+                              wh=SPArrayChunk(joinWhereLookup, 60);
+                              for (j=0; j<wh.length; j++) {
+                                wh[j] = setup.join.onLookup+' IN ["'+wh[j].join('","')+'"]'
+                              }
+                              // if the WHERE is too big then the server could run out of memory
+                              if (wh.length <= _SP_MAXWHERE_ONLOOKUP) {
+                                wh = "(" + wh.join(" OR ") + ")";
+                                // now we add this WHERE into the existing where
+                                if (setup.join.where) {
+                                  if (SPIsArray(setup.join.where)) {
+                                    SPArrayForEach(setup.join.where, function(e, i) { setup.join.where[i]=wh + " AND ("+e+")" })
+                                  } else {
+                                    setup.join.where=wh + " AND (" + setup.join.where + ")";
+                                  }
+                                } else setup.join.where=wh
+                                setup.join.onLookupWhere=wh;
+                              } else {
+                                // in that case we'll use paging
+                                setup.join.paging=true;
                               }
                             }
+                            // make sure the lookup fields is in the fields list
+                            if (!setup.join.fields) setup.join.fields=[];
+                            if (!SPIsArray(setup.join.fields)) {
+                              tmp=setup.join.fields.split(",");
+                              tmp.push(setup.join.onLookup);
+                              setup.join.fields=tmp.join(",");
+                            } else setup.join.fields.push(setup.join.onLookup);
+                          }
+                          sp=$SP().list(setup.join.list,setup.join.url||_this.url);
+                          setup.join.joinData=joinData;
+                          setup.join.joinIndex=joinIndex;
+                          return sp.get(setup.join,fct);
+                        }
+
+                        if (typeof fct === "function") fct.call(_this,aReturn,nextPage)
                       },
                       error:function(jqXHR, textStatus, errorThrown) {
                         var res = jqXHR.responseXML;
-                        var err = res.getElementsByTagName("errorstring");
+                        var err = (res ? res.getElementsByTagName("errorstring") : null);
                         if (err && err[0]) fct.call(_this,[],"Error: "+err[0].firstChild.nodeValue)
                         else fct.call(_this,[],textStatus+": "+errorThrown);
                       }
@@ -2073,19 +2184,16 @@ if (typeof jQuery === "function") {
       if (arguments.length === 1 && typeof viewID === "function") return this.view("", viewID);
   
       // default values
-      list = this.listID;
+      var list = this.listID;
       if (this.url == undefined) throw "Error 'view': not able to find the URL!"; // we cannot determine the url
       viewID = viewID || "";
       var viewName = arguments[2] || viewID;
       
       viewName=viewName.toLowerCase();
       // check if we didn't save this information before
-      var savedView = _SP_CACHE_SAVEDVIEW;
-      if (savedView!=undefined) {
-        for (var i=savedView.length; i--;) {
-          if (savedView[i].url===this.url && savedView[i].list===list && (savedView[i].viewID===viewID || savedView[i].viewName===viewName)) { fct.call(this,savedView[i].data,viewID); return this }
-        }
-      } else savedView=[];
+      for (var i=_SP_CACHE_SAVEDVIEW.length; i--;) {
+        if (_SP_CACHE_SAVEDVIEW[i].url===this.url && _SP_CACHE_SAVEDVIEW[i].list===list && (_SP_CACHE_SAVEDVIEW[i].viewID===viewID || _SP_CACHE_SAVEDVIEW[i].viewName===viewName)) { fct.call(this,_SP_CACHE_SAVEDVIEW[i].data,viewID); return this }
+      }
       
       // if viewID is not an ID but a name then we need to find the related ID
       if (viewID.charAt(0) !== '{') {
@@ -2141,8 +2249,7 @@ if (typeof jQuery === "function") {
                      }
                      
                      // cache the data
-                     savedView.push({url:_this.url,list:list,data:aReturn,viewID:viewID,viewName:viewName});
-                     _SP_CACHE_SAVEDVIEW = savedView;
+                     _SP_CACHE_SAVEDVIEW.push({url:_this.url,list:list,data:aReturn,viewID:viewID,viewName:viewName});
                      
                      if (typeof fct == "function") fct.call(_this,aReturn,viewID);
                    }
@@ -2180,12 +2287,11 @@ if (typeof jQuery === "function") {
       fct = fct || function(){};
             
       // check if we didn't save this information before
-      var savedViews = _SP_CACHE_SAVEDVIEWS;
-      if (savedViews!=undefined && options.cache) {
-        for (var i=savedViews.length; i--;) {
-          if (savedViews[i].url==this.url && savedViews[i].listID === this.listID) { fct.call(this,savedViews[i].data); return this }
+      if (options.cache) {
+        for (var i=_SP_CACHE_SAVEDVIEWS.length; i--;) {
+          if (_SP_CACHE_SAVEDVIEWS[i].url==this.url && _SP_CACHE_SAVEDVIEWS[i].listID === this.listID) { fct.call(this,_SP_CACHE_SAVEDVIEWS[i].data); return this }
         }
-      } else savedViews=[];
+      }
       
       var _this=this;
       
@@ -2214,8 +2320,7 @@ if (typeof jQuery === "function") {
                     
                     // save the data into the DOM for later usage
                     if (options.cache === true) {
-                      savedViews.push({url:_this.url,listID:this.listID,data:aReturn});
-                      _SP_CACHE_SAVEDVIEWS = savedViews;
+                      _SP_CACHE_SAVEDVIEWS.push({url:_this.url,listID:_this.listID,data:aReturn});
                     }
                     fct.call(_this,aReturn);
                    }
@@ -3650,7 +3755,7 @@ if (typeof jQuery === "function") {
           case 2: if (typeof username === "string" && typeof setup === "function") return this.people(username,{},setup);
                   if (typeof username === "object" && typeof setup === "function") return this.people("",username,setup);
       }
-      
+
       // default values
       setup         = setup || {};
       if (setup.url == undefined) {
@@ -3661,7 +3766,7 @@ if (typeof jQuery === "function") {
       username      = username || "";
 
       var _this=this;
-            
+
       // build the request
       var body = _this._buildBodyForSOAP("GetUserProfileByName", "<AccountName>"+username+"</AccountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService");
       // send the request
@@ -3677,7 +3782,7 @@ if (typeof jQuery === "function") {
                      var aResult=[];
                      // get the details
                      data=data.getElementsByTagName('PropertyData');
-                     for (var i=0,len=data.length; i<len; i++) {     
+                     for (var i=0,len=data.length; i<len; i++) {
                        var name=data[i].getElementsByTagName("Name")[0].firstChild.nodeValue;
                        var value=data[i].getElementsByTagName("Value");
                        if (value&&value.length>=1&&value[0].firstChild) value=value[0].firstChild.nodeValue;
@@ -3699,12 +3804,12 @@ if (typeof jQuery === "function") {
       @name $SP().getUserInfo
       @function
       @description Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)
-      
+
       @param {String} username That must be "domain\\login" for Sharepoint 2010, or something like "i:0#.w|domain\\login" for Sharepoint 2013
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an object with the result ({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), or a String with the error message
-      
+
       @example
       $SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}, function(info) {
         if (typeof info === "string") {
@@ -3721,7 +3826,7 @@ if (typeof jQuery === "function") {
                   break;
           case 3: if (typeof setup !== "object" && typeof fct !== "function") throw "Error 'getUserInfo': incorrect arguments, please review the documentation";
       }
-      
+
       // default values
       setup = setup || {};
       if (setup.url == undefined) {
@@ -3731,7 +3836,7 @@ if (typeof jQuery === "function") {
       fct = fct || (function() {});
 
       var _this=this;
-            
+
       // build the request
       var body = _this._buildBodyForSOAP("GetUserInfo", '<userLoginName>'+username+'</userLoginName>', "http://schemas.microsoft.com/sharepoint/soap/directory/");
       // send the request
@@ -3829,7 +3934,7 @@ if (typeof jQuery === "function") {
           for (i=0; i<tmp.length; i++) {
             if (tmp[i].checked) result.workWeek.days.push(tmp[i].nextSibling.querySelector('abbr').getAttribute("title"))
           }
-          
+
           result.workWeek.firstDayOfWeek = getValue("DdlFirstDayOfWeek");
           result.workWeek.firstWeekOfYear = getValue("DdlFirstWeekOfYear");
           result.workWeek.startTime=div.querySelector("select[id$='DdlStartTime']").value;
@@ -3851,10 +3956,10 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().regionalDateFormat
       @function
-      @description Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, DD for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)
-      
-      @param {Function} [callback] It will pass the date format 
-      
+      @description Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, D for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)
+
+      @param {Function} [callback] It will pass the date format
+
       @example
       // you'll typically need that info when parsing a date from a Date Picker field from a form
       // we suppose here you're using momentjs
@@ -3867,6 +3972,9 @@ if (typeof jQuery === "function") {
           alert("StartDate must be before EndDate!")
         }
       })
+
+      // Here is also an example of how you can parse a string date
+      // -> https://gist.github.com/Aymkdn/b17903cf7786578300f04f50460ebe96
      */
     regionalDateFormat:function(callback) {
       // find the base URL
@@ -3886,14 +3994,14 @@ if (typeof jQuery === "function") {
           _this.regionalDateFormat(callback);
         })
       }
-      
+
       $SP().ajax({
         method:'GET',
         url:_this.url + "/_layouts/iframe.aspx?cal=1&date=1/1/2000&lcid="+lcid,
         success:function(data) {
           var div = document.createElement('div');
           div.innerHTML = data;
-          
+
           // div will contain the full datepicker page, for the January 2000
           // search for 3/January/2000
           var x = div.querySelector('a[id="20000103"]').getAttribute("href").replace(/javascript:ClickDay\('(.*)'\)/,"$1");
@@ -4009,6 +4117,7 @@ if (typeof jQuery === "function") {
       @example $SP().toDate("2012-10-31T00:00:00").getFullYear(); // 2012
     */
     toDate:function(strDate, forceUTC) {
+      if (!strDate) return ""
       // 2008-10-31(T)00:00:00(Z)
       if (strDate instanceof Date) return strDate
       if (strDate.length!=19 && strDate.length!=20) throw "toDate: '"+strDate+"' is invalid."
@@ -4356,6 +4465,7 @@ if (typeof jQuery === "function") {
           fieldName = infoFromComments.Name;
           obj       = {
             _name: fieldName,
+            _internalname: infoFromComments.InternalName,
             _isMandatory: isMandatory,
             _description: "", /* the field's description */
             _elements: [], /* the HTML elements related to that field */
@@ -4365,8 +4475,9 @@ if (typeof jQuery === "function") {
           
           if (fieldName === "Content Type") { // the Content Type field is different !
             obj._elements = document.querySelector('.ms-formbody select[title="Content Type"]');
+            if (!obj._elements) continue;
             obj._type = "content type";
-            obj._tr = tr;
+            obj._tr = obj._elements.parentNode.parentNode;
           } else 
             obj._tr = tr;
           
@@ -4375,7 +4486,8 @@ if (typeof jQuery === "function") {
             usejQuery = (usejQuery === false ? false : true);
             var aReturn = this._elements;
             var hasJQuery=(typeof jQuery === "function" && usejQuery === true);
-
+            if (aReturn instanceof NodeList) aReturn = [].slice.call(aReturn)
+            if (!SPIsArray(aReturn)) return hasJQuery ? jQuery(aReturn) : aReturn;
             switch(aReturn.length) {
               case 0: return hasJQuery ? jQuery() : null;
               case 1: return hasJQuery ? jQuery(aReturn[0]) : aReturn[0];
@@ -4386,6 +4498,7 @@ if (typeof jQuery === "function") {
           obj.type = function() { return this._type }; // this function returns the type of the field 
           obj.row  = function() { return (typeof jQuery === "function" ? jQuery(this._tr) : this._tr) }; // this function returns the TR parent node 
           obj.name = function() { return this._name };
+          obj.internalname = function() { return this._internalname };
           obj.isMandatory = function() { return this._isMandatory };
           obj.options = function() {};
           
@@ -4970,7 +5083,7 @@ if (typeof jQuery === "function") {
                    
       @example
       $SP().formfields("Title").elem(); // -> returns a HTML INPUT TEXT
-      $SP().formfields("List of options").elem(); / -> returns a HTML SELECT 
+      $SP().formfields("List of options").elem(); // -> returns a HTML SELECT 
       
     */
     elem:function(usejQuery) {
@@ -4979,6 +5092,7 @@ if (typeof jQuery === "function") {
       var hasJQuery=(typeof jQuery === "function" && usejQuery === true);
       this.each(function() {
         var e = this.elem(false);
+        if (e instanceof NodeList) e = [].slice.call(e);
         aReturn=aReturn.concat(e)
       })
       
@@ -5106,12 +5220,33 @@ if (typeof jQuery === "function") {
       @return {String|Array} Returns the name of the field(s)
                    
       @example
-      $SP().formfields("Title").name(); // return "Title"
-      $SP().formfields(["Field1", "Field2"]).name(); // return [ "Field1", "Field2" ]
+      $SP().formfields("Subject").name(); // return "Subject"
+      $SP().formfields(["Field Name", "My Field"]).name(); // return [ "Field Name", "My Field" ]
     */
     name:function() {
       var aReturn = [];
       this.each(function() { aReturn.push(this.name()) })
+
+      switch(aReturn.length) {
+        case 0: return "";
+        case 1: return aReturn[0];
+        default: return aReturn;
+      } 
+    },
+    /**
+      @name $SP().formfields.internalname
+      @function
+      @description Return the field internalname
+                  
+      @return {String|Array} Returns the internalname of the field(s)
+                   
+      @example
+      $SP().formfields("Subject").internalname(); // return "Title"
+      $SP().formfields(["Field Name", "My Field"]).internalname(); // return [ "Field_x0020_Name", "My_x0020_Field" ]
+    */
+    internalname:function() {
+      var aReturn = [];
+      this.each(function() { aReturn.push(this.internalname()) })
 
       switch(aReturn.length) {
         case 0: return "";
@@ -5287,25 +5422,25 @@ if (typeof jQuery === "function") {
       @description Get the doc and viewport size
       @source https://blog.kodono.info/wordpress/2015/03/23/get-window-viewport-document-height-and-width-javascript/
      */
-    _getPageSize:function() {
+    _getPageSize:function(win) {
       var vw = {width:0, height:0};
       var doc = {width:0, height:0};
-      var w=window, d=document, dde=d.documentElement, db=d.getElementsByTagName('body')[0];
-       
+      var w=win||window, d=w.document, dde=d.documentElement, db=d.getElementsByTagName('body')[0];
+
       // viewport size
       vw.width  = w.innerWidth||dde.clientWidth||db.clientWidth;
       vw.height = w.innerHeight||dde.clientHeight||db.clientHeight;
-     
+
       // document size
       doc.width  = Math.max(db.scrollWidth, dde.scrollWidth, db.offsetWidth, dde.offsetWidth, db.clientWidth, dde.clientWidth);
       doc.height = Math.max(db.scrollHeight, dde.scrollHeight, db.offsetHeight, dde.offsetHeight, db.clientHeight, dde.clientHeight);
-       
+
       // if IE8 there is a bug with 4px
       if (!!(document.all && document.querySelector && !document.addEventListener) && (vw.width+4 == doc.width) && (vw.height+4 == doc.height)) {
         vw.width=doc.width;
         vw.height=doc.height;
       }
-       
+
        return {vw:vw, doc:doc};
     },
     /**
@@ -5313,18 +5448,30 @@ if (typeof jQuery === "function") {
       @function
       @description Show a modal dialog (based on SP.UI.ModalDialog.showModalDialog) but provides some advanced functions and better management of the modals (for example when you launch several modals)
      
-      @param {Object} [options] Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx
+      @param {Object} [options] Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx with some additional ones or some changes
         @param {String} [options.html] We can directly provide the HTML code as a string
-        @param {String} [options.width] If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width
-        @param {String} [options.height] If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height
+        @param {String} [options.width] If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)
+        @param {String} [options.height] If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)
         @param {Boolean} [options.closePrevious=false] It permits to close a previous modal dialog before opening this one
         @param {Boolean} [options.wait=false] If we want to show a Wait Screen (alias for $SP().waitModalDialog())
+        @param {String} [options.id=random()] An unique ID to identify the modal dialog (don't use space or special characters)
         @param {Function} [options.callback] A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue
-     
+        @param {Function} [options.onload] The modal might be delayed as we need to load some Sharepoint JS files; the `onload` function is called once the modal is shown
+        @param {Function} [options.onurlload] When we use the "url" parameter, this is triggered when the DOMContent of the iframe is loaded (if it's the same origin)
+        @param {String} [options.title] The title to give to the modal (if you use `wait:true` then it will be the main text that will appear)
+        @param {String} [options.message] This parameter is only use if there is `wait:true` and permits to define the subtitle message
+        @param {String} [options.url] A string that contains the URL of the page that appears in the dialog. If both url and html are specified, url takes precedence. Either url or html must be specified.
+        @param {Number} [options.x] An integer value that specifies the x-offset of the dialog. This value works like the CSS left value.
+        @param {Number} [options.y] An integer value that specifies the y-offset of the dialog. This value works like the CSS top value.
+        @param {Boolean} [options.allowMaximize] A Boolean value that specifies whether the dialog can be maximized. true if the Maximize button is shown; otherwise, false.
+        @param {Boolean} [options.showMaximized] A Boolean value that specifies whether the dialog opens in a maximized state. true the dialog opens maximized. Otherwise, the dialog is opened at the requested sized if specified; otherwise, the default size, if specified; otherwise, the autosized size.
+        @param {Boolean} [options.showClose=true] A Boolean value that specifies whether the Close button appears on the dialog.
+        @param {Boolean} [options.autoSize] A Boolean value that specifies whether the dialog platform handles dialog sizing.
+
       @example
       $SP().showModalDialog({
         title:"Dialog",
-        html:'<h1>Hello World</h1><p><button type="button" onclick="$SP().closeModialDialog('here')">Close</button></p>',
+        html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModialDialog(\'here\')">Close&lt;/button>&lt;/p>',
         callback:function(dialogResult, returnValue) {
           alert("Result="+dialogResult); // -> "here"
         }
@@ -5336,9 +5483,10 @@ if (typeof jQuery === "function") {
       // close the waiting message and open a new modal dialog
       $SP().showModalDialog({
         closePrevious:true,
-        title:"Success",        
-        html:'<h1>Done!</h1>'
+        title:"Success",
+        html:'&lt;h1>Done!&lt;/h1>'
       })
+      // and use $SP().closeModalDialog() to close it
      */
     showModalDialog:function(options) {
       // in some weird cases the script is not loaded correctly, so we need to ensure it
@@ -5353,9 +5501,18 @@ if (typeof jQuery === "function") {
         }
       }
       var size, ohtml, _this=this;
+      // source: http://stackoverflow.com/a/24603642/1134119
+      function iFrameReady(a,b){function e(){d||(d=!0,clearTimeout(c),b.call(this))}function f(){"complete"===this.readyState&&e.call(this)}function g(a,b,c){return a.addEventListener?a.addEventListener(b,c):a.attachEvent("on"+b,function(){return c.call(a,window.event)})}function h(){var b=a.contentDocument||a.contentWindow.document;0!==b.URL.indexOf("about:")?"complete"===b.readyState?e.call(b):(g(b,"DOMContentLoaded",e),g(b,"readystatechange",f)):c=setTimeout(h,1)}var c,d=!1;g(a,"load",function(){var b=a.contentDocument;b||(b=a.contentWindow,b&&(b=b.document)),b&&e.call(b)}),h()}
+
+      options.id = (options.id || "").replace(/\W+/g,"");
+      options.id = options.id || new Date().getTime();
+      var modal_id = "sp_frame_"+options.id;
       if (options.html && typeof options.html === "string") {
         ohtml = document.createElement('div');
         ohtml.style.padding="10px";
+        ohtml.style.display="inline-block";
+        ohtml.className = "sp-showModalDialog";
+        ohtml.id = 'content_'+modal_id;
         ohtml.innerHTML = options.html;
         options.html = ohtml;
       }
@@ -5384,14 +5541,22 @@ if (typeof jQuery === "function") {
       }
       options.wait = (options.wait === true ? true : false);
       options.closePrevious = (options.closePrevious === true ? true : false);
+      if (options.previousClose === true) options.closePrevious=true;
       if (options.closePrevious) _this.closeModalDialog();
+
+      // if showClose=false and callback is used, then showClose=false and hideClose=true
+      // the reason is callback won't be triggered if showclose is false
+      if (options.showClose === false && (options.dialogReturnValueCallback || options.callback)) {
+        options.showClose = true;
+        options.hideClose = true;
+      }
 
       // define our own callback function to properly delete the Modal when it's closed
       var callback = options.dialogReturnValueCallback || options.callback || function() {};
       options.dialogReturnValueCallback = function(dialogResult, returnValue) {
         // if we use .close() then we have only one argument
         var id, dialog;
-        if (typeof dialogResult === "object" && typeof dialogResult.id !== "undefined") {
+        if (typeof dialogResult === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "closeModalDialog") {
           var args = dialogResult;
           dialogResult = args.dialogResult;
           returnValue = args.returnValue;
@@ -5417,24 +5582,41 @@ if (typeof jQuery === "function") {
 
       var fct = function() {
         var modal = (options.wait ? SP.UI.ModalDialog.showWaitScreenWithNoClose(options.title, options.message, options.height, options.width) : SP.UI.ModalDialog.showModalDialog(options));
+
         // search for the lastest iframe + ms-dlgContent in the top frame body
         var wt = window.top;
+        var id = modal_id;
         var frames = wt.document.querySelectorAll('body > iframe');
         var frame = frames[frames.length-1];
-        var id = "sp_frame_"+(new Date().getTime());
         var biggestZ = 0, i, styles = wt.document.querySelectorAll('style[id^="style_sp_frame"]');
         // we define an attribute to find them later
         frame.setAttribute("id", id);
         // record it into a special object
         if (typeof wt._SP_MODALDIALOG === "undefined") wt._SP_MODALDIALOG=[];
-        
-        wt._SP_MODALDIALOG.push({id:id, modal:modal, zIndex:frame.style.zIndex, options:options});
+
+        wt._SP_MODALDIALOG.push({id:id, modal:modal, zIndex:frame.style.zIndex, options:options, type:"modalDialog"});
         // check the z-index for .ms-dlgOverlay
         SPArrayForEach(wt._SP_MODALDIALOG, function(val) {
           if (val.zIndex > biggestZ) biggestZ = val.zIndex;
         });
         biggestZ--;
-        wt.document.body.insertAdjacentHTML('beforeend', '<style id="style_'+id+'">.ms-dlgOverlay { z-index:'+biggestZ+' !important }</style>');
+        wt.document.body.insertAdjacentHTML('beforeend', '<style id="style_'+id+'">.ms-dlgOverlay { z-index:'+biggestZ+' !important; display:block !important }</style>');
+        // if showClose=true and callback is used, then showClose=false and hideClose=true
+        // the reason is callback won't be triggered if showclose is false
+        if (options.hideClose === true) {
+          var cross = frame.nextSibling.querySelector('.ms-dlgCloseBtn');
+          cross.parentNode.removeChild(cross);
+        }
+        if (typeof options.onload==="function") options.onload();
+        if (options.url && options.onurlload && typeof options.onurlload === "function") {
+          // find the iframe
+          var frameURL = wt.document.getElementById(id);
+          if (frameURL) frameURL = frameURL.nextSibling;
+          if (frameURL) frameURL = frameURL.querySelector('iframe');
+          if (frameURL) {
+            iFrameReady(frameURL, options.onurlload)
+          }
+        }
       };
       SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js');
     },
@@ -5442,31 +5624,72 @@ if (typeof jQuery === "function") {
       @name $SP().closeModalDialog
       @function
       @description Close the last modal dialog
-     
-      @param {SP.UI.DialogResult} [dialogResult] One of the enumeration values specifying the result of the modal dialog
+
+      @param {SP.UI.DialogResult|Object} [dialogResult] One of the enumeration values specifying the result of the modal dialog, or the modal object returned by $SP().getModalDialog()
       @param {Object} [returnValue] The return value of the modal dialog
 
       @example
-      $SP().closeModalDialog()
+      // if the user use the cross to close the modal, then `dialogResult` equals to 0 in the callback
+      // but you can trigger the close of the modal and pass anything you want
+      $SP().showModalDialog({
+        title:"Hello World",
+        html:'<p>This is an example. Click one of the buttons.</p><p class="ms-alignCenter"><button onclick="$SP().closeModalDialog(\'Continue has been clicked\')">Continue</button></p>',
+        callback:function(res) {
+          alert(res)
+        }
+      })
      */
     closeModalDialog:function(dialogResult, returnValue) {
       var fct = function() {
-        if (typeof window.top._SP_MODALDIALOG !== "undefined") {
-          var md=window.top._SP_MODALDIALOG;
-          if (md.length>0) {
-            md = md[md.length-1];
-            // close has only one parameter
-            md.modal.close({id:md.id, dialogResult:dialogResult, returnValue:returnValue});
-            // if it's a wait screen, then we need to remove the <style> using options.dialogReturnValueCallBack
-            if (md.options.wait) md.options.dialogReturnValueCallback(dialogResult, returnValue);
-            return false;
+        var md;
+        if (typeof dialogResult === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "modalDialog") {
+          md = {id:dialogResult.id, dialogResult:returnValue, returnValue:undefined, type:"closeModalDialog"};
+          dialogResult.modal.close(md);
+          // if it's a wait screen, then we need to remove the <style> using options.dialogReturnValueCallBack
+          if (dialogResult.options.wait) dialogResult.options.dialogReturnValueCallback(md, returnValue);
+        } else {
+          if (typeof window.top._SP_MODALDIALOG !== "undefined") {
+            md=window.top._SP_MODALDIALOG;
+            if (md.length>0) {
+              md = md[md.length-1];
+
+              // close has only one parameter
+              md.modal.close({id:md.id, dialogResult:dialogResult, returnValue:returnValue, type:"closeModalDialog"});
+              // if it's a wait screen, then we need to remove the <style> using options.dialogReturnValueCallBack
+              if (md.options.wait) md.options.dialogReturnValueCallback(dialogResult, returnValue);
+              return false;
+            }
           }
+          SP.UI.ModalDialog.commonModalDialogClose(dialogResult, returnValue);
         }
-        SP.UI.ModalDialog.commonModalDialogClose(dialogResult, returnValue);
       };
       SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js');
 
       return false;
+    },
+    /**
+     * @name $SP().getModalDialog
+     * @function
+     * @description Retrieve the modal object for a special modalDialog
+     *
+     * @param {String} id The ID of the modal
+     * @return {Object} The modal object or NULL if the modal doesnt exist
+     *
+     * @example
+     * var modal = $SP().getModalDialog("MyModal");
+     * $SP().closeModalDialog(modal);
+     */
+    getModalDialog:function(id) {
+      if (typeof window.top._SP_MODALDIALOG !== "undefined") {
+        var md=window.top._SP_MODALDIALOG;
+        var id = id.replace(/\W+/g,"");
+        for (var i=0; i<md.length; i++) {
+          if (md[i].id === "sp_frame_"+id) {
+            return md[i];
+          }
+        }
+      }
+      return null;
     },
     /**
      * @name $SP().waitModalDialog
@@ -5488,13 +5711,91 @@ if (typeof jQuery === "function") {
       });
     },
     /**
+     * Resize a ModalDialog and recenter it
+     * @param  {Object} options
+     *   @param {Number} width
+     *   @param {Number} height
+     *   @param {String} [id] The id of the modal to resize, or the last opened dialog will be used
+     * @return {Boolean} FALSE if something went wrong
+     *
+     * @example
+     * // to have a form opened faster we define a minimal width and height, and then once it's loaded we want to have the correct size
+     * $SP().showModalDialog({
+     *   id:"inmodal",
+     *   url:url,
+     *   width:200,
+     *   height:100,
+     *   allowMaximize:true,
+     *   onurlload:function() {
+     *     // resize the frame by checking the size of the loaded page
+     *     var iframe=window.top.document.getElementById('sp_frame_inmodal').nextSibling.querySelector('iframe');
+     *     // define the max size based on the page size
+     *     var size = $SP()._getPageSize();
+     *     var maxWidth = 2*size.vw.width/3; // 2/3 of the viewport width
+     *     var maxHeight = 90*size.vw.height/100 // 90% of the viewport height
+     *     // find the size we want based on the modal
+     *     var e=$(iframe.contentDocument.getElementById('onetIDListForm')); // this element gives the size of our form from the modal
+     *     var width=e.outerWidth(true)+100;
+     *     var height=e.outerHeight(true)+iframe.contentDocument.getElementById('ms-designer-ribbon').offsetHeight+100;
+     *     if (width>maxWidth) width=maxWidth;
+     *     if (height>maxHeight) height=maxHeight;
+     *     $SP().resizeModalDialog({id:"inmodal",width:width,height:height});
+     *     // bind the iframe resize, to make sure an external event won't resize it to 200x100
+     *     $(iframe.contentWindow).on('resize', function() {
+     *       var $this=$(this);
+     *       if ($this.width() === 200 && $this.height() === 100) { // if it gets the original size, then resize to the new ones
+     *         $SP().resizeModalDialog({id:"inmodal",width:width,height:height});
+     *       }
+     *     })
+     *   }
+     * });
+     */
+    resizeModalDialog:function(options) {
+      var dlg, dialogElements, deltaWidth, deltaHeight, key;
+      var pxToNum=function(px) { return px.replace(/px/,"")*1 };
+      var wt=window.top;
+      if (!options.id) {
+        if (wt._SP_MODALDIALOG.length===0) return false; // no modal
+        options.id = wt._SP_MODALDIALOG[wt._SP_MODALDIALOG.length-1].id.replace(/sp_frame_/,"");
+      }
+      // find dialog element
+      dlg = wt.document.getElementById('sp_frame_'+options.id);
+      if (!dlg) return false; // cannot find the modal
+      dlg = dlg.nextSibling;
+      options.width = (options.width === undefined ? pxToNum(dlg.style.width) : options.width);
+      options.height = (options.height === undefined ? pxToNum(dlg.style.height) : options.height);
+      // inspiration: https://social.msdn.microsoft.com/Forums/office/en-US/d92508be-4b4b-4f78-86d3-5d15a510bb18/how-do-i-resize-a-dialog-box-once-its-open?forum=sharepointdevelopmentprevious
+      dialogElements = {
+        "Border":dlg.querySelector('.ms-dlgBorder'),
+        "TitleText":dlg.querySelector('.ms-dlgTitleText'),
+        "Content":dlg,
+        "Frame":dlg.querySelector('.ms-dlgFrame')
+      };
+      // calculate width & height delta
+      deltaWidth = options.width - pxToNum(dialogElements.Border.style.width);
+      deltaHeight = options.height - pxToNum(dialogElements.Border.style.height);
+
+      for (key in dialogElements) {
+        if (dialogElements.hasOwnProperty(key) && dialogElements[key]) {
+          dialogElements[key].style.width = (pxToNum(dialogElements[key].style.width) + deltaWidth) + "px";
+          // set the height, excluding title elements
+          if (key !== "TitleText") dialogElements[key].style.height = (pxToNum(dialogElements[key].style.height) + deltaHeight) + "px";
+        }
+      }
+
+      // now we recenter
+      var pageSize=this._getPageSize(wt);
+      dlg.style.top=(pageSize.vw.height / 2 - pxToNum(dlg.style.height) / 2) + "px";
+      dlg.style.left=(pageSize.vw.width / 2 - pxToNum(dlg.style.width) / 2 ) + "px";
+    },
+    /**
       @name $SP().registerPlugin
       @function
       @description Permits to register a plugin
-                  
+
       @param {String} pluginName You have to define the plugin name
       @param {Function} pluginFct You have to define the function of the plugin with one parameter that are the options passed
-                   
+
       @example
       $SP().registerPlugin('test', function(options) {
         console.log(options.message);
