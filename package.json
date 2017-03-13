@@ -1,0 +1,29 @@
+{
+  "name": "sharepointplus",
+  "version": "4.0.0",
+  "description": "A library that offers an easy interface to deal with Sharepoint",
+  "main": "sharepointplus-4.0.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "sprequest": ">= 1.1.5",
+    "xmldom": ">= 0.1.27"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aymkdn/SharepointPlus.git"
+  },
+  "keywords": [
+    "sharepoint"
+  ],
+  "author": "AymKdn",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Aymkdn/SharepointPlus/issues"
+  },
+  "homepage": "http://aymkdn.github.io/SharepointPlus/"
+}

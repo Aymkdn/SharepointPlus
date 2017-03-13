@@ -55,124 +55,172 @@
 
 
 
+
+    <div class="span10"><h1>Methods</h1>
+    <div class="member">
+      <h2><a href="#checkin" name="checkin" title="Direct link to the method 'checkin'">checkin</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1801">source code</a>)
+      <div>
+        <div class="method well">checkin<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Checkin a file</blockquote>
+
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.destination">setup.destination</b> </div>  <div class="param_description span7">The full path to the file to check in</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.comments">setup.comments</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The comments related to the check in</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered when there is success</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered if there is an error</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+          </div>
+          
+
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().checkin({
+  destination:"http://mysite/Shared Documents/myfile.txt",
+  comments:"Automatic check in with SharepointPlus",
+  after:function() { alert("Done"); }
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
     
+    <div class="member">
+      <h2><a href="#createFile" name="createFile" title="Direct link to the method 'createFile'">createFile</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1603">source code</a>)
+      <div>
+        <div class="method well">createFile<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Create a file and save it to a Document library</blockquote>
 
-      <div class="span10"> <!-- content -->
-        <h1>SharepointPlus 4.0</h1>
-        <a href="https://twitter.com/sp_js" class="twitter-follow-button" data-show-count="false" data-lang="fr" data-dnt="true">Follow @sp_js</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        <h2>Description</h2>
-        <p>SharepointPlus ($SP) is a <strong>JavaScript API for Sharepoint</strong>. This library offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
-        <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
-        <p>I've developed this API for my needs during my job at <a href="http://www.dell.com">Dell</a> and we thought it could be useful for the community too, so here it is !</p>
-        <div class="alert alert-error" style="display:none" aria-hidden="true"><a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release 100% compatible with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility (even if everything should be OK anyway).<br>
-        Starting SharepointPlus v3.0.5 it should be fully compatible with <b>Sharepoint 2010</b>.</div>
-        <h2>Sharepoint Support</h2>
-        <p>
-          <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release that I have tested with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility<br>
-          <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.4<br>
-          <b>Sharepoint 2013</b> : Compatible since SharepointPlus v3.13<br>
-          <b>Sharepoint Online</b> : I have no plan to test SharepointPlus on Sharepoint Online, but it should be compatible.
-        </p>
-        <h2>Browser Support</h2>
-        <p>
-          <b>IE8+, and all modern browsers (Firefox, Chrome, ....)</b>
-        </p>
-        <h2>Quick Start</h2>
-        <h3>Requirements</h3>
-        <p>Since v3.13, there is no more need of <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work! For older versions, make sure to include jQuery.</p>
-        <div class="row"><div class="span8 alert alert-info">If you don't use jQuery in your project, then SharepointPlus will need to use <a href="https://github.com/Aymkdn/SharepointPlus/nanoajax/nanoajax.min.js">nanoajax (811o minified and zipped)</a><div class=""></div></div></div>
-        <h3>The basics</h3>
-        <p>Just add two lines: one to call <b>either</b> jQuery <b>or</b> nanoajax, and one for SharepointPlus:</p>
-<pre class="prettyprint lang-js">// if you don't already use jQuery, then you need to call 'nanoajax':
-&lt;script type="text/javascript" src="nanoajax.min.js">&lt;/script>
-&lt;script type="text/javascript" src="sharepointplus-4.0.min.js">&lt;/script></pre>
-        <p>You may also want to use a CDN: <a href="http://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a></p>
-        <h4><small>Lists</small></h4>
-        <p>Sharepoint provides different <a href="http://spservices.codeplex.com/wikipage?title=$%28%29.SPServices&referringTitle=Documentation" title="Link to codeplex.com with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
-        <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
-<pre class="prettyprint lang-js">
-// Update all items with an "Amount" value bigger than 1000
-$SP().list('My List Name').update({Title:"Too expensive"},{where:"Amount > 1000",success:function(items) { alert(items.length+" items updated!"); });
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.content">setup.content</b> </div>  <div class="param_description span7">The file content</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.filename">setup.filename</b> </div>  <div class="param_description span7">The relative path (within the document library) to the file to create</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.library">setup.library</b> </div>  <div class="param_description span7">The name of the document library</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.encoded">setup.encoded</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Set to true if the content passed is already base64-encoded</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup.fields">setup.fields</b> <i>Optional</i></div>  <div class="param_description span7">If you want to set some other fields for the document</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.success">setup.success</b> <i>Optional, Default: function(fileURL){}</i></div>  <div class="param_description span7">A callback function that will be triggered in case of success; 1 parameter</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.error">setup.error</b> <i>Optional, Default: function(fileURL,errorMessage){}</i></div>  <div class="param_description span7">A callback function that will be triggered in case of failure; 2 parameters</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(fileURL,errorMessage){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task whatever it's successful or not; 2 parameters</div></div>
+          </div>
+          
 
-// Get all items with "Requestor" is the current user and with "Default Color" is "pink"
-$SP().list('ListName').get({fields:"Title,Size",where:"Requestor = '[Me]' AND Default_x0020_Color = 'pink'",orderby:"Size DESC"},function(data) {
-  var html = "&lt;ul>";
-  for (var i=data.length; i--;)
-    html += "&lt;li>Model '"+data[i].getAttribute("Title")+"' (size: "+data[i].getAttribute("Default_x0020_Color")+")&lt;li>";
-  $('#list').append(html+'&lt;/ul>');
-});
-</pre>
-        <h4><small>Forms</small></h4>
-        <p>SharepointPlus provides few functions to interact with <em>NewForm.aspx</em> and <em>EditForm.aspx</em> of a list:</p>
-<pre class="prettyprint lang-js">
-// hide some fields like "Title", "Next Action"
-$SP().formfields("Title,Next Action").row().hide(); // row() returns a jQuery object that represents the &lt;TR> element
+          
 
-// check if all mandatory fields have a value, and also "Title"
-$SP().formfields("Title",{mandatory:true}).each(function() {
-  if (this.val() == "") {
-    alert(this.name+" is empty!");
-    return false;
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">// create a text document
+$SP().createFile({
+  content:"Hello World!",
+  filename:"SubFolder/myfile.txt",
+  library:"Shared Document",
+  fields:{
+    "Title":"My Document",
+    "File_x0020_Description":"This is my file!"
+  },
+  after:function(fileURL, error) {
+    if (error) alert("Error: "+error)
+    else alert("File created at " + fileURL); // fileURL -> http://mysite/Shared Documents/SubFolder/myfile.txt
   }
 });
-</pre>
-        <h4><small>Utilities</small></h4>
-        <p>SharepointPlus has also some useful functions:</p>
-<pre class="prettyprint lang-js">
-// create a Excel file
-var table="&lt;table>&lt;tr>&lt;th>Column 1&lt;/th>&lt;th>Column 2&lt;/th>&lt;/tr>&lt;tr>&lt;td>First cell&lt;/td>&lt;td>Other cell&lt;/td>&lt;/tr>&lt;/body>";
-$SP().createFile({content:table,library:"Shared Documents",filename:"myfile.xls",after:function() { alert("File created!"); }});
 
-// take a number and return it as a currency amount
-$SP().toCurrency(1500000,2,'$'); // --> $1,500,000.00
-
-// when you have to deal with a date from a .get() ...
-$SP().list('My Calendar List').get({fields:"Meeting_x0020_Date"},function(data) {
-  for (var i=data.length; i--;) console.log($SP().toDate(data[i].getAttribute("Meeting_x0020_Date")).getFullYear());
-});
-// ... or to a .add()/.update()
-var nextMeeting = new Date("5/May/2015");
-$SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate(nextMeeting)});
-</pre>
-
-        <h4><small>Promise</small></h4>
-        <p>SharepointPlus is not yet Promise-compatible, however you can use, for example, <a href="http://api.jquery.com/category/deferred-object/">jQuery.Deferred</a>. Find below some examples:</p>
-<pre class="prettyprint lang-js">
-// Call two lists in the same time before doing some stuff with the result
-$.when(
-  (function() {
-    var deferred = jQuery.Deferred();
-    $SP().list("List 1").get({fields:"Title,Other_x0020_Field", where:"Created = [Today]"}, function(data, err) {
-      if (err) {
-        deferred.reject(err);
-      } else {
-        deferred.resolve(data);
-      }
-    })
-    return deferred;
-  }()),
-  (function() {
-    var deferred = jQuery.Deferred();
-    $SP().list("List 2").get({fields:"Title,Cost", where:"Cost > 100"}, function(data, err) {
-      if (err) {
-        deferred.reject(err);
-      } else {
-        deferred.resolve(data);
-      }
-    })
-    return deferred;
-  }())
-).done(function(dataList1, dataList2) {
-  // do some stuff here
-}).fail(function(err) {
-  alert("[ERROR] "+err)
+// you can remove "library" if you use $SP().list()
+$SP().list("Shared Document").createFile({
+  content:"Hello World!",
+  filename:"SubFolder/myfile.txt",
+  fields:{
+    "Title":"My Document",
+    "File_x0020_Description":"This is my file!"
+  },
+  after:function(fileURL, error) {
+    if (error) alert("Error: "+error)
+    else alert("File created at " + fileURL); // fileURL -> http://mysite/Shared Documents/SubFolder/myfile.txt
+  }
 })
-</pre>
-      </div>
+
+// we can also create an Excel file
+// a good way to export some data to Excel
+$SP().createFile({
+  content:"&lt;table>&lt;tr>&lt;th>Column A&lt;/th>&lt;th>Column B&lt;/th>&lt;/tr>&lt;tr>&lt;td>Hello&lt;/td>&lt;td>World!&lt;/td>&lt;/tr>&lt;/table>",
+  filename:"myfile.xls",
+  library:"Excel Exports",
+  after:function(fileURL) {
+    window.location.href=fileURL;
+  }
+});
+
+// You can use https://github.com/Aymkdn/FileToDataURI if you want to be able to read a local file
+// and then upload it to a document library, via Javascript/Flash
+// We'll use "encoded:true" to say our content is already a base64 string
+$SP().createFile({
+  content:"U2hhcmVwb2ludFBsdXMgUm9ja3Mh",
+  encoded:true,
+  filename:"Demo/HelloWorld.txt",
+  library:"Documents",
+  url:"http://my.other.site/website/"
+});
+
+// NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()</pre>
+          
+          <hr>
+        </div>
+      
 
 
 
+
+
+
+
+    
+    <div class="member">
+      <h2><a href="#createFolder" name="createFolder" title="Direct link to the method 'createFolder'">createFolder</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1745">source code</a>)
+      <div>
+        <div class="method well">createFolder<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Create a folter in a Document library</blockquote>
+
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.path">setup.path</b> </div>  <div class="param_description span7">The relative path to the new folder</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.library">setup.library</b> </div>  <div class="param_description span7">The name of the Document Library</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.after">setup.after</b> <i>Optional, Default: function(){}</i></div>  <div class="param_description span7">A callback function that will be triggered after the task</div></div>
+          </div>
+          
+
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">// create a folder called "first" at the root of the Shared Documents library
+// the result should be "http://mysite/Shared Documents/first/"
+$SP().createFolder({
+  path:"first",
+  library:"Shared Documents",
+  url:"http://mysite/",
+  after:function() { alert("Folder created!"); }
+});
+
+// create a folder called "second" under "first"
+// the result should be "http://mysite/Shared Documents/first/second/"
+// if "first" doesn't exist then it will be created
+$SP().createFolder({
+  path:"first/second",
+  library:"Shared Documents",
+  after:function() { alert("Folder created!"); }
+});
+
+// Note: To delete a folder you can use $SP().list().remove()</pre>
+          
+          <hr>
+        </div>
+      
 
 
 

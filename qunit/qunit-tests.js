@@ -422,6 +422,7 @@ function initSPtests() {
 // source inspiration https://github.com/michelgotta/qunit-blogpost-example
 function loadSPtests() {
   $q = jQuery.noConflict(true);
+
   $q(function() { 
     function getSharePointMajorVersion(){
      var deferred = $q.Deferred();
@@ -453,7 +454,9 @@ function loadSPtests() {
       // Get the jQuery Object from the original code  
       $ = jQuery = window.frames[0].jQuery;
       $SP = window.frames[0].SharepointPlus;
-      
+      var pagetitle = document.querySelector('#qunit-header');
+      if (pagetitle) pagetitle.innerHTML = pagetitle.innerHTML + ' ' + $SP().getVersion();
+
       test('formfields()', function(assert) {
         // --- for Single line of text
         // test .val()

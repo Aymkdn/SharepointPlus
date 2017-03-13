@@ -7,13 +7,17 @@
  */
 
 /**
- @ignore
+ @name SPIsArray
+ @function
+ @category utils
  @description Return true when the arg is an array
 */
 var SPIsArray = function(v) { return (Object.prototype.toString.call(v) === '[object Array]') }
 
 /**
-  @ignore
+  @name SPArrayIndexOf
+  @function
+  @category utils
   @description Array.indexOf polyfill for IE8
 */
 var SPArrayIndexOf = function(arr, searchElement) {
@@ -48,7 +52,9 @@ var SPArrayIndexOf = function(arr, searchElement) {
   }
 }
 /**
- @ignore
+ @name SPArrayForEach
+ @function
+ @category utils
  @description Array.forEach polyfill for IE8 (source : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
 */
 var SPArrayForEach = function(arr, callback, thisArg) {
@@ -81,7 +87,7 @@ var SPArrayForEach = function(arr, callback, thisArg) {
 if(!String.prototype.trim) {
   /**
     @ignore
-    @escription The trim() feature for String is not always available for all browsers
+    @description The trim() feature for String is not always available for all browsers
   */
   String.prototype.trim = function () {
     return this.replace(/^\s+|\s+$/g,'');
@@ -89,8 +95,10 @@ if(!String.prototype.trim) {
 }
 
 /**
- * @ignore
- * Permits to cut an array into smaller blocks
+ * @name SPArrayForEach
+ * @category utils
+ * @function
+ * @description Permits to cut an array into smaller blocks
  * @param {Array} b The array to split
  * @param {Number} e The size of each block
  * @return {Array} An array that contains several arrays with the required size
@@ -125,6 +133,7 @@ _SP_NOTIFY=[];
 _SP_PLUGINS={};
 _SP_MODALDIALOG_LOADED=false;
 _SP_MAXWHERE_ONLOOKUP=30;
+_SP_ISBROWSER=(new Function("try {return this===window;}catch(e){ return false;}"))();
 
 // for each select of lookup with more than 20 values, for IE only
 // see https://bdequaasteniet.wordpress.com/2013/12/03/getting-rid-of-sharepoint-complex-dropdowns/
@@ -189,20 +198,24 @@ if (typeof jQuery === "function") {
 
   /**
     @name $SP()
+    @debug
     @class This is the object uses for all SharepointPlus related actions
    */
   function SharepointPlus() {
     if (!(this instanceof arguments.callee)) return new arguments.callee();
   }
-  
+
   SharepointPlus.prototype = {
     data:[],
     length:0,
     listQueue:[],
     needQueue:false,
+    module_sprequest:null,
+    credentialOptions:null,
     /**
       @name $SP().getVersion
       @function
+      @category core
       @description Returns the SP version
 
       @return {String} The current SharepointPlus version
@@ -211,6 +224,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().decode_b64
       @function
+      @category utils
       @description Permits to decode a Base 64 string
 
       @param {String} toDecode It's the Base 64 string to decode
@@ -220,8 +234,9 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().encode_b64
       @function
+      @category utils
       @description Permits to encode in Base 64
-    
+
       @param {String} toEncode It's the string to encode into Base 64
       @return {String} The encoded string
     */
@@ -231,41 +246,108 @@ if (typeof jQuery === "function") {
       @description Ajax system based on jQuery parameters
     */
     ajax:function(settings) {
+      var _this=this;
       if (typeof jQuery !== "undefined" && jQuery.ajax) {
         fct = jQuery.ajax(settings);
       } else {
-        if (typeof nanoajax !== "undefined") {
-          var headers = {'Content-Type': settings.contentType || "text/xml; charset=utf-8"};
+        var headers = {'Content-Type': settings.contentType || "text/xml; charset=utf-8"};
+        // check if it's NodeJS
+        if (_SP_ISBROWSER) {
+          if (typeof nanoajax !== "undefined") {
+            if (typeof settings.beforeSend === "function") {
+              var xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
+              settings.beforeSend(xhr);
+            }
+            nanoajax.ajax({
+              url: settings.url,
+              method: settings.method || "POST",
+              headers: headers,
+              body: settings.data
+            },
+            function (code, responseText, request) {
+              if (code === 200 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
+                settings.success(request.responseXML || request.responseText);
+              } else {
+                if (typeof settings.error === "function") {
+                  settings.error(request, code, responseText);
+                }
+              }
+            })
+          }
+          else {
+            throw "[SharepointPlus] Fatal Error : No AJAX library has been found... Please use jQuery or nanoajax";
+          }
+        } else {
+          // we use the module 'sp-request'
+          if (_this.module_sprequest === null) {
+            if (_this.credentialOptions === null) {
+              throw "[SharepointPlus] Error 'ajax': please use `$SP().auth()` to provide your credentials first";
+            }
+            _this.module_sprequest = require('sp-request').create(_this.credentialOptions);
+          }
+          if (headers['Content-Type'].indexOf('xml') > -1) headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
+          if (!settings.method || settings.method.toLowerCase() === "POST") headers['Content-Length'] = Buffer.byteLength(settings.data);
           if (typeof settings.beforeSend === "function") {
             var xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
             settings.beforeSend(xhr);
           }
-          nanoajax.ajax({
-            url: settings.url,
-            method: settings.method || "POST",
-            headers: headers,
-            body: settings.data
-          },
-          function (code, responseText, request) {
-            if (code === 200 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
-              settings.success(request.responseXML || request.responseText);
+          _this.module_sprequest(settings.url, {
+            json:false,
+            method:settings.method || "POST",
+            body: settings.data,
+            strictSSL: false,
+            headers: headers
+          })
+          .then(function(response) {
+            if (response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout") {
+              // check if it's XML, then parse it
+              if (response.headers['content-type'].indexOf('xml') > -1 && response.body.slice(0,5) === '<?xml') {
+                var DOMParser = require('xmldom').DOMParser;
+                var result = new DOMParser().parseFromString(response.body);
+                settings.success(result);
+              } else {
+                settings.success(response.body);
+              }
             } else {
               if (typeof settings.error === "function") {
-                settings.error(request, code, responseText);
+                settings.error(response, response.statusCode, response.body);
               }
             }
-          })
-        }
-        else {
-          throw "[SharepointPlus] Fatal Error : No AJAX library has been found... Please use jQuery or nanoajax";
+          }, function(err) {
+            if (typeof settings.error === "function") {
+              settings.error(err, err.statusCode, err);
+            }
+          });
         }
       }
+    },
+    /**
+      @name $SP().auth
+      @function
+      @category node
+      @description Permits to use credentials when doing requests (for Node module only)
+
+      @param {Object} credentialOptions Options from https://github.com/s-KaiNet/node-sp-auth
+
+      @example
+      var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
+      $SP().auth(user1)
+           .list("My List","http://my.sharpoi.nt/other.directory/")
+          .get({...});
+      // or :
+      var sp = $SP().auth(user1);
+      sp.list("My List", "https://web.si.te").get({...});
+      sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
+    */
+    auth:function(credentialOptions) {
+      this.credentialOptions = credentialOptions;
+      return this;
     },
     /**
       @name $SP().list
       @namespace
       @description Permits to define the list ID
-      
+
       @param {String} listID Ths list ID or the list name
       @param {String} [url] If the list name is provided, then you need to make sure URL is provided too (then no need to define the URL again for the chained functions like 'get' or 'update')
       @example
@@ -333,6 +415,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().getURL
       @function
+      @category core
       @description Return the current base URL website
 
       @return {String} The current base URL website
@@ -390,14 +473,15 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().parse
       @function
+      @category lists
       @description Use a WHERE sentence to transform it into a CAML Syntax sentence
-      
+
       @param {String} where The WHERE sentence to change
       @param {String} [escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
       @example
       $SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
       // -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;IsNotNull>&lt;FieldRef Name="Description" />&lt;/IsNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
-      
+
       // available operators :
       // "&lt;" : less than
       // "&lt;=" : less than or equal to
@@ -425,7 +509,7 @@ if (typeof jQuery === "function") {
       $SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney
     */
     parse:function(q, escapeChar) {
-      var queryString = q.replace(/(\s+)?(=|~=|<=|>=|<>|<|>| LIKE | IN )(\s+)?/g,"$2").replace(/""|''/g,"Null").replace(/==/g,"="); // remove unnecessary white space & replace ' 
+      var queryString = q.replace(/(\s+)?(=|~=|<=|>=|<>|<|>| LIKE | IN )(\s+)?/g,"$2").replace(/""|''/g,"Null").replace(/==/g,"="); // remove unnecessary white space & replace '
       var factory = [];
       escapeChar = (escapeChar===false ? false : true)
       var limitMax = q.length;
@@ -656,7 +740,7 @@ if (typeof jQuery === "function") {
       @name $SP()._parseOn
       @function
       @description (internal use only) Look at the ON clause to convert it
-      
+
       @param {String} on The ON clause
       @return {Array}array of clauses
       @example
@@ -677,10 +761,11 @@ if (typeof jQuery === "function") {
       return factory;
     },
     /**
+      @ignore
       @name $SP()._cleanString
       @function
       @description clean a string to remove the bad characters when using AJAX over Sharepoint web services (like <, > and &)
-      
+
       @param {String} string The string to clean
       @note That should be used as an internal function
     */
@@ -690,8 +775,9 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().cleanResult
       @function
+      @category lists
       @description clean a string returned by a GET (remove ";#" and "string;#" and null becomes "")
-      
+
       @param {String} str The string to clean
       @param {String} [separator=";"] When it's a list we may want to have a different output (see examples)
       @return {String} the cleaned string
@@ -712,7 +798,7 @@ if (typeof jQuery === "function") {
       @name $SP().list.get
       @function
       @description Get the content of the list based on different criteria (by default the default view is used)
-      
+
       @param {Object} [setup] Options (see below)
         @param {String}  [setup.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
         @param {String}  [setup.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
@@ -765,7 +851,7 @@ if (typeof jQuery === "function") {
         if (error) { alert(error) }
         for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
       });
-      
+
       // the WHERE clause must be SQL-like
       // the field names must be the internal names used by Sharepoint
       // ATTENTION - note that here we open the WHERE string with simple quotes (') and that should be your default behavior each time you use WHERE
@@ -1517,8 +1603,9 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().createFile
       @function
+      @category files
       @description Create a file and save it to a Document library
-      
+
       @param {Object} setup Options (see below)
         @param {String} setup.content The file content
         @param {String} setup.filename The relative path (within the document library) to the file to create
@@ -1529,7 +1616,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.success=function(fileURL){}] A callback function that will be triggered in case of success; 1 parameter
         @param {Function} [setup.error=function(fileURL,errorMessage){}] A callback function that will be triggered in case of failure; 2 parameters
         @param {Function} [setup.after=function(fileURL,errorMessage){}] A callback function that will be triggered after the task whatever it's successful or not; 2 parameters
-   
+
       @example
       // create a text document
       $SP().createFile({
@@ -1559,7 +1646,7 @@ if (typeof jQuery === "function") {
           else alert("File created at " + fileURL); // fileURL -> http://mysite/Shared Documents/SubFolder/myfile.txt
         }
       })
-      
+
       // we can also create an Excel file
       // a good way to export some data to Excel
       $SP().createFile({
@@ -1644,7 +1731,7 @@ if (typeof jQuery === "function") {
           } else {
             if (typeof setup.success === "function") setup.success.call(_this, destination);
           }
-          
+
           if (typeof setup.after === "function") setup.after.call(_this, destination, error);
         },
         error:function(qXHR, textStatus, errorThrown) {
@@ -1658,14 +1745,15 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().createFolder
       @function
+      @category files
       @description Create a folter in a Document library
-      
+
       @param {Object} setup Options (see below)
         @param {String} setup.path The relative path to the new folder
         @param {String} setup.library The name of the Document Library
         @param {String} [setup.url='current website'] The website url
         @param {Function} [setup.after=function(){}] A callback function that will be triggered after the task
-   
+
       @example
       // create a folder called "first" at the root of the Shared Documents library
       // the result should be "http://mysite/Shared Documents/first/"
@@ -1675,8 +1763,8 @@ if (typeof jQuery === "function") {
         url:"http://mysite/",
         after:function() { alert("Folder created!"); }
       });
-      
-      // create a folder called "second" under "first" 
+
+      // create a folder called "second" under "first"
       // the result should be "http://mysite/Shared Documents/first/second/"
       // if "first" doesn't exist then it will be created
       $SP().createFolder({
@@ -1713,8 +1801,9 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().checkin
       @function
+      @category files
       @description Checkin a file
-      
+
       @param {Object} [setup] Options (see below)
         @param {String} setup.destination The full path to the file to check in
         @param {String} [setup.comments=""] The comments related to the check in
@@ -1722,7 +1811,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.success=function(){}] A callback function that will be triggered when there is success
         @param {Function} [setup.error=function(){}] A callback function that will be triggered if there is an error
         @param {Function} [setup.after=function(){}] A callback function that will be triggered after the task
-   
+
       @example
       $SP().checkin({
         destination:"http://mysite/Shared Documents/myfile.txt",
@@ -1769,13 +1858,13 @@ if (typeof jQuery === "function") {
       @name $SP().list.addAttachment
       @function
       @description Add an attachment to a Sharepoint List Item
-      
+
       @param {Object} setup Options (see below)
         @param {Number} setup.ID The item ID to attach the file
         @param {String} setup.filename The name of the file
         @param {String} setup.attachment A byte array that contains the file to attach by using base-64 encoding
         @param {Function} [setup.after] A function that will be executed at the end of the request; with one parameter that is the URL to the attached file
-      
+
       @example
       $SP().list("My List").addAttachment({
         ID:1,
@@ -1817,15 +1906,15 @@ if (typeof jQuery === "function") {
       @name $SP().list.getAttachment
       @function
       @description Get the attachment(s) for some items
-      
+
       @param {String|Array} itemID The item IDs separated by a coma (ATTENTION: one request is done for each ID)
       @param {Function} [result] A function with the data from the request as first argument
-      
+
       @example
       $SP().list("My List","http://my.site.com/mydir/").getAttachment([1,15,24],function(data) {
         for (var i=0; i&lt;data.length; i++) console.log(data[i]);
       });
-      
+
       $SP().list("My List").getAttachment("98", function(data) {
         for (var i=0; i&lt;data.length; i++) console.log(data[i]);
       });
@@ -1842,7 +1931,7 @@ if (typeof jQuery === "function") {
       passed = passed || [];
 
       var _this=this;
-      
+
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetAttachmentCollection", "<listName>"+this.listID+"</listName><listItemID>"+itemID.shift()+"</listItemID>");
       // do the request
@@ -1877,11 +1966,11 @@ if (typeof jQuery === "function") {
       @name $SP().list.getContentTypes
       @function
       @description Get the Content Types for the list (returns Name, ID and Description)
-      
+
       @param {Object} [options]
         @param {Boolean} [options.cache=true] Do we want to use the cache on recall for this function?
       @param {Function} [function()] A function with the data from the request as first argument
-      
+
       @example
       $SP().list("List Name").getContentTypes(function(contentTypes) {
         for (var i=0; i&lt;contentTypes.length; i++) console.log(contentTypes[i].Name, contentTypes[i].ID, contentTypes[i].Description);
@@ -1895,7 +1984,7 @@ if (typeof jQuery === "function") {
 
       // default values
       if (this.url == undefined) throw "Error 'getContentTypes': not able to find the URL!"; // we cannot determine the url
-      
+
       // check the Cache
       if (!options) options={cache:true};
       if (options.cache) {
@@ -1906,7 +1995,7 @@ if (typeof jQuery === "function") {
           }
         }
       }
-      
+
       var _this=this;
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetListContentTypes", '<listName>'+_this.listID+'</listName>');
@@ -1947,12 +2036,12 @@ if (typeof jQuery === "function") {
       @name $SP().list.getContentTypeInfo
       @function
       @description Get the Content Type Info for a Content Type into the list
-      
+
       @param {String} contentType The Name or the ID (from $SP().list.getContentTypes) of the Content Type
       @param {Object} [options]
         @param {Boolean} [options.cache=true] Do we use the cache?
       @param {Function} [function()] A function with the data from the request as first argument
-      
+
       @example
       $SP().list("List Name").getContentTypeInfo("Item", function(fields) {
         for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
@@ -1970,7 +2059,7 @@ if (typeof jQuery === "function") {
       if (arguments.length === 2 && typeof options === "function") return this.getContentTypeInfo(contentType, null, options);
       // default values
       if (this.url == undefined) throw "Error 'getContentTypeInfo': not able to find the URL!"; // we cannot determine the url
-      
+
       if (!options) options={cache:true}
 
       // look at the cache
@@ -2001,7 +2090,7 @@ if (typeof jQuery === "function") {
       }
 
       var _this=this;
-      
+
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetListContentType", '<listName>'+_this.listID+'</listName><contentTypeId>'+contentType+'</contentTypeId>');
       // do the request
@@ -2047,7 +2136,7 @@ if (typeof jQuery === "function") {
                            }
                            aIndex[attrName]= attrValue;
                          }
-                         
+
                          // find the default values
                          lenDefault=arr[i].getElementsByTagName("Default").length;
                          if (lenDefault>0) {
@@ -2060,7 +2149,7 @@ if (typeof jQuery === "function") {
                          index++;
                        }
                      }
-                    
+
                      // we cache the result
                      _SP_CACHE_CONTENTTYPE.push({"list":_this.listID, "url":_this.url, "contentType":contentType, "info":aReturn});
 
@@ -2073,14 +2162,14 @@ if (typeof jQuery === "function") {
       @name $SP().list.info
       @function
       @description Get the information (StaticName, DisplayName, Description, Required ("TRUE", "FALSE", null), DefaultValue, Choices, etc...) - metadata - regarding the list for each column
-      
+
       @param {Function} [function()] A function with the data from the request as first argument
-      
+
       @example
       $SP().list("List Name").info(function(fields) {
         for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
       });
-      
+
       $SP().list("My list","http://intranet.site.com/dept/").info(function(fields) {
         for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
       });
@@ -2089,12 +2178,12 @@ if (typeof jQuery === "function") {
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
       if (this.listID == undefined) throw "Error 'info': you have to define the list ID";
-        
+
       // default values
       if (this.url == undefined) throw "Error 'info': not able to find the URL!"; // we cannot determine the url
 
       var _this=this;
-            
+
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetList", '<listName>'+_this.listID+'</listName>');
       // do the request
@@ -2140,7 +2229,7 @@ if (typeof jQuery === "function") {
                            }
                            aIndex[attrName]= attrValue;
                          }
-                         
+
                          // find the default values
                          lenDefault=arr[i].getElementsByTagName("Default").length;
                          if (lenDefault>0) {
@@ -2153,7 +2242,7 @@ if (typeof jQuery === "function") {
                          index++;
                        }
                      }
-                      
+
                      if (typeof fct == "function") fct.call(_this,aReturn);
                    }
                  });
@@ -2163,16 +2252,16 @@ if (typeof jQuery === "function") {
       @name $SP().list.view
       @function
       @description Get the info (fields, orderby, whereCAML) for a View
-      
+
       @param {String} [viewID="The default view"] The view ID or view Name
       @param {Function} [function()] A function with the data from the request as first argument and the viewID as second parameter
-      
+
       @example
       $SP().list("List Name").view("All Items",function(data,viewID) {
         for (var i=0; i&lt;data.fields.length; i++) console.log("Column "+i+": "+data.fields[i]);
         console.log("And the GUI for this view is :"+viewID);
       });
-      
+
       $SP().list("My List","http://my.sharepoint.com/my/site").view("My Beautiful View",function(data,viewID) {
         for (var i=0; i&lt;data.fields.length; i++) console.log("Column "+i+": "+data.fields[i]);
       });
@@ -2182,19 +2271,19 @@ if (typeof jQuery === "function") {
       if (this.needQueue) { return this._addInQueue(arguments) }
       if (this.listID == undefined) throw "Error 'view': you have to define the list ID/Name";
       if (arguments.length === 1 && typeof viewID === "function") return this.view("", viewID);
-  
+
       // default values
       var list = this.listID;
       if (this.url == undefined) throw "Error 'view': not able to find the URL!"; // we cannot determine the url
       viewID = viewID || "";
       var viewName = arguments[2] || viewID;
-      
+
       viewName=viewName.toLowerCase();
       // check if we didn't save this information before
       for (var i=_SP_CACHE_SAVEDVIEW.length; i--;) {
         if (_SP_CACHE_SAVEDVIEW[i].url===this.url && _SP_CACHE_SAVEDVIEW[i].list===list && (_SP_CACHE_SAVEDVIEW[i].viewID===viewID || _SP_CACHE_SAVEDVIEW[i].viewName===viewName)) { fct.call(this,_SP_CACHE_SAVEDVIEW[i].data,viewID); return this }
       }
-      
+
       // if viewID is not an ID but a name then we need to find the related ID
       if (viewID.charAt(0) !== '{') {
         this.views(function(views) {
@@ -2212,7 +2301,7 @@ if (typeof jQuery === "function") {
       }
 
       var _this=this;
-      
+
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetView", '<listName>'+_this.listID+'</listName><viewName>'+viewID+'</viewName>');
       // do the request
@@ -2230,7 +2319,7 @@ if (typeof jQuery === "function") {
                      aReturn.fields=[]
                      var arr = data.getElementsByTagName('ViewFields')[0].getElementsByTagName('FieldRef');
                      for (var i=0; i < arr.length; i++) aReturn.fields.push(arr[i].getAttribute("Name"));
-                    
+
                      aReturn.orderby="";
                      arr = data.getElementsByTagName('OrderBy');
                      if (arr.length) {
@@ -2239,7 +2328,7 @@ if (typeof jQuery === "function") {
                        for (var i=0; i<arr.length; i++) orderby.push(arr[i].getAttribute("Name")+" "+(arr[i].getAttribute("Ascending")==undefined?"ASC":"DESC"));
                        aReturn.orderby=orderby.join(",");
                      }
-                     
+
                      aReturn.whereCAML="";
                      var where=data.getElementsByTagName('Where');
                      if (where.length) {
@@ -2247,10 +2336,10 @@ if (typeof jQuery === "function") {
                        where=where.match(/<Where [^>]+>(.*)<\/Where>/);
                        if(where.length==2) aReturn.whereCAML=where[1];
                      }
-                     
+
                      // cache the data
                      _SP_CACHE_SAVEDVIEW.push({url:_this.url,list:list,data:aReturn,viewID:viewID,viewName:viewName});
-                     
+
                      if (typeof fct == "function") fct.call(_this,aReturn,viewID);
                    }
                  });
@@ -2260,11 +2349,11 @@ if (typeof jQuery === "function") {
       @name $SP().list.views
       @function
       @description Get the views info (ID, Name, Url, Node) for a List
-      
+
       @param {Hash} [options]
         @param {Boolean} [cache=true] By default the result will be cached for a later use in the page
       @param {Function} [function()] A function with the data from the request as first argument
-      
+
       @example
       $SP().list("My List").views(function(view) {
         for (var i=0; i&lt;view.length; i++) {
@@ -2281,20 +2370,20 @@ if (typeof jQuery === "function") {
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
       if (this.listID == undefined) throw "Error 'views': you have to define the list ID";
-        
+
       // default values
       if (this.url == undefined) throw "Error 'views': not able to find the URL!"; // we cannot determine the url
       fct = fct || function(){};
-            
+
       // check if we didn't save this information before
       if (options.cache) {
         for (var i=_SP_CACHE_SAVEDVIEWS.length; i--;) {
           if (_SP_CACHE_SAVEDVIEWS[i].url==this.url && _SP_CACHE_SAVEDVIEWS[i].listID === this.listID) { fct.call(this,_SP_CACHE_SAVEDVIEWS[i].data); return this }
         }
       }
-      
+
       var _this=this;
-      
+
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetViewCollection", '<listName>'+_this.listID+'</listName>');
       // do the request
@@ -2317,7 +2406,7 @@ if (typeof jQuery === "function") {
                       aReturn[i]["Url"] = arr[i].getAttribute("Url");
                       aReturn[i]["Node"] = arr[i]
                     }
-                    
+
                     // save the data into the DOM for later usage
                     if (options.cache === true) {
                       _SP_CACHE_SAVEDVIEWS.push({url:_this.url,listID:_this.listID,data:aReturn});
@@ -2331,11 +2420,11 @@ if (typeof jQuery === "function") {
       @name $SP().lists
       @function
       @description Get the lists from the site (for each list we'll have "ID", "Name", "Description", "Url")
-      
+
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
       @param {Function} [function()] A function with the data from the request as first argument
-      
+
       @example
       $SP().lists(function(list) {
         for (var i=0; i&lt;list.length; i++) console.log("List #"+i+": "+list[i]['Name']);
@@ -2343,7 +2432,7 @@ if (typeof jQuery === "function") {
     */
     lists:function(setup, fct) {
       if (arguments.length===1 && typeof setup === "function") return this.lists({}, setup);
-        
+
       // default values
       setup = setup || {};
       setup.url = setup.url || this.url;
@@ -2355,7 +2444,7 @@ if (typeof jQuery === "function") {
       if (this.url == undefined) throw "Error 'lists': not able to find the URL!"; // we cannot determine the url
 
       var _this=this;
-            
+
       // forge the parameters
       var body = _this._buildBodyForSOAP("GetListCollection", "");
       // check if we didn't save this information before
@@ -2393,7 +2482,7 @@ if (typeof jQuery === "function") {
                       aReturn[i]["Url"] = arr[i].getAttribute("DefaultViewUrl");
                       aReturn[i]["Description"] = arr[i].getAttribute("Description");
                     }
-                    
+
                     // save the data into the DOM for later usage
                     savedLists.push({url:_this.url,data:aReturn});
                     _SP_CACHE_SAVEDLISTS = savedLists;
@@ -2417,7 +2506,7 @@ if (typeof jQuery === "function") {
                          --> it should also be possible to not pass the values but only the ID, e.g.: ";#X;#;#Y;#;#"
                    note: A Yes/No checkbox must be provided as "1" (for TRUE) or "0" (for "False")
                    note: You cannot change the Approval Status when adding, you need to use the $SP().moderate function
-      
+
       @param {Object|Array} items List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])
       @param {Object} [setup] Options (see below)
         @param {Function} [setup.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
@@ -2425,18 +2514,18 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.error] A function with the items not added
         @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
         @param {Boolean} [setup.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
-      
+
       @example
       $SP().list("My List").add({Title:"Ok"});
-      
+
       $SP().list("List Name").add([{Title:"Ok"}, {Title:"Good"}], {after:function() { alert("Done!"); });
-                 
+
       $SP().list("My List","http://my.sharepoi.nt/dir/").add({Title:"Ok"}, {error:function(items) {
         for (var i=0; i &lt; items.length; i++) console.log("Error '"+items[i].errorMessage+"' with:"+items[i].Title); // the 'errorMessage' attribute is added to the object
       }, success:function(items) {
         for (var i=0; i &lt; items.length; i++) console.log("Success for:"+items[i].Title+" (ID:"+items[i].ID+")");
       }});
-      
+
       // different ways to add John and Tom into the table
       $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
       $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID 
@@ -2447,7 +2536,7 @@ if (typeof jQuery === "function") {
       if (arguments.length===0 || (arguments.length===1 && typeof items !== "object"))
         throw "Error 'add': you need to define the list of items";
       if (this.listID===undefined) throw "Error 'add': you need to use list() to define the list name.";
-      
+
       // default values
       setup         = setup || {};
       if (this.url == undefined) throw "Error 'add': not able to find the URL!"; // we cannot determine the url
@@ -2456,10 +2545,10 @@ if (typeof jQuery === "function") {
       setup.after   = setup.after || (function() {});
       setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
       setup.progress= setup.progress || (function() {});
-      
+
       if (typeof items === "object" && items.length==undefined) items = [ items ];
       var itemsLength=items.length;
-      
+
       // define current and max for the progress
       setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spAdd"+(""+Math.random()).slice(2)};
       // we cannot add more than 15 items in the same time, so split by 15 elements
@@ -2480,10 +2569,10 @@ if (typeof jQuery === "function") {
         setup.after([], []);
         return this;
       }
-      
+
       // increment the progress
       setup.progressVar.current += itemsLength;
-      
+
       // build a part of the request
       var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
       var _this = this;
@@ -2505,7 +2594,7 @@ if (typeof jQuery === "function") {
       updates += '</Batch>';
 
       var _this=this;
-            
+
       // build the request
       var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
       // send the request
@@ -2535,7 +2624,7 @@ if (typeof jQuery === "function") {
                          failed.push(items[i]);
                        }
                      }
-                     
+
                      setup.progress(setup.progressVar.current,setup.progressVar.max);
                      // check if we have some other packets that are waiting to be treated
                      if (setup.progressVar.current < setup.progressVar.max) {
@@ -2556,7 +2645,7 @@ if (typeof jQuery === "function") {
       @name $SP().list.update
       @function
       @description Update items from a Sharepoint List
-      
+
       @param {Array} items List of items (e.g. [{ID: 1, Field_x0020_Name: "Value", OtherField: "new value"}, {ID:22, Field_x0020_Name: "Value2", OtherField: "new value2"}])
       @param {Object} [setup] Options (see below)
         @param {String} [setup.where=""] You can define a WHERE clause
@@ -2565,13 +2654,13 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.error] One parameter: 'failedItems' -- a function with the items not updated
         @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
         @param {Boolean} [setup.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
-        
+
       @example
       $SP().list("My List").update({ID:1, Title:"Ok"}); // you must always provide the ID
       $SP().list("List Name").update({Title:"Ok"},{where:"Status = 'Complete'"}); // if you use the WHERE then you must not provide the item ID
-      
+
       $SP().list("My List","http://sharepoint.org/mydir/").update([{ID:5, Title:"Ok"}, {ID: 15, Title:"Good"}]);
-                 
+
       $SP().list("List Name").update({ID:43, Title:"Ok"}, {error:function(items) {
         for (var i=0; i &lt; items.length; i++) console.log("Error '"+items[i].errorMessage+"' with:"+items[i].Title);
       }});
@@ -2580,7 +2669,7 @@ if (typeof jQuery === "function") {
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
       if (this.listID===undefined) throw "Error 'update': you need to use list() to define the list name.";
-      
+
       // default values
       setup         = setup || {};
       if (this.url == undefined) throw "Error 'update': not able to find the URL!"; // we cannot determine the url
@@ -2590,10 +2679,10 @@ if (typeof jQuery === "function") {
       setup.after   = setup.after || (function() {});
       setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
       setup.progress= setup.progress || (function() {});
-           
+
       if (typeof items === "object" && items.length==undefined) items = [ items ];
       var itemsLength=items.length;
-      
+
       // if there is a WHERE clause
       if (itemsLength == 1 && setup.where) {
         // call GET first
@@ -2618,7 +2707,7 @@ if (typeof jQuery === "function") {
         });
         return this;
       }
-      
+
       // define current and max for the progress
       setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spUpdate"+(""+Math.random()).slice(2)};
       // we cannot add more than 15 items in the same time, so split by 15 elements
@@ -2639,7 +2728,7 @@ if (typeof jQuery === "function") {
         setup.after([], []);
         return this;
       }
-      
+
       // increment the progress
       setup.progressVar.current += itemsLength;
 
@@ -2664,7 +2753,7 @@ if (typeof jQuery === "function") {
       updates += '</Batch>';
 
       var _this=this;
-            
+
       // build the request
       var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
       // send the request
@@ -2689,7 +2778,7 @@ if (typeof jQuery === "function") {
                          failed.push(items[i]);
                        }
                      }
-                     
+
                      setup.progress(setup.progressVar.current,setup.progressVar.max);
                      // check if we have some other packets that are waiting to be treated
                      if (setup.progressVar.current < setup.progressVar.max) {
@@ -2711,7 +2800,7 @@ if (typeof jQuery === "function") {
       @name $SP().list.history
       @function
       @description When versioning is an active option for your list, then you can use this function to find the previous values for a field
-      
+
       @param {Object} params See below
         @param {String|Number} params.ID The item ID
         @param {String} params.Name The field name
@@ -2738,7 +2827,7 @@ if (typeof jQuery === "function") {
       if (typeof returnFct !== "function") throw "Error 'history': the second parameter must be a function.";
 
       var _this=this;
-      
+
       // build the request
       var body = _this._buildBodyForSOAP("GetVersionCollection", "<strlistID>"+_this.listID+"</strlistID><strlistItemID>"+params.ID+"</strlistItemID><strFieldName>"+params.Name+"</strFieldName>")
       // send the request
@@ -2761,19 +2850,19 @@ if (typeof jQuery === "function") {
       @name $SP().list.moderate
       @function
       @description Moderate items from a Sharepoint List
-      
+
       @param {Array} approval List of items and ApprovalStatus (e.g. [{ID:1, ApprovalStatus:"Approved"}, {ID:22, ApprovalStatus:"Pending"}])
       @param {Object} [setup] Options (see below)
         @param {Function} [setup.success] A function with the items updated sucessfully
         @param {Function} [setup.error] A function with the items not updated
         @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
         @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- if you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
-        
+
       @example
       $SP().list("My List").moderate({ID:1, ApprovalStatus:"Rejected"}); // you must always provide the ID
-      
+
       $SP().list("List Name").moderate([{ID:5, ApprovalStatus:"Pending"}, {ID: 15, ApprovalStatus:"Approved"}]);
-                 
+
       $SP().list("Other List").moderate({ID:43, ApprovalStatus:"Approved"}, {
         error:function(items) {
           for (var i=0; i &lt; items.length; i++) console.log("Error with:"+items[i].ID);
@@ -2789,7 +2878,7 @@ if (typeof jQuery === "function") {
       if (arguments.length===0 || (arguments.length===1 && typeof items === "object" && items.length === undefined))
         throw "Error 'moderate': you need to define the list of items";
       if (this.listID===undefined) throw "Error 'moderate': you need to use list() to define the list name.";
-      
+
       // default values
       setup         = setup || {};
       if (this.url == undefined) throw "Error 'moderate': not able to find the URL!"; // we cannot determine the url
@@ -2798,14 +2887,14 @@ if (typeof jQuery === "function") {
       setup.error   = setup.error || (function() {});
       setup.after   = setup.after || (function() {});
       setup.progress= setup.progress || (function() {});
-      
+
       if (typeof items === "object" && items.length==undefined) items = [ items ];
       var itemsLength=items.length;
 
       // define current and max for the progress
       setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spModerate"+(""+Math.random()).slice(2)};
       var _this=this;
-      
+
       // we cannot add more than 15 items in the same time, so split by 15 elements
       // and also to avoid surcharging the server
       if (itemsLength > 15) {
@@ -2823,7 +2912,7 @@ if (typeof jQuery === "function") {
         setup.after([], []);
         return this;
       }
-      
+
       // increment the progress
       setup.progressVar.current += itemsLength;
 
@@ -2859,7 +2948,7 @@ if (typeof jQuery === "function") {
         updates += '</Method>';
       }
       updates += '</Batch>';
-      
+
       // build the request
       var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
       // send the request
@@ -2888,7 +2977,7 @@ if (typeof jQuery === "function") {
                          failed.push(items[i]);
                        }
                      }
-                     
+
                      setup.progress(setup.progressVar.current,setup.progressVar.max);
                      // check if we have some other packets that are waiting to be treated
                      if (setup.progressVar.current < setup.progressVar.max) {
@@ -2911,7 +3000,7 @@ if (typeof jQuery === "function") {
       @function
       @description Delete items from a Sharepoint List
       @note You can also use the key word 'del' instead of 'remove'
-      
+
       @param {Objet|Array} [itemsID] List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}
       @param {Object} [setup] Options (see below)
         @param {String} [setup.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
@@ -2920,18 +3009,18 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.success] One parameter: 'passedItems' -- a function with the items updated sucessfully
         @param {Function} [setup.error] (One parameter: 'failedItems' -- a function with the items not updated
         @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
-      
+
       @example
       $SP().list("My List").remove({ID:1}); // you must always provide the ID
-      
+
       // we can use the WHERE clause instead providing the ID
       $SP().list("My List").remove({where:"Title = 'OK'",progress:function(current,max) {
         console.log(current+"/"+max);
       }});
-      
+
       // delete several items
       $SP().list("List Name", "http://my.sharepoint.com/sub/dir/").remove([{ID:5}, {ID:7}]);
-           
+
       // example about how to use the "error" callback
       $SP().list("List").remove({ID:43, Title:"My title"}, {error:function(items) {
         for (var i=0; i &lt; items.length; i++) console.log("Error with:"+items[i].ID+" ("+items[i].errorMessage+")"); // only .ID and .errorMessage are available
@@ -2943,7 +3032,7 @@ if (typeof jQuery === "function") {
     remove:function(items, setup) {
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
-      var _this=this;      
+      var _this=this;
       // default values
       if (!setup && items.where) { setup=items; items=[]; } // the case when we use the "where"
       setup         = setup || {};
@@ -2953,10 +3042,10 @@ if (typeof jQuery === "function") {
       setup.after   = setup.after || (function() {});
       setup.progress= setup.progress || (function() {});
       setup.packetsize = setup.packetsize || 15;
-           
+
       if (typeof items === "object" && items.length==undefined) items = [ items ];
       var itemsLength=items.length;
-      
+
       // if there is a WHERE clause
       if (setup.where) {
         // call GET first
@@ -2989,7 +3078,7 @@ if (typeof jQuery === "function") {
         setup.after.call(_this, [], [])
         return _this;
       }
-      
+
       // define current and max for the progress
       setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spRemove"+(""+Math.random()).slice(2)};
       // we cannot add more than setup.packetsize items in the same time, so split by setup.packetsize elements
@@ -3016,7 +3105,7 @@ if (typeof jQuery === "function") {
         updates += '</Method>';
       }
       updates += '</Batch>';
-      
+
       // build the request
       var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
       // send the request
@@ -3041,7 +3130,7 @@ if (typeof jQuery === "function") {
                          failed.push(items[i]);
                        }
                      }
-                     
+
                      setup.progress(setup.progressVar.current,setup.progressVar.max);
                      // check if we have some other packets that are waiting to be treated
                      if (setup.progressVar.current < setup.progressVar.max) {
@@ -3062,15 +3151,16 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().usergroups
       @function
+      @category people
       @description Find the Sharepoint groups where the specified user is member of
-      
+
       @param {String} username The username with the domain (don't forget to use a double \ like "mydomain\\john_doe")
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.error=true] The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)
         @param {Boolean} [setup.cache=true] Keep a cache of the result
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
-      
+
       @example
       $SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(groups) {
         for (var i=0; i &lt; groups.length; i++) console.log(groups[i]); // -> "Roadmap Admin", "Global Viewers", ...
@@ -3084,7 +3174,7 @@ if (typeof jQuery === "function") {
           case 2: if (typeof username === "string" && typeof setup === "function") return this.usergroups(username,{},setup);
                   if (typeof username === "object" && typeof setup === "function") return this.usergroups("",username,setup);
       }
-      
+
       // default values
       setup         = setup || {};
       setup.cache = (setup.cache === false ? false : true);
@@ -3094,7 +3184,7 @@ if (typeof jQuery === "function") {
       } else this.url=setup.url;
       fct           = fct || (function() {});
       if (!username) throw "Error 'usergroups': you have to set an username.";
-      
+
       username=username.toLowerCase();
       setup.url=setup.url.toLowerCase();
       // check the cache
@@ -3108,9 +3198,9 @@ if (typeof jQuery === "function") {
           }
         }
       }
-      
+
       var _this=this;
-      
+
       // build the request
       var body = _this._buildBodyForSOAP("GetGroupCollectionFromUser", "<userLoginName>"+username+"</userLoginName>", "http://schemas.microsoft.com/sharepoint/soap/directory/")
       // send the request
@@ -3147,10 +3237,11 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().workflowStatusToText
       @function
+      @category utils
       @description Return the text related to a workflow status code
-      
+
       @param {String|Number} code This is the code returned by a workflow
-      
+
       @example
       $SP().workflowStatusToText(2); // -> "In Progress"
      */
@@ -3176,12 +3267,12 @@ if (typeof jQuery === "function") {
       @name $SP().list.getWorkflowID
       @function
       @description Find the WorkflowID for a workflow, and some other data (fileRef, description, instances, ...)
-      
+
       @param {Object} setup
         @param {Number} setup.ID The item ID that is tied to the workflow
         @param {String} setup.workflowName The name of the workflow
         @param {Function} setup.after The callback function that is called after the request is done (the parameter is {workflowID:"the workflowID", fileRef:"the fileRef"})
-      
+
       @example
       $SP().list("List Name").getWorkflowID({ID:15, workflowName:"Workflow for List Name (manual)", after:function(params) {
         alert("Workflow ID:"+params.workflowID+" and the FileRef is: "+params.fileRef);
@@ -3317,7 +3408,7 @@ if (typeof jQuery === "function") {
       @name $SP().list.startWorkflow
       @function
       @description Manually start a work (that has been set to be manually started) (for "Sharepoint 2010 workflow" as the platform type)
-      
+
       @param {Object} setup
         @param {String} setup.workflowName The name of the workflow
         @param {Number} [setup.ID] The item ID that tied to the workflow
@@ -3325,7 +3416,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.after] This callback function that is called after the request is done
         @param {String} [setup.fileRef] Optional: you can provide the fileRef to avoid calling the $SP().list().getWorkflowID()
         @param {String} [setup.workflowID] Optional: you can provide the workflowID to avoid calling the $SP().list().getWorkflowID()
-      
+
       @example
       // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
       $SP().list("").startWorkflow({workflowName:"My Site Workflow"});
@@ -3334,7 +3425,7 @@ if (typeof jQuery === "function") {
       $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function(error) {
         if (!error)
           alert("Workflow done!");
-        else 
+        else
           alert("Error: "+error);
       }});
     **/
@@ -3342,7 +3433,7 @@ if (typeof jQuery === "function") {
       // check if we need to queue it
       if (this.needQueue) { return this._addInQueue(arguments) }
       if (this.url == undefined) throw "Error 'startWorkflow': not able to find the URL!";
-      
+
       // if no listID then it's a Site Workflow so we use startWorkflow2013
       if (!this.listID) {
         setup.platformType=2010;
@@ -3374,9 +3465,7 @@ if (typeof jQuery === "function") {
           workflowParameters += "<"+p[i].name+">"+p[i].value+"</"+p[i].name+">";
           workflowParameters += "</Data>";
         }
-        
         var _this=this;
-        
         var body = _this._buildBodyForSOAP("StartWorkflow", "<item>"+setup.fileRef+"</item><templateId>"+setup.workflowID+"</templateId><workflowParameters>"+workflowParameters+"</workflowParameters>", "http://schemas.microsoft.com/sharepoint/soap/workflow/");
         // do the request
         var url = this.url + "/_vti_bin/Workflow.asmx";
@@ -3403,13 +3492,13 @@ if (typeof jQuery === "function") {
       @name $SP().list.startWorkflow2013
       @function
       @description Manually start a work (that has been set to be manually started) (for "Sharepoint 2013 workflow" as the platform type)
-      
+
       @param {Object} setup
         @param {Number} [setup.ID] The item ID that tied to the workflow
         @param {String} setup.workflowName The name of the workflow
         @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
         @param {Function} [setup.after] This callback function that is called after the request is done
-      
+
       @example
       // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
       $SP().list("").startWorkflow2013({workflowName:"My Site Workflow"});
@@ -3418,7 +3507,7 @@ if (typeof jQuery === "function") {
       $SP().list("List Name").startWorkflow2013({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}, after:function(error) {
         if (!error)
           alert("Workflow done!");
-        else 
+        else
           alert("Error: "+error);
       }});
     **/
@@ -3427,7 +3516,7 @@ if (typeof jQuery === "function") {
       // check if we need to queue it
       if (_this.needQueue) { return _this._addInQueue(arguments) }
       if (_this.url == undefined) throw "Error 'startWorkflow2013': not able to find the URL!";
-      
+
       setup = setup || {};
       setup.after = setup.after || (function() {});
       setup.platformType = setup.platformType || 2013; // internal use when calling Site Workflow from startWorkflow()
@@ -3445,7 +3534,7 @@ if (typeof jQuery === "function") {
           var context = new SP.ClientContext(_this.url);
           var web = context.get_web();
           var subscriptions;
-          
+
           var servicesManager = SP.WorkflowServices.WorkflowServicesManager.newObject(context, web);
           context.load(servicesManager);
           // list the existing workflows
@@ -3478,7 +3567,7 @@ if (typeof jQuery === "function") {
               while (subsEnum.moveNext()) {
                 sub = subsEnum.get_current();
                 if (sub.get_name().toLowerCase() === workflowName) {
-                  
+
                   if (setup.ID) servicesManager.getWorkflowInstanceService().startWorkflowOnListItem(sub, setup.ID, initiationParams);
                   else servicesManager.getWorkflowInstanceService().startWorkflow(sub, initiationParams);
                   context.executeQueryAsync(function(sender, args) {
@@ -3498,21 +3587,21 @@ if (typeof jQuery === "function") {
             setup.after.call(_this, args.get_message())
           });
         });
-      })  
-      
+      })
       return this;
     },
     /**
       @name $SP().distributionLists
       @function
+      @category people
       @description Find the distribution lists where the specified user is member of
-      
+
       @param {String} username The username with or without the domain (don't forget to use a double \ like "mydomain\\john_doe")
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.cache=true] Cache the response from the server
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
-      
+
       @example
       $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}, function(mailing) {
         for (var i=0; i &lt; mailing.length; i++) console.log(mailing[i]); // -> {SourceReference: "cn=listname,ou=distribution lists,ou=rainbow,dc=com", DisplayName:"listname", MailNickname:"List Name", Url:"mailto:listname@rainbow.com"}
@@ -3526,7 +3615,7 @@ if (typeof jQuery === "function") {
           case 2: if (typeof username === "string" && typeof setup === "function") return this.distributionLists(username,{},setup);
                   if (typeof username === "object" && typeof setup === "function") return this.distributionLists("",username,setup);
       }
-      
+
       // default values
       setup         = setup || {};
       if (setup.url == undefined) {
@@ -3535,7 +3624,7 @@ if (typeof jQuery === "function") {
       } else this.url=setup.url;
       fct           = fct || (function() {});
       if (!username) throw "Error 'distributionLists': you have to set an username.";
-      
+
       username = username.toLowerCase();
       setup.url=setup.url.toLowerCase();
       setup.cache = (setup.cache === false ? false : true)
@@ -3552,10 +3641,10 @@ if (typeof jQuery === "function") {
       }
 
       var _this=this;
-      
+
       // build the request
       var body = _this._buildBodyForSOAP("GetCommonMemberships", "<accountName>"+username+"</accountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService");
-               
+
       // send the request
       var url = setup.url + "/_vti_bin/UserProfileService.asmx";
       _this.ajax({type:"POST",
@@ -3590,15 +3679,16 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().groupMembers
       @function
+      @category people
       @description Find the members of a Sharepoint group
-      
+
       @param {String} groupname Name of the group
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.error=true] The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)
         @param {Boolean} [setup.cache=true] By default the function will cache the group members (so if you call several times it will use the cache)
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
-      
+
       @example
       $SP().groupMembers("my group", function(members) {
         for (var i=0; i &lt; members.length; i++) console.log(members[i]); // -> {ID:"1234", Name:"Doe, John", LoginName:"mydomain\john_doe", Email:"john_doe@rainbow.com"}
@@ -3612,7 +3702,7 @@ if (typeof jQuery === "function") {
           case 2: if (typeof groupname === "string" && typeof setup === "function") return this.groupMembers(groupname,{},setup);
                   if (typeof groupname === "object" && typeof setup === "function") return this.groupMembers("",groupname,setup);
       }
-      
+
       // default values
       setup         = setup || {};
       setup.cache = (setup.cache === undefined ? true : setup.cache);
@@ -3622,7 +3712,7 @@ if (typeof jQuery === "function") {
       } else this.url=setup.url;
       fct           = fct || (function() {});
       if (!groupname) throw "Error 'groupMembers': you have to set an groupname.";
-      
+
       groupname=groupname.toLowerCase();
       setup.url=setup.url.toLowerCase();
       // check the cache
@@ -3639,7 +3729,7 @@ if (typeof jQuery === "function") {
       }
 
       var _this=this;
-      
+
       // build the request
       var body = _this._buildBodyForSOAP("GetUserCollectionFromGroup", "<groupName>"+this._cleanString(groupname)+"</groupName>", "http://schemas.microsoft.com/sharepoint/soap/directory/");
       // send the request
@@ -3676,15 +3766,16 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().isMember
       @function
+      @category people
       @description Find if the user is member of the Sharepoint group
-      
+
       @param {Object} [setup] Options (see below)
         @param {String} setup.user Username with domain ("domain\\login" for Sharepoint 2010, or "i:0#.w|domain\\login" for Sharepoint 2013)
         @param {String} setup.group Name of the group
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.cache=true] Cache the response from the server
       @param {Function} [result] Return TRUE if the user is a member of the group, FALSE if not.
-      
+
       @example
       $SP().isMember({user:"mydomain\\john_doe",group:"my group",url:"http://my.site.com/"}, function(isMember) {
         if (isMember) alert("OK !")
@@ -3701,7 +3792,7 @@ if (typeof jQuery === "function") {
       fct           = fct || (function() {});
       if (!setup.user) throw "Error 'isMember': you have to set an user.";
       if (!setup.group) throw "Error 'isMember': you have to set a group.";
-      
+
       setup.group = setup.group.toLowerCase();
       // first check with usergroups()
       this.usergroups(setup.user,{cache:setup.cache,error:false},function(groups) {
@@ -3731,13 +3822,14 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().people
       @function
+      @category people
       @description Find the user details like manager, email, colleagues, ...
-      
+
       @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result, or a String with the error message
-      
+
       @example
       $SP().people("john_doe",{url:"http://my.si.te/subdir/"}, function(people) {
         if (typeof people === "string") {
@@ -3803,6 +3895,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().getUserInfo
       @function
+      @category people
       @description Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)
 
       @param {String} username That must be "domain\\login" for Sharepoint 2010, or something like "i:0#.w|domain\\login" for Sharepoint 2013
@@ -3867,12 +3960,13 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().whoami
       @function
+      @category people
       @description Find the current user details like manager, email, colleagues, ...
-      
+
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
-      
+
       @example
       $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
         for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
@@ -3885,6 +3979,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().regionalSettings
       @function
+      @category utils
       @description Find the region settings (of the current user) defined with _layouts/regionalsetng.aspx?Type=User (lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek, timeFormat..)
 
       @param {Function} [callback] A function with one paramater that contains the parameters returned from the server
@@ -3956,6 +4051,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().regionalDateFormat
       @function
+      @category utils
       @description Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, D for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)
 
       @param {Function} [callback] It will pass the date format
@@ -4028,15 +4124,16 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().addressbook
       @function
+      @category people
       @description Find an user based on a part of his name
-      
+
       @param {String} word A part of the name from the guy you're looking for
       @param {Object} [setup] Options (see below)
         @param {String} [setup.limit=10] Number of results returned
         @param {String} [setup.type='User'] Possible values are: 'All', 'DistributionList', 'SecurityGroup', 'SharePointGroup', 'User', and 'None' (see http://msdn.microsoft.com/en-us/library/people.spprincipaltype.aspx)
         @param {String} [setup.url='current website'] The website url
       @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result (typically: AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType)
-      
+
       @example
       $SP().addressbook("john", {limit:25}, function(people) {
         for (var i=0; i &lt; people.length; i++) {
@@ -4054,7 +4151,7 @@ if (typeof jQuery === "function") {
           case 2: if (typeof username === "string" && typeof setup === "function") return this.addressbook(username,{},setup);
                   if (typeof username === "object" && typeof setup === "function") return this.addressbook("",username,setup);
       }
-      
+
       // default values
       setup         = setup || {};
       if (setup.url == undefined) {
@@ -4067,7 +4164,7 @@ if (typeof jQuery === "function") {
       username      = username || "";
 
       var _this=this;
-            
+
       // build the request
       var body = _this._buildBodyForSOAP("SearchPrincipals", "<searchText>"+username+"</searchText><maxResults>"+setup.limit+"</maxResults><principalType>"+setup.type+"</principalType>");
       // send the request
@@ -4099,6 +4196,9 @@ if (typeof jQuery === "function") {
                  });
       return this;
     },
+    /*
+     @ignore
+     */
     reset:function() {
       this.data   = [];
       this.length = 0;
@@ -4110,6 +4210,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().toDate
       @function
+      @category utils
       @description Change a Sharepoint date (as a string) to a Date Object
       @param {String} textDate the Sharepoint date string
       @param {Boolean} [forceUTC=false] Permits to force the reading of the date in UTC
@@ -4133,6 +4234,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().toSPDate
       @function
+      @category utils
       @description Change a Date object into a Sharepoint date string
       @param {Date} dateObject The Date object you want to convert
       @param {Date} [includeTime=false] By default the time is not returned (if the time appears then the WHERE clause will do a time comparison)
@@ -4158,14 +4260,15 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().toCurrency
       @function
+      @category utils
       @description It will return a number with commas, currency sign and a specific number of decimals
       @param {Number|String} number The number to format
       @param {Number} [decimal=-1] The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00)
       @param {String} [sign='$'] The currency sign to add
-      
+
       @return {String} The converted number
-      @example 
-      
+      @example
+
       $SP().toCurrency(1500000); // --> $1,500,000
       $SP().toCurrency(1500000,2,''); // --> 1,500,000.00 
      */
@@ -4189,6 +4292,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().getLookup
       @function
+      @category utils
       @description Split the ID and Value
       @param {String} text The string to retrieve data
       @return {Object} .id returns the ID, and .value returns the value
@@ -4198,6 +4302,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().toXSLString
       @function
+      @category utils
       @description Change a string into a XSL format string
       @param {String} text The string to change
       @return {String} the XSL version of the string passed
@@ -4247,7 +4352,7 @@ if (typeof jQuery === "function") {
       @namespace
       @description Retrieve the fields info in the NewForm and in the EditForm
       @return {Array} An array of hash with several keys: name, values, elements, type, and tr
-      
+
       @param {String|Array} [fields=""] A list of fields to get (e.g. "field1,other field,field2" or ["field1","other field","field2"]) and by default we take all fields ... ATTENTION if you have a field with "," then use only the Array as a parameter
       @param {Object} [setup] Options (see below)
         @param {Boolean} [setup.mandatory=undefined] Set it to 'true' to look for the mandatory fields (the "false" value has no effect) 
@@ -4255,7 +4360,7 @@ if (typeof jQuery === "function") {
 
       @example
       $SP().formfields(); // return all the fields
-      
+
       $SP().formfields({mandatory:true}).each(function() { // return all the mandatory fields
         var field = this;
         if (field.val().length==0) console.log(field.name()+" is empty!");
@@ -4274,14 +4379,14 @@ if (typeof jQuery === "function") {
     */
     formfields:function(fields, settings) {
       'use strict';
-      this.reset();  
+      this.reset();
       if (arguments.length == 1 && typeof fields === "object" && typeof fields.length === "undefined") { settings=fields; fields=undefined; }
 
       // default values
       settings = settings || {};
       fields   = fields   || [];
       settings.cache = (settings.cache === false ? false : true);
-      
+
       var aReturn = [], bigLimit=10000;
       if (typeof fields === "string") fields=( fields==="" ? [] : fields.split(",") );
       var limit = (fields.length>0 ? fields.length : bigLimit);
@@ -4324,7 +4429,7 @@ if (typeof jQuery === "function") {
           // 8 according to the DOM spec
           var Node = {COMMENT_NODE:8};
           var children = elem.childNodes;
-      
+
           for (var i=0, len=children.length; i<len; i++) {
             if (children[i].nodeType == Node.COMMENT_NODE) {
               comments.push(children[i].nodeValue);
@@ -4339,11 +4444,11 @@ if (typeof jQuery === "function") {
               comments.push(curNode.nodeValue);
           }
         }
-        
+
         var mtch = comments.join("").replace(/\s\s*/g," ").match(/FieldName="([^"]+)".* FieldInternalName="([^"]+)".* FieldType="([^"]+)"/)
         return (mtch ? {"Name":mtch[1], "InternalName":mtch[2], "SPType":mtch[3]} : {"Name":"", "InternalName":"", "SPType":""});
       };
-      
+
       // Retrieve the text of an HTML element (from jQuery source)
       var getText = function(elem) {
         var i, node, nodeType = elem.nodeType, ret = "";
@@ -4368,7 +4473,7 @@ if (typeof jQuery === "function") {
         }
         return ret;
       };
-      
+
       // Select an OPTION into a SELECT based on it's text
       // params "text", "value", "all", "none"
       var setSelectedOption = function(select, val, params) {
@@ -4409,7 +4514,7 @@ if (typeof jQuery === "function") {
           }
         }
 
-        return (isMultiple ? val : (val.length===0 ? "" : val));       
+        return (isMultiple ? val : (val.length===0 ? "" : val));
       };
 
       if (settings.includeAll) limit=bigLimit;
@@ -4419,7 +4524,7 @@ if (typeof jQuery === "function") {
         var tr, td, isMandatory=false, html /* HTML content of the NOBR tag */, txt /* Text content of the NOBR tag */, infoFromComments, includeThisField=false;
         var search; // if we have to search for a value
         var fieldName, obj, tmp;
-        
+
         if (settings.includeAll) includeThisField=true;
 
         if (i === -1) { // handle the content type
@@ -4441,14 +4546,14 @@ if (typeof jQuery === "function") {
             }
             else continue;
           }
-          
+
           // find the <nobr> to check if it's mandatory
           txt = tr.querySelector('td.ms-formlabel nobr');
           if (!txt) continue;
           // the text will finish by " *"
           txt = getText(txt);
           isMandatory = / \*$/.test(txt);
-         
+
           // do we want the mandatory fields ?
           if (settings.mandatory && isMandatory) includeThisField=true;
           else {
@@ -4472,15 +4577,15 @@ if (typeof jQuery === "function") {
             _tr: null, /* the TR parent node */
             _type: null /* the type of this field: checkbox, boolean */
           };
-          
+
           if (fieldName === "Content Type") { // the Content Type field is different !
             obj._elements = document.querySelector('.ms-formbody select[title="Content Type"]');
             if (!obj._elements) continue;
             obj._type = "content type";
             obj._tr = obj._elements.parentNode.parentNode;
-          } else 
+          } else
             obj._tr = tr;
-          
+
           obj.val    = function() {};
           obj.elem   = function(usejQuery) {
             usejQuery = (usejQuery === false ? false : true);
@@ -4495,13 +4600,13 @@ if (typeof jQuery === "function") {
             }
           };
           obj.description = function() { return this._description }
-          obj.type = function() { return this._type }; // this function returns the type of the field 
-          obj.row  = function() { return (typeof jQuery === "function" ? jQuery(this._tr) : this._tr) }; // this function returns the TR parent node 
+          obj.type = function() { return this._type }; // this function returns the type of the field
+          obj.row  = function() { return (typeof jQuery === "function" ? jQuery(this._tr) : this._tr) }; // this function returns the TR parent node
           obj.name = function() { return this._name };
           obj.internalname = function() { return this._internalname };
           obj.isMandatory = function() { return this._isMandatory };
           obj.options = function() {};
-          
+
           if (obj._name === "Attachments") {
             obj._type = "attachments";
             obj.elem = function(usejQuery) {
@@ -4553,7 +4658,7 @@ if (typeof jQuery === "function") {
               tmp = tmp[tmp.length-1];
               if (tmp.nodeType==3) obj._description = getText(tmp).trim();
             }
-            
+
             // work on fields based on SPType
             switch(infoFromComments.SPType) {
               case "SPFieldText":     // Single Line of Text
@@ -4565,7 +4670,7 @@ if (typeof jQuery === "function") {
                   default: obj._type="text";
                 }
                 obj._elements.push(td.querySelector('input[type="text"]'));
-                
+
                 // val()
                 obj.val = function(v) {
                   var e=this.elem(false);
@@ -4584,7 +4689,7 @@ if (typeof jQuery === "function") {
                 // if there is no TEXTAREA then it means it's not a plain text
                 if (tmp) {
                   obj._elements.push(tmp);
-                  
+
                   // val()
                   obj.val = function(v) {
                     var e=this.elem();
@@ -4644,7 +4749,7 @@ if (typeof jQuery === "function") {
                     if (tmp) obj._description = getText(tmp[tmp.length-1]).trim();
                   }
                 }
-                
+
                 // 'v' can be {extend:true} to get all the info from SP2013
                 obj.val = function(v) {
                   var tmp, res=[], extend=false, id, elems=this.elem(false);
@@ -4725,7 +4830,7 @@ if (typeof jQuery === "function") {
                         throw new Error("$SP().formfields().val() failed with a People Picker, because EntityEditorCallback and SPClientPeoplePicker are not available!");
                       }
                     }
-                    
+
                     return this;
                   }
                 }
@@ -4757,7 +4862,7 @@ if (typeof jQuery === "function") {
                     obj._elements = td.querySelectorAll('input')
                   }
                 }
-                
+
                 obj.val = function(v) {
                   var elems = this.elem(false), i, hasOption, len;
                   var type=this.type();
@@ -4794,7 +4899,7 @@ if (typeof jQuery === "function") {
                         }
                         return v;
                       }
-                    }                    
+                    }
                   } else { // set
                     switch(type) {
                       case "choices": { // dropdown
@@ -4824,7 +4929,7 @@ if (typeof jQuery === "function") {
                             v.splice(idx, 1);
                           } else {
                             elems[i].checked=false
-                          }                          
+                          }
                         }
                         // find if we need to add a value into the fillin box
                         if (type === "choices checkbox plus") {
@@ -4848,7 +4953,7 @@ if (typeof jQuery === "function") {
                             elems[i].checked=true;
                             hasOption=true;
                             break;
-                          }                          
+                          }
                         }
                         if (type === "choices radio plus") {
                           if (!hasOption) {
@@ -4883,7 +4988,7 @@ if (typeof jQuery === "function") {
                   } else { // get
                     return (e.length === 4 ? [ e[0].value, getSelectedOption(e[2], "text"), e[3].value ] : e[0].value);
                   }
-                }                 
+                }
                 break;
               }
               case "SPFieldLookup":
@@ -4893,25 +4998,25 @@ if (typeof jQuery === "function") {
                 if (infoFromComments.SPType==="SPFieldLookupMulti") {
                   obj._type += " multiple";
                 } else obj._elements = obj._elements[0];
-                
+
                 // params: {selectReturn} with "text", "value" or "both"
                 obj.val = function(v) {
                   var params = "text";
                   if (typeof v === "object" && !SPIsArray(v)) {
                     params = v.selectReturn || "text";
                     v = void 0;
-                  } 
+                  }
                   var type=this.type();
-                    
+
                   var e = this.elem(false), val=[], o;
                   if (typeof v !== "undefined") {
-                    if (type === "lookup multiple") { 
+                    if (type === "lookup multiple") {
                       if (!SPIsArray(v)) v = [ v ];
                       //  we want to use the Add/Remove buttons -- the behavior changes between SP2010 and SP2013
                       var clickAdd = e[1].getAttribute("onclick");
                       var clickRemove = e[2].getAttribute("onclick");
                       var masterGroup = window[e[1].getAttribute("id").replace(/AddButton/,"MultiLookup_m")]; // SP2013
-                      
+
                       // reset all from the last select
                       setSelectedOption(e[3], "", "all");
                       if (clickRemove) eval("!function() {"+clickRemove+"}()");
@@ -4942,7 +5047,7 @@ if (typeof jQuery === "function") {
                       return (v.length === 0 ? "" : v);
                     } else return getSelectedOption(e, params)
                   }
-                  
+
                   return this;
                 }
                 break;
@@ -4982,7 +5087,7 @@ if (typeof jQuery === "function") {
         }
         aReturn.push(obj);
       }
-      
+
       // cache the result
       _SP_CACHE_FORMFIELDS = aReturn.slice(0);
       settings.includeAll=false;
@@ -5012,7 +5117,7 @@ if (typeof jQuery === "function") {
         @param {Boolean} [identity=false] If set to TRUE then the return values will be a hashmap with "field name" => "field value"
         @param {Boolean} [extend=false} In the case of a PeoplePicker under SP2013 it will return the People object
       @return {String|Array|Object} Return the value of the field(s)
-              
+
       @example
       $SP().formfields("Title").val(); // return "My project"
       $SP().formfields("Title").val("My other project");
@@ -5032,7 +5137,7 @@ if (typeof jQuery === "function") {
 
       // it will return a hashmap
       $SP().formfields("Make your choice,Title,Other Field").val({identity:true}); // -> {"Make your choice":["My Value"], "Title":"My Value", "Other Field":"My Value"}
-      
+
       // for SP2013 people picker
       $SP().formfields("Manager Name").val({extend:true}); // -> [ { Key="i:0#.w|domain\john_doe",  Description="domain\john_doe",  DisplayText="Doe, John",  ...} ]
       $SP().formfields("Manager Name").val(); // -> "Doe, John"
@@ -5044,7 +5149,7 @@ if (typeof jQuery === "function") {
         extend = (str.extend === true ? true : false);
         str=void 0;
       }
-      
+
       // it means we want to get the value
       if (typeof str === "undefined") {
         var aReturn = [];
@@ -5071,7 +5176,7 @@ if (typeof jQuery === "function") {
           } else this.each(function() { this.val(str) })
         }
       }
-      
+
       return this;
     },
     /**
@@ -5080,11 +5185,10 @@ if (typeof jQuery === "function") {
       @description Get the HTML element(s) tied with the field(s) selected by "formfields"
       @param {Boolean} [usejQuery=true] If jQuery is loaded, then by default the elements will be jQuery object; use FALSE to get the regular DOM elements
       @return {Array|HTMLElement|jQuery} Null is returned if nothing is found, or the found elements... if jQuery is defined then the HTML elements will be jQueryrize
-                   
+
       @example
       $SP().formfields("Title").elem(); // -> returns a HTML INPUT TEXT
-      $SP().formfields("List of options").elem(); // -> returns a HTML SELECT 
-      
+      $SP().formfields("List of options").elem(); // -> returns a HTML SELECT
     */
     elem:function(usejQuery) {
       usejQuery = (usejQuery === false ? false : true);
@@ -5095,7 +5199,7 @@ if (typeof jQuery === "function") {
         if (e instanceof NodeList) e = [].slice.call(e);
         aReturn=aReturn.concat(e)
       })
-      
+
       switch(aReturn.length) {
         case 0: return hasJQuery ? jQuery() : null;
         case 1: return hasJQuery ? jQuery(aReturn[0]) : aReturn[0];
@@ -5107,7 +5211,7 @@ if (typeof jQuery === "function") {
       @function
       @description Get the TR element(s) tied with the field(s) selected by "formfields"
       @return {Array|HTMLElement|jQuery} Null is returned if nothing is found, or the TR HTMLElement... or a jQuery object is returned if jQuery exists
-                   
+
       @example
       $SP().formfields("Title").row(); // return the TR element that is the parent (= the row)
       $SP().formfields("Title").row().hide(); // because we have jQuery we can apply the hide()
@@ -5153,9 +5257,9 @@ if (typeof jQuery === "function") {
                    - "people" for the people picker field;
                    - "people multiple" for the people picker field with multiple selection;
                    - "url" for the link/url/picture field.
-                   
+
       @return {String|Array} Returns the type of the field(s)
-                   
+
       @example
       $SP().formfields("Title").type(); // return "text"
       $SP().formfields("List of options").type(); // return "choices"
@@ -5168,15 +5272,15 @@ if (typeof jQuery === "function") {
         case 0: return "";
         case 1: return aReturn[0];
         default: return aReturn;
-      } 
+      }
     },
     /**
       @name $SP().formfields.description
       @function
       @description Get the description of the field(s) selected by "formfields"
-                  
+
       @return {String|Array} Returns the description of the field(s)
-                   
+
       @example
       $SP().formfields("Title").description(); // return "This is the description of this field"
       $SP().formfields("List of options").description(); // return "", it means no description
@@ -5189,15 +5293,15 @@ if (typeof jQuery === "function") {
         case 0: return "";
         case 1: return aReturn[0];
         default: return aReturn;
-      } 
+      }
     },
     /**
       @name $SP().formfields.isMandatory
       @function
       @description Say if a field is mandatory
-                  
+
       @return {Boolean|Array} Returns the mandatory status of the field(s)
-                   
+
       @example
       $SP().formfields("Title").isMandatory(); // return True or False
       $SP().formfields(["Field1", "Field2"]).isMandatory(); // return [ True/False, True/False ]
@@ -5210,15 +5314,15 @@ if (typeof jQuery === "function") {
         case 0: return false;
         case 1: return aReturn[0];
         default: return aReturn;
-      } 
+      }
     },
     /**
       @name $SP().formfields.name
       @function
       @description Return the field name
-                  
+
       @return {String|Array} Returns the name of the field(s)
-                   
+
       @example
       $SP().formfields("Subject").name(); // return "Subject"
       $SP().formfields(["Field Name", "My Field"]).name(); // return [ "Field Name", "My Field" ]
@@ -5231,15 +5335,15 @@ if (typeof jQuery === "function") {
         case 0: return "";
         case 1: return aReturn[0];
         default: return aReturn;
-      } 
+      }
     },
     /**
       @name $SP().formfields.internalname
       @function
       @description Return the field internalname
-                  
+
       @return {String|Array} Returns the internalname of the field(s)
-                   
+
       @example
       $SP().formfields("Subject").internalname(); // return "Title"
       $SP().formfields(["Field Name", "My Field"]).internalname(); // return [ "Field_x0020_Name", "My_x0020_Field" ]
@@ -5252,13 +5356,14 @@ if (typeof jQuery === "function") {
         case 0: return "";
         case 1: return aReturn[0];
         default: return aReturn;
-      } 
+      }
     },
     /**
       @name $SP().notify
       @function
+      @category modals
       @description Permits to notify the user using the SP.UI.Notify.addNotification system
-                  
+
       @param {String} message Message to show
       @param {Object} [options]
         @param {Integer}  [options.timeout=5] The number of seconds that the notification is shown
@@ -5268,7 +5373,7 @@ if (typeof jQuery === "function") {
         @param {Boolean}  [options.sticky=false] Keep the notification on the screen until it's manually removed (or automatically removed with "overrideAll:true" and "overrideSticky:true")
         @param {String}   [options.name=random()] You can give a name to the notification (to use it with $SP().removeNotify('name'))
         @param {Function} [options.after=function(name,afterDelay){}] You can call this function when the notification is removed -- the argument "name" is the name of the notification (see previous option), the argument "afterDelay" is TRUE when the notification has been removed by the system after it's normal timeout
-                   
+
       @example
       $SP().notify('Processing the data...', {sticky:true}); // the notification will stay on the screen until we remove it
       $SP().notify('All done!', {overrideAll:true}); // the "Processing the data..." is removed from the screen and a 5 seconds message says "All done!"
@@ -5330,7 +5435,7 @@ if (typeof jQuery === "function") {
           else if (options.override)
             $SP().removeNotify(_SP_NOTIFY[_SP_NOTIFY.length-1].name)
         }
-        
+
         _SP_NOTIFY.push({name:options.name, id:SP.UI.Notify.addNotification(message, true), options:options})
       }
 
@@ -5347,13 +5452,14 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().removeNotify
       @function
+      @category modals
       @description Permits to remove a notification that is shown on the screen
-                  
+
       @param {String} [name] Name of the notification
       @param {Object} [options] If you pass the options, then the 'name' is ignored
         @param {Boolean} [options.all=false] To TRUE to remove ALL notifications
         @param {Boolean} [options.includeSticky=true] To FALSE if you don't want to remove the sticky notifications (only works with the "all:true" option)
-                   
+
       @example
       $SP().notify('Processing the data...', {sticky:true,name:"Processing data"}); // the notification will stay on the screen until we remove it
       $SP().removeNotify("Processing data"); // the notification is removed
@@ -5446,8 +5552,9 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().showModalDialog
       @function
+      @category modals
       @description Show a modal dialog (based on SP.UI.ModalDialog.showModalDialog) but provides some advanced functions and better management of the modals (for example when you launch several modals)
-     
+
       @param {Object} [options] Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx with some additional ones or some changes
         @param {String} [options.html] We can directly provide the HTML code as a string
         @param {String} [options.width] If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)
@@ -5623,6 +5730,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().closeModalDialog
       @function
+      @category modals
       @description Close the last modal dialog
 
       @param {SP.UI.DialogResult|Object} [dialogResult] One of the enumeration values specifying the result of the modal dialog, or the modal object returned by $SP().getModalDialog()
@@ -5670,6 +5778,7 @@ if (typeof jQuery === "function") {
     /**
      * @name $SP().getModalDialog
      * @function
+     * @category modals
      * @description Retrieve the modal object for a special modalDialog
      *
      * @param {String} id The ID of the modal
@@ -5694,8 +5803,9 @@ if (typeof jQuery === "function") {
     /**
      * @name $SP().waitModalDialog
      * @function
+     * @category modals
      * @description Shortcut for SP.UI.ModalDialog.showWaitScreenWithNoClose()
-     * 
+     *
      * @param {String} [title="Working on it..."] The main message with the loading spin
      * @param {String} [subtitle=""] The subtitle
      * @param {Number} [height] The modal height
@@ -5711,7 +5821,10 @@ if (typeof jQuery === "function") {
       });
     },
     /**
-     * Resize a ModalDialog and recenter it
+     * @name $SP().resizeModalDialog
+     * @function
+     * @category modals
+     * @description Resize a ModalDialog and recenter it
      * @param  {Object} options
      *   @param {Number} width
      *   @param {Number} height
@@ -5791,6 +5904,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().registerPlugin
       @function
+      @category core
       @description Permits to register a plugin
 
       @param {String} pluginName You have to define the plugin name
@@ -5802,7 +5916,7 @@ if (typeof jQuery === "function") {
       })
     */
     registerPlugin:function(name,fct) {
-      if (typeof _SP_PLUGINS[name] !== "undefined") 
+      if (typeof _SP_PLUGINS[name] !== "undefined")
         throw "Error 'registerPlugin': '"+name+"' is already registered.";
       _SP_PLUGINS[name] = fct;
       return true;
@@ -5810,11 +5924,12 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().plugin
       @function
+      @category core
       @description Permits to use a plugin
-                  
+
       @param {String} pluginName The plugin name to call
       @param {Object} [options] The options for the plugin
-                   
+
       @example
       $SP().plugin('test',{message:"This is a test !"})
     */
@@ -5826,8 +5941,8 @@ if (typeof jQuery === "function") {
     }
   };
 
-  
   /**
+   * @ignore
    * @description we need to extend an element for some cases with $SP().get
    **/
   var myElem = (function(){
@@ -5839,15 +5954,25 @@ if (typeof jQuery === "function") {
     };
     return myElem;
   })();
-  
+
   var extendMyObject=function(arr) { this.attributes=arr };
   extendMyObject.prototype.getAttribute=function(attr) { return this.attributes[attr] };
   extendMyObject.prototype.getAttributes=function() { return this.attributes };
-  
+
   SharepointPlus.prototype.noConflict = function() {
     window._$SP = window._SharepointPlus = window.$SP;
   };
 
-  return window.$SP = window.SharepointPlus = SharepointPlus;
+  // make SharepointPlus available from NodeJS
+  if (!_SP_ISBROWSER && typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = SharepointPlus;
+    }
+    exports.SharepointPlus = SharepointPlus;
+  }
+  else {
+    window.$SP = window.SharepointPlus = SharepointPlus;
+  }
 
-})(this,document);
+  return SharepointPlus;
+})(this,(typeof document!=="undefined"?document:null));

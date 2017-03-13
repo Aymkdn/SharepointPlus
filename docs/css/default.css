@@ -1,12 +1,17 @@
+body { font-family:"Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif }
 h1 { padding:10px 0 }
 h2 { padding-bottom:10px }
 h3 { padding-top:10px; color:#999 }
 hr  { border-color:#000 }
 .method { font-weight:bold }
 .description { white-space:pre }
-div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:before { content:"\21AA " }
+div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:before {
+  content:"\21AA ";
+  display: inline-block;
+  margin-left: 1em;
+}
 .parameters .parameter:nth-child(odd) { background-color:#f4f4f4 }
-.footer { border-top:1px solid #E5E5E5; margin-top:45px; padding:35px 0 36px }
+.footer { border-top: 1px solid #E5E5E5; margin-top: 3em; padding: 1em 2em; }
 .visible-phone { display:none }
 .visible-tablet { display:none }
 .visible-desktop { display:block }
@@ -18,3 +23,7 @@ div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:b
 @media (max-width: 768px) {
   .hidden-tablet,.hidden-phone { display:none !important }
 }
+.nav-parent { text-transform: uppercase; font-weight: bold; }
+.nav-children { padding-left: 1em; }
+pre { font-size:13px }
+.member h2 { display:inline-block }
