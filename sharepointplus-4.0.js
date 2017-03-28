@@ -212,6 +212,7 @@ if (typeof jQuery === "function") {
     needQueue:false,
     module_sprequest:null,
     credentialOptions:null,
+    proxyweb:null,
     /**
       @name $SP().getVersion
       @function
@@ -291,13 +292,18 @@ if (typeof jQuery === "function") {
             var xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
             settings.beforeSend(xhr);
           }
-          _this.module_sprequest(settings.url, {
+          // add User Agent
+          headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
+          var opts = {
             json:false,
             method:settings.method || "POST",
             body: settings.data,
             strictSSL: false,
-            headers: headers
-          })
+            headers: headers,
+            jar:true
+          };
+          if (_this.proxyweb) opts.proxy=_this.proxyweb;
+          _this.module_sprequest(settings.url, opts)
           .then(function(response) {
             if (response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout") {
               // check if it's XML, then parse it
@@ -315,7 +321,7 @@ if (typeof jQuery === "function") {
             }
           }, function(err) {
             if (typeof settings.error === "function") {
-              settings.error(err, err.statusCode, err);
+              settings.error(err, "000", err);
             }
           });
         }
@@ -341,6 +347,29 @@ if (typeof jQuery === "function") {
     */
     auth:function(credentialOptions) {
       this.credentialOptions = credentialOptions;
+      return this;
+    },
+    /**
+      @name $SP().proxy
+      @function
+      @category node
+      @description Permits to define a proxy server (for Node module only)
+
+      @param {String} proxyURL Looks like "http://domain%5Cusername:password@proxy.something:80"
+
+      @example
+      var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
+      var proxy = "http://" + user1.domain + "%5C" + user1.username + ":" + user1.password + "@proxy:80";
+      $SP().proxy(proxy).auth(user1)
+           .list("My List","http://my.sharpoi.nt/other.directory/")
+          .get({...});
+      // or :
+      var sp = $SP().proxy(proxy).auth(user1);
+      sp.list("My List", "https://web.si.te").get({...});
+      sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
+    */
+    proxy:function(proxy) {
+      this.proxyweb = proxy;
       return this;
     },
     /**
@@ -1541,10 +1570,14 @@ if (typeof jQuery === "function") {
                         if (typeof fct === "function") fct.call(_this,aReturn,nextPage)
                       },
                       error:function(jqXHR, textStatus, errorThrown) {
-                        var res = jqXHR.responseXML;
-                        var err = (res ? res.getElementsByTagName("errorstring") : null);
-                        if (err && err[0]) fct.call(_this,[],"Error: "+err[0].firstChild.nodeValue)
-                        else fct.call(_this,[],textStatus+": "+errorThrown);
+                        if (textStatus !== "000") {
+                          var res = jqXHR.responseXML;
+                          var err = (res ? res.getElementsByTagName("errorstring") : null);
+                          if (err && err[0]) fct.call(_this,[],"Error: "+err[0].firstChild.nodeValue)
+                          else fct.call(_this,[],textStatus+": "+errorThrown);
+                        } else {
+                          fct.call(_this,[],errorThrown);
+                        }
                       }
                    });
       } /*else {
@@ -3154,7 +3187,7 @@ if (typeof jQuery === "function") {
       @category people
       @description Find the Sharepoint groups where the specified user is member of
 
-      @param {String} username The username with the domain (don't forget to use a double \ like "mydomain\\john_doe")
+      @param {String} username The username with the domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.error=true] The function will stop and throw an error when something went wrong (use FALSE to don't throw an error)
@@ -3596,7 +3629,7 @@ if (typeof jQuery === "function") {
       @category people
       @description Find the distribution lists where the specified user is member of
 
-      @param {String} username The username with or without the domain (don't forget to use a double \ like "mydomain\\john_doe")
+      @param {String} username The username with or without the domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.cache=true] Cache the response from the server
@@ -3770,7 +3803,7 @@ if (typeof jQuery === "function") {
       @description Find if the user is member of the Sharepoint group
 
       @param {Object} [setup] Options (see below)
-        @param {String} setup.user Username with domain ("domain\\login" for Sharepoint 2010, or "i:0#.w|domain\\login" for Sharepoint 2013)
+        @param {String} setup.user Username with domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
         @param {String} setup.group Name of the group
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.cache=true] Cache the response from the server
@@ -3823,7 +3856,7 @@ if (typeof jQuery === "function") {
       @name $SP().people
       @function
       @category people
-      @description Find the user details like manager, email, colleagues, ...
+      @description Find the user details like manager, email, ...
 
       @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")
       @param {Object} [setup] Options (see below)

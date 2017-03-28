@@ -27,3 +27,4 @@ div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:b
 .nav-children { padding-left: 1em; }
 pre { font-size:13px }
 .member h2 { display:inline-block }
+#main h4 { font-size:16px; color:#999; font-weight:normal; }

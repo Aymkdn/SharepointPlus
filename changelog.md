@@ -2,6 +2,12 @@
 
 **Change Log v4.0 ()**
 
+  - Add NodeJS support: SharepointPlus can now be called as a node module and can be used on server side
+  - Add `$SP().auth()` that must be used when using NodeJS (based on https://github.com/s-KaiNet/sp-request)
+  - Add `$SP().proxy()` that can be used with NodeJS
+  - Rewrite the documentation using JSDoc 3 instead of JSDoc 2
+  - Reorganize the documentation to group the methods by category
+
 **Change Log v3.14 (March 6, 2017)**
 
   - Add a sanitize filter for the filename in `$SP().createFile()` because Sharepoint doesn't like some special characters
