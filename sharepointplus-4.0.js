@@ -95,7 +95,7 @@ if(!String.prototype.trim) {
 }
 
 /**
- * @name SPArrayForEach
+ * @name SPArrayChunk
  * @category utils
  * @function
  * @description Permits to cut an array into smaller blocks
@@ -444,7 +444,7 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().getURL
       @function
-      @category core
+      @category utils
       @description Return the current base URL website
 
       @return {String} The current base URL website
@@ -1592,7 +1592,7 @@ if (typeof jQuery === "function") {
                 +" <dsp:request xmlns:dsp=\"http://schemas.microsoft.com/sharepoint/dsp\" service=\"DspSts\" document=\"content\" method=\"query\">"
                 +" </dsp:request>"
                 +" </soap:Header>"
-                + "<soap:Body>" 
+                + "<soap:Body>"
                 + "<queryRequest "
                 +" xmlns=\"http://schemas.microsoft.com/sharepoint/dsp\">"
                 +" <dsQuery select=\"/list[@id='"+this.listID+"']\""
@@ -2530,7 +2530,7 @@ if (typeof jQuery === "function") {
       @description Add items into a Sharepoint List
                    note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
                    note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
-                   note SP2013: If "-1;#" doesn't work on Sharepoint 2013, then try with "i:0#.w|" (e.g. "i:0#.w|europe\\foo_bar") ("i:0#.w|" may vary based on your authentification system)
+                   note SP2013: If "-1;#" doesn't work on Sharepoint 2013, then try with "i:0#.w|" (e.g. "i:0#.w|europe\\foo_bar") ("i:0#.w|" may vary based on your authentification system -- see https://social.technet.microsoft.com/wiki/contents/articles/13921.sharepoint-20102013-claims-encoding.aspx)
                    note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
                          --> it should also be possible to not pass the value but only the ID, e.g.: "X;#"
                    note: A URL field must be provided as "http://www.website.com, Name"
@@ -2561,7 +2561,7 @@ if (typeof jQuery === "function") {
 
       // different ways to add John and Tom into the table
       $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
-      $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID 
+      $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
     */
     add:function(items, setup) {
       // check if we need to queue it
@@ -3979,7 +3979,7 @@ if (typeof jQuery === "function") {
                      data=data.getElementsByTagName('User');
                      if (data.length===0)
                       fct.call(_this,"Error 'getUserInfo': nothing returned?!")
-                     else 
+                     else
                       fct.call(_this,{ID:data[0].getAttribute("ID"),Sid:data[0].getAttribute("Sid"),Name:data[0].getAttribute("Name"),LoginName:data[0].getAttribute("LoginName"),Email:data[0].getAttribute("Email"),Notes:data[0].getAttribute("Notes"),IsSiteAdmin:data[0].getAttribute("IsSiteAdmin"),IsDomainGroup:data[0].getAttribute("IsDomainGroup"),Flags:data[0].getAttribute("Flags")})
                    },
                    error:function(req, textStatus, errorThrown) {
@@ -4274,8 +4274,8 @@ if (typeof jQuery === "function") {
       @return {String} the equivalent string for the Date object passed
 
       @example
-        $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31 00:00:00"
-        $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"
+      $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31 00:00:00"
+      $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"
     */
     toSPDate:function(oDate, includeTime) {
       var pad = function(p_str){
@@ -4303,7 +4303,7 @@ if (typeof jQuery === "function") {
       @example
 
       $SP().toCurrency(1500000); // --> $1,500,000
-      $SP().toCurrency(1500000,2,''); // --> 1,500,000.00 
+      $SP().toCurrency(1500000,2,''); // --> 1,500,000.00
      */
     toCurrency:function(n,dec,sign) {
       n=Number(n);
@@ -4388,7 +4388,7 @@ if (typeof jQuery === "function") {
 
       @param {String|Array} [fields=""] A list of fields to get (e.g. "field1,other field,field2" or ["field1","other field","field2"]) and by default we take all fields ... ATTENTION if you have a field with "," then use only the Array as a parameter
       @param {Object} [setup] Options (see below)
-        @param {Boolean} [setup.mandatory=undefined] Set it to 'true' to look for the mandatory fields (the "false" value has no effect) 
+        @param {Boolean} [setup.mandatory=undefined] Set it to 'true' to look for the mandatory fields (the "false" value has no effect)
         @param {Boolean} [setup.cache=true] By default the form is scanned only once, but you can use {cache:false} to force the form to be rescanned
 
       @example
@@ -5598,8 +5598,8 @@ if (typeof jQuery === "function") {
         @param {Function} [options.callback] A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue
         @param {Function} [options.onload] The modal might be delayed as we need to load some Sharepoint JS files; the `onload` function is called once the modal is shown
         @param {Function} [options.onurlload] When we use the "url" parameter, this is triggered when the DOMContent of the iframe is loaded (if it's the same origin)
-        @param {String} [options.title] The title to give to the modal (if you use `wait:true` then it will be the main text that will appear)
-        @param {String} [options.message] This parameter is only use if there is `wait:true` and permits to define the subtitle message
+        @param {String} [options.title] The title to give to the modal (if you use `wait:true` then it will be the main text that will appear on 2013, and the modal title for 2010)
+        @param {String} [options.message] This parameter is only use if there is `wait:true` and permits to define the subtitle message for 2013, or the main message for 2010
         @param {String} [options.url] A string that contains the URL of the page that appears in the dialog. If both url and html are specified, url takes precedence. Either url or html must be specified.
         @param {Number} [options.x] An integer value that specifies the x-offset of the dialog. This value works like the CSS left value.
         @param {Number} [options.y] An integer value that specifies the y-offset of the dialog. This value works like the CSS top value.
@@ -5766,19 +5766,24 @@ if (typeof jQuery === "function") {
       @category modals
       @description Close the last modal dialog
 
-      @param {SP.UI.DialogResult|Object} [dialogResult] One of the enumeration values specifying the result of the modal dialog, or the modal object returned by $SP().getModalDialog()
+      @param {Object} [dialogResult] One of the enumeration values specifying the result of the modal dialog (SP.UI.DialogResult|), or the modal object returned by $SP().getModalDialog()
       @param {Object} [returnValue] The return value of the modal dialog
 
       @example
       // if the user use the cross to close the modal, then `dialogResult` equals to 0 in the callback
       // but you can trigger the close of the modal and pass anything you want
       $SP().showModalDialog({
+        id:"demo",
         title:"Hello World",
-        html:'<p>This is an example. Click one of the buttons.</p><p class="ms-alignCenter"><button onclick="$SP().closeModalDialog(\'Continue has been clicked\')">Continue</button></p>',
+        html:'&lt;p>This is an example. Click one of the buttons.&lt;/p>&lt;p class="ms-alignCenter">&lt;button onclick="$SP().closeModalDialog(\'Continue has been clicked\')">Continue&lt;/button>&lt;/p>',
         callback:function(res) {
           alert(res)
         }
       })
+
+      // or
+      var modal = $SP().getModalDialog('demo');
+      if (modal) $SP().closeModalDialog(modal);
      */
     closeModalDialog:function(dialogResult, returnValue) {
       var fct = function() {
@@ -5839,8 +5844,8 @@ if (typeof jQuery === "function") {
      * @category modals
      * @description Shortcut for SP.UI.ModalDialog.showWaitScreenWithNoClose()
      *
-     * @param {String} [title="Working on it..."] The main message with the loading spin
-     * @param {String} [subtitle=""] The subtitle
+     * @param {String} [title="Working on it..."] The main message with the loading spin for SP2013, or the modal window title for SP2010
+     * @param {String} [subtitle=""] The subtitle for SP2013, or the main message with the loading spin for SP2010
      * @param {Number} [height] The modal height
      * @param {Number} [width] The modal width
      */
