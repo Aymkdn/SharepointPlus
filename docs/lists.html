@@ -58,7 +58,7 @@
 
     <div class="span10"><h1>Methods</h1>
     <div class="member">
-      <h2><a href="#add" name="add" title="Direct link to the method 'add'">add</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2527">source code</a>)
+      <h2><a href="#add" name="add" title="Direct link to the method 'add'">add</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2548">source code</a>)
       <div>
         <div class="method well">add<span class="signature">(items, setup)</span></div>
           </div>
@@ -114,7 +114,7 @@ $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Repor
 
     
     <div class="member">
-      <h2><a href="#addAttachment" name="addAttachment" title="Direct link to the method 'addAttachment'">addAttachment</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1890">source code</a>)
+      <h2><a href="#addAttachment" name="addAttachment" title="Direct link to the method 'addAttachment'">addAttachment</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1911">source code</a>)
       <div>
         <div class="method well">addAttachment<span class="signature">(setup)</span></div>
           </div>
@@ -199,7 +199,7 @@ $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aym
 
     
     <div class="member">
-      <h2><a href="#get" name="get" title="Direct link to the method 'get'">get</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L826">source code</a>)
+      <h2><a href="#get" name="get" title="Direct link to the method 'get'">get</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L854">source code</a>)
       <div>
         <div class="method well">get<span class="signature">(setup, result)</span></div>
           </div>
@@ -213,6 +213,14 @@ $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aym
           </div>
           
 
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise|Deferred|Object</div><div class="span10">If Promise is supported, it will return a Promise object; or if not and we have jQuery it will return a Deferred; otherwise the current SharepointPlus object</div>
+            </div>
+          </div>
           
 
           
@@ -318,9 +326,9 @@ $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:1,paging:true,
   console.log("last ID : "+data[0].getAttribute("ID"));
 })
 // use `listItemCollectionPositionNext` to start from this index
-$SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1}, function(data, nextPageIndex) {
+$SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1}, function(data) {
   // get the next block
-  this.get{fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:nextPageIndex}, function(data, nextPageIndex) {
+  this.get{fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:data.NextPage}, function(data) {
     // here we have the 2nd block of data into `data`
   })
 })
@@ -503,7 +511,16 @@ $SP().list("Calendar",'http://intranet.dell.com/services/Educate/Toolbox/schedul
   useIndexForOrderBy:true
 }, function(d) {
   console.log(d.length)
-})</pre>
+})
+
+// Since Sharepoint v4.0 it returns a Promise/Deferred
+$SP().list("MyList").get({
+  fields:"Title"
+}).then(function(data) {
+  data.forEach(function(d) { console.log(d.getAttribute("Title")) })
+}, function(err) {
+  console.log("Error Found => ",err)
+});</pre>
           
           <hr>
         </div>
@@ -517,7 +534,7 @@ $SP().list("Calendar",'http://intranet.dell.com/services/Educate/Toolbox/schedul
 
     
     <div class="member">
-      <h2><a href="#getAttachment" name="getAttachment" title="Direct link to the method 'getAttachment'">getAttachment</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1938">source code</a>)
+      <h2><a href="#getAttachment" name="getAttachment" title="Direct link to the method 'getAttachment'">getAttachment</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1959">source code</a>)
       <div>
         <div class="method well">getAttachment<span class="signature">(itemID, result)</span></div>
           </div>
@@ -558,7 +575,7 @@ $SP().list("My List").getAttachment("98", function(data) {
 
     
     <div class="member">
-      <h2><a href="#getContentTypeInfo" name="getContentTypeInfo" title="Direct link to the method 'getContentTypeInfo'">getContentTypeInfo</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2068">source code</a>)
+      <h2><a href="#getContentTypeInfo" name="getContentTypeInfo" title="Direct link to the method 'getContentTypeInfo'">getContentTypeInfo</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2089">source code</a>)
       <div>
         <div class="method well">getContentTypeInfo<span class="signature">(contentType, options, function())</span></div>
           </div>
@@ -597,7 +614,7 @@ $SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0
 
     
     <div class="member">
-      <h2><a href="#getContentTypes" name="getContentTypes" title="Direct link to the method 'getContentTypes'">getContentTypes</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L1998">source code</a>)
+      <h2><a href="#getContentTypes" name="getContentTypes" title="Direct link to the method 'getContentTypes'">getContentTypes</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2019">source code</a>)
       <div>
         <div class="method well">getContentTypes<span class="signature">(options, function())</span></div>
           </div>
@@ -632,7 +649,7 @@ $SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0
 
     
     <div class="member">
-      <h2><a href="#getWorkflowID" name="getWorkflowID" title="Direct link to the method 'getWorkflowID'">getWorkflowID</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3299">source code</a>)
+      <h2><a href="#getWorkflowID" name="getWorkflowID" title="Direct link to the method 'getWorkflowID'">getWorkflowID</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3320">source code</a>)
       <div>
         <div class="method well">getWorkflowID<span class="signature">(setup)</span></div>
           </div>
@@ -667,7 +684,7 @@ $SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0
 
     
     <div class="member">
-      <h2><a href="#history" name="history" title="Direct link to the method 'history'">history</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2832">source code</a>)
+      <h2><a href="#history" name="history" title="Direct link to the method 'history'">history</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2853">source code</a>)
       <div>
         <div class="method well">history<span class="signature">(params, returnFct)</span></div>
           </div>
@@ -706,7 +723,7 @@ $SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0
 
     
     <div class="member">
-      <h2><a href="#info" name="info" title="Direct link to the method 'info'">info</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2194">source code</a>)
+      <h2><a href="#info" name="info" title="Direct link to the method 'info'">info</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2215">source code</a>)
       <div>
         <div class="method well">info<span class="signature">(function())</span></div>
           </div>
@@ -745,7 +762,7 @@ $SP().list("My list","http://intranet.site.com/dept/").info(function(fields) {
 
     
     <div class="member">
-      <h2><a href="#lists" name="lists" title="Direct link to the method 'lists'">lists</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2452">source code</a>)
+      <h2><a href="#lists" name="lists" title="Direct link to the method 'lists'">lists</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2473">source code</a>)
       <div>
         <div class="method well">lists<span class="signature">(setup, function())</span></div>
           </div>
@@ -780,7 +797,7 @@ $SP().list("My list","http://intranet.site.com/dept/").info(function(fields) {
 
     
     <div class="member">
-      <h2><a href="#moderate" name="moderate" title="Direct link to the method 'moderate'">moderate</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2882">source code</a>)
+      <h2><a href="#moderate" name="moderate" title="Direct link to the method 'moderate'">moderate</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2903">source code</a>)
       <div>
         <div class="method well">moderate<span class="signature">(approval, setup)</span></div>
           </div>
@@ -884,7 +901,7 @@ $SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and 
 
     
     <div class="member">
-      <h2><a href="#remove" name="remove" title="Direct link to the method 'remove'">remove</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3031">source code</a>)
+      <h2><a href="#remove" name="remove" title="Direct link to the method 'remove'">remove</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3052">source code</a>)
       <div>
         <div class="method well">remove<span class="signature">(itemsID, setup)</span></div>
           </div>
@@ -933,7 +950,7 @@ $SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared D
 
     
     <div class="member">
-      <h2><a href="#startWorkflow" name="startWorkflow" title="Direct link to the method 'startWorkflow'">startWorkflow</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3440">source code</a>)
+      <h2><a href="#startWorkflow" name="startWorkflow" title="Direct link to the method 'startWorkflow'">startWorkflow</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3461">source code</a>)
       <div>
         <div class="method well">startWorkflow<span class="signature">(setup)</span></div>
           </div>
@@ -975,7 +992,7 @@ $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Na
 
     
     <div class="member">
-      <h2><a href="#startWorkflow2013" name="startWorkflow2013" title="Direct link to the method 'startWorkflow2013'">startWorkflow2013</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3524">source code</a>)
+      <h2><a href="#startWorkflow2013" name="startWorkflow2013" title="Direct link to the method 'startWorkflow2013'">startWorkflow2013</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L3545">source code</a>)
       <div>
         <div class="method well">startWorkflow2013<span class="signature">(setup)</span></div>
           </div>
@@ -1017,7 +1034,7 @@ $SP().list("List Name").startWorkflow2013({ID:15, workflowName:"Workflow for Lis
 
     
     <div class="member">
-      <h2><a href="#update" name="update" title="Direct link to the method 'update'">update</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2677">source code</a>)
+      <h2><a href="#update" name="update" title="Direct link to the method 'update'">update</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2698">source code</a>)
       <div>
         <div class="method well">update<span class="signature">(items, setup)</span></div>
           </div>
@@ -1057,7 +1074,7 @@ $SP().list("List Name").update({ID:43, Title:"Ok"}, {error:function(items) {
 
     
     <div class="member">
-      <h2><a href="#view" name="view" title="Direct link to the method 'view'">view</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2284">source code</a>)
+      <h2><a href="#view" name="view" title="Direct link to the method 'view'">view</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2305">source code</a>)
       <div>
         <div class="method well">view<span class="signature">(viewID, function())</span></div>
           </div>
@@ -1097,7 +1114,7 @@ $SP().list("My List","http://my.sharepoint.com/my/site").view("My Beautiful View
 
     
     <div class="member">
-      <h2><a href="#views" name="views" title="Direct link to the method 'views'">views</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2381">source code</a>)
+      <h2><a href="#views" name="views" title="Direct link to the method 'views'">views</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-4.0.js#L2402">source code</a>)
       <div>
         <div class="method well">views<span class="signature">(options, cache, function())</span></div>
           </div>
@@ -1139,7 +1156,7 @@ $SP().list("My List","http://my.sharepoint.com/my/site").view("My Beautiful View
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://usejsdoc.org/">JSDoc 3</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">GPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc 3 on Mon, 10 Apr 2017 09:30:27 GMT</div>
+  <div>Automatically generated with JSDoc 3 on Mon, 10 Apr 2017 16:40:32 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 <script>

@@ -147,7 +147,23 @@ $SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate
 </pre>
 
         <h4>Promise</h4>
-        <p>SharepointPlus is not yet Promise-compatible, however you can use, for example, <a href="http://api.jquery.com/category/deferred-object/">jQuery.Deferred</a>. Find below some examples:</p>
+        <p>SharepointPlus is partially compatible with Promise. Check the function's documentation to verify before using it.</p>
+        <p>Example:</p>
+<pre class="prettyprint lang-js">
+$SP().list("Audit").get({
+  fields:"ID",
+  view:"All Items",
+  paging:true,
+  rowlimit:1000,
+  progress:function(n) { console.log(n+" items already loaded...") }
+}).then(function(data) {
+  data.forEach(function(d) { console.log(d.getAttribute("ID")) })
+}, function(err) {
+  console.log("ERR => ",err)
+})
+</pre>
+        <p><strong>Attention</strong>, because Promise is <a href="http://caniuse.com/#search=promise">not available on all browsers</a>, you'll need to either use <a href="https://github.com/taylorhakes/promise-polyfill">a polyfill</a> for old browsers, or to use jQuery... or to use the normal callback system!</p>
+        <p>Waiting for SharepointPlus to be fully Promise-compatible, you may want to use the <a href="http://api.jquery.com/category/deferred-object/">jQuery.Deferred</a>. Find below an example about jQuery.Deferred:</p>
 <pre class="prettyprint lang-js">
 // Call two lists in the same time before doing some stuff with the result
 $.when(
@@ -220,7 +236,7 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://usejsdoc.org/">JSDoc 3</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">GPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc 3 on Mon, 10 Apr 2017 09:30:27 GMT</div>
+  <div>Automatically generated with JSDoc 3 on Mon, 10 Apr 2017 16:40:32 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 <script>

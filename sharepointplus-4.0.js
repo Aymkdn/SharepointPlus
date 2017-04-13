@@ -105,35 +105,41 @@ if(!String.prototype.trim) {
  */
 var SPArrayChunk=function(b,e){var d=[];for(var c=0,a=b.length;c<a;c+=e){d.push(b.slice(c,c+e))}return d}
 
+/**
+ * @name SPExtend
+ * @category utils
+ * @function
+ * @description It will clone an object (see )
+ * @param {Boolean} [deep=false] If we want a deep clone
+ * @param {Object} objectDestination The object that will be extended
+ * @param {Object} objectSource The object the copy
+ */
+var SPExtend=function(){var r,t,o,n,e=arguments[0]||{},f=1,i=arguments.length,u=!1,y=function(r){if(null===r||"object"!=typeof r||r.nodeType||null!==r&&r===r.window)return!1;try{if(r.constructor&&!this.hasOwnProperty.call(r.constructor.prototype,"isPrototypeOf"))return!1}catch(t){return!1}return!0};for("boolean"==typeof e&&(u=e,e=arguments[f]||{},f++),"object"!=typeof e&&"function"!=typeof e&&(e={}),!1;i>f;f+=1)if(null!==(r=arguments[f]))for(t in r)e!==r[t]&&(u&&r[t]&&(y(r[t])||(o=Array.isArray(r[t])))?(o?(o=!1,n=e[t]&&Array.isArray(e[t])?e[t]:[]):n=e[t]&&y(e[t])?e[t]:{},e[t]=SPExtend(u,n,r[t])):void 0!==r[t]&&(e[t]=r[t]));return e}
+
 // Global
-_SP_APPROVED=0;
-_SP_REJECTED=1;
-_SP_PENDING=2;
-_SP_DRAFT=3;
-_SP_SCHEDULED=4;
-_SP_CACHE_FORMFIELDS=null;
-_SP_CACHE_CONTENTTYPES=[];
-_SP_CACHE_CONTENTTYPE=[];
-_SP_CACHE_SAVEDVIEW=[];
-_SP_CACHE_SAVEDVIEWS=[];
-_SP_CACHE_SAVEDLISTS=void 0;
-_SP_CACHE_USERGROUPS=[]
-_SP_CACHE_GROUPMEMBERS=[];
-_SP_CACHE_DISTRIBUTIONLISTS=[];
-_SP_CACHE_REGIONALSETTINGS=void 0;
-_SP_CACHE_DATEFORMAT=void 0;
-_SP_ADD_PROGRESSVAR={};
-_SP_UPDATE_PROGRESSVAR={};
-_SP_MODERATE_PROGRESSVAR={};
-_SP_REMOVE_PROGRESSVAR={};
-_SP_BASEURL=void 0;
-_SP_NOTIFY_READY=false;
-_SP_NOTIFY_QUEUE=[];
-_SP_NOTIFY=[];
-_SP_PLUGINS={};
-_SP_MODALDIALOG_LOADED=false;
-_SP_MAXWHERE_ONLOOKUP=30;
-_SP_ISBROWSER=(new Function("try {return this===window;}catch(e){ return false;}"))();
+var _SP_CACHE_FORMFIELDS=null;
+var _SP_CACHE_CONTENTTYPES=[];
+var _SP_CACHE_CONTENTTYPE=[];
+var _SP_CACHE_SAVEDVIEW=[];
+var _SP_CACHE_SAVEDVIEWS=[];
+var _SP_CACHE_SAVEDLISTS=void 0;
+var _SP_CACHE_USERGROUPS=[]
+var _SP_CACHE_GROUPMEMBERS=[];
+var _SP_CACHE_DISTRIBUTIONLISTS=[];
+var _SP_CACHE_REGIONALSETTINGS=void 0;
+var _SP_CACHE_DATEFORMAT=void 0;
+var _SP_ADD_PROGRESSVAR={};
+var _SP_UPDATE_PROGRESSVAR={};
+var _SP_MODERATE_PROGRESSVAR={};
+var _SP_REMOVE_PROGRESSVAR={};
+var _SP_BASEURL=void 0;
+var _SP_NOTIFY_READY=false;
+var _SP_NOTIFY_QUEUE=[];
+var _SP_NOTIFY=[];
+var _SP_PLUGINS={};
+var _SP_MODALDIALOG_LOADED=false;
+var _SP_MAXWHERE_ONLOOKUP=30;
+var _SP_ISBROWSER=(new Function("try {return this===window;}catch(e){ return false;}"))();
 
 // for each select of lookup with more than 20 values, for IE only
 // see https://bdequaasteniet.wordpress.com/2013/12/03/getting-rid-of-sharepoint-complex-dropdowns/
@@ -158,13 +164,13 @@ if (typeof jQuery === "function") {
 
     // when the select changes then we need to put the selected value...
     $("#" + $input.attr("id") + "_Lookup").on('change', function() {
-        var $input = $('#'+$(this).attr("id").slice(0,-7));
-        var $optHid = $("#"+$input.attr("optHid"));
-        var val = $(this).val();
-        // set the optHid value with the selected one
-        $optHid.val(val);
-        // and save the selected text to the original input (only if the value is not equal to "0" (None))
-        $input.val($(this).find("option[value='" + (val !== "0" ? val : "") + "']").text());
+      var $input = $('#'+$(this).attr("id").slice(0,-7));
+      var $optHid = $("#"+$input.attr("optHid"));
+      var val = $(this).val();
+      // set the optHid value with the selected one
+      $optHid.val(val);
+      // and save the selected text to the original input (only if the value is not equal to "0" (None))
+      $input.val($(this).find("option[value='" + (val !== "0" ? val : "") + "']").text());
     }).trigger("change");
   })
 }
@@ -181,14 +187,14 @@ if (typeof jQuery === "function") {
       var caseTest = _caseTest;
       do {
         switch (caseTest) {
-          case 0: dest[i]=fn(source[i]); i--;
-          case 7: dest[i]=fn(source[i]); i--;
-          case 6: dest[i]=fn(source[i]); i--;
-          case 5: dest[i]=fn(source[i]); i--;
-          case 4: dest[i]=fn(source[i]); i--;
-          case 3: dest[i]=fn(source[i]); i--;
-          case 2: dest[i]=fn(source[i]); i--;
-          case 1: dest[i]=fn(source[i]); i--;
+          case 0: dest[i]=fn(source[i]); i--; // eslint-disable-line
+          case 7: dest[i]=fn(source[i]); i--; // eslint-disable-line
+          case 6: dest[i]=fn(source[i]); i--; // eslint-disable-line
+          case 5: dest[i]=fn(source[i]); i--; // eslint-disable-line
+          case 4: dest[i]=fn(source[i]); i--; // eslint-disable-line
+          case 3: dest[i]=fn(source[i]); i--; // eslint-disable-line
+          case 2: dest[i]=fn(source[i]); i--; // eslint-disable-line
+          case 1: dest[i]=fn(source[i]); i--; // eslint-disable-line
         }
         caseTest = 0;
       } while (--n > 0);
@@ -213,6 +219,7 @@ if (typeof jQuery === "function") {
     module_sprequest:null,
     credentialOptions:null,
     proxyweb:null,
+    hasPromise:(typeof Promise==="function"||typeof jQuery==="function"),
     /**
       @name $SP().getVersion
       @function
@@ -231,6 +238,7 @@ if (typeof jQuery === "function") {
       @param {String} toDecode It's the Base 64 string to decode
       @return {String} The decoded string
     */
+   // eslint-disable-next-line
     decode_b64:function(d,b,c,u,r,q,x){b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";for(r=q=x='';c=d.charAt(x++);~c&&(u=q%4?u*64+c:c,q++%4)?r+=String.fromCharCode(255&u>>(-2*q&6)):0)c=b.indexOf(c);return r},
     /**
       @name $SP().encode_b64
@@ -247,18 +255,19 @@ if (typeof jQuery === "function") {
       @description Ajax system based on jQuery parameters
     */
     ajax:function(settings) {
-      var _this=this;
+      var _this=this, xhr, headers;
       if (typeof jQuery !== "undefined" && jQuery.ajax) {
-        fct = jQuery.ajax(settings);
+        jQuery.ajax(settings);
       } else {
-        var headers = {'Content-Type': settings.contentType || "text/xml; charset=utf-8"};
+        headers = {'Content-Type': settings.contentType || "text/xml; charset=utf-8"};
         // check if it's NodeJS
         if (_SP_ISBROWSER) {
           if (typeof nanoajax !== "undefined") {
             if (typeof settings.beforeSend === "function") {
-              var xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
+              xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
               settings.beforeSend(xhr);
             }
+            // eslint-disable-next-line
             nanoajax.ajax({
               url: settings.url,
               method: settings.method || "POST",
@@ -289,7 +298,7 @@ if (typeof jQuery === "function") {
           if (headers['Content-Type'].indexOf('xml') > -1) headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
           if (!settings.method || settings.method.toLowerCase() === "POST") headers['Content-Length'] = Buffer.byteLength(settings.data);
           if (typeof settings.beforeSend === "function") {
-            var xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
+            xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
             settings.beforeSend(xhr);
           }
           // add User Agent
@@ -399,47 +408,53 @@ if (typeof jQuery === "function") {
       @name $SP()._getURL
       @function
 
-      @param {Boolean} [async=true] When calling $SP().getURL() will don't want an async request
       @description (internal use only) Store the current URL website into this.url
+      @param {Boolean} [async=true] When calling $SP().getURL() will don't want an async request (deprecated on recent browsers)
+      @return {Promise}
      */
     _getURL:function(async) {
-      async = (async === false ? false : true);
-      if (typeof this.url === "undefined") {
-        // search for the local base URL
-        if (typeof _SP_BASEURL !== "undefined") this.url=_SP_BASEURL;
-        else {
-          // try to build it
-          if (typeof L_Menu_BaseUrl!=="undefined") this.url=_SP_BASEURL=L_Menu_BaseUrl;
+      var _this=this;
+      return _this._promise(function(prom_resolve) {
+        async = (async === false ? false : true);
+        if (!prom_resolve) prom_resolve=function() { _this.needQueue=false }; // if we don't use Promise
+        if (typeof _this.url === "undefined") {
+          // search for the local base URL
+          if (typeof _SP_BASEURL !== "undefined") _this.url=_SP_BASEURL;
           else {
-            if (typeof _spPageContextInfo !== "undefined" && typeof _spPageContextInfo.webServerRelativeUrl !== "undefined") this.url=_SP_BASEURL=_spPageContextInfo.webServerRelativeUrl;
+            // try to build it
+            if (typeof L_Menu_BaseUrl!=="undefined") _this.url=_SP_BASEURL=L_Menu_BaseUrl; // eslint-disable-line
             else {
-              // we'll use the Webs.asmx service to find the base URL
-              this.needQueue=true;
-              var _this=this;
-              var body=_this._buildBodyForSOAP("WebUrlFromPageUrl", "<pageUrl>"+window.location.href.replace(/&/g,"&amp;")+"</pageUrl>");
-              var url = "/_vti_bin/Webs.asmx";
-              _this.ajax({
-                type: "POST",
-                cache: false,
-                async: async,
-                url: url,
-                data: body,
-                contentType: "text/xml; charset=utf-8",
-                dataType: "xml",
-                success:function(data) {
-                  // we want to use myElem to change the getAttribute function
-                  var result=data.getElementsByTagName('WebUrlFromPageUrlResult');
-                  if (result.length) {
-                    _this.url = _SP_BASEURL = result[0].firstChild.nodeValue.toLowerCase();
+              if (typeof _spPageContextInfo !== "undefined" && typeof _spPageContextInfo.webServerRelativeUrl !== "undefined") _this.url=_SP_BASEURL=_spPageContextInfo.webServerRelativeUrl; // eslint-disable-line
+              else {
+                // we'll use the Webs.asmx service to find the base URL
+                _this.needQueue=true;
+                var body=_this._buildBodyForSOAP("WebUrlFromPageUrl", "<pageUrl>"+window.location.href.replace(/&/g,"&amp;")+"</pageUrl>");
+                var url = "/_vti_bin/Webs.asmx";
+                _this.ajax({
+                  type: "POST",
+                  cache: false,
+                  async: async,
+                  url: url,
+                  data: body,
+                  contentType: "text/xml; charset=utf-8",
+                  dataType: "xml",
+                  success:function(data) {
+                    // we want to use myElem to change the getAttribute function
+                    var result=data.getElementsByTagName('WebUrlFromPageUrlResult');
+                    if (result.length) {
+                      _this.url = _SP_BASEURL = result[0].firstChild.nodeValue.toLowerCase();
+                    }
+                    //_this.needQueue=false;
+                    prom_resolve();
                   }
-                  _this.needQueue=false;
-                }
-              });
+                });
+                return;
+              }
             }
           }
         }
-      }
-      return this;
+        prom_resolve();
+      })
     },
     /**
       @name $SP().getURL
@@ -466,6 +481,78 @@ if (typeof jQuery === "function") {
     _buildBodyForSOAP:function(methodName, bodyContent, xmlns) {
       xmlns = xmlns || "http://schemas.microsoft.com/sharepoint/soap/";
       return '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><'+methodName+' xmlns="'+xmlns+'">' + bodyContent + '</'+methodName+'></soap:Body></soap:Envelope>';
+    },
+    /**
+     * Permits to directly deal with a WebService (similar to SPServices http://sympmarc.github.io/SPServices/core/web-services.html)
+     * @param  {Object} options
+     *   @param {String} operation The method name to use (e.g. UpdateList, GetList, ....)
+     *   @param {String} service The name of the service (Lists, Versions, PublishedLinksService, ...) it's the ".asmx" name without the extension
+     *   @param {Object} [properties={}] The properties to call
+     *   @param {String} [webURL=current website] The URL of the website
+     *   @param {Function} [after=function(response){}] A callback function
+     * @return {Promise}
+     *
+     * @example
+     * $SP().webService({ // http://sympmarc.github.io/SPServices/core/web-services/Lists/UpdateList.html
+     *   service:"Lists",
+     *   operation:"Updatelist",
+     *   webURL:"http://what.ever/"
+     *   properties:{
+     *     listName:"Test",
+     *     listProperties:"...",
+     *     newFields:"...",
+     *     updateFields:"...",
+     *     deleteFields:"...",
+     *     listVersion:"..."
+     *   }
+     * }).then(function(response) {
+     *   // do something with the response
+     * })
+     */
+    webService:function(options) {
+      var _this=this;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        var bodyContent="", prop;
+        if (!options.service) throw "Error 'webService': you have to provide the 'service'";
+        if (!options.operation) throw "Error 'webService': you have to provide the 'operation'";
+        options.webURL = options.webURL || _this.url;
+        // if we didn't define the url in the parameters, then we need to find it
+        if (!options.webURL) {
+          if (_this.hasPromise) {
+            _this._getURL().then(function() {
+              _this.webService(options).then(function(res) {
+                prom_resolve(res);
+              })
+            });
+          } else {
+            _this._getURL();
+            _this._addInQueue(arguments);
+          }
+          return;
+        }
+        var useCallback=false;
+        if (typeof options.after == "function") useCallback=true;
+        else options.after=function(){};
+        options.properties = options.properties || {};
+        for (prop in options.properties) {
+          if (options.properties.hasOwnProperty(prop)) {
+            bodyContent += '<'+prop+'>'+options.properties[prop]+'</'+prop+'>'
+          }
+        }
+        bodyContent = _this._buildBodyForSOAP(options.operation, bodyContent);
+        _this.ajax({
+          type: "POST",
+          url: options.webURL+"/_vti_bin/"+options.service+".asmx",
+          data: bodyContent,
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/'+options.operation); },
+          contentType: "text/xml; charset=utf-8",
+          dataType: "xml",
+          success:function(data) {
+            if (useCallback) options.after(data);
+            else prom_resolve(data)
+          }
+        });
+      })
     },
     /**
       @ignore
@@ -550,216 +637,220 @@ if (typeof jQuery === "function") {
         var letter = queryString.charAt(i);
         switch (letter) {
           case "(": // find the deepest (
-                    var start = i;
-                    var openedApos=false;
-                    while (queryString.charAt(i) == "(" && i < limitMax) { i++; parenthesis.open++; }
-                    // find the corresponding )
-                    while (parenthesis.open>0 && i < limitMax) {
-                      i++;
-                      // if there is a ' opened then ignore the ) until the next '
-                      var charAtI = queryString.charAt(i);
-                      if (charAtI=="\\") ignoreNextChar=true; // when we have a backslash \then ignore the next char
-                      else if (!ignoreNextChar && (charAtI=="'" || charAtI=='"')) openedApos=!openedApos;
-                      else if (!ignoreNextChar && charAtI==")" && !openedApos) parenthesis.open--;
-                      else ignoreNextChar=false;
-                    }
+            var start = i;
+            var openedApos=false;
+            while (queryString.charAt(i) == "(" && i < limitMax) { i++; parenthesis.open++; }
+            // find the corresponding )
+            while (parenthesis.open>0 && i < limitMax) {
+              i++;
+              // if there is a ' opened then ignore the ) until the next '
+              var charAtI = queryString.charAt(i);
+              if (charAtI=="\\") ignoreNextChar=true; // when we have a backslash \then ignore the next char
+              else if (!ignoreNextChar && (charAtI=="'" || charAtI=='"')) openedApos=!openedApos;
+              else if (!ignoreNextChar && charAtI==")" && !openedApos) parenthesis.open--;
+              else ignoreNextChar=false;
+            }
 
-                    var lastIndex = factory.length-1;
+            var lastIndex = factory.length-1;
 
-                    // concat with the first index
-                    if (lastIndex>=0) {
-                      if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
-                      factory[0] += this.parse(queryString.substring(start+1, i));
-                      if (closeOperator != "") factory[0] += "</"+closeOperator+">";
-                      closeOperator = "";
-                    } else factory[0] = this.parse(queryString.substring(start+1, i));
-                    break;
+            // concat with the first index
+            if (lastIndex>=0) {
+              if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+              factory[0] += this.parse(queryString.substring(start+1, i));
+              if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+              closeOperator = "";
+            } else factory[0] = this.parse(queryString.substring(start+1, i));
+            break;
           case "[": // for operator IN
-                    var start = i;
-                    var openedApos=false;
-                    // find the corresponding ]
-                    while (i < limitMax) {
-                      i++;
-                      // if there is a ' opened then ignore the ) until the next '
-                      var charAtI = queryString.charAt(i);
-                      if (charAtI=="\\") ignoreNextChar=true; // when we have a backslash \then ignore the next char
-                      else if (!ignoreNextChar && (charAtI=="'" || charAtI=='"')) openedApos=!openedApos;
-                      else if (!ignoreNextChar && !openedApos && charAtI=="]") break;
-                      else ignoreNextChar=false;
-                    }
+            var start = i; // eslint-disable-line
+            var openedApos=false; // eslint-disable-line
+            // find the corresponding ]
+            while (i < limitMax) {
+              i++;
+              // if there is a ' opened then ignore the ) until the next '
+              var charAtI = queryString.charAt(i); // eslint-disable-line
+              if (charAtI=="\\") ignoreNextChar=true; // when we have a backslash \then ignore the next char
+              else if (!ignoreNextChar && (charAtI=="'" || charAtI=='"')) openedApos=!openedApos;
+              else if (!ignoreNextChar && !openedApos && charAtI=="]") break;
+              else ignoreNextChar=false;
+            }
 
-                    var lastIndex = factory.length-1;
-                    var arrIn = JSON.parse('[' + queryString.substring(start+1, i) + ']');
-                    // we want to detect the type for the values
-                    var typeIn = "Text";
-                    switch(typeof arrIn[0]) {
-                      case "number": typeIn = "Number"; break;
-                      default: {
-                        // check if it starts with ~ and then it's a number -- lookupid
-                        if (arrIn[0].charAt(0) === "~" && typeof (arrIn[0].slice(1)*1) === "number") {
-                          typeIn = "Integer";
-                          // change all array values
-                          SPArrayForEach(arrIn, function(e,i) { arrIn[i]=e.slice(1) })
-                        }
-                      }
-                    }
-                    factory[lastIndex] += '<FieldRef Name="'+lastField+'" '+(typeIn==="Integer"?'LookupId="True"':'')+' /><Values><Value Type="'+typeIn+'">' + arrIn.join('</Value><Value Type="'+typeIn+'">') + '</Value></Values>' + closeTag;
-                    lastField = "";
-                    closeTag = "";
-                    // concat with the first index
-                    if (lastIndex>0) {
-                      if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
-                      factory[0] += factory[lastIndex];
-                      if (closeOperator != "") factory[0] += "</"+closeOperator+">";
-                      delete(factory[lastIndex]);
-                      closeOperator = "";
-                    }
-                    break;
+            var lastIndex = factory.length-1; // eslint-disable-line
+            var arrIn = JSON.parse('[' + queryString.substring(start+1, i) + ']');
+            // we want to detect the type for the values
+            var typeIn = "Text";
+            switch(typeof arrIn[0]) {
+              case "number": typeIn = "Number"; break;
+              default: {
+                // check if it starts with ~ and then it's a number -- lookupid
+                if (arrIn[0].charAt(0) === "~" && typeof (arrIn[0].slice(1)*1) === "number") {
+                  typeIn = "Integer";
+                  // change all array values
+                  SPArrayForEach(arrIn, function(e,i) { arrIn[i]=e.slice(1) })
+                }
+              }
+            }
+            factory[lastIndex] += '<FieldRef Name="'+lastField+'" '+(typeIn==="Integer"?'LookupId="True"':'')+' /><Values><Value Type="'+typeIn+'">' + arrIn.join('</Value><Value Type="'+typeIn+'">') + '</Value></Values>' + closeTag;
+            lastField = "";
+            closeTag = "";
+            // concat with the first index
+            if (lastIndex>0) {
+              if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+              factory[0] += factory[lastIndex];
+              if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+              delete(factory[lastIndex]);
+              closeOperator = "";
+            }
+            break;
           case ">":  // look at the operand
-          case "<": i++;
-                    if (queryString.charAt(i) == "=") { // >= or <=
-                      factory.push("<"+(letter==">"?"G":"L")+"eq>");
-                      closeTag = "</"+(letter==">"?"G":"L")+"eq>";
-                    } else if (letter == "<" && queryString.charAt(i) == ">") { // <>
-                      factory.push("<Neq>");
-                      closeTag = "</Neq>";
-                    } else {
-                      i--;
-                      factory.push("<"+(letter==">"?"G":"L")+"t>");
-                      closeTag = "</"+(letter==">"?"G":"L")+"t>";
-                    }
-                    break;
+          case "<":
+            i++;
+            if (queryString.charAt(i) == "=") { // >= or <=
+              factory.push("<"+(letter==">"?"G":"L")+"eq>");
+              closeTag = "</"+(letter==">"?"G":"L")+"eq>";
+            } else if (letter == "<" && queryString.charAt(i) == ">") { // <>
+              factory.push("<Neq>");
+              closeTag = "</Neq>";
+            } else {
+              i--;
+              factory.push("<"+(letter==">"?"G":"L")+"t>");
+              closeTag = "</"+(letter==">"?"G":"L")+"t>";
+            }
+            break;
           case "~": // special operator '~=' for People
-                    if (queryString.charAt(i+1) == "=") lookupId=true
-                    break;
-          case "=": factory.push("<Eq>");
-                    closeTag = "</Eq>";
-                    break;
+            if (queryString.charAt(i+1) == "=") lookupId=true
+            break;
+          case "=":
+            factory.push("<Eq>");
+            closeTag = "</Eq>";
+            break;
           case " ": // check if it's AND or OR
-                    if (queryString.substring(i,i+5).toUpperCase() == " AND ") {
-                      // add the open tag in the array
-                      closeOperator = "And";
-                      i+=4;
-                    }
-                    else if (queryString.substring(i,i+4).toUpperCase() == " OR ") {
-                      // add the open tag in the array
-                      closeOperator = "Or";
-                      i+=3;
-                    }
-                    else if (queryString.slice(i,i+6).toUpperCase() == " LIKE ") {
-                      i+=5;
-                      factory.push("<Contains>");
-                      closeTag = "</Contains>";
-                    }
-                    else if (queryString.slice(i,i+4).toUpperCase() == " IN ") {
-                      i+=3;
-                      factory.push("<In>");
-                      closeTag = "</In>";
-                    }
-                    else lastField += letter;
-                    break;
+            if (queryString.substring(i,i+5).toUpperCase() == " AND ") {
+              // add the open tag in the array
+              closeOperator = "And";
+              i+=4;
+            }
+            else if (queryString.substring(i,i+4).toUpperCase() == " OR ") {
+              // add the open tag in the array
+              closeOperator = "Or";
+              i+=3;
+            }
+            else if (queryString.slice(i,i+6).toUpperCase() == " LIKE ") {
+              i+=5;
+              factory.push("<Contains>");
+              closeTag = "</Contains>";
+            }
+            else if (queryString.slice(i,i+4).toUpperCase() == " IN ") {
+              i+=3;
+              factory.push("<In>");
+              closeTag = "</In>";
+            }
+            else lastField += letter;
+            break;
           case '"': // look now for the next "
-          case "'": var apos = letter;
-                    var word = "", other="";
-                    while ((letter = queryString.charAt(++i)) != apos && i < limitMax) {
-                      if (letter == "\\") letter = queryString.charAt(++i);
-                      word+=letter;
-                    }
-                    lastIndex = factory.length-1;
-                    factory[lastIndex] += '<FieldRef Name="'+lastField+'" '+(word=="[Me]"?'LookupId="True" ':'')+'/>';
-                    lastField = "";
-                    var type = "Text"; //(isNaN(word) ? "Text" : "Number"); // check the type
-                    // check automatically if it's a DateTime
-                    if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})?/.test(word)) {
-                      type="DateTime";
-                      // check if we want to evaluate the TIME also
-                      if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})/.test(word)) other=' IncludeTimeValue="TRUE"';
-                    }
-                    if (escapeChar) word = this._cleanString(word);
-                    // special words ([Today] and [Me])
-                    if (word === "[Me]") {
-                       word = '<UserID Type="Integer" />';
-                       type = "Integer";
-                    } else if (word.slice(0,6) == "[Today") {
-                      type="DateTime";
-                      // find the offset if defined
-                      word = '<Today OffsetDays="'+(1*word.slice(6,-1))+'" />';
-                    }
+          case "'":
+            var apos = letter;
+            var word = "", other="";
+            while ((letter = queryString.charAt(++i)) != apos && i < limitMax) {
+              if (letter == "\\") letter = queryString.charAt(++i);
+              word+=letter;
+            }
+            lastIndex = factory.length-1;
+            factory[lastIndex] += '<FieldRef Name="'+lastField+'" '+(word=="[Me]"?'LookupId="True" ':'')+'/>';
+            lastField = "";
+            var type = "Text"; //(isNaN(word) ? "Text" : "Number"); // check the type
+            // check automatically if it's a DateTime
+            if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})?/.test(word)) {
+              type="DateTime";
+              // check if we want to evaluate the TIME also
+              if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})/.test(word)) other=' IncludeTimeValue="TRUE"';
+            }
+            if (escapeChar) word = this._cleanString(word);
+            // special words ([Today] and [Me])
+            if (word === "[Me]") {
+              word = '<UserID Type="Integer" />';
+              type = "Integer";
+            } else if (word.slice(0,6) == "[Today") {
+              type="DateTime";
+              // find the offset if defined
+              word = '<Today OffsetDays="'+(1*word.slice(6,-1))+'" />';
+            }
 
-                    factory[lastIndex] += '<Value Type="'+type+'"'+other+'>'+word+'</Value>';
-                    factory[lastIndex] += closeTag;
-                    closeTag = "";
-                    // concat with the first index
-                    if (lastIndex>0) {
-                      if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
-                      factory[0] += factory[lastIndex];
-                      if (closeOperator != "") factory[0] += "</"+closeOperator+">";
-                      delete(factory[lastIndex]);
-                      closeOperator = "";
-                    }
-                    break;
+            factory[lastIndex] += '<Value Type="'+type+'"'+other+'>'+word+'</Value>';
+            factory[lastIndex] += closeTag;
+            closeTag = "";
+            // concat with the first index
+            if (lastIndex>0) {
+              if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+              factory[0] += factory[lastIndex];
+              if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+              delete(factory[lastIndex]);
+              closeOperator = "";
+            }
+            break;
           case "0": case "1": case "2": case "3": case "4": case "5": case "6": case "7": case "8": case "9":
-                    if (closeTag != "") { // it's the value
-                      var value = letter;
-                      while (!isNaN(letter = queryString.charAt(++i)) && i < limitMax) value+=""+letter;
-                      lastIndex = factory.length-1;
-                      factory[lastIndex] += '<FieldRef Name="'+lastField+'"'+(lookupId?' LookupId="True"':'')+' />';
-                      lastField = "";
-                      factory[lastIndex] += '<Value Type="'+(lookupId?"Integer":"Number")+'">'+value.replace(/ $/,"")+'</Value>';
-                      factory[lastIndex] += closeTag;
-                      closeTag = "";
-                      // concat with the first index
-                      if (lastIndex>0) {
-                        if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
-                        factory[0] += factory[lastIndex];
-                        if (closeOperator != "") factory[0] += "</"+closeOperator+">";
-                        delete(factory[lastIndex]);
-                        closeOperator = "";
-                      }
-                      i-=2;
-                      break;
-                    }
-          default:  if (closeTag == "") lastField += letter;
-                    else if (letter.toLowerCase() == "n" && queryString.substring(i,i+4).toLowerCase() == "null") { // if we have NULL as the value
-                      lastIndex = factory.length-1;
-                      if (closeTag == "</Neq>") { // <>
-                        factory[lastIndex] = "<IsNotNull>";
-                        closeTag = "</IsNotNull>";
-                      } else if (closeTag == "</Eq>") { // =
-                        factory[lastIndex] = "<IsNull>";
-                        closeTag = "</IsNull>";
-                      }
-                      i+=3;
-                      factory[lastIndex] += '<FieldRef Name="'+lastField+'" />';
-                      lastField = "";
-                      factory[lastIndex] += closeTag;
-                      closeTag = "";
-                      // concat with the first index
-                      if (lastIndex>0) {
-                        if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
-                        factory[0] += factory[lastIndex];
-                        if (closeOperator != "") factory[0] += "</"+closeOperator+">";
-                        delete(factory[lastIndex]);
-                        closeOperator = "";
-                      }
-                    }
-                    else if ((letter.toLowerCase() === "t" && queryString.substring(i,i+4).toLowerCase() === "true") || (letter.toLowerCase() === "f" && queryString.substring(i,i+5).toLowerCase() === "false")) { // when we have TRUE/FALSE as the value
-                      lastIndex = factory.length-1;
-                      i+=3;
-                      if (letter.toLowerCase() === "f") i++;
-                      factory[lastIndex] += '<FieldRef Name="'+lastField+'" /><Value Type="Boolean">'+(letter.toLowerCase() === "t"?1:0)+'</Value>';
-                      lastField = "";
-                      factory[lastIndex] += closeTag;
-                      closeTag = "";
-                      // concat with the first index
-                      if (lastIndex>0) {
-                        if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
-                        factory[0] += factory[lastIndex];
-                        if (closeOperator != "") factory[0] += "</"+closeOperator+">";
-                        delete(factory[lastIndex]);
-                        closeOperator = "";
-                      }
-                    }
+            if (closeTag != "") { // it's the value
+              var value = letter;
+              while (!isNaN(letter = queryString.charAt(++i)) && i < limitMax) value+=""+letter;
+              lastIndex = factory.length-1;
+              factory[lastIndex] += '<FieldRef Name="'+lastField+'"'+(lookupId?' LookupId="True"':'')+' />';
+              lastField = "";
+              factory[lastIndex] += '<Value Type="'+(lookupId?"Integer":"Number")+'">'+value.replace(/ $/,"")+'</Value>';
+              factory[lastIndex] += closeTag;
+              closeTag = "";
+              // concat with the first index
+              if (lastIndex>0) {
+                if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+                factory[0] += factory[lastIndex];
+                if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+                delete(factory[lastIndex]);
+                closeOperator = "";
+              }
+              i-=2;
+              break;
+            }
+          default: // eslint-disable-line
+            if (closeTag == "") lastField += letter;
+            else if (letter.toLowerCase() == "n" && queryString.substring(i,i+4).toLowerCase() == "null") { // if we have NULL as the value
+              lastIndex = factory.length-1;
+              if (closeTag == "</Neq>") { // <>
+                factory[lastIndex] = "<IsNotNull>";
+                closeTag = "</IsNotNull>";
+              } else if (closeTag == "</Eq>") { // =
+                factory[lastIndex] = "<IsNull>";
+                closeTag = "</IsNull>";
+              }
+              i+=3;
+              factory[lastIndex] += '<FieldRef Name="'+lastField+'" />';
+              lastField = "";
+              factory[lastIndex] += closeTag;
+              closeTag = "";
+              // concat with the first index
+              if (lastIndex>0) {
+                if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+                factory[0] += factory[lastIndex];
+                if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+                delete(factory[lastIndex]);
+                closeOperator = "";
+              }
+            }
+            else if ((letter.toLowerCase() === "t" && queryString.substring(i,i+4).toLowerCase() === "true") || (letter.toLowerCase() === "f" && queryString.substring(i,i+5).toLowerCase() === "false")) { // when we have TRUE/FALSE as the value
+              lastIndex = factory.length-1;
+              i+=3;
+              if (letter.toLowerCase() === "f") i++;
+              factory[lastIndex] += '<FieldRef Name="'+lastField+'" /><Value Type="Boolean">'+(letter.toLowerCase() === "t"?1:0)+'</Value>';
+              lastField = "";
+              factory[lastIndex] += closeTag;
+              closeTag = "";
+              // concat with the first index
+              if (lastIndex>0) {
+                if (closeOperator != "") factory[0] = "<"+closeOperator+">"+factory[0];
+                factory[0] += factory[lastIndex];
+                if (closeOperator != "") factory[0] += "</"+closeOperator+">";
+                delete(factory[lastIndex]);
+                closeOperator = "";
+              }
+            }
         }
       }
       return factory.join("");
@@ -824,43 +915,72 @@ if (typeof jQuery === "function") {
       return (typeof str==="string"?str.replace(/^(string;|float;)#?/,"").replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator):str);
     },
     /**
+     * @ignore
+     * @name $SP()._promise
+     * @function
+     * @description (internal use only) to deal with Promise
+     * @param  {Function} fct
+     * @return {Promise|Object} If Promise is available, return a Promise, otherwise return the current SharepointPlus object
+     */
+    _promise:function(fct) {
+      if (typeof Promise!=="function") {
+        // check if jQuery exists, then use the Deferred system
+        if (typeof jQuery === "function") {
+          var deferred=jQuery.Deferred();
+          fct(function() { deferred.resolve.apply(this, arguments) }, function() { deferred.reject.apply(this, arguments) });
+          return deferred;
+        }
+        fct.call(this);
+        return this;
+      }
+      return new Promise(fct);
+    },
+    /**
+     * @ignore
+     * @description Permits to handle the then()
+     */
+    then:function() {
+      throw "[SharepointPlus] You tried to use `then()` however your browser doesn't support Promise, and you don't use jQuery. Please refer to the documentation.";
+    },
+    /**
       @name $SP().list.get
       @function
       @description Get the content of the list based on different criteria (by default the default view is used)
 
-      @param {Object} [setup] Options (see below)
-        @param {String}  [setup.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
-        @param {String}  [setup.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
-        @param {String|Array}  [setup.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
-        @param {Boolean} [setup.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
-        @param {Boolean} [setup.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
-        @param {Function} [setup.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
-        @param {Function} [setup.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
-        @param {String}  [setup.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
-        @param {String}  [setup.groupby=""] The field used to group by the list result
-        @param {Integer} [setup.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
-        @param {Boolean} [setup.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
-        @param {Integer} [setup.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
-        @param {String}  [setup.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
-        @param {Boolean} [setup.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
-        @param {Boolean} [setup.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
-        @param {Boolean} [setup.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
-        @param {Object} [setup.folderOptions] Permits to read the content of a Document Library (see below)
-          @param {String} [setup.folderOptions.path=""] Relative path of the folders we want to explore (by default it's the root of the document library)
-          @param {String} [setup.folderOptions.show="FilesAndFolders_InFolder"] Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path
-        @param {Boolean} [setup.queryOptions=undefined] If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems.aspx)
-        @param {Object} [setup.join] Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)
-          @param {String} [setup.join.list] Permits to establish the link between two lists (see the example below)
-          @param {String} [setup.join.url='current website'] The website url (if different than the current website)
-          @param {String} [setup.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
-          @param {String} [setup.join.onLookup] Permits to establish the link between two lists based on a lookup field... it's more optimized than the simple `join.on` (see the example below)
-          @param {Boolean} [setup.join.outer=false] If you want to do an outer join (you can also directly use "outerjoin" instead of "join")
-        @param {Boolean} [setup.calendar=false] If you want to get the events from a Calendar List
-        @param {Object} [setup.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
-          @param {Boolean} [setup.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
-          @param {String|Date} [setup.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String)
-          @param {String} [setup.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
+      @param {Object} [options] Options (see below)
+        @param {String}  [options.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
+        @param {String}  [options.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
+        @param {String|Array}  [options.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
+        @param {Boolean} [options.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
+        @param {Boolean} [options.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
+        @param {Function} [options.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
+        @param {Function} [options.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
+        @param {String}  [options.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
+        @param {String}  [options.groupby=""] The field used to group by the list result
+        @param {Integer} [options.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
+        @param {Boolean} [options.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
+        @param {Integer} [options.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
+        @param {String}  [options.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
+        @param {Boolean} [options.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
+        @param {Boolean} [options.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
+        @param {Boolean} [options.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
+        @param {Object} [options.folderOptions] Permits to read the content of a Document Library (see below)
+          @param {String} [options.folderOptions.path=""] Relative path of the folders we want to explore (by default it's the root of the document library)
+          @param {String} [options.folderOptions.show="FilesAndFolders_InFolder"] Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path
+        @param {Boolean} [options.queryOptions=undefined] If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems.aspx)
+        @param {Object} [options.join] Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)
+          @param {String} [options.join.list] Permits to establish the link between two lists (see the example below)
+          @param {String} [options.join.url='current website'] The website url (if different than the current website)
+          @param {String} [options.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
+          @param {String} [options.join.onLookup] Permits to establish the link between two lists based on a lookup field... it's more optimized than the simple `join.on` (see the example below)
+          @param {Boolean} [options.join.outer=false] If you want to do an outer join (you can also directly use "outerjoin" instead of "join")
+        @param {Boolean} [options.calendar=false] If you want to get the events from a Calendar List
+        @param {Object} [options.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
+          @param {Boolean} [options.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
+          @param {String|Date} [options.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String)
+          @param {String} [options.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
       @param {Function} [result=function(data,error)] A function with the data from the request as first argument, and the second argument is the error message in case something went wrong
+      @return {Promise|Deferred|Object} If Promise is supported, it will return a Promise object; or if not and we have jQuery it will return a Deferred; otherwise the current SharepointPlus object
 
       @example
       $SP().list("List Name").get(function(data) {
@@ -963,9 +1083,9 @@ if (typeof jQuery === "function") {
         console.log("last ID : "+data[0].getAttribute("ID"));
       })
       // use `listItemCollectionPositionNext` to start from this index
-      $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1}, function(data, nextPageIndex) {
+      $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1}, function(data) {
         // get the next block
-        this.get{fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:nextPageIndex}, function(data, nextPageIndex) {
+        this.get{fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:data.NextPage}, function(data) {
           // here we have the 2nd block of data into `data`
         })
       })
@@ -1149,489 +1269,465 @@ if (typeof jQuery === "function") {
       }, function(d) {
         console.log(d.length)
       })
+
+      // Since Sharepoint v4.0 it returns a Promise/Deferred
+      $SP().list("MyList").get({
+        fields:"Title"
+      }).then(function(data) {
+        data.forEach(function(d) { console.log(d.getAttribute("Title")) })
+      }, function(err) {
+        console.log("Error Found => ",err)
+      });
     */
-    get:function(setup, fct) {
-      // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
-      if (this.listID == undefined) throw "Error 'get': you have to define the list ID/Name";
-      if (arguments.length === 1 && typeof setup === "function") return this.get({}, setup);
+    get:function(options, fct) {
+      var _this = this;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // check if we need to queue it
+        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.listID == undefined) throw "Error 'get': you have to define the list ID/Name";
+        if (arguments.length === 1 && typeof options === "function") {
+          fct = options;
+          options = {};
+        }
+        var useCallback=false;
+        // deal with Promise/callbacks
+        if (fct) { // if we ask for a callback
+          prom_resolve = fct;
+          prom_reject = function(e){ fct([],e) };
+          useCallback = true;
+        }
+        if (!prom_resolve) prom_resolve=prom_reject=function(){}; // no Promise, no callback, no jQuery
 
-      // default values
-      setup           = setup || {};
-      if (this.url == undefined) throw "Error 'get': not able to find the URL!"; // we cannot determine the url
-      setup.fields    = setup.fields || "";
-      setup.where     = setup.where || "";
-      setup.whereFct  = setup.whereFct || function(w) { return w };
-      setup.orderby   = setup.orderby || "";
-      setup.useIndexForOrderBy = (setup.useIndexForOrderBy===true ? true : false);
-      setup.groupby   = setup.groupby || "";
-      setup.rowlimit  = setup.rowlimit || 0;
-      setup.whereEscapeChar= (setup.whereEscapeChar===false ? false : true);
-      setup.paging    = (setup.paging===true ? true : false);
-      setup.page      = (setup.paging===false || isNaN(setup.page) ? 5000 : setup.page);
-      if (setup.paging && setup.rowlimit === 0) setup.rowlimit = 5000; // if rowlimit is not defined, we set it to 5000 by default
-      setup.expandUserField = (setup.expandUserField===true || setup.expandUserField==="True"?"True":"False");
-      setup.dateInUTC = (setup.dateInUTC===true?"True":"False");
-      setup.folderOptions = setup.folderOptions || null;
-      setup.view      = setup.view || "";
-      setup.calendar  = (setup.calendar===true ? true : false);
-      if (setup.calendar===true) {
-        setup.calendarOptions = setup.calendarOptions || {};
-        setup.calendarOptions.referenceDate = setup.calendarOptions.referenceDate || new Date();
-        if (typeof setup.calendarOptions.referenceDate !== "string") setup.calendarOptions.referenceDate=this.toSPDate(setup.calendarOptions.referenceDate)
-        setup.calendarOptions.splitRecurrence = (setup.calendarOptions.splitRecurrence===false ? "FALSE" : "TRUE");
-        setup.calendarOptions.range = setup.calendarOptions.range || "Month";
-      }
-      // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
-      setup.results = setup.results || []; // internal use when there is a paging
-      setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
-      // protect & into ListItemCollectionPositionNext
-      if (setup.listItemCollectionPositionNext) setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext.replace(/&/g,"&amp;").replace(/&amp;amp;/g,"&amp;");
+        // default values
+        var setup={};
+        SPExtend(true, setup, options);
+        if (_this.url == undefined) throw "Error 'get': not able to find the URL!"; // we cannot determine the url
+        setup.fields    = setup.fields || "";
+        setup.where     = setup.where || "";
+        setup.whereFct  = setup.whereFct || function(w) { return w };
+        setup.orderby   = setup.orderby || "";
+        setup.useIndexForOrderBy = (setup.useIndexForOrderBy===true ? true : false);
+        setup.groupby   = setup.groupby || "";
+        setup.rowlimit  = setup.rowlimit || 0;
+        setup.whereEscapeChar= (setup.whereEscapeChar===false ? false : true);
+        setup.paging    = (setup.paging===true ? true : false);
+        setup.page      = (setup.paging===false || isNaN(setup.page) ? 5000 : setup.page);
+        if (setup.paging && setup.rowlimit === 0) setup.rowlimit = 5000; // if rowlimit is not defined, we set it to 5000 by default
+        setup.expandUserField = (setup.expandUserField===true || setup.expandUserField==="True"?"True":"False");
+        setup.dateInUTC = (setup.dateInUTC===true?"True":"False");
+        setup.folderOptions = setup.folderOptions || null;
+        setup.view      = setup.view || "";
+        setup.calendar  = (setup.calendar===true ? true : false);
+        if (setup.calendar===true) {
+          setup.calendarOptions = setup.calendarOptions || {};
+          setup.calendarOptions.referenceDate = setup.calendarOptions.referenceDate || new Date();
+          if (typeof setup.calendarOptions.referenceDate !== "string") setup.calendarOptions.referenceDate=_this.toSPDate(setup.calendarOptions.referenceDate)
+          setup.calendarOptions.splitRecurrence = (setup.calendarOptions.splitRecurrence===false ? "FALSE" : "TRUE");
+          setup.calendarOptions.range = setup.calendarOptions.range || "Month";
+        }
+        // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
+        setup.results = setup.results || []; // internal use when there is a paging
+        setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
+        // protect & into ListItemCollectionPositionNext
+        if (setup.listItemCollectionPositionNext) setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext.replace(/&/g,"&amp;").replace(/&amp;amp;/g,"&amp;");
 
-      // if setup.where is an array, then it means we want to do several requests
-      // so we keep the first WHERE
-      if (typeof setup.where === "object") {
-        setup.where = setup.where.slice(0); // clone the original array
-        if (setup.originalWhere==undefined) setup.originalWhere = setup.where.slice(0);
-        setup.nextWhere = setup.where.slice(1);
-        setup.where = setup.where.shift();
-      } else {
-        setup.originalWhere = setup.where;
-        setup.nextWhere = [];
-      }
-      // we use the progress only when WHERE is an array
-      setup.progress = setup.progress || (function() {});
+        // if setup.where is an array, then it means we want to do several requests
+        // so we keep the first WHERE
+        if (typeof setup.where === "object") {
+          setup.where = setup.where.slice(0); // clone the original array
+          if (setup.originalWhere==undefined) setup.originalWhere = setup.where.slice(0);
+          setup.nextWhere = setup.where.slice(1);
+          setup.where = setup.where.shift();
+        } else {
+          setup.originalWhere = setup.where;
+          setup.nextWhere = [];
+        }
+        // we use the progress only when WHERE is an array
+        setup.progress = setup.progress || (function() {});
 
-      // if view is defined and is not a GUID, then we need to find the view ID
-      if (setup.view !== "") {
-        var _this=this;
-        // retrieve the View ID based on its name
-        // and find the view details
-        _this.view(setup.view,function(data,viewID) {
-          setup.view=viewID;
-          var where = (setup.whereCAML ? setup.where : _this.parse(setup.where));
-          // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
-          var mtchDateRanges = data.whereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
-          if (mtchDateRanges && mtchDateRanges.length === 3) data.whereCAML = '<And>'+mtchDateRanges[2]+mtchDateRanges[1]+'</And>'
-          where += data.whereCAML;
-          if (setup.where !== "" && data.whereCAML !== "") where = "<And>" + where + "</And>";
-          setup.where=where;
-          setup.fields += (setup.fields===""?"":",") + data.fields.join(",");
-          setup.orderby += (setup.orderby===""?"":",") + data.orderby;
-          setup.whereCAML=true;
-          setup.useOWS=true;
-          // disable the calendar option
-          setup.calendarViaView=setup.calendar;
-          setup.calendar=false;
-          delete setup.view;
-          return _this.get.call(_this,setup,fct);
-        });
-        return this;
-      }
+        // if view is defined and is not a GUID, then we need to find the view ID
+        if (setup.view !== "") {
+          // retrieve the View ID based on its name
+          // and find the view details
+          _this.view(setup.view,function(data,viewID) {
+            setup.view=viewID;
+            var where = (setup.whereCAML ? setup.where : _this.parse(setup.where));
+            // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
+            var mtchDateRanges = data.whereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
+            if (mtchDateRanges && mtchDateRanges.length === 3) data.whereCAML = '<And>'+mtchDateRanges[2]+mtchDateRanges[1]+'</And>'
+            where += data.whereCAML;
+            if (setup.where !== "" && data.whereCAML !== "") where = "<And>" + where + "</And>";
+            setup.where=where;
+            setup.fields += (setup.fields===""?"":",") + data.fields.join(",");
+            setup.orderby += (setup.orderby===""?"":",") + data.orderby;
+            setup.whereCAML=true;
+            setup.useOWS=true;
+            // disable the calendar option
+            setup.calendarViaView=setup.calendar;
+            setup.calendar=false;
+            delete setup.view;
+            if (useCallback)
+              _this.get(setup,fct);
+            else
+              _this.get(setup).then(function(d) { prom_resolve(d) }, function(e) { prom_reject(e) });
+          });
+          return;
+        }
 
-      // if we have [Me]/[Today] in the WHERE, or we want to use the GROUPBY,
-      // then we want to use the Lists.asmx service
-      // also for Sharepoint 2010
-      // depreciate since v3.0
-      var useOWS = true;//( setup.groupby!="" || /\[Me\]|\[Today\]/.test(setup.where) || setup.forceOWS===true || typeof SP=="object");
+        // if we have [Me]/[Today] in the WHERE, or we want to use the GROUPBY,
+        // then we want to use the Lists.asmx service
+        // also for Sharepoint 2010
+        // depreciate since v3.0
+        var useOWS = true;//( setup.groupby!="" || /\[Me\]|\[Today\]/.test(setup.where) || setup.forceOWS===true || typeof SP=="object");
 
-      // what about the fields ?
-      var fields="";
-      if (setup.fields == "" || setup.fields == [])
-        fields = "";
-      else {
-        if (typeof setup.fields == "string") setup.fields = setup.fields.replace(/^\s+/,"").replace(/\s+$/,"").replace(/( )?,( )?/g,",").split(",");
-        // depreciate since v3.0 // if (setup.fields.indexOf("Attachments") != -1) useOWS=true;
-        for (var i=0; i<setup.fields.length; i++) fields += '<FieldRef Name="'+setup.fields[i]+'" />';
-          // depreciate since v3.0 fields += '<Field'+(useOWS?'Ref':'')+' Name="'+setup.fields[i]+'" />';
-      }
+        // what about the fields ?
+        var fields="";
+        if (setup.fields == "" || setup.fields == [])
+          fields = "";
+        else {
+          if (typeof setup.fields == "string") setup.fields = setup.fields.replace(/^\s+/,"").replace(/\s+$/,"").replace(/( )?,( )?/g,",").split(",");
+          // depreciate since v3.0 // if (setup.fields.indexOf("Attachments") != -1) useOWS=true;
+          for (var i=0; i<setup.fields.length; i++) fields += '<FieldRef Name="'+setup.fields[i]+'" />';
+            // depreciate since v3.0 fields += '<Field'+(useOWS?'Ref':'')+' Name="'+setup.fields[i]+'" />';
+        }
 
-      // what about sorting ?
-      var orderby="";
-      if (setup.orderby != "") {
-        var fieldsDir = setup.orderby.split(",");
-        for (i=0; i<fieldsDir.length; i++) {
-          var direction = "ASC";
-          var splt      = fieldsDir[i].trim().split(" ");
-          if (splt.length > 0) {
-            if (splt.length==2) direction = splt[1].toUpperCase();
-            orderby += ( useOWS ? '<FieldRef Name="'+splt[0]+'" Ascending="'+(direction=="ASC")+'" />' : '<OrderField Name="'+splt[0]+'" Direction="'+direction+'" />' );
+        // what about sorting ?
+        var orderby="";
+        if (setup.orderby != "") {
+          var fieldsDir = setup.orderby.split(",");
+          for (i=0; i<fieldsDir.length; i++) {
+            var direction = "ASC";
+            var splt      = fieldsDir[i].trim().split(" ");
+            if (splt.length > 0) {
+              if (splt.length==2) direction = splt[1].toUpperCase();
+              orderby += ( useOWS ? '<FieldRef Name="'+splt[0]+'" Ascending="'+(direction=="ASC")+'" />' : '<OrderField Name="'+splt[0]+'" Direction="'+direction+'" />' );
+            }
           }
         }
-      }
-      // if calendar:true and no orderby, then we order by the EventDate
-      if ((setup.calendar===true||setup.calendarViaView===true) && orderby==="") orderby = '<FieldRef Name="EventDate" Ascending="ASC" />'
+        // if calendar:true and no orderby, then we order by the EventDate
+        if ((setup.calendar===true||setup.calendarViaView===true) && orderby==="") orderby = '<FieldRef Name="EventDate" Ascending="ASC" />'
 
-      // what about groupby ?
-      var groupby="";
-      if (setup.groupby != "") {
-        var gFields = setup.groupby.split(",");
-        for (i=0; i<gFields.length; i++)
-          groupby += '<FieldRef Name="'+gFields[i]+'" />';
-      }
+        // what about groupby ?
+        var groupby="";
+        if (setup.groupby != "") {
+          var gFields = setup.groupby.split(",");
+          for (i=0; i<gFields.length; i++)
+            groupby += '<FieldRef Name="'+gFields[i]+'" />';
+        }
 
-      // when it's a calendar we want to retrieve some fields by default
-      if (setup.calendar===true || setup.calendarViaView===true) {
-        var tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID"];
-        for (i=0; i<tmpFields.length; i++) fields += '<FieldRef Name="'+tmpFields[i]+'" />';
-      }
+        // when it's a calendar we want to retrieve some fields by default
+        if (setup.calendar===true || setup.calendarViaView===true) {
+          var tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID"];
+          for (i=0; i<tmpFields.length; i++) fields += '<FieldRef Name="'+tmpFields[i]+'" />';
+        }
 
-      // forge the parameters
-      var body = "";
-      var aReturn = [];
+        // forge the parameters
+        var body = "";
 
-      // if no queryOptions provided then we set the default ones
-      if (setup.queryOptions === undefined) {
-        setup._queryOptions = "<DateInUtc>"+setup.dateInUTC+"</DateInUtc>"
-                           + "<Paging ListItemCollectionPositionNext=\""+setup.listItemCollectionPositionNext+"\"></Paging>"
-                           + "<IncludeAttachmentUrls>True</IncludeAttachmentUrls>"
-                           + (fields==="" ? "" : "<IncludeMandatoryColumns>False</IncludeMandatoryColumns>")
-                           + "<ExpandUserField>"+setup.expandUserField+"</ExpandUserField>";
-        // check if we want something related to the folders
-        if (setup.folderOptions) {
-          var viewAttr;
-          switch (setup.folderOptions.show) {
-            case "FilesAndFolders_Recursive": viewAttr="RecursiveAll"; break
-            case "FilesOnly_InFolder": viewAttr="FilesOnly"; break
-            case "FilesAndFolders_InFolder": viewAttr=""; break
-            case "FilesOnly_Recursive":
-            default: viewAttr="Recursive"
-          }
-          setup._queryOptions += "<ViewAttributes Scope=\""+viewAttr+"\"></ViewAttributes>"
-          if (setup.folderOptions.path) setup._queryOptions += "<Folder>"+this.url + '/' + this.listID + '/' + setup.folderOptions.path+"</Folder>"
-        } else
-          setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>"
-      } else setup._queryOptions = setup.queryOptions
-      if (setup.calendarOptions) {
-        setup._queryOptions += "<CalendarDate>" + setup.calendarOptions.referenceDate + "</CalendarDate>"
-                            +  "<RecurrencePatternXMLVersion>v3</RecurrencePatternXMLVersion>"
-                            +  "<ExpandRecurrence>"+setup.calendarOptions.splitRecurrence+"</ExpandRecurrence>";
-      }
+        // if no queryOptions provided then we set the default ones
+        if (setup.queryOptions === undefined) {
+          setup._queryOptions = "<DateInUtc>"+setup.dateInUTC+"</DateInUtc>"
+                             + "<Paging ListItemCollectionPositionNext=\""+setup.listItemCollectionPositionNext+"\"></Paging>"
+                             + "<IncludeAttachmentUrls>True</IncludeAttachmentUrls>"
+                             + (fields==="" ? "" : "<IncludeMandatoryColumns>False</IncludeMandatoryColumns>")
+                             + "<ExpandUserField>"+setup.expandUserField+"</ExpandUserField>";
+          // check if we want something related to the folders
+          if (setup.folderOptions) {
+            var viewAttr;
+            switch (setup.folderOptions.show) {
+              case "FilesAndFolders_Recursive": viewAttr="RecursiveAll"; break
+              case "FilesOnly_InFolder": viewAttr="FilesOnly"; break
+              case "FilesAndFolders_InFolder": viewAttr=""; break
+              case "FilesOnly_Recursive":
+              default: viewAttr="Recursive"
+            }
+            setup._queryOptions += "<ViewAttributes Scope=\""+viewAttr+"\"></ViewAttributes>"
+            if (setup.folderOptions.path) setup._queryOptions += "<Folder>"+_this.url + '/' + _this.listID + '/' + setup.folderOptions.path+"</Folder>"
+          } else
+            setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>"
+        } else setup._queryOptions = setup.queryOptions
+        if (setup.calendarOptions) {
+          setup._queryOptions += "<CalendarDate>" + setup.calendarOptions.referenceDate + "</CalendarDate>"
+                              +  "<RecurrencePatternXMLVersion>v3</RecurrencePatternXMLVersion>"
+                              +  "<ExpandRecurrence>"+setup.calendarOptions.splitRecurrence+"</ExpandRecurrence>";
+        }
 
-      // what about the Where ?
-      var where="";
-      if (setup.where !== "") {
-        if (setup.whereCAML) where=setup.where;
-        else where=this.parse(setup.where);
-      }
-      if (setup.calendar===true) {
-        var whereDateRanges = "<DateRangesOverlap>"
-                            + "<FieldRef Name='EventDate' />"
-                            + "<FieldRef Name='EndDate' />"
-                            + "<FieldRef Name='RecurrenceID' />"
-                            + "<Value Type='DateTime'><" + setup.calendarOptions.range + " /></Value>" /* there is a property called IncludeTimeValue="TRUE" */
-                            + "</DateRangesOverlap>"
-        if (where !== "") where = "<And>" + where + whereDateRanges + "</And>";
-        else where = whereDateRanges;
-      }
-      where = setup.whereFct(where);
-      var _this=this;
-      if (useOWS) {
-        body = "<listName>"+_this.listID+"</listName>"
-              + "<viewName>"+setup.view+"</viewName>"
-              + "<query>"
-              + "<Query>"
-              + ( where!="" ? "<Where>"+ where +"</Where>" : "" )
-              + ( groupby!="" ? "<GroupBy>"+groupby+"</GroupBy>" : "" )
-              + ( orderby!="" ? "<OrderBy"+(setup.useIndexForOrderBy ? " UseIndexForOrderBy='TRUE' Override='TRUE'": "")+">"+orderby+"</OrderBy>" : "" )
-              + "</Query>"
-              + "</query>"
-              + "<viewFields>"
-              + "<ViewFields Properties='True'>"
-              + fields
-              + "</ViewFields>"
-              + "</viewFields>"
-              + "<rowLimit>"+setup.rowlimit+"</rowLimit>"
-              + "<queryOptions>"
-              + "<QueryOptions>"
-              + setup._queryOptions
-              + "</QueryOptions>"
-              + "</queryOptions>";
-        body = _this._buildBodyForSOAP("GetListItems", body);
-        // do the request
-        var url = _this.url + "/_vti_bin/Lists.asmx";
-        _this.ajax({type: "POST",
-                     cache: false,
-                     async: true,
-                     url: url,
-                     data: body,
-                     /*xhr:function() {
-                      // get the native XmlHttpRequest object
-                      var xhr = $.ajaxSettings.xhr() ;
-                      // set the onprogress event handler
-                      xhr.onprogress = function(evt){ console.log('progress', evt) } ;
-                      // set the onload event handler
-                      xhr.onload = function(){ console.log('DONE!') } ;
-                      // return the customized object
-                      return xhr ;
-                     },*/
-                     contentType: "text/xml; charset=utf-8",
-                     dataType: "xml",
-                     success:function(data) {
-                        var rows, i, j, stop, collection, on, aResult, prevIndex, index, listIndexFound, nextPage,
-                            joinDataLen, tmp, attributesReturn, attr, attributesJoinData, joinIndexLen, idx, sp,
-                            joinData, joinIndex, joinWhereLookup, wh;
-                        // we want to use myElem to change the getAttribute function
-                        rows=data.getElementsByTagName('z:row');
-                        if (rows.length==0) rows=data.getElementsByTagName('row'); // for Chrome 'bug'
-                        aReturn = fastMap(rows, function(row) { return myElem(row); });
+        // what about the Where ?
+        var where="";
+        if (setup.where !== "") {
+          if (setup.whereCAML) where=setup.where;
+          else where=_this.parse(setup.where);
+        }
+        if (setup.calendar===true) {
+          var whereDateRanges = "<DateRangesOverlap>"
+                              + "<FieldRef Name='EventDate' />"
+                              + "<FieldRef Name='EndDate' />"
+                              + "<FieldRef Name='RecurrenceID' />"
+                              + "<Value Type='DateTime'><" + setup.calendarOptions.range + " /></Value>" /* there is a property called IncludeTimeValue="TRUE" */
+                              + "</DateRangesOverlap>"
+          if (where !== "") where = "<And>" + where + whereDateRanges + "</And>";
+          else where = whereDateRanges;
+        }
+        where = setup.whereFct(where);
+        if (useOWS) {
+          body = "<listName>"+_this.listID+"</listName>"
+                + "<viewName>"+setup.view+"</viewName>"
+                + "<query>"
+                + "<Query>"
+                + ( where!="" ? "<Where>"+ where +"</Where>" : "" )
+                + ( groupby!="" ? "<GroupBy>"+groupby+"</GroupBy>" : "" )
+                + ( orderby!="" ? "<OrderBy"+(setup.useIndexForOrderBy ? " UseIndexForOrderBy='TRUE' Override='TRUE'": "")+">"+orderby+"</OrderBy>" : "" )
+                + "</Query>"
+                + "</query>"
+                + "<viewFields>"
+                + "<ViewFields Properties='True'>"
+                + fields
+                + "</ViewFields>"
+                + "</viewFields>"
+                + "<rowLimit>"+setup.rowlimit+"</rowLimit>"
+                + "<queryOptions>"
+                + "<QueryOptions>"
+                + setup._queryOptions
+                + "</QueryOptions>"
+                + "</queryOptions>";
+          body = _this._buildBodyForSOAP("GetListItems", body);
+          // do the request
+          var url = _this.url + "/_vti_bin/Lists.asmx";
+          _this.ajax({
+            type: "POST",
+            cache: false,
+            async: true,
+            url: url,
+            data: body,
+            contentType: "text/xml; charset=utf-8",
+            dataType: "xml",
+            success:function(data) {
+              var rows, i, j, stop, collection, on, aResult, prevIndex, index, listIndexFound, nextPage,
+                  joinDataLen, tmp, attributes, attributesReturn, attr, attributesJoinData, joinIndexLen, idx, sp,
+                  joinData, joinIndex, joinWhereLookup, wh, aReturn;
+              // we want to use myElem to change the getAttribute function
+              rows=data.getElementsByTagName('z:row');
+              if (rows.length==0) rows=data.getElementsByTagName('row'); // for Chrome 'bug'
+              aReturn = fastMap(rows, function(row) { return myElem(row); });
 
-                        // if setup.results length is bigger than 0 then it means we need to add the current data
-                        if (setup.results.length>0)
-                          for (i=0,stop=aReturn.length; i<stop; i++) setup.results.push(aReturn[i])
+              // if setup.results length is bigger than 0 then it means we need to add the current data
+              if (setup.results.length>0)
+                for (i=0,stop=aReturn.length; i<stop; i++) setup.results.push(aReturn[i])
 
-                        // depending of the setup.nextWhere length we update the progress
-                        if (typeof setup.originalWhere !== "string")
-                          setup.progress(setup.originalWhere.length-setup.nextWhere.length,setup.originalWhere.length);
+              // depending of the setup.nextWhere length we update the progress
+              if (typeof setup.originalWhere !== "string")
+                setup.progress(setup.originalWhere.length-setup.nextWhere.length,setup.originalWhere.length);
 
-                        // if paging we want to return ListItemCollectionPositionNext
-                        if (setup.paging) {
-                          collection = data.getElementsByTagName("rs:data")[0];
-                          if (typeof collection === "undefined" || collection.length==0) {
-                            collection=data.getElementsByTagName("data")[0]; // for Chrome
+              // if paging we want to return ListItemCollectionPositionNext
+              if (setup.paging) {
+                collection = data.getElementsByTagName("rs:data")[0];
+                if (typeof collection === "undefined" || collection.length==0) {
+                  collection=data.getElementsByTagName("data")[0]; // for Chrome
+                }
+                if (collection) nextPage = collection.getAttribute("ListItemCollectionPositionNext");
+              }
+
+              // if we have a paging then we need to do the request again
+              if (setup.paging && --setup.page > 0) {
+                // check if we need to go to another request
+                if (setup.results.length===0) setup.results=aReturn;
+                // notify that we keep loading
+                setup.progress(setup.results.length);
+                if (nextPage) {
+                  // we need more calls
+                  setup.listItemCollectionPositionNext=_this._cleanString(nextPage);
+                  if (useCallback)
+                    _this.get(setup,fct);
+                  else
+                    _this.get(setup).then(function(d) { prom_resolve(d) }, function(e) { prom_reject(e) });
+                  return;
+                } else {
+                  aReturn = setup.results
+                  // it means we're done, no more call
+                }
+              } else if (setup.nextWhere.length>0) { // if we need to so some more request
+                if (setup.results.length===0) setup.results=aReturn
+                setup.where = setup.nextWhere.slice(0);
+                if (useCallback)
+                  _this.get(setup,fct);
+                else
+                  _this.get(setup).then(function(d) { prom_resolve(d) }, function(e) { prom_reject(e) });
+                return;
+              } else {
+                // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
+                setup.where = setup.originalWhere;
+                aReturn = (setup.results.length>0?setup.results:aReturn);
+              }
+
+              // we have data from a previous list, so let's merge all together the both of them
+              if (setup.joinData) {
+                on = setup.joinData["noindex"];
+                aResult = [];
+                prevIndex="";
+                listIndexFound={length:0};
+                if (!on.length) alert("$SP.get() -- Error 'get': you must define the ON clause when JOIN is used.");
+                // we have a linked list so do some stuff here to tie the two lists together
+                for (i=0,stop=aReturn.length; i<stop; i++) {
+                  index="";
+                  for (j=0; j<on.length; j++) index += "_"+_this.getLookup(aReturn[i].getAttribute(on[j][_this.listID])).id;
+                  // check if the index exists in the previous set of data
+                  if (setup.joinData[index]) {
+                    if (prevIndex!==index) {
+                      if (!listIndexFound[setup.joinIndex[index]]) listIndexFound.length++;
+                      listIndexFound[setup.joinIndex[index]]=true;
+                      prevIndex=index;
+                    }
+                    // we merge the joinData and the aReturn
+                    for (j=0,joinDataLen=setup.joinData[index].length; j<joinDataLen; j++) {
+                      tmp=[];
+                      // find the attributes for the current list
+                      attributesReturn=aReturn[i].getAttributes();
+                      for (attr=attributesReturn.length; attr--;) {
+                        tmp[_this.listID+"."+attributesReturn[attr].nodeName.slice(4)] = attributesReturn[attr].nodeValue;
+                      }
+                      // now find the attributes for the joinData
+                      attributesJoinData=setup.joinData[index][j].getAttributes();
+                      for (attr in attributesJoinData) {
+                        tmp[attr] = setup.joinData[index][j].getAttribute(attr);
+                      }
+
+                      aResult.push(new extendMyObject(tmp));
+                    }
+                  }
+                  // for the default options
+                  if (setup.innerjoin) setup.join=setup.innerjoin;
+                  if (setup.outerjoin) {
+                    setup.join=setup.outerjoin;
+                    setup.join.outer=true;
+                  }
+
+                }
+                aReturn=aResult;
+
+                // if there is a WHERE clause then we want to force to an innerjoin
+                // except where setup.where equals to setup.onLookupWhere
+                if (setup.where && setup.where!==setup.onLookupWhere && setup.outer) setup.outer=false;
+
+                // if we want to do an outerjoin we link the missing data
+                if (setup.outer) {
+                  joinIndexLen=setup.joinIndex.length;
+                  if (listIndexFound.length < joinIndexLen) {
+                    for (i=0; i<joinIndexLen; i++) {
+                      if (listIndexFound[i] !== true) {
+                        idx = setup.joinIndex[i];
+                        if (idx===undefined || setup.joinData[idx]===undefined) continue
+                        for (j=0,joinDataLen=setup.joinData[idx].length; j<joinDataLen; j++) {
+                          tmp=[];
+                          attributesJoinData=setup.joinData[idx][j].getAttributes();
+                          for (attr in attributesJoinData) {
+                            tmp[attr] = setup.joinData[idx][j].getAttribute(attr);
                           }
-                          if (collection) nextPage = collection.getAttribute("ListItemCollectionPositionNext");
-                        }
-
-                        // if we have a paging then we need to do the request again
-                        if (setup.paging && --setup.page > 0) {
-                          // check if we need to go to another request
-                          if (setup.results.length===0) setup.results=aReturn;
-                          // notify that we keep loading
-                          setup.progress(setup.results.length);
-                          if (nextPage) {
-                            // we need more calls
-                            setup.listItemCollectionPositionNext=_this._cleanString(nextPage);
-                            return _this.get(setup,fct)
-                          } else {
-                            aReturn = setup.results
-                            // it means we're done, no more call
-                            //- if (typeof fct == "function") fct.call(_this,setup.results,nextPage)
-                          }
-                        } else if (setup.nextWhere.length>0) { // if we need to so some more request
-                          if (setup.results.length===0) setup.results=aReturn
-                          setup.where = setup.nextWhere.slice(0);
-                          return _this.get(setup,fct)
-                        } else if (typeof fct == "function") {
-                          // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
-                          setup.where = setup.originalWhere;
-                          //-fct.call(_this,(setup.results.length>0?setup.results:aReturn), nextPage);
-                          aReturn = (setup.results.length>0?setup.results:aReturn);
-                        }
-
-                        // we have data from a previous list, so let's merge all together the both of them
-                        if (setup.joinData) {
-                          on = setup.joinData["noindex"];
-                          aResult = [];
-                          prevIndex="";
-                          listIndexFound={length:0};
-                          if (!on.length) alert("$SP.get() -- Error 'get': you must define the ON clause when JOIN is used.");
-                          // we have a linked list so do some stuff here to tie the two lists together
-                          for (i=0,stop=aReturn.length; i<stop; i++) {
-                            index="";
-                            for (j=0; j<on.length; j++) index += "_"+_this.getLookup(aReturn[i].getAttribute(on[j][_this.listID])).id;
-                            // check if the index exists in the previous set of data
-                            if (setup.joinData[index]) {
-                              if (prevIndex!==index) {
-                                if (!listIndexFound[setup.joinIndex[index]]) listIndexFound.length++;
-                                listIndexFound[setup.joinIndex[index]]=true;
-                                prevIndex=index;
-                              }
-                              // we merge the joinData and the aReturn
-                              for (j=0,joinDataLen=setup.joinData[index].length; j<joinDataLen; j++) {
-                                tmp=[];
-                                // find the attributes for the current list
-                                attributesReturn=aReturn[i].getAttributes();
-                                for (attr=attributesReturn.length; attr--;) {
-                                  tmp[_this.listID+"."+attributesReturn[attr].nodeName.slice(4)] = attributesReturn[attr].nodeValue;
-                                }
-                                // now find the attributes for the joinData
-                                attributesJoinData=setup.joinData[index][j].getAttributes();
-                                for (attr in attributesJoinData) {
-                                  tmp[attr] = setup.joinData[index][j].getAttribute(attr);
-                                }
-
-                                aResult.push(new extendMyObject(tmp));
-                              }
-                            }
-                            // for the default options
-                            if (setup.innerjoin) setup.join=setup.innerjoin;
-                            if (setup.outerjoin) {
-                              setup.join=setup.outerjoin;
-                              setup.join.outer=true;
-                            }
-
-                          }
-                          aReturn=aResult;
-
-                          // if there is a WHERE clause then we want to force to an innerjoin
-                          // except where setup.where equals to setup.onLookupWhere
-                          if (setup.where && setup.where!==setup.onLookupWhere && setup.outer) setup.outer=false;
-
-                          // if we want to do an outerjoin we link the missing data
-                          if (setup.outer) {
-                            joinIndexLen=setup.joinIndex.length;
-                            if (listIndexFound.length < joinIndexLen) {
-                              for (i=0; i<joinIndexLen; i++) {
-                                if (listIndexFound[i] !== true) {
-                                  idx = setup.joinIndex[i];
-                                  if (idx===undefined || setup.joinData[idx]===undefined) continue
-                                  for (j=0,joinDataLen=setup.joinData[idx].length; j<joinDataLen; j++) {
-                                    tmp=[];
-                                    attributesJoinData=setup.joinData[idx][j].getAttributes();
-                                    for (attr in attributesJoinData) {
-                                      tmp[attr] = setup.joinData[idx][j].getAttribute(attr);
-                                    }
-                                    aResult.push(new extendMyObject(tmp));
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-
-                        if (setup.outerjoin) {
-                          setup.join=setup.outerjoin;
-                          setup.join.outer=true;
-                        }
-                        else if (setup.innerjoin) setup.join=setup.innerjoin;
-                        // if we join it with another list
-                        if (setup.join) {
-                          joinData=[];
-                          joinIndex=[];
-                          joinWhereLookup=[];
-                          // retrieve the ON clauses
-                          if (setup.join.onLookup) setup.join.on="'"+setup.join.list+"'."+setup.join.onLookup+" = '"+_this.listID+"'.ID";
-                          on=_this._parseOn(setup.join.on);
-                          joinData["noindex"]=on; // keep a copy of it for the next treatment in the tied list
-                          for (i=0,stop=aReturn.length; i<stop; i++) {
-                            // create an index that will be used in the next list to filter it
-                            index="",tmp=[];
-                            for (j=0; j<on.length; j++) index += "_"+_this.getLookup(aReturn[i].getAttribute(on[j][_this.listID]) || aReturn[i].getAttribute(_this.listID+"."+on[j][_this.listID])).id;
-                            if (!joinData[index]) {
-                              joinIndex[index]=joinIndex.length;
-                              joinIndex.push(index);
-                              joinData[index] = [];
-                              // if onLookup then we will store the current ID with the ~ to use it in a where clause with IN operator
-                              if (setup.join.onLookup && index!=="_") joinWhereLookup.push("~"+index.slice(1))
-                            }
-                            // if we are coming from some other join
-                            if (setup.joinData) {
-                              joinData[index].push(aReturn[i]);
-                            } else {
-                              attributes=aReturn[i].getAttributes();
-                              for (j=attributes.length; j--;) {
-                                tmp[_this.listID+"."+attributes[j].nodeName.slice(4)] = attributes[j].nodeValue;
-                              }
-                              joinData[index].push(new extendMyObject(tmp));
-                            }
-                          }
-                          delete setup.joinData;
-                          // call the joined list to grab data and process them
-                          // if onLookup then we create a WHERE clause with IN operator
-                          if (setup.join.onLookup) {
-                            if (joinWhereLookup.length>0) {
-                              // SP2013 limits to 60 items per IN
-                              wh=SPArrayChunk(joinWhereLookup, 60);
-                              for (j=0; j<wh.length; j++) {
-                                wh[j] = setup.join.onLookup+' IN ["'+wh[j].join('","')+'"]'
-                              }
-                              // if the WHERE is too big then the server could run out of memory
-                              if (wh.length <= _SP_MAXWHERE_ONLOOKUP) {
-                                wh = "(" + wh.join(" OR ") + ")";
-                                // now we add this WHERE into the existing where
-                                if (setup.join.where) {
-                                  if (SPIsArray(setup.join.where)) {
-                                    SPArrayForEach(setup.join.where, function(e, i) { setup.join.where[i]=wh + " AND ("+e+")" })
-                                  } else {
-                                    setup.join.where=wh + " AND (" + setup.join.where + ")";
-                                  }
-                                } else setup.join.where=wh
-                                setup.join.onLookupWhere=wh;
-                              } else {
-                                // in that case we'll use paging
-                                setup.join.paging=true;
-                              }
-                            }
-                            // make sure the lookup fields is in the fields list
-                            if (!setup.join.fields) setup.join.fields=[];
-                            if (!SPIsArray(setup.join.fields)) {
-                              tmp=setup.join.fields.split(",");
-                              tmp.push(setup.join.onLookup);
-                              setup.join.fields=tmp.join(",");
-                            } else setup.join.fields.push(setup.join.onLookup);
-                          }
-                          sp=$SP().list(setup.join.list,setup.join.url||_this.url);
-                          setup.join.joinData=joinData;
-                          setup.join.joinIndex=joinIndex;
-                          return sp.get(setup.join,fct);
-                        }
-
-                        if (typeof fct === "function") fct.call(_this,aReturn,nextPage)
-                      },
-                      error:function(jqXHR, textStatus, errorThrown) {
-                        if (textStatus !== "000") {
-                          var res = jqXHR.responseXML;
-                          var err = (res ? res.getElementsByTagName("errorstring") : null);
-                          if (err && err[0]) fct.call(_this,[],"Error: "+err[0].firstChild.nodeValue)
-                          else fct.call(_this,[],textStatus+": "+errorThrown);
-                        } else {
-                          fct.call(_this,[],errorThrown);
+                          aResult.push(new extendMyObject(tmp));
                         }
                       }
-                   });
-      } /*else {
-        body = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                + "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-                + "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
-                + "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope\/\">"
-                +" <soap:Header xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope\/\">"
-                +" <dsp:versions xmlns:dsp=\"http://schemas.microsoft.com/sharepoint/dsp\">"
-                +" <dsp:version>1.0</dsp:version>"
-                +" </dsp:versions>"
-                +" <dsp:request xmlns:dsp=\"http://schemas.microsoft.com/sharepoint/dsp\" service=\"DspSts\" document=\"content\" method=\"query\">"
-                +" </dsp:request>"
-                +" </soap:Header>"
-                + "<soap:Body>"
-                + "<queryRequest "
-                +" xmlns=\"http://schemas.microsoft.com/sharepoint/dsp\">"
-                +" <dsQuery select=\"/list[@id='"+this.listID+"']\""
-                +" resultContent=\"dataOnly\""
-                +" columnMapping=\"attribute\" resultRoot=\"Rows\" resultRow=\"Row\">"
-                +" <Query RowLimit=\""+(setup.rowlimit>0?setup.rowlimit:-1)+"\">"
-                +" <Fields>"+fields+"</Fields>"
-                +" <Where>"+ (setup.whereCAML?setup.where:this.parse(setup.where)) +"</Where>"
-                +" "+ ( groupby!="" ? "<GroupBy>"+groupby+"</GroupBy>" : "" )
-                +" "+ ( orderby!="" ? "<OrderBy>"+orderby+"</OrderBy>" : "" )
-                +" </Query>"
-                +" </dsQuery>"
-                +" </queryRequest>"
-                + "</soap:Body>"
-                + "</soap:Envelope>";
-        // do the request
-        var url = setup.url + "/_vti_bin/dspsts.asmx";
-        _this.ajax({type: "POST",
-                     cache: false,
-                     async: true,
-                     url: url,
-                     data: body,
-                     contentType: "text/xml; charset=utf-8",
-                     beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/dsp/queryRequest'); },
-                     dataType: "xml",
-                     success:function(data) {
-                       var aReturn=data.getElementsByTagName('Row');
-                       if (setup.join) {
-                         var on=[];
-                         for (var i=0,stop=aReturn.length; i<stop; i++) on[aReturn[i].getAttribute(setup.join.on)]=aReturn[i];
-                         var sp=$SP().list(setup.join.list,setup.join.url||setup.url);
-                         setup.join.joinData=on;
-                         sp.get(setup.join,fct);
-                       }
-                       else if (typeof fct == "function") fct.call(_this,aReturn,setup.joinData)
-                     }
-                   });
-      }*/
-      return this;
+                    }
+                  }
+                }
+              }
+
+              if (setup.outerjoin) {
+                setup.join=setup.outerjoin;
+                setup.join.outer=true;
+              }
+              else if (setup.innerjoin) setup.join=setup.innerjoin;
+              // if we join it with another list
+              if (setup.join) {
+                joinData=[];
+                joinIndex=[];
+                joinWhereLookup=[];
+                // retrieve the ON clauses
+                if (setup.join.onLookup) setup.join.on="'"+setup.join.list+"'."+setup.join.onLookup+" = '"+_this.listID+"'.ID";
+                on=_this._parseOn(setup.join.on);
+                joinData["noindex"]=on; // keep a copy of it for the next treatment in the tied list
+                for (i=0,stop=aReturn.length; i<stop; i++) {
+                  // create an index that will be used in the next list to filter it
+                  index="",tmp=[];
+                  for (j=0; j<on.length; j++) index += "_"+_this.getLookup(aReturn[i].getAttribute(on[j][_this.listID]) || aReturn[i].getAttribute(_this.listID+"."+on[j][_this.listID])).id;
+                  if (!joinData[index]) {
+                    joinIndex[index]=joinIndex.length;
+                    joinIndex.push(index);
+                    joinData[index] = [];
+                    // if onLookup then we will store the current ID with the ~ to use it in a where clause with IN operator
+                    if (setup.join.onLookup && index!=="_") joinWhereLookup.push("~"+index.slice(1))
+                  }
+                  // if we are coming from some other join
+                  if (setup.joinData) {
+                    joinData[index].push(aReturn[i]);
+                  } else {
+                    attributes=aReturn[i].getAttributes();
+                    for (j=attributes.length; j--;) {
+                      tmp[_this.listID+"."+attributes[j].nodeName.slice(4)] = attributes[j].nodeValue;
+                    }
+                    joinData[index].push(new extendMyObject(tmp));
+                  }
+                }
+                delete setup.joinData;
+                // call the joined list to grab data and process them
+                // if onLookup then we create a WHERE clause with IN operator
+                if (setup.join.onLookup) {
+                  if (joinWhereLookup.length>0) {
+                    // SP2013 limits to 60 items per IN
+                    wh=SPArrayChunk(joinWhereLookup, 60);
+                    for (j=0; j<wh.length; j++) {
+                      wh[j] = setup.join.onLookup+' IN ["'+wh[j].join('","')+'"]'
+                    }
+                    // if the WHERE is too big then the server could run out of memory
+                    if (wh.length <= _SP_MAXWHERE_ONLOOKUP) {
+                      wh = "(" + wh.join(" OR ") + ")";
+                      // now we add this WHERE into the existing where
+                      if (setup.join.where) {
+                        if (SPIsArray(setup.join.where)) {
+                          SPArrayForEach(setup.join.where, function(e, i) { setup.join.where[i]=wh + " AND ("+e+")" })
+                        } else {
+                          setup.join.where=wh + " AND (" + setup.join.where + ")";
+                        }
+                      } else setup.join.where=wh
+                      setup.join.onLookupWhere=wh;
+                    } else {
+                      // in that case we'll use paging
+                      setup.join.paging=true;
+                    }
+                  }
+                  // make sure the lookup fields is in the fields list
+                  if (!setup.join.fields) setup.join.fields=[];
+                  if (!SPIsArray(setup.join.fields)) {
+                    tmp=setup.join.fields.split(",");
+                    tmp.push(setup.join.onLookup);
+                    setup.join.fields=tmp.join(",");
+                  } else setup.join.fields.push(setup.join.onLookup);
+                }
+                sp=_this.list(setup.join.list,setup.join.url||_this.url);
+                setup.join.joinData=joinData;
+                setup.join.joinIndex=joinIndex;
+                if (useCallback)
+                  sp.get(setup.join,fct);
+                else
+                  sp.get(setup.join).then(function(d) { prom_resolve(d) }, function(e) { prom_reject(e) });
+                return;
+              }
+
+              aReturn["NextPage"]=nextPage;
+              prom_resolve(aReturn,nextPage)
+            },
+            error:function(jqXHR, textStatus, errorThrown) {
+              if (textStatus !== "000") {
+                var res = jqXHR.responseXML;
+                var err = (res ? res.getElementsByTagName("errorstring") : null);
+                if (err && err[0]) prom_reject("Error: "+err[0].firstChild.nodeValue)
+                else prom_reject(textStatus+": "+errorThrown);
+              } else {
+                prom_reject(errorThrown);
+              }
+            }
+          });
+        }
+
+      });
     },
     /**
       @name $SP().createFile
@@ -1649,6 +1745,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.success=function(fileURL){}] A callback function that will be triggered in case of success; 1 parameter
         @param {Function} [setup.error=function(fileURL,errorMessage){}] A callback function that will be triggered in case of failure; 2 parameters
         @param {Function} [setup.after=function(fileURL,errorMessage){}] A callback function that will be triggered after the task whatever it's successful or not; 2 parameters
+      @return {Promise}
 
       @example
       // create a text document
@@ -1702,78 +1799,110 @@ if (typeof jQuery === "function") {
         url:"http://my.other.site/website/"
       });
 
+      // with $SP().list() and Promise
+      $SP().list("Documents", "http://my.other.site/website/").createFile({
+        content:"U2hhcmVwb2ludFBsdXMgUm9ja3Mh",
+        encoded:true,
+        filename:"Demo/HelloWorld.txt"
+      }).then(function(file) {
+        console.log(file+" has been created")
+      }, function(error) {
+        console.log("Error: "+error)
+      })
+
       // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
     */
     createFile:function(setup) {
       var _this=this;
-      // default values
-      setup     = setup || {};
-      if (setup.content === undefined) throw "Error 'createFile': not able to find the file content.";
-      if (setup.filename === undefined) throw "Error 'createFile': not able to find the filename.";
-      if (setup.library === undefined) {
-        if (_this.listID === undefined) throw "Error 'createFile': not able to find the library name.";
-        setup.library = _this.listID;
-      }
-      // if we didn't define the url in the parameters, then we need to find it
-      if (!setup.url && !_this.url) {
-        _this._getURL();
-        return _this._addInQueue(arguments);
-      }
-      setup.url = setup.url || (window.location.protocol + "//" + window.location.host + _this.url);
-      if (setup.url == undefined) throw "Error 'createFile': not able to find the server URL!"; // we cannot determine the url
-      setup.after   = setup.after || (function(){});
-      setup.success = setup.success || (function() {});
-      setup.error   = setup.error || (function() {});
-      setup.encoded = (setup.encoded===true?true:false);
-      setup.extendedFields = setup.extendedFields || "";
-      // if we have setup.fields, then we need to figure out the Type using $SP().list().info()
-      if (setup.fields && !setup.extendedFields) {
-        if (typeof setup.fields !== "object") throw "Error 'createFile': please refer to the documentation regarding `fields`";
-        _this.list(setup.library).info(function(fields) {
-          // we use extendedFields to define the Type
-          for (var i=fields.length; i--;) {
-            if (setup.fields[fields[i]["StaticName"]]) {
-              setup.extendedFields += '<FieldInformation Type="'+fields[i]["Type"]+'" Value="'+setup.fields[fields[i]["StaticName"]]+'" DisplayName="'+fields[i]["StaticName"]+'" InternalName="'+fields[i]["StaticName"]+'" />'
-            }
-          }
-          if (!setup.extendedFields) delete setup.fields;
-          _this.createFile(setup);
-        });
-        return _this;
-      }
-      var destination = "/" + setup.library + "/" + setup.filename;
-      destination = setup.url + destination.replace(/\/\//g,"/");
-      var soapEnv = "<SourceUrl>http://null</SourceUrl>"
-                    +"<DestinationUrls><string>"+destination+"</string></DestinationUrls>"
-                    +'<Fields><FieldInformation Type="File" />'+setup.extendedFields+'</Fields>'
-                    +"<Stream>"+(setup.encoded?setup.content:_this.encode_b64(setup.content))+"</Stream>"
-      soapEnv = _this._buildBodyForSOAP("CopyIntoItems", soapEnv);
-      _this.ajax({
-        url: setup.url + "/_vti_bin/copy.asmx",
-        type: "POST",
-        dataType: "xml",
-        data: soapEnv,
-        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/CopyIntoItems'); },
-        contentType: "text/xml; charset=\"utf-8\"",
-        success:function(data) {
-          var a = data.getElementsByTagName('CopyResult');
-          var error;
-          if (a && a[0] && a[0].getAttribute("ErrorCode") !== "Success") {
-            error="Error 'createFile': "+a[0].getAttribute("ErrorCode")+" - "+a[0].getAttribute("ErrorMessage");
-            if (typeof setup.error === "function") setup.error.call(_this, destination, error);
-          } else {
-            if (typeof setup.success === "function") setup.success.call(_this, destination);
-          }
-
-          if (typeof setup.after === "function") setup.after.call(_this, destination, error);
-        },
-        error:function(qXHR, textStatus, errorThrown) {
-          if (typeof setup.error === "function") setup.error.call(_this, destination, errorThrown);
-          if (typeof setup.after === "function") setup.after.call(_this, destination, errorThrown);
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // default values
+        setup     = setup || {};
+        if (setup.content === undefined) throw "Error 'createFile': not able to find the file content.";
+        if (setup.filename === undefined) throw "Error 'createFile': not able to find the filename.";
+        if (setup.library === undefined) {
+          if (_this.listID === undefined) throw "Error 'createFile': not able to find the library name.";
+          setup.library = _this.listID;
         }
-      });
+        setup.url = setup.url || _this.url;
+        // if we didn't define the url in the parameters, then we need to find it
+        if (!setup.url) {
+          if (_this.hasPromise) {
+            _this._getURL().then(function() {
+              _this.createFile(setup).then(function(res) {
+                prom_resolve(res);
+              })
+            });
+          } else {
+            _this._getURL();
+            _this._addInQueue(arguments);
+          }
+          return;
+        }
 
-      return _this;
+        // deal with Promise/callbacks
+        if (setup.useCallback !== false && (typeof setup.after === "function" || !prom_resolve)) { // if we ask for a callback, or if no Promise, no callback, no jQuery
+          setup.useCallback = true;
+        } else {
+          setup.useCallback = false;
+        }
+        if (!prom_resolve) prom_resolve=prom_reject=function(){};
+        setup.after   = setup.after || function(){};
+        setup.success = setup.success || function(){};
+        setup.error   = setup.error || function(){};
+        setup.encoded = (setup.encoded===true?true:false);
+        setup.extendedFields = setup.extendedFields || "";
+        // if we have setup.fields, then we need to figure out the Type using $SP().list().info()
+        if (setup.fields && !setup.extendedFields) {
+          if (typeof setup.fields !== "object") throw "Error 'createFile': please refer to the documentation regarding `fields`";
+          _this.list(setup.library, setup.url).info(function(fields) {
+            // we use extendedFields to define the Type
+            for (var i=fields.length; i--;) {
+              if (setup.fields[fields[i]["StaticName"]]) {
+                setup.extendedFields += '<FieldInformation Type="'+fields[i]["Type"]+'" Value="'+setup.fields[fields[i]["StaticName"]]+'" DisplayName="'+fields[i]["StaticName"]+'" InternalName="'+fields[i]["StaticName"]+'" />'
+              }
+            }
+            if (!setup.extendedFields) delete setup.fields;
+            if (setup.useCallback) _this.createFile(setup);
+            else _this.createFile(setup).then(function(res) { prom_resolve(res) })
+          });
+          return;
+        }
+        var destination = "/" + setup.library + "/" + setup.filename
+        destination = (setup.url + destination).replace(/([^:]\/)\//g,"$1");
+        if (destination.slice(0,4) !== "http") destination=window.location.protocol + "//" + window.location.host + destination;
+        var soapEnv = "<SourceUrl>http://null</SourceUrl>"
+                      +"<DestinationUrls><string>"+destination+"</string></DestinationUrls>"
+                      +'<Fields><FieldInformation Type="File" />'+setup.extendedFields+'</Fields>'
+                      +"<Stream>"+(setup.encoded?setup.content:_this.encode_b64(setup.content))+"</Stream>"
+        soapEnv = _this._buildBodyForSOAP("CopyIntoItems", soapEnv);
+        _this.ajax({
+          url: setup.url + "/_vti_bin/copy.asmx",
+          type: "POST",
+          dataType: "xml",
+          data: soapEnv,
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/CopyIntoItems'); },
+          contentType: "text/xml; charset=\"utf-8\"",
+          success:function(data) {
+            var a = data.getElementsByTagName('CopyResult');
+            var error;
+            if (a && a[0] && a[0].getAttribute("ErrorCode") !== "Success") {
+              error="Error 'createFile' ("+destination+"): "+a[0].getAttribute("ErrorCode")+" - "+a[0].getAttribute("ErrorMessage");
+              setup.error.call(_this, destination, error);
+              prom_reject(error);
+            } else {
+              setup.success.call(_this, destination);
+              prom_resolve(destination);
+            }
+
+            if (setup.useCallback) setup.after.call(_this, destination, error);
+          },
+          error:function(qXHR, textStatus, errorThrown) {
+            setup.error.call(_this, destination, errorThrown);
+            if (setup.useCallback) setup.after.call(_this, destination, errorThrown);
+            else prom_reject(errorThrown);
+          }
+        });
+      })
     },
     /**
       @name $SP().createFolder
@@ -1781,11 +1910,11 @@ if (typeof jQuery === "function") {
       @category files
       @description Create a folter in a Document library
 
-      @param {Object} setup Options (see below)
+      @param {Object|String} setup Options (see below), or the folder name when using with $SP().list()
         @param {String} setup.path The relative path to the new folder
         @param {String} setup.library The name of the Document Library
         @param {String} [setup.url='current website'] The website url
-        @param {Function} [setup.after=function(){}] A callback function that will be triggered after the task
+        @param {Function} [setup.after=function(passed,failed){}] A callback function that will be triggered after the task
 
       @example
       // create a folder called "first" at the root of the Shared Documents library
@@ -1806,30 +1935,72 @@ if (typeof jQuery === "function") {
         after:function() { alert("Folder created!"); }
       });
 
-      // Note: To delete a folder you can use $SP().list().remove()
+      // you can also use $SP().list()
+      $SP().list("Shared Documents", "http://my.web.site").createFolder("first/second").then(function(results) {
+        results.forEach(function(folder) {
+          if (folder.errorMessage) console.log("The folder << "+folder.BaseName+" >> hasn't been created: "+folder.errorMessage)
+          else console.log("The folder << "+folder.BaseName+" >> has been created") })
+        })
+      })
+
+      // Note: To delete a folder you can use $SP().list().remove() with ID and FileRef parameters
     */
     createFolder:function(setup) {
       // default values
-      setup     = setup || {};
-      if (setup.path == undefined) throw "Error 'createFolder': please provide the 'path'.";
-      if (setup.library == undefined) throw "Error 'createFolder': please provide the library name.";
-      setup.url = setup.url || this.url;
-      // if we didn't define the url in the parameters, then we need to find it
-      if (!setup.url) {
-        this._getURL();
-        return this._addInQueue(arguments);
-      }
-      if (setup.url == undefined) throw "Error 'createFolder': not able to find the URL!"; // we cannot determine the url
-      setup.after = setup.after || (function(){});
+      var _this=this;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        setup = setup || {};
+        if (typeof setup === "string") setup={path:setup};
+        if (setup.path == undefined) throw "Error 'createFolder': please provide the 'path'.";
+        if (setup.library === undefined) {
+          if (_this.listID === undefined) throw "Error 'createFolder': not able to find the library name.";
+          setup.library = _this.listID;
+        }
+        var useCallback=false;
+        if (typeof setup.after == "function") useCallback=true;
+        else setup.after=function(){};
+        setup.url = setup.url || _this.url;
+        // if we didn't define the url in the parameters, then we need to find it
+        if (!setup.url) {
+          if (_this.hasPromise) {
+            _this._getURL().then(function() {
+              _this.createFolder(setup).then(function(res) {
+                prom_resolve(res);
+              })
+            });
+          } else {
+            _this._getURL();
+            _this._addInQueue(arguments);
+          }
+          return;
+        }
+        // split the path based on '/'
+        var path = setup.path, toAdd=[], tmpPath="";
+        // trim "/" at the beginning and end
+        if (path.charAt(0)==="/") path=path.slice(1);
+        if (path.slice(-1)==="/") path=path.slice(0,-1);
+        path=path.split('/');
+        for (var i=0; i<path.length; i++) {
+          tmpPath += (i>0?'/':'') + path[i];
+          toAdd.push({FSObjType:1, BaseName:tmpPath})
+        }
 
-      // split the path based on '/'
-      var path = setup.path.split('/'), toAdd=[], tmpPath="";
-      for (var i=0; i<path.length; i++) {
-        tmpPath += (i>0?'/':'') + path[i];
-        toAdd.push({FSObjType:1, BaseName:tmpPath})
-      }
-      this.list(setup.library, setup.url).add(toAdd, {after:setup.after})
-      return this;
+        if (useCallback) {
+          _this.list(setup.library, setup.url).add(toAdd, {
+            after:function(passed,failed) { setup.after(passed,failed) }
+          });
+        }
+        else _this.list(setup.library, setup.url).add(toAdd).then(function(res) {
+          var folders = [];
+          SPArrayForEach(res, function(re) {
+            SPArrayForEach(re, function(r) {
+              if (SPIsArray(r)) folders=folders.concat(r)
+              else folders.push(r)
+            })
+          });
+          prom_resolve(folders)
+        });
+      })
     },
     /**
       @name $SP().checkin
@@ -1970,29 +2141,30 @@ if (typeof jQuery === "function") {
       // do the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      _this.ajax({type: "POST",
-                   cache: false,
-                   async: true,
-                   url: url,
-                   data: body,
-                   contentType: "text/xml; charset=utf-8",
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection'); },
-                   dataType: "xml",
-                   success:function(data) {
-                      var a = data.getElementsByTagName('Attachment');
-                      for (var i=0; i < a.length; i++) aReturn.push(a[i].firstChild.nodeValue);
-                      if (aReturn.length===0) aReturn="";
-                      else if (aReturn.length===1) aReturn=aReturn[0]
-                      passed.push(aReturn);
-                      // if we don't have any more attachment to search for
-                      if (itemID.length===0) {
-                        if (typeof fct === "function") fct.call(_this,passed);
-                      } else {
-                        // we have more attachments to find
-                        _this.getAttachment(itemID,fct,passed)
-                      }
-                   }
-                 });
+      _this.ajax({
+        type: "POST",
+        cache: false,
+        async: true,
+        url: url,
+        data: body,
+        contentType: "text/xml; charset=utf-8",
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection'); },
+        dataType: "xml",
+        success:function(data) {
+          var a = data.getElementsByTagName('Attachment');
+          for (var i=0; i < a.length; i++) aReturn.push(a[i].firstChild.nodeValue);
+          if (aReturn.length===0) aReturn="";
+          else if (aReturn.length===1) aReturn=aReturn[0]
+          passed.push(aReturn);
+          // if we don't have any more attachment to search for
+          if (itemID.length===0) {
+            if (typeof fct === "function") fct.call(_this,passed);
+          } else {
+            // we have more attachments to find
+            _this.getAttachment(itemID,fct,passed)
+          }
+        }
+      });
       return this;
     },
     /**
@@ -2035,34 +2207,33 @@ if (typeof jQuery === "function") {
       // do the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      _this.ajax({type: "POST",
-                   cache: false,
-                   async: true,
-                   url: url,
-                   data: body,
-                   contentType: "text/xml; charset=utf-8",
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListContentTypes'); },
-                   dataType: "xml",
-                   success:function(data) {
-                     var arr = data.getElementsByTagName('ContentType');
-                     var ID;
-                     for (var i=0; i < arr.length; i++) {
-                       ID = arr[i].getAttribute("ID");
-                       if (ID) {
-                         aReturn.push({
-                           "ID":ID,
-                           "Name":arr[i].getAttribute("Name"),
-                           "Description":arr[i].getAttribute("Description")
-                         });
-                       }
-                     }
-
-                     // we cache the result
-                     _SP_CACHE_CONTENTTYPES.push({"list":_this.listID, "url":_this.url, "contentTypes":aReturn});
-
-                     if (typeof fct === "function") fct.call(_this,aReturn);
-                   }
-                 });
+      _this.ajax({
+        type: "POST",
+        cache: false,
+        async: true,
+        url: url,
+        data: body,
+        contentType: "text/xml; charset=utf-8",
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListContentTypes'); },
+        dataType: "xml",
+        success:function(data) {
+          var arr = data.getElementsByTagName('ContentType');
+          var ID;
+          for (var i=0; i < arr.length; i++) {
+            ID = arr[i].getAttribute("ID");
+            if (ID) {
+              aReturn.push({
+                "ID":ID,
+                "Name":arr[i].getAttribute("Name"),
+                "Description":arr[i].getAttribute("Description")
+              });
+            }
+          }
+          // we cache the result
+          _SP_CACHE_CONTENTTYPES.push({"list":_this.listID, "url":_this.url, "contentTypes":aReturn});
+          if (typeof fct === "function") fct.call(_this,aReturn);
+        }
+      });
       return this;
     },
     /**
@@ -2129,66 +2300,63 @@ if (typeof jQuery === "function") {
       // do the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      _this.ajax({type: "POST",
-                   cache: false,
-                   async: true,
-                   url: url,
-                   data: body,
-                   contentType: "text/xml; charset=utf-8",
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListContentType'); },
-                   dataType: "xml",
-                   success:function(data) {
-                     var arr = data.getElementsByTagName('Field');
-                     var index = 0, aIndex, attributes, attrName, lenDefault;
-                     for (var i=0; i < arr.length; i++) {
-                       if (arr[i].getAttribute("ID")) {
-                         aReturn[index] = [];
-                         aIndex=aReturn[index];
-                         attributes=arr[i].attributes;
-                         for (var j=attributes.length; j--;) {
-                           attrName=attributes[j].nodeName;
-                           attrValue=attributes[j].nodeValue;
-                           if (attrName==="Type") {
-                             switch (attrValue) {
-                               case "Choice":
-                               case "MultiChoice": {
-                                 aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
-                                 var a=arr[i].getElementsByTagName("CHOICE");
-                                 var r=[];
-                                 for(var k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
-                                 aIndex["Choices"]=r;
-                                 break;
-                               }
-                               case "Lookup":
-                               case "LookupMulti":
-                                 aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
-                                 break;
-                               default:
-                                 aIndex["Choices"] = [];
-                             }
-                           }
-                           aIndex[attrName]= attrValue;
-                         }
-
-                         // find the default values
-                         lenDefault=arr[i].getElementsByTagName("Default").length;
-                         if (lenDefault>0) {
-                           nodeDefault=arr[i].getElementsByTagName("Default");
-                           aReturn[index]["DefaultValue"]=[];
-                           for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
-                           if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
-                         } else aReturn[index]["DefaultValue"]=null;
-
-                         index++;
-                       }
-                     }
-
-                     // we cache the result
-                     _SP_CACHE_CONTENTTYPE.push({"list":_this.listID, "url":_this.url, "contentType":contentType, "info":aReturn});
-
-                     if (typeof fct == "function") fct.call(_this,aReturn);
-                   }
-                 });
+      _this.ajax({
+        type: "POST",
+        cache: false,
+        async: true,
+        url: url,
+        data: body,
+        contentType: "text/xml; charset=utf-8",
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListContentType'); },
+        dataType: "xml",
+        success:function(data) {
+          var arr = data.getElementsByTagName('Field');
+          var index = 0, aIndex, attributes, attrName, lenDefault, attrValue, nodeDefault;
+          for (var i=0; i < arr.length; i++) {
+            if (arr[i].getAttribute("ID")) {
+              aReturn[index] = [];
+              aIndex=aReturn[index];
+              attributes=arr[i].attributes;
+              for (var j=attributes.length; j--;) {
+                attrName=attributes[j].nodeName;
+                attrValue=attributes[j].nodeValue;
+                if (attrName==="Type") {
+                  switch (attrValue) {
+                    case "Choice":
+                    case "MultiChoice": {
+                      aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
+                      var a=arr[i].getElementsByTagName("CHOICE");
+                      var r=[];
+                      for(var k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
+                      aIndex["Choices"]=r;
+                      break;
+                    }
+                    case "Lookup":
+                    case "LookupMulti":
+                      aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
+                      break;
+                    default:
+                      aIndex["Choices"] = [];
+                  }
+                }
+                aIndex[attrName]= attrValue;
+              }
+              // find the default values
+              lenDefault=arr[i].getElementsByTagName("Default").length;
+              if (lenDefault>0) {
+                nodeDefault=arr[i].getElementsByTagName("Default");
+                aReturn[index]["DefaultValue"]=[];
+                for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
+                if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
+              } else aReturn[index]["DefaultValue"]=null;
+              index++;
+            }
+          }
+          // we cache the result
+          _SP_CACHE_CONTENTTYPE.push({"list":_this.listID, "url":_this.url, "contentType":contentType, "info":aReturn});
+          if (typeof fct == "function") fct.call(_this,aReturn);
+        }
+      })
       return this;
     },
     /**
@@ -2222,63 +2390,64 @@ if (typeof jQuery === "function") {
       // do the request
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      _this.ajax({type: "POST",
-                   cache: false,
-                   async: true,
-                   url: url,
-                   data: body,
-                   contentType: "text/xml; charset=utf-8",
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetList'); },
-                   dataType: "xml",
-                   success:function(data) {
-                     var arr = data.getElementsByTagName('Field');
-                     var index = 0, aIndex, attributes, attrName, lenDefault;
-                     for (var i=0; i < arr.length; i++) {
-                       if (arr[i].getAttribute("ID")) {
-                         aReturn[index] = [];
-                         aIndex=aReturn[index];
-                         attributes=arr[i].attributes;
-                         for (var j=attributes.length; j--;) {
-                           attrName=attributes[j].nodeName;
-                           attrValue=attributes[j].nodeValue;
-                           if (attrName==="Type") {
-                             switch (attrValue) {
-                               case "Choice":
-                               case "MultiChoice": {
-                                 aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
-                                 var a=arr[i].getElementsByTagName("CHOICE");
-                                 var r=[];
-                                 for(var k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
-                                 aIndex["Choices"]=r;
-                                 break;
-                               }
-                               case "Lookup":
-                               case "LookupMulti":
-                                 aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
-                                 break;
-                               default:
-                                 aIndex["Choices"] = [];
-                             }
-                           }
-                           aIndex[attrName]= attrValue;
-                         }
+      _this.ajax({
+        type: "POST",
+        cache: false,
+        async: true,
+        url: url,
+        data: body,
+        contentType: "text/xml; charset=utf-8",
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetList'); },
+        dataType: "xml",
+        success:function(data) {
+          var arr = data.getElementsByTagName('Field');
+          var index = 0, aIndex, attributes, attrName, attrValue, lenDefault, nodeDefault;
+          for (var i=0; i < arr.length; i++) {
+            if (arr[i].getAttribute("ID")) {
+              aReturn[index] = [];
+              aIndex=aReturn[index];
+              attributes=arr[i].attributes;
+              for (var j=attributes.length; j--;) {
+                attrName=attributes[j].nodeName;
+                attrValue=attributes[j].nodeValue;
+                if (attrName==="Type") {
+                  switch (attrValue) {
+                    case "Choice":
+                    case "MultiChoice": {
+                      aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
+                      var a=arr[i].getElementsByTagName("CHOICE");
+                      var r=[];
+                      for(var k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
+                      aIndex["Choices"]=r;
+                      break;
+                    }
+                    case "Lookup":
+                    case "LookupMulti":
+                      aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
+                      break;
+                    default:
+                      aIndex["Choices"] = [];
+                  }
+                }
+                aIndex[attrName]= attrValue;
+              }
 
-                         // find the default values
-                         lenDefault=arr[i].getElementsByTagName("Default").length;
-                         if (lenDefault>0) {
-                           nodeDefault=arr[i].getElementsByTagName("Default");
-                           aReturn[index]["DefaultValue"]=[];
-                           for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
-                           if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
-                         } else aReturn[index]["DefaultValue"]=null;
+              // find the default values
+              lenDefault=arr[i].getElementsByTagName("Default").length;
+              if (lenDefault>0) {
+                nodeDefault=arr[i].getElementsByTagName("Default");
+                aReturn[index]["DefaultValue"]=[];
+                for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
+                if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
+              } else aReturn[index]["DefaultValue"]=null;
 
-                         index++;
-                       }
-                     }
+              index++;
+            }
+          }
 
-                     if (typeof fct == "function") fct.call(_this,aReturn);
-                   }
-                 });
+          if (typeof fct == "function") fct.call(_this,aReturn);
+        }
+      });
       return this;
     },
     /**
@@ -2340,42 +2509,43 @@ if (typeof jQuery === "function") {
       // do the request
       var url = this.url + "/_vti_bin/Views.asmx";
       var aReturn = ["fields","orderby","whereCAML"];
-      _this.ajax({type: "POST",
-                   cache: false,
-                   async: true,
-                   url: url,
-                   data: body,
-                   contentType: "text/xml; charset=utf-8",
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetView'); },
-                   dataType: "xml",
-                   success:function(data) {
-                     aReturn.fields=[]
-                     var arr = data.getElementsByTagName('ViewFields')[0].getElementsByTagName('FieldRef');
-                     for (var i=0; i < arr.length; i++) aReturn.fields.push(arr[i].getAttribute("Name"));
+      _this.ajax({
+        type: "POST",
+        cache: false,
+        async: true,
+        url: url,
+        data: body,
+        contentType: "text/xml; charset=utf-8",
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetView'); },
+        dataType: "xml",
+        success:function(data) {
+          aReturn.fields=[]
+          var arr = data.getElementsByTagName('ViewFields')[0].getElementsByTagName('FieldRef');
+          for (var i=0; i < arr.length; i++) aReturn.fields.push(arr[i].getAttribute("Name"));
 
-                     aReturn.orderby="";
-                     arr = data.getElementsByTagName('OrderBy');
-                     if (arr.length) {
-                       var orderby=[];
-                       arr = arr[0].getElementsByTagName('FieldRef');
-                       for (var i=0; i<arr.length; i++) orderby.push(arr[i].getAttribute("Name")+" "+(arr[i].getAttribute("Ascending")==undefined?"ASC":"DESC"));
-                       aReturn.orderby=orderby.join(",");
-                     }
+          aReturn.orderby="";
+          arr = data.getElementsByTagName('OrderBy');
+          if (arr.length) {
+            var orderby=[];
+            arr = arr[0].getElementsByTagName('FieldRef');
+            for (i=0; i<arr.length; i++) orderby.push(arr[i].getAttribute("Name")+" "+(arr[i].getAttribute("Ascending")==undefined?"ASC":"DESC"));
+            aReturn.orderby=orderby.join(",");
+          }
 
-                     aReturn.whereCAML="";
-                     var where=data.getElementsByTagName('Where');
-                     if (where.length) {
-                       where=where[0].xml || (new XMLSerializer()).serializeToString(where[0]);
-                       where=where.match(/<Where [^>]+>(.*)<\/Where>/);
-                       if(where.length==2) aReturn.whereCAML=where[1];
-                     }
+          aReturn.whereCAML="";
+          var where=data.getElementsByTagName('Where');
+          if (where.length) {
+            where=where[0].xml || (new XMLSerializer()).serializeToString(where[0]);
+            where=where.match(/<Where [^>]+>(.*)<\/Where>/);
+            if(where.length==2) aReturn.whereCAML=where[1];
+          }
 
-                     // cache the data
-                     _SP_CACHE_SAVEDVIEW.push({url:_this.url,list:list,data:aReturn,viewID:viewID,viewName:viewName});
+          // cache the data
+          _SP_CACHE_SAVEDVIEW.push({url:_this.url,list:list,data:aReturn,viewID:viewID,viewName:viewName});
 
-                     if (typeof fct == "function") fct.call(_this,aReturn,viewID);
-                   }
-                 });
+          if (typeof fct == "function") fct.call(_this,aReturn,viewID);
+        }
+      });
       return this;
     },
     /**
@@ -2422,31 +2592,32 @@ if (typeof jQuery === "function") {
       // do the request
       var url = _this.url + "/_vti_bin/Views.asmx";
       var aReturn = [];
-      _this.ajax({type: "POST",
-                   cache: false,
-                   async: true,
-                   url: url,
-                   data: body,
-                   contentType: "text/xml; charset=utf-8",
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetViewCollection'); },
-                   dataType: "xml",
-                   success:function(data) {
-                    var arr = data.getElementsByTagName('View');
-                    for (var i=0; i < arr.length; i++) {
-                      aReturn[i] = [];
-                      aReturn[i]["ID"] = arr[i].getAttribute("Name");
-                      aReturn[i]["Name"] = arr[i].getAttribute("DisplayName");
-                      aReturn[i]["Url"] = arr[i].getAttribute("Url");
-                      aReturn[i]["Node"] = arr[i]
-                    }
+      _this.ajax({
+        type: "POST",
+        cache: false,
+        async: true,
+        url: url,
+        data: body,
+        contentType: "text/xml; charset=utf-8",
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetViewCollection'); },
+        dataType: "xml",
+        success:function(data) {
+          var arr = data.getElementsByTagName('View');
+          for (var i=0; i < arr.length; i++) {
+            aReturn[i] = [];
+            aReturn[i]["ID"] = arr[i].getAttribute("Name");
+            aReturn[i]["Name"] = arr[i].getAttribute("DisplayName");
+            aReturn[i]["Url"] = arr[i].getAttribute("Url");
+            aReturn[i]["Node"] = arr[i]
+          }
 
-                    // save the data into the DOM for later usage
-                    if (options.cache === true) {
-                      _SP_CACHE_SAVEDVIEWS.push({url:_this.url,listID:_this.listID,data:aReturn});
-                    }
-                    fct.call(_this,aReturn);
-                   }
-                 });
+          // save the data into the DOM for later usage
+          if (options.cache === true) {
+            _SP_CACHE_SAVEDVIEWS.push({url:_this.url,listID:_this.listID,data:aReturn});
+          }
+          fct.call(_this,aReturn);
+        }
+      });
       return this;
     },
     /**
@@ -2498,30 +2669,31 @@ if (typeof jQuery === "function") {
       // do the request
       var url = _this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
-      _this.ajax({type:"POST",
-                   cache:false,
-                   async:true,
-                   url:url,
-                   data:body,
-                   contentType:"text/xml; charset=utf-8",
-                   beforeSend:function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListCollection'); },
-                   dataType:"xml",
-                   success:function(data) {
-                    var arr = data.getElementsByTagName('List');
-                    for (var i=0; i < arr.length; i++) {
-                      aReturn[i] = [];
-                      aReturn[i]["ID"] = arr[i].getAttribute("ID");
-                      aReturn[i]["Name"] = arr[i].getAttribute("Title");
-                      aReturn[i]["Url"] = arr[i].getAttribute("DefaultViewUrl");
-                      aReturn[i]["Description"] = arr[i].getAttribute("Description");
-                    }
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        async:true,
+        url:url,
+        data:body,
+        contentType:"text/xml; charset=utf-8",
+        beforeSend:function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListCollection'); },
+        dataType:"xml",
+        success:function(data) {
+          var arr = data.getElementsByTagName('List');
+          for (var i=0; i < arr.length; i++) {
+            aReturn[i] = [];
+            aReturn[i]["ID"] = arr[i].getAttribute("ID");
+            aReturn[i]["Name"] = arr[i].getAttribute("Title");
+            aReturn[i]["Url"] = arr[i].getAttribute("DefaultViewUrl");
+            aReturn[i]["Description"] = arr[i].getAttribute("Description");
+          }
 
-                    // save the data into the DOM for later usage
-                    savedLists.push({url:_this.url,data:aReturn});
-                    _SP_CACHE_SAVEDLISTS = savedLists;
-                    if (typeof fct == "function") fct.call(_this,aReturn);
-                   }
-                 });
+          // save the data into the DOM for later usage
+          savedLists.push({url:_this.url,data:aReturn});
+          _SP_CACHE_SAVEDLISTS = savedLists;
+          if (typeof fct == "function") fct.call(_this,aReturn);
+        }
+      });
       return this;
     },
     /**
@@ -2541,12 +2713,14 @@ if (typeof jQuery === "function") {
                    note: You cannot change the Approval Status when adding, you need to use the $SP().moderate function
 
       @param {Object|Array} items List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])
-      @param {Object} [setup] Options (see below)
-        @param {Function} [setup.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
-        @param {Function} [setup.success] A function with the items added sucessfully
-        @param {Function} [setup.error] A function with the items not added
-        @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
-        @param {Boolean} [setup.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
+      @param {Object} [options] Options (see below)
+        @param {Number} [setup.packetsize=15] If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+        @param {Function} [options.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
+        @param {Function} [options.success] A function with the items added sucessfully
+        @param {Function} [options.error] A function with the items not added
+        @param {Function} [options.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
+        @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
+      @return {Promise}
 
       @example
       $SP().list("My List").add({Title:"Ok"});
@@ -2563,116 +2737,126 @@ if (typeof jQuery === "function") {
       $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
       $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
     */
-    add:function(items, setup) {
-      // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
-      if (arguments.length===0 || (arguments.length===1 && typeof items !== "object"))
-        throw "Error 'add': you need to define the list of items";
-      if (this.listID===undefined) throw "Error 'add': you need to use list() to define the list name.";
-
-      // default values
-      setup         = setup || {};
-      if (this.url == undefined) throw "Error 'add': not able to find the URL!"; // we cannot determine the url
-      setup.success = setup.success || (function() {});
-      setup.error   = setup.error || (function() {});
-      setup.after   = setup.after || (function() {});
-      setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
-      setup.progress= setup.progress || (function() {});
-
-      if (typeof items === "object" && items.length==undefined) items = [ items ];
-      var itemsLength=items.length;
-
-      // define current and max for the progress
-      setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spAdd"+(""+Math.random()).slice(2)};
-      // we cannot add more than 15 items in the same time, so split by 15 elements
-      // and also to avoid surcharging the server
-      if (itemsLength > 15) {
-        var nextPacket=items.slice(0);
-        var cutted=nextPacket.splice(0,15);
-        var _this=this;
-        _SP_ADD_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
-          _this.add(nextPacket,setup);
-        };
-        this.add(cutted,setup);
-        return this;
-      } else if (itemsLength == 0) {
-        setup.progress(1,1);
-        setup.error([]);
-        setup.success([]);
-        setup.after([], []);
-        return this;
-      }
-
-      // increment the progress
-      setup.progressVar.current += itemsLength;
-
-      // build a part of the request
-      var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
-      var _this = this;
-      var itemKey, itemValue, it;
-      for (var i=0; i < items.length; i++) {
-        updates += '<Method ID="'+(i+1)+'" Cmd="New">';
-        updates += '<Field Name=\'ID\'>New</Field>';
-        for (it in items[i]) {
-          if (items[i].hasOwnProperty(it)) {
-            itemKey = it;
-            itemValue = items[i][it];
-            if (SPIsArray(itemValue)) itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
-            if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
-            updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
-          }
-        }
-        updates += '</Method>';
-      }
-      updates += '</Batch>';
-
+    add:function(items, options) {
       var _this=this;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // check if we need to queue it
+        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (arguments.length===0 || (arguments.length===1 && typeof items !== "object"))
+          throw "Error 'add': you need to define the list of items";
+        if (_this.listID===undefined) throw "Error 'add': you need to use list() to define the list name.";
 
-      // build the request
-      var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
-      // send the request
-      var url = _this.url + "/_vti_bin/lists.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   async:true,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
-                   contentType:"text/xml; charset=utf-8",
-                   dataType:"xml",
-                   success:function(data) {
-                     var result = data.getElementsByTagName('Result');
-                     var len=result.length;
-                     var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
-                     for (var i=0; i < len; i++) {
-                       if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") { // success
-                         var rows=result[i].getElementsByTagName('z:row');
-                         if (rows.length==0) rows=result[i].getElementsByTagName('row'); // for Chrome 'bug'
-                         if (items[i]) {
-                           items[i].ID = rows[0].getAttribute("ows_ID");
-                           passed.push(items[i]);
-                         }
-                       } else if (items[i]) {
-                         items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
-                         failed.push(items[i]);
-                       }
-                     }
+        // default values
+        var setup={};
+        SPExtend(true, setup, options);
+        if (_this.url == undefined) throw "Error 'add': not able to find the URL!"; // we cannot determine the url
+        // deal with Promise/callbacks
+        if (setup.useCallback !== false && (typeof setup.after === "function" || !prom_resolve)) { // if we ask for a callback, or if no Promise, no callback, no jQuery
+          setup.useCallback = true;
+        } else {
+          setup.useCallback = false;
+        }
+        setup.success = setup.success || (function() {});
+        setup.error   = setup.error || (function() {});
+        setup.after   = setup.after || (function() {});
+        setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
+        setup.progress= setup.progress || (function() {});
+        setup.packetsize=setup.packetsize||15;
 
-                     setup.progress(setup.progressVar.current,setup.progressVar.max);
-                     // check if we have some other packets that are waiting to be treated
-                     if (setup.progressVar.current < setup.progressVar.max) {
-                       if (_SP_ADD_PROGRESSVAR[setup.progressVar.eventID]) {
-                         _SP_ADD_PROGRESSVAR[setup.progressVar.eventID](setup);
-                       }
-                     } else {
-                      if (failed.length>0) setup.error.call(_this,failed);
-                      if (passed.length>0) setup.success.call(_this,passed);
-                      setup.after.call(_this, passed, failed);
-                      if (_SP_ADD_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_ADD_PROGRESSVAR[setup.progressVar.eventID];
-                     }
-                   }
-                 });
-      return this;
+        if (typeof items === "object" && items.length==undefined) items = [ items ];
+        var itemsLength=items.length;
+
+        // define current and max for the progress
+        setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spAdd"+(""+Math.random()).slice(2)};
+        // we cannot add more than 15 items in the same time, so split by 15 elements
+        // and also to avoid surcharging the server
+        if (itemsLength > setup.packetsize) {
+          var nextPacket=items.slice(0);
+          var cutted=nextPacket.splice(0,setup.packetsize);
+          _SP_ADD_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
+            return _this.add(nextPacket,setup);
+          };
+          items = cutted;
+          itemsLength = items.length;
+        } else if (itemsLength == 0) {
+          setup.progress(1,1);
+          setup.error([]);
+          setup.success([]);
+          if (setup.useCallback) setup.after([], []);
+          else prom_resolve([[], []])
+          return;
+        }
+
+        // increment the progress
+        setup.progressVar.current += itemsLength;
+
+        // build a part of the request
+        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
+        var itemKey, itemValue, it;
+        for (var i=0; i < items.length; i++) {
+          updates += '<Method ID="'+(i+1)+'" Cmd="New">';
+          updates += '<Field Name=\'ID\'>New</Field>';
+          for (it in items[i]) {
+            if (items[i].hasOwnProperty(it)) {
+              itemKey = it;
+              itemValue = items[i][it];
+              if (SPIsArray(itemValue)) itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
+              if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
+              updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
+            }
+          }
+          updates += '</Method>';
+        }
+        updates += '</Batch>';
+
+        // build the request
+        var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
+        // send the request
+        var url = _this.url + "/_vti_bin/lists.asmx";
+        _this.ajax({
+          type:"POST",
+          cache:false,
+          async:true,
+          url:url,
+          data:body,
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
+          contentType:"text/xml; charset=utf-8",
+          dataType:"xml",
+          success:function(data) {
+            var result = data.getElementsByTagName('Result');
+            var len=result.length;
+            var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
+            for (var i=0; i < len; i++) {
+              if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") { // success
+                var rows=result[i].getElementsByTagName('z:row');
+                if (rows.length==0) rows=result[i].getElementsByTagName('row'); // for Chrome 'bug'
+                if (items[i]) {
+                  items[i].ID = rows[0].getAttribute("ows_ID");
+                  passed.push(items[i]);
+                }
+              } else if (items[i]) {
+                items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
+                failed.push(items[i]);
+              }
+            }
+
+            setup.progress(setup.progressVar.current,setup.progressVar.max);
+            // check if we have some other packets that are waiting to be treated
+            if (setup.progressVar.current < setup.progressVar.max) {
+              if (_SP_ADD_PROGRESSVAR[setup.progressVar.eventID]) {
+                if (setup.useCallback) _SP_ADD_PROGRESSVAR[setup.progressVar.eventID](setup);
+                else _SP_ADD_PROGRESSVAR[setup.progressVar.eventID](setup).then(function(res) { prom_resolve(res) })
+              }
+            } else {
+              if (failed.length>0) setup.error.call(_this,failed);
+              if (passed.length>0) setup.success.call(_this,passed);
+              if (setup.useCallback) setup.after.call(_this, passed, failed);
+              else prom_resolve([passed, failed]);
+              if (_SP_ADD_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_ADD_PROGRESSVAR[setup.progressVar.eventID];
+            }
+          }
+        });
+      })
     },
     /**
       @name $SP().list.update
@@ -2699,13 +2883,14 @@ if (typeof jQuery === "function") {
       }});
     */
     update:function(items, setup) {
+      var _this=this;
       // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
-      if (this.listID===undefined) throw "Error 'update': you need to use list() to define the list name.";
+      if (_this.needQueue) { return _this._addInQueue(arguments) }
+      if (_this.listID===undefined) throw "Error 'update': you need to use list() to define the list name.";
 
       // default values
       setup         = setup || {};
-      if (this.url == undefined) throw "Error 'update': not able to find the URL!"; // we cannot determine the url
+      if (_this.url == undefined) throw "Error 'update': not able to find the URL!"; // we cannot determine the url
       setup.where   = setup.where || "";
       setup.success = setup.success || (function() {});
       setup.error   = setup.error || (function() {});
@@ -2720,7 +2905,6 @@ if (typeof jQuery === "function") {
       if (itemsLength == 1 && setup.where) {
         // call GET first
         delete items[0].ID;
-        var _this=this;
         this.get({fields:"ID",where:setup.where},function(data) {
           // we need a function to clone the items
           var clone = function(obj){
@@ -2738,7 +2922,7 @@ if (typeof jQuery === "function") {
           // now call again the UPDATE
           _this.update(aItems,setup);
         });
-        return this;
+        return _this;
       }
 
       // define current and max for the progress
@@ -2748,18 +2932,17 @@ if (typeof jQuery === "function") {
       if (itemsLength > 15) {
         var nextPacket=items.slice(0);
         var cutted=nextPacket.splice(0,15);
-        var _this=this;
         _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
           _this.update(nextPacket,setup);
         };
-        this.update(cutted,setup);
-        return this;
+        _this.update(cutted,setup);
+        return _this;
       } else if (itemsLength == 0) {
         setup.progress(1,1);
         setup.error([]);
         setup.success([]);
         setup.after([], []);
-        return this;
+        return _this;
       }
 
       // increment the progress
@@ -2767,7 +2950,6 @@ if (typeof jQuery === "function") {
 
       // build a part of the request
       var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
-      var _this = this;
       var itemKey, itemValue, it;
       for (var i=0; i < itemsLength; i++) {
         updates += '<Method ID="'+(i+1)+'" Cmd="Update">';
@@ -2785,48 +2967,47 @@ if (typeof jQuery === "function") {
       }
       updates += '</Batch>';
 
-      var _this=this;
-
       // build the request
       var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
       // send the request
-      var url = this.url + "/_vti_bin/lists.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   async:true,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var result = data.getElementsByTagName('Result');
-                     var len=result.length;
-                     var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
-                     for (var i=0; i < len; i++) {
-                       if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000" && items[i]) // success
-                         passed.push(items[i]);
-                       else if (items[i]) {
-                         items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
-                         failed.push(items[i]);
-                       }
-                     }
+      var url = _this.url + "/_vti_bin/lists.asmx";
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        async:true,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var result = data.getElementsByTagName('Result');
+          var len=result.length;
+          var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
+          for (var i=0; i < len; i++) {
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000" && items[i]) // success
+              passed.push(items[i]);
+            else if (items[i]) {
+              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
+              failed.push(items[i]);
+            }
+          }
 
-                     setup.progress(setup.progressVar.current,setup.progressVar.max);
-                     // check if we have some other packets that are waiting to be treated
-                     if (setup.progressVar.current < setup.progressVar.max) {
-                       if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) {
-                         _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID](setup);
-                       }
-                     }
-                     else {
-                       if (failed.length>0) setup.error.call(_this,failed);
-                       if (passed.length>0) setup.success.call(_this,passed);
-                       setup.after.call(_this, passed, failed);
-                       if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID];
-                     }
-                   }
-                 });
+          setup.progress(setup.progressVar.current,setup.progressVar.max);
+          // check if we have some other packets that are waiting to be treated
+          if (setup.progressVar.current < setup.progressVar.max) {
+            if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) {
+              _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID](setup);
+            }
+          }
+          else {
+            if (failed.length>0) setup.error.call(_this,failed);
+            if (passed.length>0) setup.success.call(_this,passed);
+            setup.after.call(_this, passed, failed);
+            if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID];
+          }
+        }
+      });
       return this;
     },
     /**
@@ -2849,9 +3030,10 @@ if (typeof jQuery === "function") {
       });
     */
     history:function(params, returnFct) {
+      var _this=this;
       // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
-      if (this.listID===undefined) throw "Error 'history': you need to use list() to define the list name.";
+      if (_this.needQueue) { return _this._addInQueue(arguments) }
+      if (_this.listID===undefined) throw "Error 'history': you need to use list() to define the list name.";
       if (arguments.length !== 2) throw "Error 'history': you need to provide two parameters.";
       if (typeof params !== "object") throw "Error 'history': the first parameter must be an object.";
       else {
@@ -2859,25 +3041,25 @@ if (typeof jQuery === "function") {
       }
       if (typeof returnFct !== "function") throw "Error 'history': the second parameter must be a function.";
 
-      var _this=this;
 
       // build the request
       var body = _this._buildBodyForSOAP("GetVersionCollection", "<strlistID>"+_this.listID+"</strlistID><strlistItemID>"+params.ID+"</strlistItemID><strFieldName>"+params.Name+"</strFieldName>")
       // send the request
-      var url = this.url + "/_vti_bin/lists.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   async:true,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetVersionCollection'); },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     returnFct.call(_this, data.getElementsByTagName('Version'))
-                   }
-                 });
-      return this;
+      var url = _this.url + "/_vti_bin/lists.asmx";
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        async:true,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetVersionCollection'); },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          returnFct.call(_this, data.getElementsByTagName('Version'))
+        }
+      });
+      return _this;
     },
     /**
       @name $SP().list.moderate
@@ -2986,46 +3168,47 @@ if (typeof jQuery === "function") {
       var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
       // send the request
       var url = _this.url + "/_vti_bin/lists.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   async:true,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var result = data.getElementsByTagName('Result');
-                     var len=result.length;
-                     var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
-                     var rows;
-                     for (var i=0; i < len; i++) {
-                       rows=result[i].getElementsByTagName('z:row');
-                       if (rows.length==0) rows=data.getElementsByTagName('row'); // for Chrome
-                       var item = myElem(rows[0]);
-                       if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
-                         passed.push(item);
-                       else {
-                         items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
-                         failed.push(items[i]);
-                       }
-                     }
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        async:true,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var result = data.getElementsByTagName('Result');
+          var len=result.length;
+          var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
+          var rows;
+          for (var i=0; i < len; i++) {
+            rows=result[i].getElementsByTagName('z:row');
+            if (rows.length==0) rows=data.getElementsByTagName('row'); // for Chrome
+            var item = myElem(rows[0]);
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
+              passed.push(item);
+            else {
+              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
+              failed.push(items[i]);
+            }
+          }
 
-                     setup.progress(setup.progressVar.current,setup.progressVar.max);
-                     // check if we have some other packets that are waiting to be treated
-                     if (setup.progressVar.current < setup.progressVar.max) {
-                       if (_SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID]) {
-                         _SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID](setup);
-                       }
-                     }
-                     else {
-                       if (passed.length>0) setup.success.call(_this,passed);
-                       if (failed.length>0) setup.error.call(_this,failed);
-                       setup.after.call(_this, passed, failed);
-                       if (_SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID];
-                     }
-                   }
-                 });
+          setup.progress(setup.progressVar.current,setup.progressVar.max);
+          // check if we have some other packets that are waiting to be treated
+          if (setup.progressVar.current < setup.progressVar.max) {
+            if (_SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID]) {
+              _SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID](setup);
+            }
+          }
+          else {
+            if (passed.length>0) setup.success.call(_this,passed);
+            if (failed.length>0) setup.error.call(_this,failed);
+            setup.after.call(_this, passed, failed);
+            if (_SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID];
+          }
+        }
+      });
       return this;
     },
     /**
@@ -3063,13 +3246,13 @@ if (typeof jQuery === "function") {
       $SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared Documents/something.xls"});
     */
     remove:function(items, setup) {
-      // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
       var _this=this;
+      // check if we need to queue it
+      if (_this.needQueue) { return _this._addInQueue(arguments) }
       // default values
       if (!setup && items.where) { setup=items; items=[]; } // the case when we use the "where"
       setup         = setup || {};
-      if (this.url == undefined) throw "Error 'remove': not able to find the URL!"; // we cannot determine the url
+      if (_this.url == undefined) throw "Error 'remove': not able to find the URL!"; // we cannot determine the url
       setup.error   = setup.error || (function() {});
       setup.success = setup.success || (function() {});
       setup.after   = setup.after || (function() {});
@@ -3095,7 +3278,7 @@ if (typeof jQuery === "function") {
             var it=clone(items[0]);
             it.ID=data[i].getAttribute("ID");
             fileRef=data[i].getAttribute("FileRef");
-            if (fileRef) it.FileRef=$SP().cleanResult(fileRef);
+            if (fileRef) it.FileRef=_this.cleanResult(fileRef);
             aItems.push(it);
           }
           // now call again the REMOVE
@@ -3143,42 +3326,43 @@ if (typeof jQuery === "function") {
       var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
       // send the request
       var url = _this.url + "/_vti_bin/lists.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   async:true,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var result = data.getElementsByTagName('Result');
-                     var len=result.length;
-                     var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
-                     for (var i=0; i < len; i++) {
-                       if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
-                         passed.push(items[i]);
-                       else {
-                         items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
-                         failed.push(items[i]);
-                       }
-                     }
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        async:true,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var result = data.getElementsByTagName('Result');
+          var len=result.length;
+          var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
+          for (var i=0; i < len; i++) {
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
+              passed.push(items[i]);
+            else {
+              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
+              failed.push(items[i]);
+            }
+          }
 
-                     setup.progress(setup.progressVar.current,setup.progressVar.max);
-                     // check if we have some other packets that are waiting to be treated
-                     if (setup.progressVar.current < setup.progressVar.max) {
-                       if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) {
-                         _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID](setup);
-                       }
-                     } else {
-                      if (failed.length>0) setup.error.call(_this,failed);
-                      if (passed.length>0) setup.success.call(_this,passed);
-                      setup.after.call(_this, passed, failed);
-                       if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID];
-                     }
-                   }
-                 });
-      return this;
+          setup.progress(setup.progressVar.current,setup.progressVar.max);
+          // check if we have some other packets that are waiting to be treated
+          if (setup.progressVar.current < setup.progressVar.max) {
+            if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) {
+              _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID](setup);
+            }
+          } else {
+            if (failed.length>0) setup.error.call(_this,failed);
+            if (passed.length>0) setup.success.call(_this,passed);
+            setup.after.call(_this, passed, failed);
+            if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID];
+          }
+        }
+      });
+      return _this;
     },
     del:function(items, setup) { return this.remove(items,setup) },
     /**
@@ -3200,21 +3384,27 @@ if (typeof jQuery === "function") {
       });
     */
     usergroups:function(username, setup, fct) {
+      var _this=this;
       switch (arguments.length) {
-          case 1: if (typeof username === "object") return this.usergroups("",username,function(){});
-                  else if (typeof username === "function") return this.usergroups("",{},username);
-                  break;
-          case 2: if (typeof username === "string" && typeof setup === "function") return this.usergroups(username,{},setup);
-                  if (typeof username === "object" && typeof setup === "function") return this.usergroups("",username,setup);
+        case 1: {
+          if (typeof username === "object") return _this.usergroups("",username,function(){});
+          else if (typeof username === "function") return _this.usergroups("",{},username);
+          break;
+        }
+        case 2: {
+          if (typeof username === "string" && typeof setup === "function") return _this.usergroups(username,{},setup);
+          if (typeof username === "object" && typeof setup === "function") return _this.usergroups("",username,setup);
+          break;
+        }
       }
 
       // default values
       setup         = setup || {};
       setup.cache = (setup.cache === false ? false : true);
       if (setup.url == undefined) {
-        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-        else setup.url=this.url;
-      } else this.url=setup.url;
+        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+        else setup.url=_this.url;
+      } else _this.url=setup.url;
       fct           = fct || (function() {});
       if (!username) throw "Error 'usergroups': you have to set an username.";
 
@@ -3226,46 +3416,45 @@ if (typeof jQuery === "function") {
       if (setup.cache) {
         for (var i=cache.length; i--;) {
           if (cache[i].user.toLowerCase() == username && cache[i].url.toLowerCase() == setup.url) {
-            fct.call(this,cache[i].data);
-            return this
+            fct.call(_this,cache[i].data);
+            return _this
           }
         }
       }
 
-      var _this=this;
 
       // build the request
       var body = _this._buildBodyForSOAP("GetGroupCollectionFromUser", "<userLoginName>"+username+"</userLoginName>", "http://schemas.microsoft.com/sharepoint/soap/directory/")
       // send the request
       var url = setup.url + "/_vti_bin/usergroup.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/directory/GetGroupCollectionFromUser'); },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var aResult=[];
-                     // get the details
-                     data=data.getElementsByTagName('Group');
-                     for (var i=0,len=data.length; i<len; i++)
-                       aResult.push(data[i].getAttribute("Name"));
-                     // cache the result
-                     cache.push({user:username,url:setup.url,data:aResult});
-                     _SP_CACHE_USERGROUPS = cache;
-                     fct.call(_this,aResult);
-                   },
-                   error:function(req, textStatus, errorThrown) {
-                     if (setup.error===false) fct.call(_this,[]);
-                     else {
-                       // any error ?
-                       var error=req.responseXML.getElementsByTagName("errorstring");
-                       if (typeof console === "object") console.error("Error 'usergroups': "+error[0].firstChild.nodeValue);
-                      }
-                   }
-                 });
-      return this;
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/directory/GetGroupCollectionFromUser'); },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var aResult=[];
+          // get the details
+          data=data.getElementsByTagName('Group');
+          for (var i=0,len=data.length; i<len; i++) aResult.push(data[i].getAttribute("Name"));
+          // cache the result
+          cache.push({user:username,url:setup.url,data:aResult});
+          _SP_CACHE_USERGROUPS = cache;
+          fct.call(_this,aResult);
+        },
+        error:function(req) {
+          if (setup.error===false) fct.call(_this,[]);
+          else {
+            // any error ?
+            var error=req.responseXML.getElementsByTagName("errorstring");
+            if (typeof console === "object") console.error("Error 'usergroups': "+error[0].firstChild.nodeValue);
+          }
+        }
+      });
+      return _this;
     },
     /**
       @name $SP().workflowStatusToText
@@ -3312,130 +3501,129 @@ if (typeof jQuery === "function") {
       }});
      */
     getWorkflowID:function(setup) {
+      var _this=this;
       // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
-      if (this.listID == undefined) throw "Error 'getWorkflowID': you have to define the list ID/Name";
-      if (this.url == undefined) throw "Error 'getWorkflowID': not able to find the URL!"; // we cannot determine the url
+      if (_this.needQueue) { return _this._addInQueue(arguments) }
+      if (_this.listID == undefined) throw "Error 'getWorkflowID': you have to define the list ID/Name";
+      if (_this.url == undefined) throw "Error 'getWorkflowID': not able to find the URL!"; // we cannot determine the url
       setup = setup || {};
       if (setup.ID==undefined || setup.workflowName==undefined || setup.after==undefined) throw "Error 'getWorkflowID': all parameters are mandatory";
 
       // find the fileRef
-      this.get({fields:"FieldRef",where:"ID = "+setup.ID}, function(d) {
-              if (d.length===0) throw "Error 'getWorkflowID': I'm not able to find the item ID "+setup.ID;
+      _this.get({fields:"FieldRef",where:"ID = "+setup.ID}, function(d) {
+        if (d.length===0) throw "Error 'getWorkflowID': I'm not able to find the item ID "+setup.ID;
 
-              var fileRef = this.cleanResult(d[0].getAttribute("FileRef"));
-              var c=fileRef.substring(0,fileRef.indexOf("/Lists"))
-              var d=this.url.substring(0,this.url.indexOf(c));
-              fileRef = d+fileRef;
-              if (fileRef.slice(0,4) !== "http") fileRef = window.location.href.split('/').slice(0,3).join("/") + fileRef;
-              var _this=this;
-              var body = _this._buildBodyForSOAP("GetWorkflowDataForItem", '<item>'+fileRef+'</item>', "http://schemas.microsoft.com/sharepoint/soap/workflow/");
-              _this.ajax({
-                type: "POST",
-                cache: false,
-                async: true,
-                url: this.url+"/_vti_bin/Workflow.asmx",
-                data: body,
-                beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/workflow/GetWorkflowDataForItem'); },
-                contentType: "text/xml; charset=utf-8",
-                dataType: "xml",
-                success:function(data) {
-                  // we want to use myElem to change the getAttribute function
-                  var res={},i,row;
-                  var rows=data.getElementsByTagName('WorkflowTemplate');
-                  if (rows.length===0) {
-                    // depending of the permissions, we couldn't have the WorkflowTemplate data
-                    // in that case we have to get the workflow ID with another way
-                      var context = SP.ClientContext.get_current();
-                      var lists = context.get_web().get_lists();
-                      var list = lists.getByTitle(_this.listID);
-                      var item = list.getItemById(setup.ID);
-                      var file = item.get_file();
-                      context.load(list);
-                      context.load(item);
-                      var workflows = list.get_workflowAssociations();
-                      context.load(workflows);
-                      context.executeQueryAsync(function() {
-                        var enumerator = workflows.getEnumerator();
-                        while(enumerator.moveNext()) {
-                          var workflow = enumerator.get_current();
-                          if (workflow.get_name() === setup.workflowName) {
-                            res = {
-                              "fileRef":fileRef,
-                              "description":workflow.get_description(),
-                              "workflowID":"{"+workflow.get_id().toString()+"}",
-                              "instances":[]
-                            }
-                            break;
-                          }
-                        }
-                        setup.after.call(_this, res);
-                      },
-                      function() {
-                        throw "Error 'getWorkflowID': Problem while dealing with SP.ClientContext.get_current()";
-                      });
-                  } else {
-                    for (i=rows.length; i--;) {
-                      if (rows[i].getAttribute("Name") == setup.workflowName) {
-                        res = {
-                          "fileRef":fileRef,
-                          "description":rows[i].getAttribute("Description"),
-                          "workflowID":"{"+rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId")+"}",
-                          "instances":[]
-                        };
-                      }
+        var fileRef = _this.cleanResult(d[0].getAttribute("FileRef"));
+        var c=fileRef.substring(0,fileRef.indexOf("/Lists"))
+        d=_this.url.substring(0,_this.url.indexOf(c));
+        fileRef = d+fileRef;
+        if (fileRef.slice(0,4) !== "http") fileRef = window.location.href.split('/').slice(0,3).join("/") + fileRef;
+        var body = _this._buildBodyForSOAP("GetWorkflowDataForItem", '<item>'+fileRef+'</item>', "http://schemas.microsoft.com/sharepoint/soap/workflow/");
+        _this.ajax({
+          type: "POST",
+          cache: false,
+          async: true,
+          url: _this.url+"/_vti_bin/Workflow.asmx",
+          data: body,
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/workflow/GetWorkflowDataForItem'); },
+          contentType: "text/xml; charset=utf-8",
+          dataType: "xml",
+          success:function(data) {
+            // we want to use myElem to change the getAttribute function
+            var res={},i,row;
+            var rows=data.getElementsByTagName('WorkflowTemplate');
+            if (rows.length===0) {
+              // depending of the permissions, we couldn't have the WorkflowTemplate data
+              // in that case we have to get the workflow ID with another way
+              var context = SP.ClientContext.get_current(); // eslint-disable-line
+              var lists = context.get_web().get_lists();
+              var list = lists.getByTitle(_this.listID);
+              var item = list.getItemById(setup.ID);
+              context.load(list);
+              context.load(item);
+              var workflows = list.get_workflowAssociations();
+              context.load(workflows);
+              context.executeQueryAsync(function() {
+                var enumerator = workflows.getEnumerator();
+                while(enumerator.moveNext()) {
+                  var workflow = enumerator.get_current();
+                  if (workflow.get_name() === setup.workflowName) {
+                    res = {
+                      "fileRef":fileRef,
+                      "description":workflow.get_description(),
+                      "workflowID":"{"+workflow.get_id().toString()+"}",
+                      "instances":[]
                     }
-                    if (!res.fileRef) {
-                      throw "Error 'getWorkflowID': it seems the requested workflow ('"+setup.workflowName+"') doesn't exist!";
-                    }
-                    rows=data.getElementsByTagName("Workflow");
-                    for (i=0; i<rows.length; i++) {
-                      row=rows[i];
-                      res.instances.push({
-                        "StatusPageUrl":row.getAttribute("StatusPageUrl"),
-                        "Id":row.getAttribute("Id"),
-                        "TemplateId":row.getAttribute("TemplateId"),
-                        "ListId":row.getAttribute("ListId"),
-                        "SiteId":row.getAttribute("SiteId"),
-                        "WebId":row.getAttribute("WebId"),
-                        "ItemId":row.getAttribute("ItemId"),
-                        "ItemGUID":row.getAttribute("ItemGUID"),
-                        "TaskListId":row.getAttribute("TaskListId"),
-                        "AdminTaskListId":row.getAttribute("AdminTaskListId"),
-                        "Author":row.getAttribute("Author"),
-                        "Modified":row.getAttribute("Modified"),
-                        "Created":row.getAttribute("Created"),
-                        "StatusVersion":row.getAttribute("StatusVersion"),
-                        "Status1":{"code":row.getAttribute("Status1"), "text":_this.workflowStatusToText(row.getAttribute("Status1"))},
-                        "Status2":{"code":row.getAttribute("Status2"), "text":_this.workflowStatusToText(row.getAttribute("Status2"))},
-                        "Status3":{"code":row.getAttribute("Status3"), "text":_this.workflowStatusToText(row.getAttribute("Status3"))},
-                        "Status4":{"code":row.getAttribute("Status4"), "text":_this.workflowStatusToText(row.getAttribute("Status4"))},
-                        "Status5":{"code":row.getAttribute("Status5"), "text":_this.workflowStatusToText(row.getAttribute("Status5"))},
-                        "Status6":{"code":row.getAttribute("Status6"), "text":_this.workflowStatusToText(row.getAttribute("Status6"))},
-                        "Status7":{"code":row.getAttribute("Status7"), "text":_this.workflowStatusToText(row.getAttribute("Status7"))},
-                        "Status8":{"code":row.getAttribute("Status8"), "text":_this.workflowStatusToText(row.getAttribute("Status8"))},
-                        "Status9":{"code":row.getAttribute("Status9"), "text":_this.workflowStatusToText(row.getAttribute("Status9"))},
-                        "Status10":{"code":row.getAttribute("Status10"), "text":_this.workflowStatusToText(row.getAttribute("Status10"))},
-                        "TextStatus1":row.getAttribute("TextStatus1"),
-                        "TextStatus2":row.getAttribute("TextStatus2"),
-                        "TextStatus3":row.getAttribute("TextStatus3"),
-                        "TextStatus4":row.getAttribute("TextStatus4"),
-                        "TextStatus5":row.getAttribute("TextStatus5"),
-                        "Modifications":row.getAttribute("Modifications"),
-                        "InternalState":row.getAttribute("InternalState"),
-                        "ProcessingId":row.getAttribute("ProcessingId")
-                      });
-                    }
-                    setup.after.call(_this, res);
+                    break;
                   }
-                  return _this
-                },
-                error:function(jqXHR, textStatus, errorThrown) {
-                  throw "Error 'getWorkflowID': Something went wrong with the request over the Workflow Web Service..."
                 }
+                setup.after.call(_this, res);
+              },
+              function() {
+                throw "Error 'getWorkflowID': Problem while dealing with SP.ClientContext.get_current()";
               });
+            } else {
+              for (i=rows.length; i--;) {
+                if (rows[i].getAttribute("Name") == setup.workflowName) {
+                  res = {
+                    "fileRef":fileRef,
+                    "description":rows[i].getAttribute("Description"),
+                    "workflowID":"{"+rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId")+"}",
+                    "instances":[]
+                  };
+                }
+              }
+              if (!res.fileRef) {
+                throw "Error 'getWorkflowID': it seems the requested workflow ('"+setup.workflowName+"') doesn't exist!";
+              }
+              rows=data.getElementsByTagName("Workflow");
+              for (i=0; i<rows.length; i++) {
+                row=rows[i];
+                res.instances.push({
+                  "StatusPageUrl":row.getAttribute("StatusPageUrl"),
+                  "Id":row.getAttribute("Id"),
+                  "TemplateId":row.getAttribute("TemplateId"),
+                  "ListId":row.getAttribute("ListId"),
+                  "SiteId":row.getAttribute("SiteId"),
+                  "WebId":row.getAttribute("WebId"),
+                  "ItemId":row.getAttribute("ItemId"),
+                  "ItemGUID":row.getAttribute("ItemGUID"),
+                  "TaskListId":row.getAttribute("TaskListId"),
+                  "AdminTaskListId":row.getAttribute("AdminTaskListId"),
+                  "Author":row.getAttribute("Author"),
+                  "Modified":row.getAttribute("Modified"),
+                  "Created":row.getAttribute("Created"),
+                  "StatusVersion":row.getAttribute("StatusVersion"),
+                  "Status1":{"code":row.getAttribute("Status1"), "text":_this.workflowStatusToText(row.getAttribute("Status1"))},
+                  "Status2":{"code":row.getAttribute("Status2"), "text":_this.workflowStatusToText(row.getAttribute("Status2"))},
+                  "Status3":{"code":row.getAttribute("Status3"), "text":_this.workflowStatusToText(row.getAttribute("Status3"))},
+                  "Status4":{"code":row.getAttribute("Status4"), "text":_this.workflowStatusToText(row.getAttribute("Status4"))},
+                  "Status5":{"code":row.getAttribute("Status5"), "text":_this.workflowStatusToText(row.getAttribute("Status5"))},
+                  "Status6":{"code":row.getAttribute("Status6"), "text":_this.workflowStatusToText(row.getAttribute("Status6"))},
+                  "Status7":{"code":row.getAttribute("Status7"), "text":_this.workflowStatusToText(row.getAttribute("Status7"))},
+                  "Status8":{"code":row.getAttribute("Status8"), "text":_this.workflowStatusToText(row.getAttribute("Status8"))},
+                  "Status9":{"code":row.getAttribute("Status9"), "text":_this.workflowStatusToText(row.getAttribute("Status9"))},
+                  "Status10":{"code":row.getAttribute("Status10"), "text":_this.workflowStatusToText(row.getAttribute("Status10"))},
+                  "TextStatus1":row.getAttribute("TextStatus1"),
+                  "TextStatus2":row.getAttribute("TextStatus2"),
+                  "TextStatus3":row.getAttribute("TextStatus3"),
+                  "TextStatus4":row.getAttribute("TextStatus4"),
+                  "TextStatus5":row.getAttribute("TextStatus5"),
+                  "Modifications":row.getAttribute("Modifications"),
+                  "InternalState":row.getAttribute("InternalState"),
+                  "ProcessingId":row.getAttribute("ProcessingId")
+                });
+              }
+              setup.after.call(_this, res);
+            }
+            return _this
+          },
+          error:function() {
+            throw "Error 'getWorkflowID': Something went wrong with the request over the Workflow Web Service..."
+          }
+        });
       })
-      return this;
+      return _this;
     },
     /**
       @name $SP().list.startWorkflow
@@ -3463,14 +3651,15 @@ if (typeof jQuery === "function") {
       }});
     **/
     startWorkflow:function(setup) {
+      var _this=this;
       // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
-      if (this.url == undefined) throw "Error 'startWorkflow': not able to find the URL!";
+      if (_this.needQueue) { return _this._addInQueue(arguments) }
+      if (_this.url == undefined) throw "Error 'startWorkflow': not able to find the URL!";
 
       // if no listID then it's a Site Workflow so we use startWorkflow2013
-      if (!this.listID) {
+      if (!_this.listID) {
         setup.platformType=2010;
-        return this.startWorkflow2013(setup)
+        return _this.startWorkflow2013(setup)
       }
       setup = setup || {};
       setup.after = setup.after || (function() {});
@@ -3479,11 +3668,11 @@ if (typeof jQuery === "function") {
 
       // find the FileRef and templateID
       if (!setup.fileRef && !setup.workflowID) {
-        this.getWorkflowID({ID:setup.ID,workflowName:setup.workflowName,
+        _this.getWorkflowID({ID:setup.ID,workflowName:setup.workflowName,
           after:function(params) {
             setup.fileRef=params.fileRef;
             setup.workflowID=params.workflowID;
-            this.startWorkflow(setup)
+            _this.startWorkflow(setup)
           }
         })
       } else {
@@ -3494,14 +3683,12 @@ if (typeof jQuery === "function") {
           if (setup.parameters.length == undefined) setup.parameters = [ setup.parameters ];
           p = setup.parameters.slice(0);
           workflowParameters = "<Data>";
-          for (var i=0; i<p.length; i++)
-          workflowParameters += "<"+p[i].name+">"+p[i].value+"</"+p[i].name+">";
+          for (var i=0; i<p.length; i++) workflowParameters += "<"+p[i].name+">"+p[i].value+"</"+p[i].name+">";
           workflowParameters += "</Data>";
         }
-        var _this=this;
         var body = _this._buildBodyForSOAP("StartWorkflow", "<item>"+setup.fileRef+"</item><templateId>"+setup.workflowID+"</templateId><workflowParameters>"+workflowParameters+"</workflowParameters>", "http://schemas.microsoft.com/sharepoint/soap/workflow/");
         // do the request
-        var url = this.url + "/_vti_bin/Workflow.asmx";
+        var url = _this.url + "/_vti_bin/Workflow.asmx";
         _this.ajax({
           type: "POST",
           cache: false,
@@ -3511,7 +3698,7 @@ if (typeof jQuery === "function") {
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/workflow/StartWorkflow'); },
           contentType: "text/xml; charset=utf-8",
           dataType: "xml",
-          success:function(data) {
+          success:function() {
             setup.after.call(_this)
           },
           error:function(jqXHR, textStatus, errorThrown) {
@@ -3519,7 +3706,7 @@ if (typeof jQuery === "function") {
           }
         });
       }
-      return this;
+      return _this;
     },
     /**
       @name $SP().list.startWorkflow2013
@@ -3545,7 +3732,7 @@ if (typeof jQuery === "function") {
       }});
     **/
     startWorkflow2013:function(setup) {
-      var _this=this, guid;
+      var _this=this;
       // check if we need to queue it
       if (_this.needQueue) { return _this._addInQueue(arguments) }
       if (_this.url == undefined) throw "Error 'startWorkflow2013': not able to find the URL!";
@@ -3557,24 +3744,23 @@ if (typeof jQuery === "function") {
       if (_this.listID && !setup.ID) throw "Error 'startWorkflow2013': Please provide the item ID!"
 
       // we need "sp.workflowservices.js"
-      if (typeof SP === "undefined" || typeof SP.SOD === "undefined") {
+      if (typeof SP === "undefined" || typeof SP.SOD === "undefined") { // eslint-disable-line
         throw "Error 'startWorkflow2013': SP.SOD.executeFunc is required (from the Microsoft file called init.js)";
       }
 
-      SP.SOD.executeFunc("sp.js", "SP.ClientContext" , function(){
-        SP.SOD.registerSod('sp.workflowservices.js', SP.Utilities.Utility.getLayoutsPageUrl('sp.workflowservices.js'));
-        SP.SOD.executeFunc('sp.workflowservices.js', "SP.WorkflowServices.WorkflowServicesManager", function() {
-          var context = new SP.ClientContext(_this.url);
+      SP.SOD.executeFunc("sp.js", "SP.ClientContext" , function(){ // eslint-disable-line
+        SP.SOD.registerSod('sp.workflowservices.js', SP.Utilities.Utility.getLayoutsPageUrl('sp.workflowservices.js')); // eslint-disable-line
+        SP.SOD.executeFunc('sp.workflowservices.js', "SP.WorkflowServices.WorkflowServicesManager", function() { // eslint-disable-line
+          var context = new SP.ClientContext(_this.url); // eslint-disable-line
           var web = context.get_web();
-          var subscriptions;
 
-          var servicesManager = SP.WorkflowServices.WorkflowServicesManager.newObject(context, web);
+          var servicesManager = SP.WorkflowServices.WorkflowServicesManager.newObject(context, web); // eslint-disable-line
           context.load(servicesManager);
           // list the existing workflows
           var subscriptions = servicesManager.getWorkflowSubscriptionService().enumerateSubscriptions();
           context.load(subscriptions);
 
-          context.executeQueryAsync(function(sender, args) {
+          context.executeQueryAsync(function() {
             var subsEnum = subscriptions.getEnumerator(), sub;
             var initiationParams = {}, i, passed=false;
             var workflowName = setup.workflowName.toLowerCase();
@@ -3588,7 +3774,7 @@ if (typeof jQuery === "function") {
             if (setup.platformType == 2010) {
               var interopService = servicesManager.getWorkflowInteropService();
               interopService.startWorkflow(workflowName, null, null, null, initiationParams);
-              context.executeQueryAsync(function(sender, args) {
+              context.executeQueryAsync(function() {
                 setup.after.call(_this)
               }, function(sender, args) {
                 var errorMessage = args.get_message();
@@ -3603,7 +3789,7 @@ if (typeof jQuery === "function") {
 
                   if (setup.ID) servicesManager.getWorkflowInstanceService().startWorkflowOnListItem(sub, setup.ID, initiationParams);
                   else servicesManager.getWorkflowInstanceService().startWorkflow(sub, initiationParams);
-                  context.executeQueryAsync(function(sender, args) {
+                  context.executeQueryAsync(function() {
                     setup.after.call(_this)
                   }, function(sender, args) {
                     setup.after.call(_this, args.get_message())
@@ -3641,20 +3827,26 @@ if (typeof jQuery === "function") {
       });
     */
     distributionLists:function(username, setup, fct) {
+      var _this=this;
       switch (arguments.length) {
-          case 1: if (typeof username === "object") return this.distributionLists("",username,function(){});
-                  else if (typeof username === "function") return this.distributionLists("",{},username);
-                  break;
-          case 2: if (typeof username === "string" && typeof setup === "function") return this.distributionLists(username,{},setup);
-                  if (typeof username === "object" && typeof setup === "function") return this.distributionLists("",username,setup);
+        case 1: {
+          if (typeof username === "object") return _this.distributionLists("",username,function(){});
+          else if (typeof username === "function") return _this.distributionLists("",{},username);
+          break;
+        }
+        case 2: {
+          if (typeof username === "string" && typeof setup === "function") return _this.distributionLists(username,{},setup);
+          if (typeof username === "object" && typeof setup === "function") return _this.distributionLists("",username,setup);
+          break;
+        }
       }
 
       // default values
       setup         = setup || {};
       if (setup.url == undefined) {
-        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-        else setup.url=this.url;
-      } else this.url=setup.url;
+        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+        else setup.url=_this.url;
+      } else _this.url=setup.url;
       fct           = fct || (function() {});
       if (!username) throw "Error 'distributionLists': you have to set an username.";
 
@@ -3667,47 +3859,48 @@ if (typeof jQuery === "function") {
       if (setup.cache) {
         for (var i=cache.length; i--;) {
           if (cache[i].user === username && cache[i].url === setup.url) {
-            fct.call(this,cache[i].data);
-            return this
+            fct.call(_this,cache[i].data);
+            return _this
           }
         }
       }
 
-      var _this=this;
 
       // build the request
       var body = _this._buildBodyForSOAP("GetCommonMemberships", "<accountName>"+username+"</accountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService");
 
       // send the request
       var url = setup.url + "/_vti_bin/UserProfileService.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserMemberships') },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var aResult=[];
-                     // get the details
-                     data=data.getElementsByTagName('MembershipData');
-                     for (var i=0,len=data.length; i<len; i++) {
-                       if (data[i].getElementsByTagName("Source")[0].firstChild.nodeValue === "DistributionList")
-                         aResult.push({"SourceReference": data[i].getElementsByTagName("SourceReference")[0].firstChild.nodeValue, "DisplayName":data[i].getElementsByTagName("DisplayName")[0].firstChild.nodeValue, "MailNickname":data[i].getElementsByTagName("MailNickname")[0].firstChild.nodeValue, "Url":data[i].getElementsByTagName("Url")[0].firstChild.nodeValue});
-                     }
-                     // cache the result
-                     cache.push({user:username,url:setup.url,data:aResult});
-                     _SP_CACHE_DISTRIBUTIONLISTS = cache;
-                     fct.call(_this,aResult);
-                   },
-                   error:function(req, textStatus, errorThrown) {
-                     fct.call(_this,[]);
-                     // any error ?
-                     //var error=req.responseXML.getElementsByTagName("errorstring");
-                     //if (typeof console === "object") console.error("Error 'distributionLists': "+error[0].firstChild.nodeValue);
-                   }
-                 });
-      return this;
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserMemberships') },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var aResult=[];
+          // get the details
+          data=data.getElementsByTagName('MembershipData');
+          for (var i=0,len=data.length; i<len; i++) {
+            if (data[i].getElementsByTagName("Source")[0].firstChild.nodeValue === "DistributionList") {
+              aResult.push({"SourceReference": data[i].getElementsByTagName("SourceReference")[0].firstChild.nodeValue, "DisplayName":data[i].getElementsByTagName("DisplayName")[0].firstChild.nodeValue, "MailNickname":data[i].getElementsByTagName("MailNickname")[0].firstChild.nodeValue, "Url":data[i].getElementsByTagName("Url")[0].firstChild.nodeValue});
+            }
+          }
+          // cache the result
+          cache.push({user:username,url:setup.url,data:aResult});
+          _SP_CACHE_DISTRIBUTIONLISTS = cache;
+          fct.call(_this,aResult);
+        },
+        error:function(req, textStatus, errorThrown) { // eslint-disable-line
+          fct.call(_this,[]);
+          // any error ?
+          //var error=req.responseXML.getElementsByTagName("errorstring");
+          //if (typeof console === "object") console.error("Error 'distributionLists': "+error[0].firstChild.nodeValue);
+        }
+      });
+      return _this;
     },
     /**
       @name $SP().groupMembers
@@ -3728,21 +3921,26 @@ if (typeof jQuery === "function") {
       });
     */
     groupMembers:function(groupname, setup, fct) {
+      var _this=this;
       switch (arguments.length) {
-          case 1: if (typeof groupname === "object") return this.groupMembers("",groupname,function(){});
-                  else if (typeof groupname === "function") return this.groupMembers("",{},groupname);
-                  break;
-          case 2: if (typeof groupname === "string" && typeof setup === "function") return this.groupMembers(groupname,{},setup);
-                  if (typeof groupname === "object" && typeof setup === "function") return this.groupMembers("",groupname,setup);
+        case 1: {
+          if (typeof groupname === "object") return _this.groupMembers("",groupname,function(){});
+          else if (typeof groupname === "function") return _this.groupMembers("",{},groupname);
+          break;
+        }
+        case 2: {
+          if (typeof groupname === "string" && typeof setup === "function") return _this.groupMembers(groupname,{},setup);
+          if (typeof groupname === "object" && typeof setup === "function") return _this.groupMembers("",groupname,setup);
+        }
       }
 
       // default values
       setup         = setup || {};
       setup.cache = (setup.cache === undefined ? true : setup.cache);
       if (setup.url == undefined) {
-        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-        else setup.url=this.url;
-      } else this.url=setup.url;
+        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+        else setup.url=_this.url;
+      } else _this.url=setup.url;
       fct           = fct || (function() {});
       if (!groupname) throw "Error 'groupMembers': you have to set an groupname.";
 
@@ -3755,46 +3953,46 @@ if (typeof jQuery === "function") {
         cache=_SP_CACHE_GROUPMEMBERS || [];
         for (var i=cache.length; i--;) {
           if (cache[i].group === groupname && cache[i].url === setup.url) {
-            fct.call(this,cache[i].data);
-            return this
+            fct.call(_this,cache[i].data);
+            return _this
           }
         }
       }
 
-      var _this=this;
-
       // build the request
-      var body = _this._buildBodyForSOAP("GetUserCollectionFromGroup", "<groupName>"+this._cleanString(groupname)+"</groupName>", "http://schemas.microsoft.com/sharepoint/soap/directory/");
+      var body = _this._buildBodyForSOAP("GetUserCollectionFromGroup", "<groupName>"+_this._cleanString(groupname)+"</groupName>", "http://schemas.microsoft.com/sharepoint/soap/directory/");
       // send the request
       var url = setup.url + "/_vti_bin/usergroup.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/directory/GetUserCollectionFromGroup') },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var aResult=[];
-                     // get the details
-                     data=data.getElementsByTagName('User');
-                     for (var i=0,len=data.length; i<len; i++)
-                       aResult.push({"ID": data[i].getAttribute("ID"), "Name":data[i].getAttribute("Name"), "LoginName":data[i].getAttribute("LoginName"), "Email":data[i].getAttribute("Email")});
-                     // cache the result
-                     cache.push({group:groupname,url:setup.url,data:aResult});
-                     _SP_CACHE_GROUPMEMBERS = cache;
-                     fct.call(_this,aResult);
-                   },
-                   error:function(req, textStatus, errorThrown) {
-                     if (setup.error===false) fct.call(_this,[]);
-                     else {
-                       // any error ?
-                       var error=req.responseXML.getElementsByTagName("errorstring");
-                       if (typeof console === "object") console.error("Error 'groupMembers': "+error[0].firstChild.nodeValue);
-                      }
-                   }
-               });
-      return this;
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/directory/GetUserCollectionFromGroup') },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var aResult=[];
+          // get the details
+          data=data.getElementsByTagName('User');
+          for (var i=0,len=data.length; i<len; i++) {
+            aResult.push({"ID": data[i].getAttribute("ID"), "Name":data[i].getAttribute("Name"), "LoginName":data[i].getAttribute("LoginName"), "Email":data[i].getAttribute("Email")});
+          }
+          // cache the result
+          cache.push({group:groupname,url:setup.url,data:aResult});
+          _SP_CACHE_GROUPMEMBERS = cache;
+          fct.call(_this,aResult);
+        },
+        error:function(req, textStatus, errorThrown) { // eslint-disable-line
+          if (setup.error===false) fct.call(_this,[]);
+          else {
+            // any error ?
+            var error=req.responseXML.getElementsByTagName("errorstring");
+            if (typeof console === "object") console.error("Error 'groupMembers': "+error[0].firstChild.nodeValue);
+          }
+        }
+      });
+      return _this;
     },
     /**
       @name $SP().isMember
@@ -3872,58 +4070,62 @@ if (typeof jQuery === "function") {
       });
     */
     people:function(username, setup, fct) {
+      var _this=this;
       switch (arguments.length) {
-          case 1: if (typeof username === "object") return this.people("",username,function(){});
-                  else if (typeof username === "function") return this.people("",{},username);
-                  username=undefined;
-                  break;
-          case 2: if (typeof username === "string" && typeof setup === "function") return this.people(username,{},setup);
-                  if (typeof username === "object" && typeof setup === "function") return this.people("",username,setup);
+        case 1: {
+          if (typeof username === "object") return _this.people("",username,function(){});
+          else if (typeof username === "function") return _this.people("",{},username);
+          username=undefined;
+          break;
+        }
+        case 2: {
+          if (typeof username === "string" && typeof setup === "function") return _this.people(username,{},setup);
+          if (typeof username === "object" && typeof setup === "function") return _this.people("",username,setup);
+        }
       }
 
       // default values
       setup         = setup || {};
       if (setup.url == undefined) {
-        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-        else setup.url=this.url;
-      } else this.url=setup.url;
+        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+        else setup.url=_this.url;
+      } else _this.url=setup.url;
       fct           = fct || (function() {});
       username      = username || "";
-
-      var _this=this;
 
       // build the request
       var body = _this._buildBodyForSOAP("GetUserProfileByName", "<AccountName>"+username+"</AccountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService");
       // send the request
       var url = setup.url + "/_vti_bin/UserProfileService.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserProfileByName'); },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var aResult=[];
-                     // get the details
-                     data=data.getElementsByTagName('PropertyData');
-                     for (var i=0,len=data.length; i<len; i++) {
-                       var name=data[i].getElementsByTagName("Name")[0].firstChild.nodeValue;
-                       var value=data[i].getElementsByTagName("Value");
-                       if (value&&value.length>=1&&value[0].firstChild) value=value[0].firstChild.nodeValue;
-                       else value="No Value";
-                       aResult.push(name);
-                       aResult[name]=value;
-                     }
-                     fct.call(_this,aResult);
-                   },
-                   error:function(req, textStatus, errorThrown) {
-                     // any error ?
-                     var error=req.responseXML.getElementsByTagName("faultstring");
-                     fct.call(_this,"Error 'people': "+error[0].firstChild.nodeValue);
-                   }
-                 });
-      return this;
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserProfileByName'); },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var aResult=[];
+          // get the details
+          data=data.getElementsByTagName('PropertyData');
+          for (var i=0,len=data.length; i<len; i++) {
+            var name=data[i].getElementsByTagName("Name")[0].firstChild.nodeValue;
+            var value=data[i].getElementsByTagName("Value");
+            if (value&&value.length>=1&&value[0].firstChild) value=value[0].firstChild.nodeValue;
+            else value="No Value";
+            aResult.push(name);
+            aResult[name]=value;
+          }
+          fct.call(_this,aResult);
+        },
+        error:function(req, textStatus, errorThrown) { // eslint-disable-line
+          // any error ?
+          var error=req.responseXML.getElementsByTagName("faultstring");
+          fct.call(_this,"Error 'people': "+error[0].firstChild.nodeValue);
+        }
+      });
+      return _this;
     },
     /**
       @name $SP().getUserInfo
@@ -3945,49 +4147,51 @@ if (typeof jQuery === "function") {
       });
     */
     getUserInfo:function(username, setup, fct) {
+      var _this=this;
       if (typeof username !== "string") throw "Error 'getUserInfo': the first argument must be the username";
       switch (arguments.length) {
-          case 2: if (typeof setup === "function") return this.getUserInfo(username,{},setup);
-                  if (typeof setup === "object") return this.getUserInfo(username,setup,function() {});
-                  break;
-          case 3: if (typeof setup !== "object" && typeof fct !== "function") throw "Error 'getUserInfo': incorrect arguments, please review the documentation";
+        case 2: {
+          if (typeof setup === "function") return _this.getUserInfo(username,{},setup);
+          if (typeof setup === "object") return _this.getUserInfo(username,setup,function() {});
+          break;
+        }
+        case 3: if (typeof setup !== "object" && typeof fct !== "function") throw "Error 'getUserInfo': incorrect arguments, please review the documentation";
       }
 
       // default values
       setup = setup || {};
       if (setup.url == undefined) {
-        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-        else setup.url=this.url;
-      } else this.url=setup.url;
+        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+        else setup.url=_this.url;
+      } else _this.url=setup.url;
       fct = fct || (function() {});
-
-      var _this=this;
 
       // build the request
       var body = _this._buildBodyForSOAP("GetUserInfo", '<userLoginName>'+username+'</userLoginName>', "http://schemas.microsoft.com/sharepoint/soap/directory/");
       // send the request
       var url = setup.url + "/_vti_bin/usergroup.asmx";
-      _this.ajax({type:"POST",
-                   cache:false,
-                   url:url,
-                   data:body,
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var aResult=[];
-                     // get the details
-                     data=data.getElementsByTagName('User');
-                     if (data.length===0)
-                      fct.call(_this,"Error 'getUserInfo': nothing returned?!")
-                     else
-                      fct.call(_this,{ID:data[0].getAttribute("ID"),Sid:data[0].getAttribute("Sid"),Name:data[0].getAttribute("Name"),LoginName:data[0].getAttribute("LoginName"),Email:data[0].getAttribute("Email"),Notes:data[0].getAttribute("Notes"),IsSiteAdmin:data[0].getAttribute("IsSiteAdmin"),IsDomainGroup:data[0].getAttribute("IsDomainGroup"),Flags:data[0].getAttribute("Flags")})
-                   },
-                   error:function(req, textStatus, errorThrown) {
-                     // any error ?
-                     var error=req.responseXML.getElementsByTagName("errorstring");
-                     fct.call(_this,"Error 'getUserInfo': "+error[0].firstChild.nodeValue);
-                   }
-                 });
+      _this.ajax({
+        type:"POST",
+        cache:false,
+        url:url,
+        data:body,
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          // get the details
+          data=data.getElementsByTagName('User');
+          if (data.length===0) {
+            fct.call(_this,"Error 'getUserInfo': nothing returned?!")
+          } else {
+            fct.call(_this,{ID:data[0].getAttribute("ID"),Sid:data[0].getAttribute("Sid"),Name:data[0].getAttribute("Name"),LoginName:data[0].getAttribute("LoginName"),Email:data[0].getAttribute("Email"),Notes:data[0].getAttribute("Notes"),IsSiteAdmin:data[0].getAttribute("IsSiteAdmin"),IsDomainGroup:data[0].getAttribute("IsDomainGroup"),Flags:data[0].getAttribute("Flags")})
+          }
+        },
+        error:function(req, textStatus, errorThrown) { // eslint-disable-line
+          // any error ?
+          var error=req.responseXML.getElementsByTagName("errorstring");
+          fct.call(_this,"Error 'getUserInfo': "+error[0].firstChild.nodeValue);
+        }
+      });
       return this;
     },
     /**
@@ -4030,15 +4234,15 @@ if (typeof jQuery === "function") {
       })
     */
     regionalSettings:function(callback) {
-      // find the base URL
-      if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-      if (typeof callback !== "function") callback = function() {};
       var _this = this;
+      // find the base URL
+      if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+      if (typeof callback !== "function") callback = function() {};
 
       // check cache
       if (_SP_CACHE_REGIONALSETTINGS) callback.call(_this, _SP_CACHE_REGIONALSETTINGS);
 
-      $SP().ajax({
+      _this.ajax({
         method:'GET',
         url:_this.url + "/_layouts/regionalsetng.aspx?Type=User",
         success:function(data) {
@@ -4106,17 +4310,17 @@ if (typeof jQuery === "function") {
       // -> https://gist.github.com/Aymkdn/b17903cf7786578300f04f50460ebe96
      */
     regionalDateFormat:function(callback) {
-      // find the base URL
-      if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-      if (typeof callback !== "function") callback = function() {};
       var _this = this;
+      // find the base URL
+      if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+      if (typeof callback !== "function") callback = function() {};
 
       // check cache
       if (_SP_CACHE_DATEFORMAT) callback.call(_this, _SP_CACHE_DATEFORMAT);
 
       // check if we have LCID
       var lcid = "";
-      if (typeof _spRegionalSettings !== "undefined") lcid=_spRegionalSettings.localeId;
+      if (typeof _spRegionalSettings !== "undefined") lcid=_spRegionalSettings.localeId; // eslint-disable-line
       else if (_SP_CACHE_REGIONALSETTINGS) lcid=_SP_CACHE_REGIONALSETTINGS.lcid;
       if (!lcid) {
         return _this.regionalSettings(function() {
@@ -4124,7 +4328,7 @@ if (typeof jQuery === "function") {
         })
       }
 
-      $SP().ajax({
+      _this.ajax({
         method:'GET',
         url:_this.url + "/_layouts/iframe.aspx?cal=1&date=1/1/2000&lcid="+lcid,
         success:function(data) {
@@ -4175,70 +4379,76 @@ if (typeof jQuery === "function") {
       });
     */
     addressbook:function(username, setup, fct) {
+      var _this=this;
       switch (arguments.length) {
-          case 1: if (typeof username === "object") return this.addressbook("",username,function(){});
-                  else if (typeof username === "function") return this.addressbook("",{},username);
-                  else if (typeof username === "string")  return this.addressbook(username,{},function(){});
-                  username=undefined;
-                  break;
-          case 2: if (typeof username === "string" && typeof setup === "function") return this.addressbook(username,{},setup);
-                  if (typeof username === "object" && typeof setup === "function") return this.addressbook("",username,setup);
+        case 1: {
+          if (typeof username === "object") return _this.addressbook("",username,function(){});
+          else if (typeof username === "function") return _this.addressbook("",{},username);
+          else if (typeof username === "string")  return _this.addressbook(username,{},function(){});
+          username=undefined;
+          break;
+        }
+        case 2: {
+          if (typeof username === "string" && typeof setup === "function") return _this.addressbook(username,{},setup);
+          if (typeof username === "object" && typeof setup === "function") return _this.addressbook("",username,setup);
+        }
       }
 
       // default values
       setup         = setup || {};
       if (setup.url == undefined) {
-        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-        else setup.url=this.url;
-      } else this.url=setup.url;
+        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
+        else setup.url=_this.url;
+      } else _this.url=setup.url;
       setup.limit   = setup.limit || 10;
       setup.type    = setup.type || "User";
       fct           = fct || (function() {});
       username      = username || "";
 
-      var _this=this;
 
       // build the request
       var body = _this._buildBodyForSOAP("SearchPrincipals", "<searchText>"+username+"</searchText><maxResults>"+setup.limit+"</maxResults><principalType>"+setup.type+"</principalType>");
       // send the request
       var url = setup.url + "/_vti_bin/People.asmx";
-      _this.ajax({type: "POST",
-                   cache:false,
-                   url:url,
-                   data:body,
-                   beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/SearchPrincipals'); },
-                   contentType: "text/xml; charset=utf-8",
-                   dataType: "xml",
-                   success:function(data) {
-                     var aResult=[];
-                     // get the details
-                     data=data.getElementsByTagName('PrincipalInfo');
-                     for (var i=0,lenR=data.length; i<lenR; i++) {
-                       var children=data[i].childNodes;
-                       aResult[i]=[];
-                       for (var j=0,lenC=children.length; j<lenC; j++) {
-                         var name=children[j].nodeName;
-                         var value=children[j].firstChild;
-                         if (value) value=value.nodeValue;
-                         aResult[i].push(name);
-                         aResult[i][name]=value;
-                       }
-                     }
-                     fct.call(_this,aResult);
-                   }
-                 });
-      return this;
+      _this.ajax({
+        type: "POST",
+        cache:false,
+        url:url,
+        data:body,
+        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/SearchPrincipals'); },
+        contentType: "text/xml; charset=utf-8",
+        dataType: "xml",
+        success:function(data) {
+          var aResult=[];
+          // get the details
+          data=data.getElementsByTagName('PrincipalInfo');
+          for (var i=0,lenR=data.length; i<lenR; i++) {
+            var children=data[i].childNodes;
+            aResult[i]=[];
+            for (var j=0,lenC=children.length; j<lenC; j++) {
+              var name=children[j].nodeName;
+              var value=children[j].firstChild;
+              if (value) value=value.nodeValue;
+              aResult[i].push(name);
+              aResult[i][name]=value;
+            }
+          }
+          fct.call(_this,aResult);
+        }
+      });
+      return _this;
     },
     /*
      @ignore
      */
     reset:function() {
-      this.data   = [];
-      this.length = 0;
-      this.listID = "";
-      this.needQueue=false;
-      this.listQueue=[];
-      delete this.url;
+      var _this=this;
+      _this.data   = [];
+      _this.length = 0;
+      _this.listID = "";
+      _this.needQueue=false;
+      _this.listQueue=[];
+      delete _this.url;
     },
     /**
       @name $SP().toDate
@@ -4344,26 +4554,25 @@ if (typeof jQuery === "function") {
     toXSLString:function(str) {
       if (typeof str !== "string") throw "Error 'toXLSString': '"+str+"' is not a string....";
       // if the first car is a number, then FullEscape it
-      var FullEscape = function(strg, exceptNumeric) {
-          exceptNumeric = exceptNumeric || false;
-          var hexVals = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F");
-          var rstr = "";
-          for (var i=0; i < strg.length; i++) {
-            var c = strg.charAt(i);
-            var num = c.charCodeAt(0);
-            var temp = 0;
-            var hexString = "";
-            while (num >= 16) {
-              temp = num % 16;
-              num = Math.floor(num / 16);
-              hexString += hexVals[temp];
-            }
-            hexString += hexVals[num];
-            var tmpStr = "";
-            for (var k=hexString.length-1; k >= 0; k--) tmpStr += hexString.charAt(k);
-            rstr += "%" + tmpStr;
+      var FullEscape = function(strg) {
+        var hexVals = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F");
+        var rstr = "";
+        for (var i=0; i < strg.length; i++) {
+          var c = strg.charAt(i);
+          var num = c.charCodeAt(0);
+          var temp = 0;
+          var hexString = "";
+          while (num >= 16) {
+            temp = num % 16;
+            num = Math.floor(num / 16);
+            hexString += hexVals[temp];
           }
-          return rstr;
+          hexString += hexVals[num];
+          var tmpStr = "";
+          for (var k=hexString.length-1; k >= 0; k--) tmpStr += hexString.charAt(k);
+          rstr += "%" + tmpStr;
+        }
+        return rstr;
       };
       var aSpaces = str.split(" ");
       var ret = "";
@@ -4473,8 +4682,8 @@ if (typeof jQuery === "function") {
           // Fourth argument, which is actually obsolete according to the DOM4 standard, is required in IE 11
           var iterator = document.createNodeIterator(elem, NodeFilter.SHOW_COMMENT, filterNone, false);
           var curNode;
-          while (curNode = iterator.nextNode()) {
-              comments.push(curNode.nodeValue);
+          while (curNode = iterator.nextNode()) { // eslint-disable-line
+            comments.push(curNode.nodeValue);
           }
         }
 
@@ -4553,8 +4762,11 @@ if (typeof jQuery === "function") {
       if (settings.includeAll) limit=bigLimit;
 
       // we now find the names of all fields
+      // eslint-disable-next-line
       for (var a=document.querySelectorAll('td.ms-formbody'), i=-1, len=a.length, done=0; i<len && done<limit; i++) { // we start at -1 because of Content Type
+        // eslint-disable-next-line
         var tr, td, isMandatory=false, html /* HTML content of the NOBR tag */, txt /* Text content of the NOBR tag */, infoFromComments, includeThisField=false;
+        // eslint-disable-next-line
         var search; // if we have to search for a value
         var fieldName, obj, tmp;
 
@@ -4655,7 +4867,7 @@ if (typeof jQuery === "function") {
             }
             obj.val = function(v) {
               if (typeof v === "undefined") { // get
-                var v=[];
+                v=[];
                 var e=this.elem(false);
                 if (e) {
                   if (!e.length) e=[e];
@@ -4752,7 +4964,9 @@ if (typeof jQuery === "function") {
                       if (v !== undefined) {
                         e.innerHTML=v;
                       }
-                      else return e.innerHTML.replace(/^<div class="?ExternalClass[0-9A-Z]+"?>([\s\S]*)<\/div>$/i,"$1").replace(/<span (rtenodeid="1" )?id="?ms-rterangecursor-start"?><\/span><span (rtenodeid="3" )?id="?ms-rterangecursor-end"?([^>]+)?><\/span>/gi,"").replace(/^<p>​<\/p>$/,"");
+                      else {
+                        return e.innerHTML.replace(/^<div class="?ExternalClass[0-9A-Z]+"?>([\s\S]*)<\/div>$/i,"$1").replace(/<span (rtenodeid="1" )?id="?ms-rterangecursor-start"?><\/span><span (rtenodeid="3" )?id="?ms-rterangecursor-end"?([^>]+)?><\/span>/gi,"").replace(/^<p>​<\/p>$/,""); // eslint-disable-line
+                      }
                     }
                     return (v !== undefined ? this : null);
                   };
@@ -4798,18 +5012,18 @@ if (typeof jQuery === "function") {
                     // if GetPickerControlValue is defined -- SP2010
                     if (typeof GetPickerControlValue === "function") {
                       if (extend === false) {
-                        return GetPickerControlValue(id, false, true).trim();
+                        return GetPickerControlValue(id, false, true).trim(); // eslint-disable-line
                       } else {
-                        v = GetPickerControlValue(id, false, false);
+                        v = GetPickerControlValue(id, false, false); // eslint-disable-line
                         // we try to extract data from there
                         tmp = document.createElement('div');
                         tmp.innerHTML = v;
                         v = tmp.querySelector('#divEntityData');
-                        return (v ? {"Key":v.getAttribute("key"), "DisplayText":v.getAttribute("DisplayText")} : {"Key":"", "DisplayText":GetPickerControlValue(id, false, true).trim()})
+                        return (v ? {"Key":v.getAttribute("key"), "DisplayText":v.getAttribute("DisplayText")} : {"Key":"", "DisplayText":GetPickerControlValue(id, false, true).trim()}) // eslint-disable-line
                       }
                     } else { // SP2013
                       if (typeof SPClientPeoplePicker === "function") {
-                        tmp = SPClientPeoplePicker.SPClientPeoplePickerDict[id];
+                        tmp = SPClientPeoplePicker.SPClientPeoplePickerDict[id]; // eslint-disable-line
                         // if it exists
                         if (tmp) {
                           tmp = tmp.GetAllUserInfo();
@@ -4836,13 +5050,13 @@ if (typeof jQuery === "function") {
                         tmp += '<Entity Key="' + e + '" DisplayText="' + e + '" IsResolved="False" Description="' + e + '"><MultipleMatches /></Entity>'
                       });
                       tmp += '</Entities>';
-                      EntityEditorCallback(tmp, id, false);
-                      v=getUplevel(id);
+                      EntityEditorCallback(tmp, id, false); // eslint-disable-line
+                      v=getUplevel(id); // eslint-disable-line
                       // check the value passed
-                      WebForm_DoCallback(id.replace(/(ctl\d+)(\_)/g,"$1\$").replace(/(^ctl\d+\$m)(\_)/,"$1\$").replace(/\_ctl/,"\$ctl"),v,EntityEditorHandleCheckNameResult,id,EntityEditorHandleCheckNameError,true);
+                      WebForm_DoCallback(id.replace(/(ctl\d+)(\_)/g,"$1\$").replace(/(^ctl\d+\$m)(\_)/,"$1\$").replace(/\_ctl/,"\$ctl"),v,EntityEditorHandleCheckNameResult,id,EntityEditorHandleCheckNameError,true); // eslint-disable-line
                     } else { // SP2013
                       if (typeof SPClientPeoplePicker === "function") {
-                        res = SPClientPeoplePicker.SPClientPeoplePickerDict[id];
+                        res = SPClientPeoplePicker.SPClientPeoplePickerDict[id]; // eslint-disable-line
                         if (res) {
                           // first we remove the existing values
                           tmp = document.getElementById(res.ResolvedListElementId);
@@ -5041,7 +5255,7 @@ if (typeof jQuery === "function") {
                   }
                   var type=this.type();
 
-                  var e = this.elem(false), val=[], o;
+                  var e = this.elem(false), o;
                   if (typeof v !== "undefined") {
                     if (type === "lookup multiple") {
                       if (!SPIsArray(v)) v = [ v ];
@@ -5054,7 +5268,7 @@ if (typeof jQuery === "function") {
                       setSelectedOption(e[3], "", "all");
                       if (clickRemove) eval("!function() {"+clickRemove+"}()");
                       else if (typeof GipRemoveSelectedItems === "function") {
-                        GipRemoveSelectedItems(masterGroup)
+                        GipRemoveSelectedItems(masterGroup) // eslint-disable-line
                       }
                       setSelectedOption(e[0], "", "none");
                       // then we want to select in the same order
@@ -5064,7 +5278,7 @@ if (typeof jQuery === "function") {
                         // click the button
                         if (clickAdd) eval("!function() {"+clickAdd+"}()");
                         else if (typeof GipAddSelectedItems === "function") {
-                          GipAddSelectedItems(masterGroup)
+                          GipAddSelectedItems(masterGroup) // eslint-disable-line
                         }
                       }
                     } else {
@@ -5421,6 +5635,7 @@ if (typeof jQuery === "function") {
       })
     */
     notify:function(message,options) {
+      var _this=this;
       if (message === undefined) throw "Error 'notify': you must provide the message to show."
       if (typeof message !== "string") throw "Error 'notify': you must provide a string for the message to show."
 
@@ -5442,21 +5657,21 @@ if (typeof jQuery === "function") {
         _SP_NOTIFY_QUEUE.push({message:message, options:options});
         $(document).ready(function() {
           // we need core.js and sp.js
-          ExecuteOrDelayUntilScriptLoaded(function() {
-            ExecuteOrDelayUntilScriptLoaded(function() {
+          ExecuteOrDelayUntilScriptLoaded(function() { // eslint-disable-line
+            ExecuteOrDelayUntilScriptLoaded(function() { // eslint-disable-line
               _SP_NOTIFY_READY=true;
-              $SP().notify("fake",{fake:true});
+              _this.notify("fake",{fake:true});
             }, "core.js")
           }, "sp.js")
         })
-        return this
+        return _this
       } else {
         // check if we don't have some notifications in queue first
         if (options.ignoreQueue!==true) {
           while (_SP_NOTIFY_QUEUE.length > 0) {
             var a = _SP_NOTIFY_QUEUE.shift();
             a.options.ignoreQueue=true;
-            $SP().notify(a.message, a.options);
+            _this.notify(a.message, a.options);
           }
         }
         if (options.fake===true) return;
@@ -5464,23 +5679,22 @@ if (typeof jQuery === "function") {
         // for the override options
         if (_SP_NOTIFY.length > 0) {
           if (options.overrideAll)
-            $SP().removeNotify({all:true, includeSticky:options.overrideSticky})
+            _this.removeNotify({all:true, includeSticky:options.overrideSticky})
           else if (options.override)
-            $SP().removeNotify(_SP_NOTIFY[_SP_NOTIFY.length-1].name)
+            _this.removeNotify(_SP_NOTIFY[_SP_NOTIFY.length-1].name)
         }
 
-        _SP_NOTIFY.push({name:options.name, id:SP.UI.Notify.addNotification(message, true), options:options})
+        _SP_NOTIFY.push({name:options.name, id:SP.UI.Notify.addNotification(message, true), options:options}) // eslint-disable-line
       }
 
       // setup a timeout
       if (!options.sticky) {
-        var _this=this;
         setTimeout(function() {
-          $SP().removeNotify(options.name, {timeout:true})
+          _this.removeNotify(options.name, {timeout:true})
         }, options.timeout*1000)
       }
 
-      return this;
+      return _this;
     },
     /**
       @name $SP().removeNotify
@@ -5507,6 +5721,7 @@ if (typeof jQuery === "function") {
       $SP().removeNotify({all:true, includeSticky:false}); // all the notifications are removed except the sticky one
     */
     removeNotify:function(name,options) {
+      var _this=this;
       switch (arguments.length) {
         case 0: throw "Error 'removeNotify': you must provide 'name' or 'options'."
         case 2: {
@@ -5524,11 +5739,11 @@ if (typeof jQuery === "function") {
 
       // make sure we are ready
       if (_SP_NOTIFY_READY === false && _SP_NOTIFY_QUEUE.length > 0) {
-        setTimeout(function() { $SP().removeNotify(name, options) }, 150)
-        return this;
+        setTimeout(function() { _this.removeNotify(name, options) }, 150)
+        return _this;
       }
 
-      var notif,_this=this;
+      var notif;
       // if we want to delete all the notifications
       if (options.all === true) {
         var a=[]
@@ -5536,7 +5751,7 @@ if (typeof jQuery === "function") {
           notif = _SP_NOTIFY.shift();
           if (options.includeSticky === false && notif.options.sticky === true) a.push(notif)
           else {
-            SP.UI.Notify.removeNotification(notif.id);
+            SP.UI.Notify.removeNotification(notif.id); // eslint-disable-line
             setTimeout(function() { notif.options.after.call(_this, notif.name, false) }, 150)
           }
         }
@@ -5546,13 +5761,13 @@ if (typeof jQuery === "function") {
         for (var i=0,len=_SP_NOTIFY.length; i<len; i++) {
           if (_SP_NOTIFY[i].name == name) {
             notif = _SP_NOTIFY.splice(i,1)[0];
-            SP.UI.Notify.removeNotification(notif.id);
+            SP.UI.Notify.removeNotification(notif.id); // eslint-disable-line
             setTimeout(function() { notif.options.after.call(_this, notif.name, options.timeout) }, 150)
-            return this;
+            return _this;
           }
         }
       }
-      return this;
+      return _this;
     },
     /**
       @ignore
@@ -5580,7 +5795,7 @@ if (typeof jQuery === "function") {
         vw.height=doc.height;
       }
 
-       return {vw:vw, doc:doc};
+      return {vw:vw, doc:doc};
     },
     /**
       @name $SP().showModalDialog
@@ -5629,20 +5844,21 @@ if (typeof jQuery === "function") {
       // and use $SP().closeModalDialog() to close it
      */
     showModalDialog:function(options) {
+      var _this=this;
       // in some weird cases the script is not loaded correctly, so we need to ensure it
       if (!_SP_MODALDIALOG_LOADED) {
-        _SP_MODALDIALOG_LOADED=(typeof SP === "object" && typeof SP.UI === "object" && typeof SP.UI.ModalDialog === "function" && typeof SP.UI.ModalDialog.showModalDialog === "function");
+        _SP_MODALDIALOG_LOADED=(typeof SP === "object" && typeof SP.UI === "object" && typeof SP.UI.ModalDialog === "function" && typeof SP.UI.ModalDialog.showModalDialog === "function"); // eslint-disable-line
         if (!_SP_MODALDIALOG_LOADED) {
-          LoadSodByKey("sp.ui.dialog.js", function() {
+          LoadSodByKey("sp.ui.dialog.js", function() { // eslint-disable-line
             _SP_MODALDIALOG_LOADED=true;
-            $SP().showModalDialog(options);
+            _this.showModalDialog(options);
           });
-          return this;
+          return _this;
         }
       }
-      var size, ohtml, _this=this;
+      var size, ohtml;
       // source: http://stackoverflow.com/a/24603642/1134119
-      function iFrameReady(a,b){function e(){d||(d=!0,clearTimeout(c),b.call(this))}function f(){"complete"===this.readyState&&e.call(this)}function g(a,b,c){return a.addEventListener?a.addEventListener(b,c):a.attachEvent("on"+b,function(){return c.call(a,window.event)})}function h(){var b=a.contentDocument||a.contentWindow.document;0!==b.URL.indexOf("about:")?"complete"===b.readyState?e.call(b):(g(b,"DOMContentLoaded",e),g(b,"readystatechange",f)):c=setTimeout(h,1)}var c,d=!1;g(a,"load",function(){var b=a.contentDocument;b||(b=a.contentWindow,b&&(b=b.document)),b&&e.call(b)}),h()}
+      function iFrameReady(a,b){function e(){d||(d=!0,clearTimeout(c),b.call(this))}function f(){"complete"===this.readyState&&e.call(this)}function g(a,b,c){return a.addEventListener?a.addEventListener(b,c):a.attachEvent("on"+b,function(){return c.call(a,window.event)})}function h(){var b=a.contentDocument||a.contentWindow.document;0!==b.URL.indexOf("about:")?"complete"===b.readyState?e.call(b):(g(b,"DOMContentLoaded",e),g(b,"readystatechange",f)):c=setTimeout(h,1)}var c,d=!1;g(a,"load",function(){var b=a.contentDocument;b||(b=a.contentWindow,b&&(b=b.document)),b&&e.call(b)}),h()} // eslint-disable-line
 
       options.id = (options.id || "").replace(/\W+/g,"");
       options.id = options.id || new Date().getTime();
@@ -5721,14 +5937,14 @@ if (typeof jQuery === "function") {
       };
 
       var fct = function() {
-        var modal = (options.wait ? SP.UI.ModalDialog.showWaitScreenWithNoClose(options.title, options.message, options.height, options.width) : SP.UI.ModalDialog.showModalDialog(options));
+        var modal = (options.wait ? SP.UI.ModalDialog.showWaitScreenWithNoClose(options.title, options.message, options.height, options.width) : SP.UI.ModalDialog.showModalDialog(options)); // eslint-disable-line
 
         // search for the lastest iframe + ms-dlgContent in the top frame body
         var wt = window.top;
         var id = modal_id;
         var frames = wt.document.querySelectorAll('body > iframe');
         var frame = frames[frames.length-1];
-        var biggestZ = 0, i, styles = wt.document.querySelectorAll('style[id^="style_sp_frame"]');
+        var biggestZ = 0;
         // we define an attribute to find them later
         frame.setAttribute("id", id);
         // record it into a special object
@@ -5758,7 +5974,7 @@ if (typeof jQuery === "function") {
           }
         }
       };
-      SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js');
+      SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js'); // eslint-disable-line
     },
     /**
       @name $SP().closeModalDialog
@@ -5806,10 +6022,10 @@ if (typeof jQuery === "function") {
               return false;
             }
           }
-          SP.UI.ModalDialog.commonModalDialogClose(dialogResult, returnValue);
+          SP.UI.ModalDialog.commonModalDialogClose(dialogResult, returnValue); // eslint-disable-line
         }
       };
-      SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js');
+      SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js'); // eslint-disable-line
 
       return false;
     },
@@ -5829,7 +6045,7 @@ if (typeof jQuery === "function") {
     getModalDialog:function(id) {
       if (typeof window.top._SP_MODALDIALOG !== "undefined") {
         var md=window.top._SP_MODALDIALOG;
-        var id = id.replace(/\W+/g,"");
+        id = id.replace(/\W+/g,"");
         for (var i=0; i<md.length; i++) {
           if (md[i].id === "sp_frame_"+id) {
             return md[i];
@@ -5985,7 +6201,7 @@ if (typeof jQuery === "function") {
    **/
   var myElem = (function(){
     var myElem = function(elem) { return new MyElemConstruct(elem); },
-    MyElemConstruct = function(elem) { this.mynode = elem; this.singleList=true; return this; };
+        MyElemConstruct = function(elem) { this.mynode = elem; this.singleList=true; return this; };
     myElem.fn = MyElemConstruct.prototype = {
       getAttribute: function(id) { return this.mynode.getAttribute("ows_"+id.replace(/ /g,"")) }, /*.replace(/ /g,"")*/
       getAttributes:function() { return this.mynode.attributes }
