@@ -3,7 +3,7 @@
  * Copyright 2017, Aymeric (@aymkdn)
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/
- * License: GPL-3 (http://aymkdn.github.com/SharepointPlus/license.md)
+ * License: LGPL-3 (http://aymkdn.github.com/SharepointPlus/license.md)
  */
 
 /**
@@ -483,14 +483,17 @@ if (typeof jQuery === "function") {
       return '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><'+methodName+' xmlns="'+xmlns+'">' + bodyContent + '</'+methodName+'></soap:Body></soap:Envelope>';
     },
     /**
-     * Permits to directly deal with a WebService (similar to SPServices http://sympmarc.github.io/SPServices/core/web-services.html)
+     * @name $SP().webService
+     * @function
+     * @category core
+     * @description Permits to directly deal with a WebService (similar to SPServices http://sympmarc.github.io/SPServices/core/web-services.html)
      * @param  {Object} options
      *   @param {String} operation The method name to use (e.g. UpdateList, GetList, ....)
      *   @param {String} service The name of the service (Lists, Versions, PublishedLinksService, ...) it's the ".asmx" name without the extension
      *   @param {Object} [properties={}] The properties to call
      *   @param {String} [webURL=current website] The URL of the website
      *   @param {Function} [after=function(response){}] A callback function
-     * @return {Promise}
+     * @return {Promise} The 'response' from the server is passed, and only on `resolve`
      *
      * @example
      * $SP().webService({ // http://sympmarc.github.io/SPServices/core/web-services/Lists/UpdateList.html
@@ -1745,7 +1748,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.success=function(fileURL){}] A callback function that will be triggered in case of success; 1 parameter
         @param {Function} [setup.error=function(fileURL,errorMessage){}] A callback function that will be triggered in case of failure; 2 parameters
         @param {Function} [setup.after=function(fileURL,errorMessage){}] A callback function that will be triggered after the task whatever it's successful or not; 2 parameters
-      @return {Promise}
+      @return {Promise} The 'fileURL' on 'resolve', and 'errorMessage' on 'reject'
 
       @example
       // create a text document
@@ -1915,6 +1918,7 @@ if (typeof jQuery === "function") {
         @param {String} setup.library The name of the Document Library
         @param {String} [setup.url='current website'] The website url
         @param {Function} [setup.after=function(passed,failed){}] A callback function that will be triggered after the task
+      @return {Promise} A 'results' array with 'passed' ([0]) and 'failed' ([1]), no trigger on 'reject'
 
       @example
       // create a folder called "first" at the root of the Shared Documents library
@@ -2015,6 +2019,7 @@ if (typeof jQuery === "function") {
         @param {Function} [setup.success=function(){}] A callback function that will be triggered when there is success
         @param {Function} [setup.error=function(){}] A callback function that will be triggered if there is an error
         @param {Function} [setup.after=function(){}] A callback function that will be triggered after the task
+      @return {Promise} when the request is completed it will trigger the on 'resolve', and no trigger for on 'reject'
 
       @example
       $SP().checkin({
@@ -2022,41 +2027,64 @@ if (typeof jQuery === "function") {
         comments:"Automatic check in with SharepointPlus",
         after:function() { alert("Done"); }
       });
+
+      // with Promise
+      $SP().checkin({
+        destination:"http://mysite/Shared Documents/myfile.txt",
+        comments:"Automatic check in with SharepointPlus"
+      }).then(function() {
+        alert("Done");
+      })
     */
     checkin:function(setup) {
       // default values
-      setup     = setup || {};
-      if (setup.destination == undefined) throw "Error 'checkin': not able to find the file destination path.";
-      setup.url = setup.url || this.url;
-      // if we didn't define the url in the parameters, then we need to find it
-      if (!setup.url) {
-        this._getURL();
-        return this._addInQueue(arguments);
-      }
-      if (this.url == undefined) throw "Error 'checkin': not able to find the URL!"; // we cannot determine the url
-      setup.url = this.url;
-      setup.comments = setup.comments || "";
-      setup.success = setup.success || (function(){});
-      setup.error = setup.error || (function(){});
-      setup.after = setup.after || (function(){});
-
       var _this=this;
-      var soapEnv = _this._buildBodyForSOAP("CheckInFile", '<pageUrl>'+setup.destination+'</pageUrl><comment>'+setup.comments+'</comment><CheckinType>1</CheckinType></CheckInFile>');
-      _this.ajax({
-        url: setup.url + "/_vti_bin/Lists.asmx",
-        type: "POST",
-        dataType: "xml",
-        data: soapEnv,
-        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/CheckInFile'); },
-        contentType: "text/xml; charset=utf-8",
-        success:function(data) {
-          var res = data.getElementsByTagName('CheckInFileResult');
-          if (res && res[0] && res[0].firstChild.nodeValue != "true") setup.error.call(_this);
-          else setup.success.call(_this);
-
-          setup.after.call(_this);
+      return _this._promise(function(prom_resolve, prom_reject) {
+        setup     = setup || {};
+        if (setup.destination == undefined) throw "Error 'checkin': not able to find the file destination path.";
+        setup.url = setup.url || _this.url;
+        // if we didn't define the url in the parameters, then we need to find it
+        if (!setup.url) {
+          if (_this.hasPromise) {
+            _this._getURL().then(function() {
+              _this.checkin(setup).then(function(res) {
+                prom_resolve(res);
+              })
+            });
+          } else {
+            _this._getURL();
+            _this._addInQueue(arguments);
+          }
+          return;
         }
-      });
+        if (_this.url == undefined) throw "Error 'checkin': not able to find the URL!"; // we cannot determine the url
+        setup.url = _this.url;
+        setup.comments = setup.comments || "";
+        setup.success = setup.success || (function(){});
+        setup.error = setup.error || (function(){});
+        setup.after = setup.after || (function(){});
+
+        var soapEnv = _this._buildBodyForSOAP("CheckInFile", '<pageUrl>'+setup.destination+'</pageUrl><comment>'+setup.comments+'</comment><CheckinType>1</CheckinType>');
+        _this.ajax({
+          url: setup.url + "/_vti_bin/Lists.asmx",
+          type: "POST",
+          dataType: "xml",
+          data: soapEnv,
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/CheckInFile'); },
+          contentType: "text/xml; charset=utf-8",
+          success:function(data) {
+            var res = data.getElementsByTagName('CheckInFileResult');
+            if (res && res[0] && res[0].firstChild.nodeValue != "true") {
+              setup.error.call(_this);
+              prom_reject();
+            } else {
+              setup.success.call(_this);
+              prom_resolve();
+            }
+            setup.after.call(_this);
+          }
+        });
+      })
     },
     /**
       @name $SP().list.addAttachment
@@ -2714,13 +2742,13 @@ if (typeof jQuery === "function") {
 
       @param {Object|Array} items List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])
       @param {Object} [options] Options (see below)
-        @param {Number} [setup.packetsize=15] If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+        @param {Number} [options.packetsize=15] If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
         @param {Function} [options.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Function} [options.success] A function with the items added sucessfully
         @param {Function} [options.error] A function with the items not added
         @param {Function} [options.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
         @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
-      @return {Promise}
+      @return {Promise} Trigger on 'resolve' when it's completed with an array of 'passed' ([0]) and 'failed' ([1]), no trigger on 'reject'
 
       @example
       $SP().list("My List").add({Title:"Ok"});
@@ -2736,6 +2764,12 @@ if (typeof jQuery === "function") {
       // different ways to add John and Tom into the table
       $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
       $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
+
+      // with Promise
+      $SP().list("My List").add({Title:"Promise Example"}).then(function(res) {
+        // passed = res[0]
+        // failed = res[1]
+      })
     */
     add:function(items, options) {
       var _this=this;
@@ -2864,13 +2898,15 @@ if (typeof jQuery === "function") {
       @description Update items from a Sharepoint List
 
       @param {Array} items List of items (e.g. [{ID: 1, Field_x0020_Name: "Value", OtherField: "new value"}, {ID:22, Field_x0020_Name: "Value2", OtherField: "new value2"}])
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.where=""] You can define a WHERE clause
-        @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- if you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
-        @param {Function} [setup.success] One parameter: 'passedItems' -- a function with the items updated sucessfully
-        @param {Function} [setup.error] One parameter: 'failedItems' -- a function with the items not updated
-        @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
-        @param {Boolean} [setup.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
+      @param {Object} [options] Options (see below)
+        @param {String} [options.where=""] You can define a WHERE clause
+        @param {Number} [options.packetsize=15] If you have too many items to update, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- if you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
+        @param {Function} [options.success] One parameter: 'passedItems' -- a function with the items updated sucessfully
+        @param {Function} [options.error] One parameter: 'failedItems' -- a function with the items not updated
+        @param {Function} [options.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
+        @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
+      @return {Promise} Trigger on 'resolve' when it's completed with an array of 'passed' ([0]) and 'failed' ([1]), no trigger on 'reject'
 
       @example
       $SP().list("My List").update({ID:1, Title:"Ok"}); // you must always provide the ID
@@ -2881,134 +2917,153 @@ if (typeof jQuery === "function") {
       $SP().list("List Name").update({ID:43, Title:"Ok"}, {error:function(items) {
         for (var i=0; i &lt; items.length; i++) console.log("Error '"+items[i].errorMessage+"' with:"+items[i].Title);
       }});
+
+      // with Promise
+      $SP().list("My List").update({ID:42, Title:"Promise Example"}).then(function(res) {
+        // passed = res[0]
+        // failed = res[1]
+      })
     */
-    update:function(items, setup) {
+    update:function(items, options) {
       var _this=this;
-      // check if we need to queue it
-      if (_this.needQueue) { return _this._addInQueue(arguments) }
-      if (_this.listID===undefined) throw "Error 'update': you need to use list() to define the list name.";
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // check if we need to queue it
+        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.listID===undefined) throw "Error 'update': you need to use list() to define the list name.";
 
-      // default values
-      setup         = setup || {};
-      if (_this.url == undefined) throw "Error 'update': not able to find the URL!"; // we cannot determine the url
-      setup.where   = setup.where || "";
-      setup.success = setup.success || (function() {});
-      setup.error   = setup.error || (function() {});
-      setup.after   = setup.after || (function() {});
-      setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
-      setup.progress= setup.progress || (function() {});
+        // default values
+        var setup={};
+        SPExtend(true, setup, options);
+        if (_this.url == undefined) throw "Error 'update': not able to find the URL!"; // we cannot determine the url
+        // deal with Promise/callbacks
+        if (setup.useCallback !== false && (typeof setup.after === "function" || !prom_resolve)) { // if we ask for a callback, or if no Promise, no callback, no jQuery
+          setup.useCallback = true;
+        } else {
+          setup.useCallback = false;
+        }
+        setup.where   = setup.where || "";
+        setup.success = setup.success || (function() {});
+        setup.error   = setup.error || (function() {});
+        setup.after   = setup.after || (function() {});
+        setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
+        setup.progress= setup.progress || (function() {});
+        setup.packetsize=setup.packetsize||15;
 
-      if (typeof items === "object" && items.length==undefined) items = [ items ];
-      var itemsLength=items.length;
+        if (typeof items === "object" && items.length==undefined) items = [ items ];
+        var itemsLength=items.length;
 
-      // if there is a WHERE clause
-      if (itemsLength == 1 && setup.where) {
-        // call GET first
-        delete items[0].ID;
-        this.get({fields:"ID",where:setup.where},function(data) {
-          // we need a function to clone the items
-          var clone = function(obj){
-            var newObj = {};
-            for (var k in obj) newObj[k]=obj[k];
-            return newObj;
+        // if there is a WHERE clause
+        if (itemsLength == 1 && setup.where) {
+          // call GET first
+          delete items[0].ID;
+          _this.get({fields:"ID",where:setup.where},function(data) {
+            // we need a function to clone the items
+            var clone = function(obj){
+              var newObj = {};
+              for (var k in obj) newObj[k]=obj[k];
+              return newObj;
+            };
+            var aItems=[];
+            for (var i=data.length;i--;) {
+              var it=clone(items[0]);
+              it.ID=data[i].getAttribute("ID");
+              aItems.push(it);
+            }
+            delete setup.where;
+            // now call again the UPDATE
+            if (setup.useCallback) _this.update(aItems,setup)
+            else _this.update(aItems,setup).then(function(res) { prom_resolve(res) });
+          });
+          return
+        }
+
+        // define current and max for the progress
+        setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spUpdate"+(""+Math.random()).slice(2)};
+        // we cannot add more than 15 items in the same time, so split by 15 elements
+        // and also to avoid surcharging the server
+        if (itemsLength > setup.packetsize) {
+          var nextPacket=items.slice(0);
+          var cutted=nextPacket.splice(0,setup.packetsize);
+          _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
+            return _this.update(nextPacket,setup);
           };
-          var aItems=[];
-          for (var i=data.length;i--;) {
-            var it=clone(items[0]);
-            it.ID=data[i].getAttribute("ID");
-            aItems.push(it);
+          items = cutted;
+          itemsLength = items.length;
+        } else if (itemsLength == 0) {
+          setup.progress(1,1);
+          setup.error([]);
+          setup.success([]);
+          if (setup.useCallback) setup.after([], []);
+          else prom_resolve([[], []]);
+          return;
+        }
+
+        // increment the progress
+        setup.progressVar.current += itemsLength;
+
+        // build a part of the request
+        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
+        var itemKey, itemValue, it;
+        for (var i=0; i < itemsLength; i++) {
+          updates += '<Method ID="'+(i+1)+'" Cmd="Update">';
+          if (items[i].ID == undefined) throw "Error 'update': you have to provide the item ID called 'ID'";
+          for (it in items[i]) {
+            if (items[i].hasOwnProperty(it)) {
+              itemKey = it;
+              itemValue = items[i][it];
+              if (SPIsArray(itemValue)) itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
+              if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
+              updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
+            }
           }
-          delete setup.where;
-          // now call again the UPDATE
-          _this.update(aItems,setup);
+          updates += '</Method>';
+        }
+        updates += '</Batch>';
+
+        // build the request
+        var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
+        // send the request
+        var url = _this.url + "/_vti_bin/lists.asmx";
+        _this.ajax({
+          type:"POST",
+          cache:false,
+          async:true,
+          url:url,
+          data:body,
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
+          contentType: "text/xml; charset=utf-8",
+          dataType: "xml",
+          success:function(data) {
+            var result = data.getElementsByTagName('Result');
+            var len=result.length;
+            var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
+            for (var i=0; i < len; i++) {
+              if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000" && items[i]) // success
+                passed.push(items[i]);
+              else if (items[i]) {
+                items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
+                failed.push(items[i]);
+              }
+            }
+
+            setup.progress(setup.progressVar.current,setup.progressVar.max);
+            // check if we have some other packets that are waiting to be treated
+            if (setup.progressVar.current < setup.progressVar.max) {
+              if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) {
+                if (setup.useCallback) _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID](setup);
+                else _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID](setup).then(function(res) { prom_resolve(res) })
+              }
+            }
+            else {
+              if (failed.length>0) setup.error.call(_this,failed);
+              if (passed.length>0) setup.success.call(_this,passed);
+              if (setup.useCallback) setup.after.call(_this, passed, failed);
+              else prom_resolve([passed, failed]);
+              if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID];
+            }
+          }
         });
-        return _this;
-      }
-
-      // define current and max for the progress
-      setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spUpdate"+(""+Math.random()).slice(2)};
-      // we cannot add more than 15 items in the same time, so split by 15 elements
-      // and also to avoid surcharging the server
-      if (itemsLength > 15) {
-        var nextPacket=items.slice(0);
-        var cutted=nextPacket.splice(0,15);
-        _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
-          _this.update(nextPacket,setup);
-        };
-        _this.update(cutted,setup);
-        return _this;
-      } else if (itemsLength == 0) {
-        setup.progress(1,1);
-        setup.error([]);
-        setup.success([]);
-        setup.after([], []);
-        return _this;
-      }
-
-      // increment the progress
-      setup.progressVar.current += itemsLength;
-
-      // build a part of the request
-      var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
-      var itemKey, itemValue, it;
-      for (var i=0; i < itemsLength; i++) {
-        updates += '<Method ID="'+(i+1)+'" Cmd="Update">';
-        if (items[i].ID == undefined) throw "Error 'update': you have to provide the item ID called 'ID'";
-        for (it in items[i]) {
-          if (items[i].hasOwnProperty(it)) {
-            itemKey = it;
-            itemValue = items[i][it];
-            if (SPIsArray(itemValue)) itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
-            if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
-            updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
-          }
-        }
-        updates += '</Method>';
-      }
-      updates += '</Batch>';
-
-      // build the request
-      var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
-      // send the request
-      var url = _this.url + "/_vti_bin/lists.asmx";
-      _this.ajax({
-        type:"POST",
-        cache:false,
-        async:true,
-        url:url,
-        data:body,
-        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
-        contentType: "text/xml; charset=utf-8",
-        dataType: "xml",
-        success:function(data) {
-          var result = data.getElementsByTagName('Result');
-          var len=result.length;
-          var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
-          for (var i=0; i < len; i++) {
-            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000" && items[i]) // success
-              passed.push(items[i]);
-            else if (items[i]) {
-              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
-              failed.push(items[i]);
-            }
-          }
-
-          setup.progress(setup.progressVar.current,setup.progressVar.max);
-          // check if we have some other packets that are waiting to be treated
-          if (setup.progressVar.current < setup.progressVar.max) {
-            if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) {
-              _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID](setup);
-            }
-          }
-          else {
-            if (failed.length>0) setup.error.call(_this,failed);
-            if (passed.length>0) setup.success.call(_this,passed);
-            setup.after.call(_this, passed, failed);
-            if (_SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID];
-          }
-        }
-      });
-      return this;
+      })
     },
     /**
       @name $SP().list.history
@@ -3218,13 +3273,14 @@ if (typeof jQuery === "function") {
       @note You can also use the key word 'del' instead of 'remove'
 
       @param {Objet|Array} [itemsID] List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
-        @param {Number} [setup.packetsize=15] If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- If you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
-        @param {Function} [setup.success] One parameter: 'passedItems' -- a function with the items updated sucessfully
-        @param {Function} [setup.error] (One parameter: 'failedItems' -- a function with the items not updated
-        @param {Function} [setup.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
+      @param {Object} [options] Options (see below)
+        @param {String} [options.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
+        @param {Number} [options.packetsize=15] If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- If you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
+        @param {Function} [options.success] One parameter: 'passedItems' -- a function with the items updated sucessfully
+        @param {Function} [options.error] (One parameter: 'failedItems' -- a function with the items not updated
+        @param {Function} [options.after] A function that will be executed at the end of the request; with two parameters (passedItems, failedItems)
+      @return {Promise} Trigger on 'resolve' when it's completed with an array of 'passed' ([0]) and 'failed' ([1]), no trigger on 'reject'
 
       @example
       $SP().list("My List").remove({ID:1}); // you must always provide the ID
@@ -3244,125 +3300,144 @@ if (typeof jQuery === "function") {
 
       // example for deleting a file
       $SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared Documents/something.xls"});
+
+      // with Promise
+      $SP().list("My List").remove({ID:42}).then(function(res) {
+        // passed = res[0]
+        // failed = res[1]
+      })
     */
-    remove:function(items, setup) {
+    remove:function(items, options) {
       var _this=this;
-      // check if we need to queue it
-      if (_this.needQueue) { return _this._addInQueue(arguments) }
-      // default values
-      if (!setup && items.where) { setup=items; items=[]; } // the case when we use the "where"
-      setup         = setup || {};
-      if (_this.url == undefined) throw "Error 'remove': not able to find the URL!"; // we cannot determine the url
-      setup.error   = setup.error || (function() {});
-      setup.success = setup.success || (function() {});
-      setup.after   = setup.after || (function() {});
-      setup.progress= setup.progress || (function() {});
-      setup.packetsize = setup.packetsize || 15;
-
-      if (typeof items === "object" && items.length==undefined) items = [ items ];
-      var itemsLength=items.length;
-
-      // if there is a WHERE clause
-      if (setup.where) {
-        // call GET first
-        if (itemsLength==1) delete items[0].ID;
-        this.get({fields:"ID,FileRef",where:setup.where},function(data) {
-          // we need a function to clone the items
-          var clone = function(obj){
-            var newObj = {};
-            for (var k in obj) newObj[k]=obj[k];
-            return newObj;
-          };
-          var aItems=[],fileRef;
-          for (var i=data.length;i--;) {
-            var it=clone(items[0]);
-            it.ID=data[i].getAttribute("ID");
-            fileRef=data[i].getAttribute("FileRef");
-            if (fileRef) it.FileRef=_this.cleanResult(fileRef);
-            aItems.push(it);
-          }
-          // now call again the REMOVE
-          delete setup.where;
-          _this.remove(aItems,setup);
-        });
-        return _this;
-      } else if (itemsLength == 0) {
-        // nothing to delete
-        setup.progress(1,1);
-        setup.error.call(_this,[]);
-        setup.success.call(_this,[]);
-        setup.after.call(_this, [], [])
-        return _this;
-      }
-
-      // define current and max for the progress
-      setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spRemove"+(""+Math.random()).slice(2)};
-      // we cannot add more than setup.packetsize items in the same time, so split by setup.packetsize elements
-      // and also to avoid surcharging the server
-      if (itemsLength > setup.packetsize) {
-        var nextPacket=items.slice(0);
-        var cutted=nextPacket.splice(0,setup.packetsize);
-        _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
-          _this.remove(nextPacket,setup);
-        };
-        _this.remove(cutted,setup);
-        return _this;
-      }
-      // increment the progress
-      setup.progressVar.current += itemsLength;
-
-      // build a part of the request
-      var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
-      for (var i=0; i < items.length; i++) {
-        updates += '<Method ID="'+(i+1)+'" Cmd="Delete">';
-        if (items[i].ID == undefined) throw "Error 'delete': you have to provide the item ID called 'ID'";
-        updates += "<Field Name='ID'>"+items[i].ID+"</Field>";
-        if (items[i].FileRef != undefined) updates += "<Field Name='FileRef'>"+items[i].FileRef+"</Field>";
-        updates += '</Method>';
-      }
-      updates += '</Batch>';
-
-      // build the request
-      var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
-      // send the request
-      var url = _this.url + "/_vti_bin/lists.asmx";
-      _this.ajax({
-        type:"POST",
-        cache:false,
-        async:true,
-        url:url,
-        data:body,
-        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
-        contentType: "text/xml; charset=utf-8",
-        dataType: "xml",
-        success:function(data) {
-          var result = data.getElementsByTagName('Result');
-          var len=result.length;
-          var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
-          for (var i=0; i < len; i++) {
-            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
-              passed.push(items[i]);
-            else {
-              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
-              failed.push(items[i]);
-            }
-          }
-
-          setup.progress(setup.progressVar.current,setup.progressVar.max);
-          // check if we have some other packets that are waiting to be treated
-          if (setup.progressVar.current < setup.progressVar.max) {
-            if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) {
-              _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID](setup);
-            }
-          } else {
-            if (failed.length>0) setup.error.call(_this,failed);
-            if (passed.length>0) setup.success.call(_this,passed);
-            setup.after.call(_this, passed, failed);
-            if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID];
-          }
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // check if we need to queue it
+        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        // default values
+        if (!options && items.where) { options=items; items=[]; } // the case when we use the "where"
+        var setup={};
+        SPExtend(true, setup, options);
+        if (_this.url == undefined) throw "Error 'remove': not able to find the URL!"; // we cannot determine the url
+        // deal with Promise/callbacks
+        if (setup.useCallback !== false && (typeof setup.after === "function" || !prom_resolve)) { // if we ask for a callback, or if no Promise, no callback, no jQuery
+          setup.useCallback = true;
+        } else {
+          setup.useCallback = false;
         }
-      });
-      return _this;
+        setup.error   = setup.error || (function() {});
+        setup.success = setup.success || (function() {});
+        setup.after   = setup.after || (function() {});
+        setup.progress= setup.progress || (function() {});
+        setup.packetsize = setup.packetsize || 15;
+
+        if (typeof items === "object" && items.length==undefined) items = [ items ];
+        var itemsLength=items.length;
+
+        // if there is a WHERE clause
+        if (setup.where) {
+          // call GET first
+          if (itemsLength==1) delete items[0].ID;
+          _this.get({fields:"ID,FileRef",where:setup.where},function(data) {
+            // we need a function to clone the items
+            var clone = function(obj){
+              var newObj = {};
+              for (var k in obj) newObj[k]=obj[k];
+              return newObj;
+            };
+            var aItems=[],fileRef;
+            for (var i=data.length;i--;) {
+              var it=clone(items[0]);
+              it.ID=data[i].getAttribute("ID");
+              fileRef=data[i].getAttribute("FileRef");
+              if (fileRef) it.FileRef=_this.cleanResult(fileRef);
+              aItems.push(it);
+            }
+            // now call again the REMOVE
+            delete setup.where;
+            // now call again the UPDATE
+            if (setup.useCallback) _this.remove(aItems,setup)
+            else _this.remove(aItems,setup).then(function(res) { prom_resolve(res) });
+          });
+          return;
+        } else if (itemsLength === 0) {
+          // nothing to delete
+          setup.progress(1,1);
+          setup.error.call(_this,[]);
+          setup.success.call(_this,[]);
+          if (setup.useCallback) setup.after([], []);
+          else prom_resolve([[], []]);
+          return;
+        }
+
+        // define current and max for the progress
+        setup.progressVar = setup.progressVar || {current:0,max:itemsLength,passed:[],failed:[],eventID:"spRemove"+(""+Math.random()).slice(2)};
+        // we cannot add more than setup.packetsize items in the same time, so split by setup.packetsize elements
+        // and also to avoid surcharging the server
+        if (itemsLength > setup.packetsize) {
+          var nextPacket=items.slice(0);
+          var cutted=nextPacket.splice(0,setup.packetsize);
+          _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID] = function(setup) {
+            return _this.remove(nextPacket,setup);
+          };
+          items = cutted;
+          itemsLength = items.length;
+        }
+        // increment the progress
+        setup.progressVar.current += itemsLength;
+
+        // build a part of the request
+        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
+        for (var i=0; i < items.length; i++) {
+          updates += '<Method ID="'+(i+1)+'" Cmd="Delete">';
+          if (items[i].ID == undefined) throw "Error 'delete': you have to provide the item ID called 'ID'";
+          updates += "<Field Name='ID'>"+items[i].ID+"</Field>";
+          if (items[i].FileRef != undefined) updates += "<Field Name='FileRef'>"+items[i].FileRef+"</Field>";
+          updates += '</Method>';
+        }
+        updates += '</Batch>';
+
+        // build the request
+        var body = _this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>");
+        // send the request
+        var url = _this.url + "/_vti_bin/lists.asmx";
+        _this.ajax({
+          type:"POST",
+          cache:false,
+          async:true,
+          url:url,
+          data:body,
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
+          contentType: "text/xml; charset=utf-8",
+          dataType: "xml",
+          success:function(data) {
+            var result = data.getElementsByTagName('Result');
+            var len=result.length;
+            var passed = setup.progressVar.passed, failed = setup.progressVar.failed;
+            for (var i=0; i < len; i++) {
+              if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
+                passed.push(items[i]);
+              else {
+                items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
+                failed.push(items[i]);
+              }
+            }
+
+            setup.progress(setup.progressVar.current,setup.progressVar.max);
+            // check if we have some other packets that are waiting to be treated
+            if (setup.progressVar.current < setup.progressVar.max) {
+              if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) {
+                if (setup.useCallback) _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID](setup);
+                else _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID](setup).then(function(res) { prom_resolve(res) })
+              }
+            } else {
+              if (failed.length>0) setup.error.call(_this,failed);
+              if (passed.length>0) setup.success.call(_this,passed);
+              if (setup.useCallback) setup.after.call(_this, passed, failed);
+              else prom_resolve([passed, failed]);
+              if (_SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) delete _SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID];
+            }
+          }
+        });
+      })
     },
     del:function(items, setup) { return this.remove(items,setup) },
     /**

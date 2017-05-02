@@ -7,13 +7,21 @@
   - Add `$SP().proxy()` that can be used with NodeJS
   - Add Promise support for `$SP().list().get()`
   - Add Promise support for `$SP().list().add()`
+  - Add Promise support for `$SP().list().update()`
+  - Add Promise support for `$SP().list().remove()`
   - Add Promise support for `$SP().list().createFolder()`
   - Add Promise support for `$SP().list().createFile()`
+  - Add Promise support for `$SP().checkin()`
   - Add `SPExtend()` that permits to clone/extend an object
-  - Add `$SP().webservice()` to send customized requests to the web services (instead of using SPServices)
+  - Add `$SP().webService()` to send customized requests to the web services (instead of using SPServices)
+  - Add qunit-test on `$SP().webService()`
+  - Add qunit-test on `$SP().checkin()`
+  - Add `packetsize` option for `$SP().list().update()`
   - Rewrite the documentation using JSDoc 3 instead of JSDoc 2
   - Reorganize the documentation to group the methods by category
   - Use of eslint to clean up the code
+  - Change license from GPL 3.0 to LGLP 3.0 (see https://github.com/Aymkdn/SharepointPlus/issues/48)
+  - Fix `$SP().checkin()` (see https://github.com/Aymkdn/SharepointPlus/issues/49)
 
 **Change Log v3.14 (March 6, 2017)**
 
