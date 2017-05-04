@@ -1,6 +1,6 @@
 # Changelog
 
-**Change Log v4.0 ()**
+**Change Log v4.0 (May 4, 2017)**
 
   - Add NodeJS support: SharepointPlus can now be called as a node module and can be used on server side
   - Add `$SP().auth()` that must be used when using NodeJS (based on https://github.com/s-KaiNet/sp-request)
