@@ -1,8 +1,8 @@
 {
   "name": "sharepointplus",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "A library that offers an easy interface to deal with Sharepoint",
-  "main": "sharepointplus-4.0.js",
+  "main": "sharepointplus-4.1.js",
   "directories": {
     "doc": "docs"
   },

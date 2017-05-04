@@ -1,5 +1,9 @@
 # Changelog
 
+**Change Log v4.1 ()**
+
+  - Add option `soapURL` to `$SP().webService()` (see https://github.com/Aymkdn/SharepointPlus/issues/51)
+
 **Change Log v4.0 (May 4, 2017)**
 
   - Add NodeJS support: SharepointPlus can now be called as a node module and can be used on server side
