@@ -1,0 +1,83 @@
+<?js
+// global layout for all pages
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharepointPlus :: JavaScript API for Sharepoint</title>
+    <link rel="shortcut icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="css/sunburst.css" />
+    <link rel="stylesheet" type="text/css" href="css/default.css" />
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="js/bootstrap-scrollspy.js"></script>
+    <script type="text/javascript" src="js/bootstrap-dropdown.js"></script>
+</head>
+
+<body>
+<header>
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href=".">SharepointPlus</a>
+        <div class="nav-collapse">
+          <?js= this.topnav ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2 hidden-tablet hidden-phone"> <!-- left side bar -->
+      <a id="logo" href="."><img src="img/sharepointplus.svg" style="width:100px"></a>
+      <ul class="nav nav-list">
+        <li class="nav-header">Download</li>
+        <li><a href="https://github.com/Aymkdn/SharepointPlus">GitHub Repository</a></li>
+        <li><a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md">Changelog</a></li>
+        <li><a href="https://github.com/Aymkdn/SharepointPlus/blob/master/plugins/">Plugins</a></li>
+        <li class="nav-header">API</li>
+        <?js= this.leftnav ?>
+      </ul>
+    </div>
+    <?js= content ?>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="pull-right"><a href="#">Back to top</a></div>
+  <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://usejsdoc.org/">JSDoc 3</a>.</div>
+  <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
+  <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
+  <div>Automatically generated with JSDoc 3 on <?js= (new Date().toUTCString()) ?></div>
+</footer>
+<script>prettyPrint()</script>
+<script>
+WebFont.load({
+  google: {
+    families: ['Droid Sans']
+  }
+});
+(function(d) {
+  var wf = d.createElement('script'), s = d.scripts[0];
+  wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+  wf.async = true;
+  s.parentNode.insertBefore(wf, s);
+})(document);
+</script>
+</body>
+</html>

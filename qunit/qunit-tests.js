@@ -7,7 +7,7 @@ function getListSharepointPlus(list) {
   list = list || "SharepointPlus";
 
   $('#testEnv').text("Test Environment Setup : checking if list '"+list+"' exists...");
-  
+
   $().SPServices({
     operation: "GetList",
     listName: list,
@@ -30,9 +30,9 @@ function getListSharepointPlus(list) {
 function createListSharepointPlus(list) {
   var deferred = jQuery.Deferred();
   list = list || "SharepointPlus";
-  
+
   $('#testEnv').text("Test Environment Setup : creating list '"+list+"'...");
-  
+
   $().SPServices({
     operation: "AddList",
     listName: list,
@@ -46,14 +46,14 @@ function createListSharepointPlus(list) {
       }
     }
   })
-  
+
   return deferred;
 }
 function createListFields(libraryID) {
   var deferred = jQuery.Deferred();
-  
+
   $('#testEnv').text("Test Environment Setup : creating test fields...");
-  
+
   var fields = [];
   fields.push({"DisplayName":"Single line of text", "Type":"Text", "Required":"TRUE"});
   fields.push({"DisplayName":"Person or Group", "Type":"User"});
@@ -78,18 +78,18 @@ function createListFields(libraryID) {
   fields.push({"DisplayName":"Yes No", "Type":"Boolean", "_Default":"0" });
   fields.push({"DisplayName":"Hyperlink", "Type":"URL", "Format":"Hyperlink" });
   //fields.push({"DisplayName":"Picture", "Type":"URL", "Format":"Image" });
-  
+
   var fieldsToAdd = '<Fields>', field, i, j, attr, options, opt;
   // for each field we create it into the list
   for (i=0; i<fields.length; i++) {
     fieldsToAdd += '<Method ID="'+(i+1)+'">'
                 +  '<Field ';
-                
+
     options="";
     for (attr in fields[i]) {
       if (fields[i].hasOwnProperty(attr)) {
         field = fields[i][attr];
-        
+
         if (attr.slice(0,1) === "_") {
           options += '<'+attr.slice(1)+'>';
           if (jQuery.type(field) === "array") {
@@ -153,12 +153,12 @@ function createListFields(libraryID) {
       });
     }
   });
-  
+
   return deferred;
 }
 function addWebPartInSharepointList() {
   $('#testEnv').text("Test Environment Setup : loading webpart...");
-  
+
   $().SPServices({
     operation: "AddWebPart",
     pageUrl: $().SPServices.SPGetCurrentSite() + "/Lists/SharepointPlus/NewForm.aspx",
@@ -230,7 +230,7 @@ function addWebPartInSharepointList() {
 function checkGroupSharepointPlus(pre) {
   var deferred = jQuery.Deferred();
   pre = pre || "";
-  
+
   // get the current user name
   $().SPServices({
     operation:"GetUserProfileByName",
@@ -250,21 +250,21 @@ function checkGroupSharepointPlus(pre) {
           if (Status === "error" && pre === "" && $(xData.responseXML).find('errorstring').text().indexOf("Please try again with a new name") === -1) {
             $.when( checkGroupSharepointPlus("i:0#.w|") ).done(function() {
               deferred.resolve();
-            });            
+            });
           }
           else deferred.resolve();
         }
       })
     }
   });
-  
+
   return deferred;
 }
 function deleteTestEnvironment() {
   $q('#testEnv').text("Deleting...");
-  
+
   $q.when(
-  
+
     (function() {
       var deferred = $q.Deferred();
       $q().SPServices({
@@ -272,8 +272,8 @@ function deleteTestEnvironment() {
         listName: "SharepointPlus",
         completefunc:function() {
           deferred.resolve();
-        }      
-      })      
+        }
+      })
       return deferred;
     }()),
 
@@ -284,8 +284,8 @@ function deleteTestEnvironment() {
         listName: "SharepointPlusLookup",
         completefunc:function() {
           deferred.resolve();
-        }      
-      })      
+        }
+      })
       return deferred;
     }()),
 
@@ -296,7 +296,7 @@ function deleteTestEnvironment() {
         listName: "SharepointPlusLibrary",
         completefunc:function() {
           deferred.resolve();
-        }      
+        }
       })
       return deferred;
     }()),
@@ -308,11 +308,11 @@ function deleteTestEnvironment() {
         groupName: "SharepointPlus",
         completefunc:function() {
           deferred.resolve();
-        } 
+        }
       })
       return deferred;
     }())
-      
+
   ).done(function() {
     $q('#testEnv').text("Test Environment Removed!");
   });
@@ -325,24 +325,24 @@ function initTestEnvironment() {
 
       // check if "SharepointPlusLibrary" exists
       $.when( getListSharepointPlus("SharepointPlusLibrary") ).then(
-      
+
         function yes() {
           // get library
           // check if "SharepointPlus" list exists
           $.when( getListSharepointPlus("SharepointPlus") ).then(
             function yes() {
-            
+
               // check if SharepointPlus group exists
               $.when( checkGroupSharepointPlus() ).done(function() {
-                $('#testEnv').text("Test environnement OK"); 
+                $('#testEnv').text("Test environnement OK");
                 initSPtests()
               });
-              
+
             },
             function fail(error) {
               // if list doesn't exist, then create it
               if (error === "List does not exist") {
-              
+
                 $.when( createListSharepointPlus("SharepointPlus") ).then(
                   function done() {
                     // create fields
@@ -355,7 +355,7 @@ function initTestEnvironment() {
                     alert("Error with AddList: " + error);
                   }
                 );
-                
+
               } else {
                 alert("Error with GetList: " + error);
               }
@@ -365,7 +365,7 @@ function initTestEnvironment() {
         function fail(error) {
           // if library doesn't exist, then create it
           if (error === "List does not exist") {
-          
+
             $.when( createListSharepointPlus("SharepointPlusLibrary") ).then(
               function done() {
                 initTestEnvironment();
@@ -374,7 +374,7 @@ function initTestEnvironment() {
                 alert("Error with AddList: " + error);
               }
             );
-            
+
           } else {
             alert("Error with GetList: " + error);
           }
@@ -384,7 +384,7 @@ function initTestEnvironment() {
     function fail(error) {
       // if library doesn't exist, then create it
       if (error === "List does not exist") {
-      
+
         $.when( createListSharepointPlus("SharepointPlusLookup") ).then(
           function done() {
             initTestEnvironment();
@@ -393,7 +393,7 @@ function initTestEnvironment() {
             alert("Error with AddList: " + error);
           }
         );
-        
+
       } else {
         alert("Error with GetList: " + error);
       }
@@ -422,10 +422,11 @@ function initSPtests() {
 // source inspiration https://github.com/michelgotta/qunit-blogpost-example
 function loadSPtests() {
   $q = jQuery.noConflict(true);
-  $q(function() { 
+
+  $q(function() {
     function getSharePointMajorVersion(){
      var deferred = $q.Deferred();
-     
+
      // The following copied from: http://msdn.microsoft.com/en-us/library/ms537505(v=vs.85).aspx
       var xmlHttp = null;
       if (window.XMLHttpRequest) {
@@ -445,15 +446,17 @@ function loadSPtests() {
       }else{
         deferred.resolve(SPVersion.slice(0,2))
       }
-      
+
       return deferred;
     }
-    
+
     $q.when( getSharePointMajorVersion() ).done(function(spversion) {
-      // Get the jQuery Object from the original code  
+      // Get the jQuery Object from the original code
       $ = jQuery = window.frames[0].jQuery;
       $SP = window.frames[0].SharepointPlus;
-      
+      var pagetitle = document.querySelector('#qunit-header');
+      if (pagetitle) pagetitle.innerHTML = pagetitle.innerHTML + ' ' + $SP().getVersion();
+
       test('formfields()', function(assert) {
         // --- for Single line of text
         // test .val()
@@ -737,7 +740,7 @@ function loadSPtests() {
           $SP().formfields("Choices (Checkboxes Fillin)").row().hide();
           return !$SP().formfields("Choices (Checkboxes Fillin)").row().is(':visible');
         }(), "Choices (Checkboxes Fillin) -- row()");
-        
+
         // --- for Currency
         // test .val()
         assert.ok(function() {
@@ -955,10 +958,10 @@ function loadSPtests() {
         }(), "Hyperlink -- row()");
 
       });
-      
+
       test('list related stuff', function(assert) {
         assert.expect(9);
-      
+
         var doneLists = assert.async();
         var doneViews = assert.async();
         var doneView = assert.async();
@@ -967,9 +970,9 @@ function loadSPtests() {
         var doneGetWithJoin = assert.async();
         var doneUpdate = assert.async();
         var doneRemove = assert.async();
-        
+
         assert.ok(($SP().parse('ContentType = "My Content Type" OR Description <> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"') === '<And><And><Or><Eq><FieldRef Name="ContentType" /><Value Type="Text">My Content Type</Value></Eq><IsNotNull><FieldRef Name="Description" /></IsNotNull></Or><Geq><FieldRef Name="Fiscal_x0020_Week" /><Value Type="Number">43</Value></Geq></And><Lt><FieldRef Name="Result_x0020_Date" /><Value Type="DateTime">2012-02-03</Value></Lt></And>'), 'parse()');
-        
+
         // test lists()
         $SP().lists(function(lists) {
           var passed=false;
@@ -982,7 +985,7 @@ function loadSPtests() {
           assert.ok(passed, 'lists()');
           doneLists();
         });
-        
+
         // test views()
         $SP().list("SharepointPlus").views(function(views) {
           var passed=false, _viewID="";
@@ -1006,7 +1009,7 @@ function loadSPtests() {
             doneView();
           }
         });
-        
+
         // test .list().add()
         var title = new Date().getTime();
         $SP().list("SharepointPlus").add({'Title':'Add','Single_x0020_line_x0020_of_x0020':title,'Lookup':'2;#Option 2'}, {
@@ -1021,18 +1024,18 @@ function loadSPtests() {
             doneGetJoin();
             assert.ok(false, ".remove()");
             doneRemove();
-      
+
           },
           success:function() {
             assert.ok(true, ".add()");
             doneAdd();
-            
+
             // test .list().get()
             $SP().list("SharepointPlus").get({fields:"ID,Title,Single_x0020_line_x0020_of_x0020",where:'Single_x0020_line_x0020_of_x0020 = "'+title+'"'}, function(data) {
               if (data.length === 1) {
                 assert.ok(true, ".get()");
                 doneGet();
-                
+
                 var itemID = data[0].getAttribute("ID");
                 // test .list().update()
                 $SP().list("SharepointPlus").update({'ID':itemID,'Title':'testUpdate'}, {
@@ -1047,7 +1050,7 @@ function loadSPtests() {
                   success:function() {
                     assert.ok(true, ".update()");
                     doneUpdate();
-                    
+
                     // test .list().get() with 'join'
                     $SP().list("SharepointPlus").get({
                       fields:"ID,Lookup",
@@ -1085,13 +1088,15 @@ function loadSPtests() {
           }
         });
       });
-      
+
       test('document/file related stuff', function(assert) {
-        assert.expect(2);
-      
+        assert.expect(4);
+
         var doneCreateFileSuccess = assert.async();
         var doneCreateFileError = assert.async();
-       
+        var doneCheckOut = assert.async();
+        var doneCheckIn = assert.async();
+
         // test createFile()
         var filename = new Date().getTime() + ".txt";
         var library = "SharepointPlusLibrary";
@@ -1101,14 +1106,52 @@ function loadSPtests() {
           filename:filename,
           library:library,
           success:function(fileURL) {
-            fileURL = fileURL.split("/").slice(-2).join("/");
-            assert.ok(fileURL===path, 'createFile() Phase 1');
+            assert.ok(fileURL.split("/").slice(-2).join("/")===path, 'createFile() Phase 1');
+            // check out the file
+            $SP().webService({
+              service:"Lists",
+              operation:"CheckOutFile",
+              properties:{
+                "pageUrl":fileURL,
+                checkoutToLocal: "false"
+              }
+            }).then(function() {
+              // verify
+              $SP().list("SharepointPlusLibrary").get({
+                fields:"ID,CheckoutUser",
+                where:'FileRef = "'+fileURL+'"'
+              }, function(data) {
+                var res = (data.length === 1 && data[0].getAttribute("CheckoutUser") !== null);
+                assert.ok(res, "webService() with 'checkout'");
+                doneCheckOut();
+                // checkin
+                if (res) {
+                  $SP().checkin({
+                    destination:fileURL,
+                    comments:"Automatic check in with SharepointPlus",
+                    after:function() {
+                      // verify
+                      $SP().list("SharepointPlusLibrary").get({
+                        fields:"ID,CheckoutUser",
+                        where:'FileRef = "'+fileURL+'"'
+                      }, function(data) {
+                        var res = (data.length === 1 && data[0].getAttribute("CheckoutUser") === null);
+                        assert.ok(res, "checkin()");
+                        doneCheckIn();
+                      })
+                    }
+                  })
+                } else {
+                  doneCheckIn()
+                }
+              })
+            })
           },
           after:function() {
             doneCreateFileSuccess();
           }
         });
-        
+
         $SP().createFile({
           content:'Hello World',
           filename:filename,
@@ -1122,16 +1165,16 @@ function loadSPtests() {
           }
         });
       });
-      
+
       test('people and group stuff', function(assert) {
         assert.expect(5);
-      
+
         var doneWhoami = assert.async();
         var doneIsMember = assert.async();
         var doneGroupMembers = assert.async();
         var doneAddressbook = assert.async();
         var doneGetUserInfo = assert.async();
-      
+
         $SP().whoami(function(people) {
           if (people["AccountName"]) {
             var username = people["AccountName"].toLowerCase();
@@ -1139,13 +1182,13 @@ function loadSPtests() {
             var lastname = people["LastName"];
             assert.ok(true, 'whoami()');
             doneWhoami();
-            
+
             // test isMember()
             $SP().isMember({user:spusername, group:"SharepointPlus"}, function(isMember) {
               assert.ok(isMember, 'isMember()');
               doneIsMember();
             });
-            
+
             // test groupMembers
             $SP().groupMembers("SharepointPlus", function(members) {
               var passed=false;
@@ -1158,7 +1201,7 @@ function loadSPtests() {
               assert.ok(passed, 'groupMembers()');
               doneGroupMembers();
             });
-            
+
             // test addressbook
             $SP().addressbook(lastname, {limit:100}, function(people) {
               var passed=false;
@@ -1173,7 +1216,7 @@ function loadSPtests() {
               assert.ok(passed, 'addressbook()');
               doneAddressbook();
             });
-            
+
             // test getUserInfo
             $SP().getUserInfo(spusername, function(info) {
               assert.ok((typeof info !== "string" && info.LoginName.toLowerCase() === spusername), 'getUserInfo()');
@@ -1193,7 +1236,7 @@ function loadSPtests() {
           }
         });
       });
-      
+
       test('other stuff', function(assert) {
         assert.ok(($SP().toCurrency(1500000) === '$1,500,000'), 'toCurrency()');
         assert.ok(($SP().toDate("2012-10-31T00:00:00").getFullYear() === 2012), 'toDate()');
@@ -1201,7 +1244,7 @@ function loadSPtests() {
         assert.ok(($SP().toXSLString("Big Title") === "Big_x0020_Title"), 'toXSLString()');
         assert.ok(($SP().workflowStatusToText(2) === "In Progress"), 'workflowStatusToText()');
       })
-      
+
       QUnit.start();
       $q('#testEnv').text("");
       QUnit.done(function() {

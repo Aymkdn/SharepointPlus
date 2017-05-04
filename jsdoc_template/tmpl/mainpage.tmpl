@@ -1,0 +1,140 @@
+<?js
+// index.html
+var data = obj;
+var self = this;
+?>
+
+      <div class="span10" id="main"> <!-- content -->
+        <h1>SharepointPlus <?js= this.SPversion ?></h1>
+        <a href="https://twitter.com/sp_js" class="twitter-follow-button" data-show-count="false" data-lang="en" data-dnt="true">Follow @sp_js</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        <a href="https://sibbell.com/" class="sibbill" title="with sibbill.com"><img src="img/sibbell.png" width="12" height="12" /> Be notified on new release</a>
+        <h2>Description</h2>
+        <p>SharepointPlus ($SP) is a <strong>JavaScript API for Sharepoint</strong>. This library offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
+        <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
+        <p>I've developed this API for my needs during my job at <a href="http://www.dell.com">Dell</a> and we thought it could be useful for the community too, so here it is !</p>
+        <div class="alert alert-error" style="display:none" aria-hidden="true"><a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release 100% compatible with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility (even if everything should be OK anyway).<br>
+        Starting SharepointPlus v3.0.5 it should be fully compatible with <b>Sharepoint 2010</b>.</div>
+        <h2>Sharepoint Support</h2>
+        <p>
+          <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release that I have tested with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility<br>
+          <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.4<br>
+          <b>Sharepoint 2013</b> : Compatible since SharepointPlus v3.13<br>
+          <b>Sharepoint Online</b> : I have no plan to test SharepointPlus on Sharepoint Online, but it should be compatible.
+        </p>
+        <h2>Browser Support</h2>
+        <p>
+          <b>IE8+, and all modern browsers (Firefox, Chrome, ....)</b>
+        </p>
+        <h2>Quick Start</h2>
+        <h3>Requirements</h3>
+        <p>Since v3.13, there is no more need of <a href="http://jquery.com/" title="Link to jQuery library">jQuery</a> to work! For older versions, make sure to include jQuery.</p>
+        <div class="row"><div class="span8 alert alert-info">If you don't use jQuery in your project, then SharepointPlus will need to use <a href="https://github.com/Aymkdn/SharepointPlus/nanoajax/nanoajax.min.js">nanoajax (811o minified and zipped)</a><div class=""></div></div></div>
+        <h3>The basics</h3>
+        <p>Just add two lines: one to call <b>either</b> jQuery <b>or</b> nanoajax, and one for SharepointPlus:</p>
+<pre class="prettyprint lang-js">// if you don't use jQuery, then you need to call 'nanoajax':
+&lt;script type="text/javascript" src="nanoajax.min.js">&lt;/script>
+&lt;script type="text/javascript" src="sharepointplus-<?js= this.SPversion ?>.min.js">&lt;/script></pre>
+        <p>You may also want to use a CDN: <a href="http://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a></p>
+        <h4>Lists</h4>
+        <p>Sharepoint provides different <a href="http://sympmarc.github.io/SPServices/core/web-services.html" title="Link to Sympraxis website with some documentation regarding the Sharepoint Web Services">Web Services</a> that permits to do several tasks.</p>
+        <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
+<pre class="prettyprint lang-js">
+// Update all items with an "Amount" value bigger than 1000
+$SP().list('My List Name').update({
+  Title:"Too expensive"
+}, {
+  where:"Amount > 1000",
+  success:function(items) { alert(items.length+" items updated!");
+});
+
+// Get all items with "Requestor" as the current user and with "Default Color" is "pink"
+$SP().list('ListName').get({
+  fields:"Title,Size",
+  where:"Requestor = '[Me]' AND Default_x0020_Color = 'pink'",
+  orderby:"Size DESC"
+}, function(data) {
+  var html = "&lt;ul>";
+  for (var i=data.length; i--;)
+    html += "&lt;li>Model '"+data[i].getAttribute("Title")+"' (size: "+data[i].getAttribute("Default_x0020_Color")+")&lt;li>";
+  $('#list').append(html+'&lt;/ul>');
+});
+</pre>
+        <h4>Forms</h4>
+        <p>SharepointPlus provides few functions to interact with <em>NewForm.aspx</em> and <em>EditForm.aspx</em> of a list:</p>
+<pre class="prettyprint lang-js">
+// hide some fields like "Title", "Next Action"
+$SP().formfields("Title,Next Action").row().hide(); // row() returns a jQuery object (or a HTMLNodeElement) that represents the &lt;TR> element
+
+// check if all mandatory fields have a value, and also "Title"
+$SP().formfields("Title",{mandatory:true}).each(function() {
+  if (this.val() == "") {
+    alert(this.name+" is empty!");
+    return false;
+  }
+});
+</pre>
+        <h4>Utilities</h4>
+        <p>SharepointPlus has also some useful functions:</p>
+<pre class="prettyprint lang-js">
+// create an Excel file
+var table="&lt;table>&lt;tr>&lt;th>Column 1&lt;/th>&lt;th>Column 2&lt;/th>&lt;/tr>&lt;tr>&lt;td>First cell&lt;/td>&lt;td>Other cell&lt;/td>&lt;/tr>&lt;/body>";
+$SP().createFile({content:table,library:"Shared Documents",filename:"myfile.xls",after:function() { alert("File created!"); }});
+
+// take a number and return it as a currency amount
+$SP().toCurrency(1500000,2,'$'); // --> $1,500,000.00
+
+// when you have to deal with a date from a .get() ...
+$SP().list('My Calendar List').get({fields:"Meeting_x0020_Date"},function(data) {
+  for (var i=data.length; i--;) console.log($SP().toDate(data[i].getAttribute("Meeting_x0020_Date")).getFullYear());
+});
+// ... or to a .add()/.update()
+var nextMeeting = new Date("5/May/2015");
+$SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate(nextMeeting)});
+</pre>
+
+        <h4>Promise</h4>
+        <p>SharepointPlus is partially compatible with Promise. Check the function's documentation to verify before using it.</p>
+        <p>Example:</p>
+<pre class="prettyprint lang-js">
+$SP().list("Audit").get({
+  fields:"ID",
+  view:"All Items",
+  paging:true,
+  rowlimit:1000,
+  progress:function(n) { console.log(n+" items already loaded...") }
+}).then(function(data) {
+  data.forEach(function(d) { console.log(d.getAttribute("ID")) })
+}, function(err) {
+  console.log("ERR => ",err)
+})
+</pre>
+        <p><strong>Attention</strong>, because Promise is <a href="http://caniuse.com/#search=promise">not available on all browsers</a>, you'll need to either use <a href="https://github.com/taylorhakes/promise-polyfill">a polyfill</a> for old browsers, or to use jQuery... or to use the normal callback system!</p>
+
+<h4>NodeJS</h4>
+<p>Since SharepointPlus 4.0 you can use it as a node module for your server side applications.</p>
+<pre class="prettyprint lang-bash">
+npm install sharepointplus
+</pre>
+<p>Find below some examples:</p>
+<pre class="prettyprint lang-js">
+// the credentials depend of your authentication system
+// see: https://github.com/s-KaiNet/node-sp-auth
+const credentials = {
+  username:'my_username',
+  password:'mypassword',
+  domain:'mydomain'
+};
+// you can also define a proxy
+const proxyweb = "http://" + credentials.domain + "%5C" + credentials.username + ":" + credentials.password + "@proxy:80";
+
+const $SP = require('sharepointplus');
+const sp = $SP().proxy(proxyweb).auth(credentials);
+
+// you can then use SharepointPlus normally
+// e.g.: sp.list("Hello", "http://my.sharepoint.site/").get(...);
+</pre>
+
+      </div>
+
+

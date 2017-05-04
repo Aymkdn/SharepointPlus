@@ -1,5 +1,28 @@
 # Changelog
 
+**Change Log v4.0 (May 4, 2017)**
+
+  - Add NodeJS support: SharepointPlus can now be called as a node module and can be used on server side
+  - Add `$SP().auth()` that must be used when using NodeJS (based on https://github.com/s-KaiNet/sp-request)
+  - Add `$SP().proxy()` that can be used with NodeJS
+  - Add Promise support for `$SP().list().get()`
+  - Add Promise support for `$SP().list().add()`
+  - Add Promise support for `$SP().list().update()`
+  - Add Promise support for `$SP().list().remove()`
+  - Add Promise support for `$SP().list().createFolder()`
+  - Add Promise support for `$SP().list().createFile()`
+  - Add Promise support for `$SP().checkin()`
+  - Add `SPExtend()` that permits to clone/extend an object
+  - Add `$SP().webService()` to send customized requests to the web services (instead of using SPServices)
+  - Add qunit-test on `$SP().webService()`
+  - Add qunit-test on `$SP().checkin()`
+  - Add `packetsize` option for `$SP().list().update()`
+  - Rewrite the documentation using JSDoc 3 instead of JSDoc 2
+  - Reorganize the documentation to group the methods by category
+  - Use of eslint to clean up the code
+  - Change license from GPL 3.0 to LGLP 3.0 (see https://github.com/Aymkdn/SharepointPlus/issues/48)
+  - Fix `$SP().checkin()` (see https://github.com/Aymkdn/SharepointPlus/issues/49)
+
 **Change Log v3.14 (March 6, 2017)**
 
   - Add a sanitize filter for the filename in `$SP().createFile()` because Sharepoint doesn't like some special characters
@@ -119,7 +142,7 @@
  - Fix $SP().cleanResult() when no separator was provided
  - Add another parameter to the return function for $SP().list().get() that is the error message (in case the request to the webservice didn't work)
  - Fix a bug with the argments mandatory for $SP().list().add()
- - Fix a bug with $SP().parse() when there was a backslash with a single quote and a bracket for a string 
+ - Fix a bug with $SP().parse() when there was a backslash with a single quote and a bracket for a string
  - Change the behavior of $SP().list().add() when you provide an empty array (no more exception returned)
  - Change the order of calling success/error for $SP().list().add/remove/update() -- now the "error" callback is called before the "sucess" callback
  - Fix a bug with $SP().lists() (https://github.com/Aymkdn/SharepointPlus/issues/2)
@@ -189,14 +212,14 @@
 - Fix issue with Chrome and $SP.list().get() function
 - Fix issue with simple quote inside the WHERE clause (you now need to use \\' when using ' inside '')
 
-**Change Log v2.5.1**  
-- Add $SP.people() to find the user details based on a name  
-- Add $SP.addressbook() to find someone in the Active Directory based on a part of his name  
-- Check compatibility with jQuery 1.7.2  
+**Change Log v2.5.1**
+- Add $SP.people() to find the user details based on a name
+- Add $SP.addressbook() to find someone in the Active Directory based on a part of his name
+- Check compatibility with jQuery 1.7.2
 
-**Change Log v2.5**  
-- Add compatibility with Sharepoint 2010  
+**Change Log v2.5**
+- Add compatibility with Sharepoint 2010
 - Function "progress" added to $SP.list().add()
 
-**Change Log v2.4**  
+**Change Log v2.4**
 - First public release

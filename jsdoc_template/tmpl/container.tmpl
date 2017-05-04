@@ -1,0 +1,83 @@
+<?js
+// this file is called to then display the related .tmpl file
+    var self = this;
+    var isGlobalPage;
+
+    docs.forEach(function(doc, i) {
+?>
+
+<?js
+    // we only need to check this once
+    if (typeof isGlobalPage === 'undefined') {
+        isGlobalPage = (doc.kind === 'globalobj');
+    }
+?>
+<?js if (doc.kind === 'mainpage' /*|| (doc.kind === 'package')*/) { ?>
+    <?js= self.partial('mainpage.tmpl', doc) ?>
+<?js } else { ?>
+
+    <?js if (i === 0) { ?><div class="span10"><h1>Methods</h1><?js } ?>
+    <div class="member">
+      <h2><a href="#<?js= doc.name ?>" name="<?js= doc.name ?>" title="Direct link to the method '<?js= doc.name ?>'"><?js= doc.name ?></a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/<?js= doc.meta.filename ?>#L<?js= doc.meta.lineno ?>">source code</a>)
+      <div>
+        <div class="method well"><?js= doc.name+doc.signature ?></div>
+          </div>
+          <blockquote class="description"><?js= doc.description ?></blockquote>
+
+          <?js if (doc.params) { ?>
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            <?js
+            var output="";
+            doc.params.forEach((param) => {
+              output += '<div class="parameter row-fluid">';
+              output += '  <div class="type span1">'+param.type.names.map((type) => { return type.charAt(0).toUpperCase() + type.slice(1) }).join("|")+'</div>';
+              output += '  <div class="name span4"><b data-param="'+param.name+'">'+param.name+'</b> ';
+              if (param.optional) {
+                output += '<i>Optional';
+                if (typeof param.defaultvalue !== 'undefined') output += ', Default: '+param.defaultvalue;
+                output += '</i>';
+              }
+              output += '</div>';
+              output += '  <div class="param_description span7">'+self.linkify(param.description||"")+'</div>';
+              output += '</div>';
+            })
+            ?>
+            <?js= output ?>
+          </div>
+          <?js } ?>
+
+          <?js if (doc.returns && doc.returns.length) { ?>
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            <?js
+              var output="";
+              doc.returns.forEach((ret) => {
+                output += '<div class="span2">'+ ret.type.names.join('|') + '</div>'
+                output += '<div class="span10">'+ ret.description + '</div>'
+              })
+            ?>
+              <?js= output ?>
+            </div>
+          </div>
+          <?js } ?>
+
+          <?js if (doc.examples && doc.examples.length) { ?>
+          <h3>Example:</h3>
+          <?js
+            var output="";
+            doc.examples.forEach((example) => {
+              output += '<pre class="prettyprint lang-js">'+example.code.replace(/^ {6}/gm,"")+'</pre>'
+            })
+          ?>
+          <?js= output ?>
+          <?js } ?>
+          <hr>
+        </div>
+      <?js if (i === docs.length) { ?></div><?js } ?>
+<?js
+}
+?>
+
+<?js }); ?>
