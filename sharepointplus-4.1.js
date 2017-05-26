@@ -255,8 +255,15 @@ if (typeof jQuery === "function") {
       @description Ajax system based on jQuery parameters
     */
     ajax:function(settings) {
-      var _this=this, xhr, headers;
+      var _this=this, xhr, headers, nparams;
       if (typeof jQuery !== "undefined" && jQuery.ajax) {
+        if (typeof settings.onprogress==="function") {
+          settings.xhr=function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", settings.onprogress, false);
+            return xhr;
+          }
+        }
         jQuery.ajax(settings);
       } else {
         headers = {'Content-Type': settings.contentType || "text/xml; charset=utf-8"};
@@ -267,14 +274,15 @@ if (typeof jQuery === "function") {
               xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
               settings.beforeSend(xhr);
             }
-            // eslint-disable-next-line
-            nanoajax.ajax({
+            nparams={
               url: settings.url,
               method: settings.method || "POST",
               headers: headers,
               body: settings.data
-            },
-            function (code, responseText, request) {
+            };
+            if (typeof settings.onprogress === "function") nparams.onprogress=settings.onprogress;
+            // eslint-disable-next-line
+            nanoajax.ajax(nparams, function (code, responseText, request) {
               if (code === 200 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
                 settings.success(request.responseXML || request.responseText);
               } else {
@@ -494,7 +502,7 @@ if (typeof jQuery === "function") {
      *   @param {String} [webURL=current website] The URL of the website
      *   @param {String} [soapURL='http://schemas.microsoft.com/sharepoint/soap/'] If the SOAP url is not the default one, then you can customize it
      *   @param {Function} [after=function(response){}] A callback function
-     * @return {Promise} The 'response' from the server is passed, and only on `resolve`
+     * @return {Promise} The 'response' from the server is passed for 'resolve' and, for 'reject' we pass an array with [response', 'code', 'errorMessage']
      *
      * @example
      * $SP().webService({ // http://sympmarc.github.io/SPServices/core/web-services/Lists/UpdateList.html
@@ -511,7 +519,22 @@ if (typeof jQuery === "function") {
      *   }
      * }).then(function(response) {
      *   // do something with the response
-     * })
+     * }, function(error) {
+     *   console.log("Error => ",error)
+     * });
+     *
+     * // to remove a person from a group
+     * $SP().webService({
+     *   service:"UserGroup",
+     *   operation:"RemoveUserFromGroup",
+     *   soapURL:"http://schemas.microsoft.com/sharepoint/soap/directory/",
+     *   properties:{
+     *     groupName:"Group",
+     *     userLoginName:"domain\\user"
+     *   }
+     * }).then(function(response) {
+     *   console.log("OK => ",response)
+     * }, function(error) { console.log("Error => ",error) });
      */
     webService:function(options) {
       var _this=this;
@@ -978,7 +1001,7 @@ if (typeof jQuery === "function") {
         @param {Object} [options.folderOptions] Permits to read the content of a Document Library (see below)
           @param {String} [options.folderOptions.path=""] Relative path of the folders we want to explore (by default it's the root of the document library)
           @param {String} [options.folderOptions.show="FilesAndFolders_InFolder"] Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path
-        @param {Boolean} [options.queryOptions=undefined] If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems.aspx)
+        @param {Boolean} [options.queryOptions=undefined] If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see https://msdn.microsoft.com/en-us/library/lists.lists.getlistitems%28v=office.12%29.aspx?f=255&MSPPError=-2147217396)
         @param {Object} [options.join] Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)
           @param {String} [options.join.list] Permits to establish the link between two lists (see the example below)
           @param {String} [options.join.url='current website'] The website url (if different than the current website)
@@ -1218,7 +1241,7 @@ if (typeof jQuery === "function") {
 
       // if you want to list only the files visible into a folder for a Document Library
       $SP().list("My Shared Documents").get({
-        fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult())
+        fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult()), "File_x0020_Size" the filesize in bytes
         folderOptions:{
           path:"My Folder/Sub Folder/",
           show:"FilesOnly_InFolder"
@@ -1356,7 +1379,7 @@ if (typeof jQuery === "function") {
         // we use the progress only when WHERE is an array
         setup.progress = setup.progress || (function() {});
 
-        // if view is defined and is not a GUID, then we need to find the view ID
+        // if view is defined, then we need to find the view ID
         if (setup.view !== "") {
           // retrieve the View ID based on its name
           // and find the view details
@@ -1482,7 +1505,7 @@ if (typeof jQuery === "function") {
         where = setup.whereFct(where);
         if (useOWS) {
           body = "<listName>"+_this.listID+"</listName>"
-                + "<viewName>"+setup.view+"</viewName>"
+                + "<viewName>"+(setup.viewID||"")+"</viewName>"
                 + "<query>"
                 + "<Query>"
                 + ( where!="" ? "<Where>"+ where +"</Where>" : "" )
@@ -2438,12 +2461,13 @@ if (typeof jQuery === "function") {
         success:function(data) {
           var arr = data.getElementsByTagName('Field');
           var index = 0, aIndex, attributes, attrName, attrValue, lenDefault, nodeDefault;
-          for (var i=0; i < arr.length; i++) {
+          var i,j,a,r,k,nName,nValue;
+          for (i=0; i < arr.length; i++) {
             if (arr[i].getAttribute("ID")) {
               aReturn[index] = [];
               aIndex=aReturn[index];
               attributes=arr[i].attributes;
-              for (var j=attributes.length; j--;) {
+              for (j=attributes.length; j--;) {
                 attrName=attributes[j].nodeName;
                 attrValue=attributes[j].nodeValue;
                 if (attrName==="Type") {
@@ -2451,9 +2475,9 @@ if (typeof jQuery === "function") {
                     case "Choice":
                     case "MultiChoice": {
                       aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
-                      var a=arr[i].getElementsByTagName("CHOICE");
-                      var r=[];
-                      for(var k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
+                      a=arr[i].getElementsByTagName("CHOICE");
+                      r=[];
+                      for(k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
                       aIndex["Choices"]=r;
                       break;
                     }
@@ -2461,6 +2485,17 @@ if (typeof jQuery === "function") {
                     case "LookupMulti":
                       aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
                       break;
+                    case "TaxonomyFieldType":
+                    case "TaxonomyFieldTypeMulti": {
+                      a=arr[i].getElementsByTagName("Property");
+                      aIndex["Property"]={};
+                      for(k=0; k<a.length; k++) {
+                        nName=a[k].getElementsByTagName('Name');
+                        nValue=a[k].getElementsByTagName('Value');
+                        if (nName.length>0) aIndex["Property"][nName[0].firstChild.nodeValue]=(nValue.length>0?nValue[0].firstChild.nodeValue:null);
+                      }
+                      break;
+                    }
                     default:
                       aIndex["Choices"] = [];
                   }
@@ -2746,6 +2781,7 @@ if (typeof jQuery === "function") {
                    note: A multiple selection of Lookup must be provided as ";#X;#Choice 1;#Y;#Choice 2;#" (with X the ID for "Choice 1", and "Y" for "Choice 2")
                          --> it should also be possible to not pass the values but only the ID, e.g.: ";#X;#;#Y;#;#"
                    note: A Yes/No checkbox must be provided as "1" (for TRUE) or "0" (for "False")
+                   note: A Term / Taxonomy / Managed Metadata field must be provided as "0;#|UniqueIdentifier" for the special hidden related column (see https://github.com/Aymkdn/SharepointPlus/wiki/ to know more)
                    note: You cannot change the Approval Status when adding, you need to use the $SP().moderate function
 
       @param {Object|Array} items List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])

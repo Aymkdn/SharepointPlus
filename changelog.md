@@ -3,6 +3,8 @@
 **Change Log v4.1 ()**
 
   - Add option `soapURL` to `$SP().webService()` (see https://github.com/Aymkdn/SharepointPlus/issues/51)
+  - Add wiki pages for "Term/Taxonomy/Managed Metadata" (see https://github.com/Aymkdn/SharepointPlus/wiki/)
+  - Add `Property` property for a `TaxonomyFieldType` returned by `$SP().list().info()`
 
 **Change Log v4.0 (May 4, 2017)**
 
