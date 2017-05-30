@@ -109,12 +109,63 @@ var SPArrayChunk=function(b,e){var d=[];for(var c=0,a=b.length;c<a;c+=e){d.push(
  * @name SPExtend
  * @category utils
  * @function
- * @description It will clone an object (see )
+ * @description It will clone an object (see https://blog.kodono.info/wordpress/2017/04/12/deep-clone-an-object-in-javascript/)
  * @param {Boolean} [deep=false] If we want a deep clone
  * @param {Object} objectDestination The object that will be extended
  * @param {Object} objectSource The object the copy
  */
-var SPExtend=function(){var r,t,o,n,e=arguments[0]||{},f=1,i=arguments.length,u=!1,y=function(r){if(null===r||"object"!=typeof r||r.nodeType||null!==r&&r===r.window)return!1;try{if(r.constructor&&!this.hasOwnProperty.call(r.constructor.prototype,"isPrototypeOf"))return!1}catch(t){return!1}return!0};for("boolean"==typeof e&&(u=e,e=arguments[f]||{},f++),"object"!=typeof e&&"function"!=typeof e&&(e={}),!1;i>f;f+=1)if(null!==(r=arguments[f]))for(t in r)e!==r[t]&&(u&&r[t]&&(y(r[t])||(o=Array.isArray(r[t])))?(o?(o=!1,n=e[t]&&Array.isArray(e[t])?e[t]:[]):n=e[t]&&y(e[t])?e[t]:{},e[t]=SPExtend(u,n,r[t])):void 0!==r[t]&&(e[t]=r[t]));return e}
+var SPExtend=function(){var r,t,n,o,e=arguments[0]||{},f=1,i=arguments.length,u=!1,y=function(r){if(null===r||"object"!=typeof r||r.nodeType||null!==r&&r===r.window)return!1;try{if(r.constructor&&!this.hasOwnProperty.call(r.constructor.prototype,"isPrototypeOf"))return!1}catch(t){return!1}return!0};for("boolean"==typeof e&&(u=e,e=arguments[f]||{},f++),"object"!=typeof e&&"function"!=typeof e&&(e={}),!1;i>f;f+=1)if(null!==(r=arguments[f]))for(t in r)e!==r[t]&&"undefined"==typeof e[t]&&(u&&r[t]&&(y(r[t])||(n=Array.isArray(r[t])))?(n?(n=!1,o=e[t]&&Array.isArray(e[t])?e[t]:[]):o=e[t]&&y(e[t])?e[t]:{},e[t]=SPExtend(u,o,r[t])):void 0!==r[t]&&(e[t]=r[t]));return e}
+
+// Encode an ArrayBuffer as a base64 string
+// source: https://gist.github.com/jonleighton/958841
+var SPArrayBufferToBase64=function(arrayBuffer) {
+  var base64    = ''
+  var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+  var bytes         = new Uint8Array(arrayBuffer)
+  var byteLength    = bytes.byteLength
+  var byteRemainder = byteLength % 3
+  var mainLength    = byteLength - byteRemainder
+  var a, b, c, d, chunk
+
+  // Main loop deals with bytes in chunks of 3
+  for (var i = 0; i < mainLength; i = i + 3) {
+    // Combine the three bytes into a single integer
+    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+
+    // Use bitmasks to extract 6-bit segments from the triplet
+    a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
+    b = (chunk & 258048)   >> 12 // 258048   = (2^6 - 1) << 12
+    c = (chunk & 4032)     >>  6 // 4032     = (2^6 - 1) << 6
+    d = chunk & 63               // 63       = 2^6 - 1
+
+    // Convert the raw binary segments to the appropriate ASCII encoding
+    base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+  }
+
+  // Deal with the remaining bytes and padding
+  if (byteRemainder == 1) {
+    chunk = bytes[mainLength]
+
+    a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
+
+    // Set the 4 least significant bits to zero
+    b = (chunk & 3)   << 4 // 3   = 2^2 - 1
+
+    base64 += encodings[a] + encodings[b] + '=='
+  } else if (byteRemainder == 2) {
+    chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
+
+    a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
+    b = (chunk & 1008)  >>  4 // 1008  = (2^6 - 1) << 4
+
+    // Set the 2 least significant bits to zero
+    c = (chunk & 15)    <<  2 // 15    = 2^4 - 1
+
+    base64 += encodings[a] + encodings[b] + encodings[c] + '='
+  }
+
+  return base64
+}
 
 // Global
 var _SP_CACHE_FORMFIELDS=null;
@@ -128,6 +179,8 @@ var _SP_CACHE_GROUPMEMBERS=[];
 var _SP_CACHE_DISTRIBUTIONLISTS=[];
 var _SP_CACHE_REGIONALSETTINGS=void 0;
 var _SP_CACHE_DATEFORMAT=void 0;
+var _SP_CACHE_HASREST={};
+var _SP_CACHE_REQUESTDIGEST={};
 var _SP_ADD_PROGRESSVAR={};
 var _SP_UPDATE_PROGRESSVAR={};
 var _SP_MODERATE_PROGRESSVAR={};
@@ -140,6 +193,7 @@ var _SP_PLUGINS={};
 var _SP_MODALDIALOG_LOADED=false;
 var _SP_MAXWHERE_ONLOOKUP=30;
 var _SP_ISBROWSER=(new Function("try {return this===window;}catch(e){ return false;}"))();
+var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nometadata"
 
 // for each select of lookup with more than 20 values, for IE only
 // see https://bdequaasteniet.wordpress.com/2013/12/03/getting-rid-of-sharepoint-complex-dropdowns/
@@ -230,6 +284,105 @@ if (typeof jQuery === "function") {
     */
     getVersion:function() { return "4.1" },
     /**
+      @name $SP().hasREST
+      @function
+      @category utils
+      @description Verify if the website supports REST API (Sharepoint 2013 and later)
+      @param {Object} settings
+        @param {String} [settings.url=current] To check another URL (or if you need on a Node server)
+        @param {Function} [settings.callback=function(v){}] A callback function if you don't use Promise or jQuery
+      @return {Promise} A Promise that gives TRUE or FALSE
+    */
+   hasREST:function(settings) {
+    var _this=this;
+    return _this._promise(function(prom_resolve, prom_reject) {
+      settings = settings||{};
+      var url=(settings.url || _this.url || window.location.href).split("/").slice(0,3).join("/");
+      if (typeof settings.callback==="function") { // if we ask for a callback
+        prom_resolve = settings.callback;
+      }
+      // check cache
+      if (typeof _SP_CACHE_HASREST[url] === "boolean") {
+        prom_resolve(_SP_CACHE_HASREST[url]);
+        return
+      }
+      var hasREST, needAjax=(settings.url || !_SP_ISBROWSER || typeof SP === "undefined" ? true : false);
+      if (!needAjax) {
+        if (typeof SP !== "undefined" && SP.ClientSchemaVersions) {
+          // cache
+          hasREST=(parseInt(SP.ClientSchemaVersions.currentVersion)>14);
+          _SP_CACHE_HASREST[url]=hasREST;
+          prom_resolve(hasREST);
+          return;
+        }
+        else needAjax=true;
+      }
+      if (needAjax) {
+        _this.ajax({
+          method:"GET",
+          url:url + "/_api/web/Url",
+          success:function() { _SP_CACHE_HASREST[url]=true; prom_resolve(true) },
+          error:function() { _SP_CACHE_HASREST[url]=false; prom_resolve(false) }
+        })
+      } else {
+        _SP_CACHE_HASREST[url]=false;
+        prom_resolve(false);
+      }
+    })
+   },
+   /**
+     @name $SP()._getRequestDigest
+     @ignore
+     @function
+     @category utils
+     @description Retrieve the Request Digest
+     @param {Object} settings
+       @param {String} [settings.url=current] To check another URL (or if you need on a Node server)
+       @param {Function} [settings.callback=function(v){}] A callback function if you don't use Promise or jQuery
+     @return {Promise} A Promise that gives the Request Digest
+   */
+    _getRequestDigest:function(settings) {
+      var _this=this;
+      return _this._promise(function(prom_resolve, prom_reject){
+        var e, digest, url=(settings.url||_this.url||window.location.href).split("/").slice(0,3).join("/");
+        if (settings.callback) prom_resolve=settings.callback;
+        // check cache
+        digest=_SP_CACHE_REQUESTDIGEST[url];
+        if (digest) {
+          // check date to be less than 24h
+          if (new Date().getTime() - new Date(digest.split(",")[1]).getTime() < 86400000) {
+            prom_resolve(digest);
+            return;
+          }
+        }
+        if (_SP_ISBROWSER && document) {
+          e=document.querySelector("#__REQUESTDIGEST");
+          if (e) {
+            digest=e.value;
+            // cache
+            _SP_CACHE_REQUESTDIGEST[url]=digest;
+            prom_resolve(digest);
+            return
+          }
+        }
+        // do a request
+        _this.ajax({
+          url:url + "/_api/contextinfo",
+          method:"POST",
+          success:function(data) {
+            digest=data.d.GetContextWebInformation.FormDigestValue;
+            // cache
+            _SP_CACHE_REQUESTDIGEST[url]=digest;
+            prom_resolve(digest);
+            return
+          },
+          error:function(r, c, rt) {
+            prom_reject(rt);
+          }
+        })
+      })
+    },
+    /**
       @name $SP().decode_b64
       @function
       @category utils
@@ -251,98 +404,140 @@ if (typeof jQuery === "function") {
     */
     encode_b64:function(a,b,c,d,e,f){b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";c="=";for(d=f='';e&=3,a.charAt(d++)||(b='=',e);f+=b.charAt(63&c>>++e*2))c=c<<8|a.charCodeAt(d-=!e);return f},
     /**
-      @ignore
-      @description Ajax system based on jQuery parameters
+      @name $SP().ajax
+      @function
+      @category utils
+      @description Permits to do an Ajax request (for internal use)
+      @param {Object} settings
+        @param {String} url The url to call
+        @param {String} method The HTTP Method
+        @param {String} [contentType] The content type header
+        @param {Object} [headers] the headers
+        @param {String} [data] The data to send to the server
+        @param {Function} [onprogress=function(event){}] The "onprogress" object for XHR
+        @param {Function} [success=function(responseText||responseXML){}] On success
+        @param {Function} [error=function(request, code, responseText){}] On error
+      @return {Promise}
     */
     ajax:function(settings) {
-      var _this=this, xhr, headers, nparams;
-      if (typeof jQuery !== "undefined" && jQuery.ajax) {
-        if (typeof settings.onprogress==="function") {
-          settings.xhr=function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", settings.onprogress, false);
-            return xhr;
+      var _this=this, xhr, nparams;
+      settings.headers=settings.headers||{};
+      var headers=settings.headers
+      return _this._promise(function(prom_res, prom_rej) {
+        var useCallback=(typeof settings.success === "function");
+        if (useCallback) {
+          prom_res=settings.success;
+          prom_rej=settings.error||function(){};
+        }
+        // add "accept": "application/json;odata=verbose" for headers if there is "_api/" in URL
+        if (settings.url.indexOf("/_api/") > -1) {
+          if (!headers["Accept"]) headers.Accept = "application/json;odata="+_SP_JSON_ACCEPT;
+          if (!headers["Content-Type"]) headers["Content-Type"] = "application/json;odata="+_SP_JSON_ACCEPT;
+          if (!headers["X-RequestDigest"] && settings.url.indexOf("contextinfo") === -1) {
+            // we need to retrieve the Request Digest
+            _this._getRequestDigest({
+              callback:function(requestDigest) {
+                headers["X-RequestDigest"]=requestDigest;
+                if (useCallback) _this.ajax(settings)
+                else _this.ajax(settings).then(function(d) { prom_res(d) }, function(e) { prom_rej(e) });
+              }
+            });
+            return
           }
         }
-        jQuery.ajax(settings);
-      } else {
-        headers = {'Content-Type': settings.contentType || "text/xml; charset=utf-8"};
-        // check if it's NodeJS
-        if (_SP_ISBROWSER) {
-          if (typeof nanoajax !== "undefined") {
+
+        if (typeof jQuery !== "undefined" && jQuery.ajax) {
+          if (typeof settings.onprogress==="function") {
+            settings.processData=false;
+            settings.xhr=function() {
+              var xhr = new window.XMLHttpRequest();
+              xhr.upload.addEventListener("progress", settings.onprogress, false);
+              return xhr;
+            }
+          }
+          if (useCallback) jQuery.ajax(settings);
+          else jQuery.ajax(settings).then(function(res) { prom_res(res) }, function(rej) { prom_rej(rej) });
+        } else {
+          if (!headers["Content-Type"]) headers["Content-Type"]=settings.contentType || "text/xml; charset=utf-8";
+          // check if it's NodeJS
+          if (_SP_ISBROWSER) {
+            if (typeof nanoajax !== "undefined") {
+              if (typeof settings.beforeSend === "function") {
+                xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
+                settings.beforeSend(xhr);
+              }
+              nparams={
+                url: settings.url,
+                method: settings.method || "POST",
+                headers: headers,
+                body: settings.data
+              };
+              if (typeof settings.onprogress === "function") nparams.onprogress=settings.onprogress;
+              // eslint-disable-next-line
+              nanoajax.ajax(nparams, function (code, responseText, request) {
+                if (code === 200 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
+                  if (useCallback) settings.success(request.responseXML || request.responseText);
+                  else prom_res(request.responseXML || request.responseText)
+                } else {
+                  if (typeof settings.error === "function") {
+                    settings.error(request, code, responseText);
+                  }
+                  if (!useCallback) prom_rej(responseText);
+                }
+              })
+            }
+            else {
+              throw "[SharepointPlus] Fatal Error : No AJAX library has been found... Please use jQuery or nanoajax";
+            }
+          } else {
+            // we use the module 'sp-request'
+            if (_this.module_sprequest === null) {
+              if (_this.credentialOptions === null) {
+                throw "[SharepointPlus] Error 'ajax': please use `$SP().auth()` to provide your credentials first";
+              }
+              _this.module_sprequest = require('sp-request').create(_this.credentialOptions);
+            }
+            if (headers['Content-Type'].indexOf('xml') > -1) headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
+            if (!settings.method || settings.method.toLowerCase() === "POST") headers['Content-Length'] = Buffer.byteLength(settings.data);
             if (typeof settings.beforeSend === "function") {
               xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
               settings.beforeSend(xhr);
             }
-            nparams={
-              url: settings.url,
-              method: settings.method || "POST",
+            // add User Agent
+            headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
+            var opts = {
+              json:false,
+              method:settings.method || "POST",
+              body: settings.data,
+              strictSSL: false,
               headers: headers,
-              body: settings.data
+              jar:true
             };
-            if (typeof settings.onprogress === "function") nparams.onprogress=settings.onprogress;
-            // eslint-disable-next-line
-            nanoajax.ajax(nparams, function (code, responseText, request) {
-              if (code === 200 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
-                settings.success(request.responseXML || request.responseText);
+            if (_this.proxyweb) opts.proxy=_this.proxyweb;
+            _this.module_sprequest(settings.url, opts)
+            .then(function(response) {
+              if (response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout") {
+                // check if it's XML, then parse it
+                if (response.headers['content-type'].indexOf('xml') > -1 && response.body.slice(0,5) === '<?xml') {
+                  var DOMParser = require('xmldom').DOMParser;
+                  var result = new DOMParser().parseFromString(response.body);
+                  settings.success(result);
+                } else {
+                  settings.success(response.body);
+                }
               } else {
                 if (typeof settings.error === "function") {
-                  settings.error(request, code, responseText);
+                  settings.error(response, response.statusCode, response.body);
                 }
               }
-            })
-          }
-          else {
-            throw "[SharepointPlus] Fatal Error : No AJAX library has been found... Please use jQuery or nanoajax";
-          }
-        } else {
-          // we use the module 'sp-request'
-          if (_this.module_sprequest === null) {
-            if (_this.credentialOptions === null) {
-              throw "[SharepointPlus] Error 'ajax': please use `$SP().auth()` to provide your credentials first";
-            }
-            _this.module_sprequest = require('sp-request').create(_this.credentialOptions);
-          }
-          if (headers['Content-Type'].indexOf('xml') > -1) headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
-          if (!settings.method || settings.method.toLowerCase() === "POST") headers['Content-Length'] = Buffer.byteLength(settings.data);
-          if (typeof settings.beforeSend === "function") {
-            xhr = {setRequestHeader:function(a, b) { headers[a]=b }};
-            settings.beforeSend(xhr);
-          }
-          // add User Agent
-          headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
-          var opts = {
-            json:false,
-            method:settings.method || "POST",
-            body: settings.data,
-            strictSSL: false,
-            headers: headers,
-            jar:true
-          };
-          if (_this.proxyweb) opts.proxy=_this.proxyweb;
-          _this.module_sprequest(settings.url, opts)
-          .then(function(response) {
-            if (response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout") {
-              // check if it's XML, then parse it
-              if (response.headers['content-type'].indexOf('xml') > -1 && response.body.slice(0,5) === '<?xml') {
-                var DOMParser = require('xmldom').DOMParser;
-                var result = new DOMParser().parseFromString(response.body);
-                settings.success(result);
-              } else {
-                settings.success(response.body);
-              }
-            } else {
+            }, function(err) {
               if (typeof settings.error === "function") {
-                settings.error(response, response.statusCode, response.body);
+                settings.error(err, "000", err);
               }
-            }
-          }, function(err) {
-            if (typeof settings.error === "function") {
-              settings.error(err, "000", err);
-            }
-          });
+            });
+          }
         }
-      }
+      })
     },
     /**
       @name $SP().auth
@@ -351,6 +546,7 @@ if (typeof jQuery === "function") {
       @description Permits to use credentials when doing requests (for Node module only)
 
       @param {Object} credentialOptions Options from https://github.com/s-KaiNet/node-sp-auth
+      @return {Object}the current SharepointPlus object
 
       @example
       var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
@@ -373,6 +569,7 @@ if (typeof jQuery === "function") {
       @description Permits to define a proxy server (for Node module only)
 
       @param {String} proxyURL Looks like "http://domain%5Cusername:password@proxy.something:80"
+      @return {Object}the current SharepointPlus object
 
       @example
       var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
@@ -396,6 +593,8 @@ if (typeof jQuery === "function") {
 
       @param {String} listID Ths list ID or the list name
       @param {String} [url] If the list name is provided, then you need to make sure URL is provided too (then no need to define the URL again for the chained functions like 'get' or 'update')
+      @return {Object}the current SharepointPlus object
+
       @example
       $SP().list("My List");
       $SP().list("My List","http://my.sharpoi.nt/other.directory/");
@@ -439,9 +638,8 @@ if (typeof jQuery === "function") {
                 var body=_this._buildBodyForSOAP("WebUrlFromPageUrl", "<pageUrl>"+window.location.href.replace(/&/g,"&amp;")+"</pageUrl>");
                 var url = "/_vti_bin/Webs.asmx";
                 _this.ajax({
-                  type: "POST",
+                  method: "POST",
                   cache: false,
-                  async: async,
                   url: url,
                   data: body,
                   contentType: "text/xml; charset=utf-8",
@@ -571,7 +769,7 @@ if (typeof jQuery === "function") {
         options.soapURL=options.soapURL||'http://schemas.microsoft.com/sharepoint/soap/';
         bodyContent = _this._buildBodyForSOAP(options.operation, bodyContent, options.soapURL);
         _this.ajax({
-          type: "POST",
+          method:"POST",
           url: options.webURL+"/_vti_bin/"+options.service+".asmx",
           data: bodyContent,
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', options.soapURL+options.operation); },
@@ -1528,9 +1726,8 @@ if (typeof jQuery === "function") {
           // do the request
           var url = _this.url + "/_vti_bin/Lists.asmx";
           _this.ajax({
-            type: "POST",
+            method:"POST",
             cache: false,
-            async: true,
             url: url,
             data: body,
             contentType: "text/xml; charset=utf-8",
@@ -1770,19 +1967,31 @@ if (typeof jQuery === "function") {
       @description Create a file and save it to a Document library
 
       @param {Object} setup Options (see below)
-        @param {String} setup.content The file content
+        @param {String} setup.content The file content (as an ArrayBuffer or a String if not encoded... (Base64 string is also supported with parameter "encoded:true" for retro-compatibility, but ArrayBuffer should be prefered)
         @param {String} setup.filename The relative path (within the document library) to the file to create
         @param {String} setup.library The name of the document library
-        @param {Boolean} [setup.encoded=false] Set to true if the content passed is already base64-encoded
+        @param {Boolean} [setup.encoded=false] Set to true if the content passed is already encoded as a "Base64" or an ArrayBuffer
         @param {Object} [setup.fields] If you want to set some other fields for the document
         @param {String} [setup.url='current website'] The website url
+        @param {Function} [setup.progress=function(percentage){}] The upload progress in percentage
         @param {Function} [setup.success=function(fileURL){}] A callback function that will be triggered in case of success; 1 parameter
         @param {Function} [setup.error=function(fileURL,errorMessage){}] A callback function that will be triggered in case of failure; 2 parameters
         @param {Function} [setup.after=function(fileURL,errorMessage){}] A callback function that will be triggered after the task whatever it's successful or not; 2 parameters
       @return {Promise} The 'fileURL' on 'resolve', and 'errorMessage' on 'reject'
 
       @example
-      // create a text document
+      // with $SP().list() and Promise
+      $SP().list("Documents", "http://my.other.site/website/").createFile({
+        content:"*ArrayBuffer*",
+        encoded:true,
+        filename:"Demo/HelloWorld.txt"
+      }).then(function(file) {
+        console.log(file+" has been created")
+      }, function(error) {
+        console.log("Error: "+error)
+      })
+
+      // create a text document with some fields
       $SP().createFile({
         content:"Hello World!",
         filename:"SubFolder/myfile.txt",
@@ -1822,28 +2031,6 @@ if (typeof jQuery === "function") {
         }
       });
 
-      // You can use https://github.com/Aymkdn/FileToDataURI if you want to be able to read a local file
-      // and then upload it to a document library, via Javascript/Flash
-      // We'll use "encoded:true" to say our content is already a base64 string
-      $SP().createFile({
-        content:"U2hhcmVwb2ludFBsdXMgUm9ja3Mh",
-        encoded:true,
-        filename:"Demo/HelloWorld.txt",
-        library:"Documents",
-        url:"http://my.other.site/website/"
-      });
-
-      // with $SP().list() and Promise
-      $SP().list("Documents", "http://my.other.site/website/").createFile({
-        content:"U2hhcmVwb2ludFBsdXMgUm9ja3Mh",
-        encoded:true,
-        filename:"Demo/HelloWorld.txt"
-      }).then(function(file) {
-        console.log(file+" has been created")
-      }, function(error) {
-        console.log("Error: "+error)
-      })
-
       // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
     */
     createFile:function(setup) {
@@ -1858,13 +2045,13 @@ if (typeof jQuery === "function") {
           setup.library = _this.listID;
         }
         setup.url = setup.url || _this.url;
+        _this.url = setup.url;
+        _this.listID = setup.library;
         // if we didn't define the url in the parameters, then we need to find it
         if (!setup.url) {
           if (_this.hasPromise) {
             _this._getURL().then(function() {
-              _this.createFile(setup).then(function(res) {
-                prom_resolve(res);
-              })
+              _this.createFile(setup).then(function(res) { prom_resolve(res) }, function(rej) { prom_reject(rej) })
             });
           } else {
             _this._getURL();
@@ -1873,69 +2060,138 @@ if (typeof jQuery === "function") {
           return;
         }
 
-        // deal with Promise/callbacks
-        if (setup.useCallback !== false && (typeof setup.after === "function" || !prom_resolve)) { // if we ask for a callback, or if no Promise, no callback, no jQuery
-          setup.useCallback = true;
-        } else {
-          setup.useCallback = false;
-        }
-        if (!prom_resolve) prom_resolve=prom_reject=function(){};
         setup.after   = setup.after || function(){};
         setup.success = setup.success || function(){};
         setup.error   = setup.error || function(){};
         setup.encoded = (setup.encoded===true?true:false);
         setup.extendedFields = setup.extendedFields || "";
-        // if we have setup.fields, then we need to figure out the Type using $SP().list().info()
-        if (setup.fields && !setup.extendedFields) {
-          if (typeof setup.fields !== "object") throw "Error 'createFile': please refer to the documentation regarding `fields`";
-          _this.list(setup.library, setup.url).info(function(fields) {
-            // we use extendedFields to define the Type
-            for (var i=fields.length; i--;) {
-              if (setup.fields[fields[i]["StaticName"]]) {
-                setup.extendedFields += '<FieldInformation Type="'+fields[i]["Type"]+'" Value="'+setup.fields[fields[i]["StaticName"]]+'" DisplayName="'+fields[i]["StaticName"]+'" InternalName="'+fields[i]["StaticName"]+'" />'
-              }
-            }
-            if (!setup.extendedFields) delete setup.fields;
-            if (setup.useCallback) _this.createFile(setup);
-            else _this.createFile(setup).then(function(res) { prom_resolve(res) })
-          });
-          return;
+        // for retro compatibility with previous version of SharepointPlus
+        if (setup.encoded && Object.prototype.toString.call(setup.content) !== "[object ArrayBuffer]") {
+          setup.encoded=false;
+          setup.content=_this.decode_b64(setup.content);
         }
-        var destination = "/" + setup.library + "/" + setup.filename
-        destination = (setup.url + destination).replace(/([^:]\/)\//g,"$1");
-        if (destination.slice(0,4) !== "http") destination=window.location.protocol + "//" + window.location.host + destination;
-        var soapEnv = "<SourceUrl>http://null</SourceUrl>"
-                      +"<DestinationUrls><string>"+destination+"</string></DestinationUrls>"
-                      +'<Fields><FieldInformation Type="File" />'+setup.extendedFields+'</Fields>'
-                      +"<Stream>"+(setup.encoded?setup.content:_this.encode_b64(setup.content))+"</Stream>"
-        soapEnv = _this._buildBodyForSOAP("CopyIntoItems", soapEnv);
-        _this.ajax({
-          url: setup.url + "/_vti_bin/copy.asmx",
-          type: "POST",
-          dataType: "xml",
-          data: soapEnv,
-          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/CopyIntoItems'); },
-          contentType: "text/xml; charset=\"utf-8\"",
-          success:function(data) {
-            var a = data.getElementsByTagName('CopyResult');
-            var error;
-            if (a && a[0] && a[0].getAttribute("ErrorCode") !== "Success") {
-              error="Error 'createFile' ("+destination+"): "+a[0].getAttribute("ErrorCode")+" - "+a[0].getAttribute("ErrorMessage");
-              setup.error.call(_this, destination, error);
-              prom_reject(error);
-            } else {
-              setup.success.call(_this, destination);
-              prom_resolve(destination);
-            }
+        // we now decide if we have REST
+        _this.hasREST({
+          callback:function(hasREST) {
+            if (!hasREST || !setup.encoded) {
+              // use Copy Web Service
+              // if we have setup.fields, then we need to figure out the Type using $SP().list().info()
+              if (setup.fields && !setup.extendedFields) {
+                if (typeof setup.fields !== "object") throw "Error 'createFile': please refer to the documentation regarding `fields`";
+                _this.list(setup.library, setup.url).info(function(fields) {
+                  // we use extendedFields to define the Type
+                  for (var i=fields.length; i--;) {
+                    if (setup.fields[fields[i]["StaticName"]]) {
+                      setup.extendedFields += '<FieldInformation Type="'+fields[i]["Type"]+'" Value="'+setup.fields[fields[i]["StaticName"]]+'" DisplayName="'+fields[i]["StaticName"]+'" InternalName="'+fields[i]["StaticName"]+'" />'
+                    }
+                  }
+                  if (!setup.extendedFields) delete setup.fields;
+                  if (setup.useCallback) _this.createFile(setup);
+                  else _this.createFile(setup).then(function(res) { prom_resolve(res) }, function(rej) { prom_reject(rej) })
+                });
+                return;
+              }
+              var destination = "/" + setup.library + "/" + setup.filename
+              destination = (setup.url + destination).replace(/([^:]\/)\//g,"$1");
+              if (destination.slice(0,4) !== "http") destination=window.location.protocol + "//" + window.location.host + destination;
+              var content = setup.content;
+              if (!setup.encoded) content=_this.encode_b64(content); // String
+              else {
+                if (Object.prototype.toString.call(content) === "[object ArrayBuffer]") {
+                  content=SPArrayBufferToBase64(content); // ArrayBuffer
+                }
+              }
+              var soapEnv = "<SourceUrl>http://null</SourceUrl>"
+                            +"<DestinationUrls><string>"+destination+"</string></DestinationUrls>"
+                            +'<Fields><FieldInformation Type="File" />'+setup.extendedFields+'</Fields>'
+                            +"<Stream>"+content+"</Stream>"
+              soapEnv = _this._buildBodyForSOAP("CopyIntoItems", soapEnv);
+              _this.ajax({
+                url: setup.url + "/_vti_bin/copy.asmx",
+                method:"POST",
+                dataType: "xml",
+                data: soapEnv,
+                onprogress:function(evt) {
+                  if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    setup.progress(parseInt(percentComplete * 100));
+                  }
+                },
+                beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/CopyIntoItems'); },
+                contentType: "text/xml; charset=\"utf-8\"",
+                success:function(data) {
+                  var a = data.getElementsByTagName('CopyResult');
+                  var error;
+                  if (a && a[0] && a[0].getAttribute("ErrorCode") !== "Success") {
+                    error="Error 'createFile' ("+destination+"): "+a[0].getAttribute("ErrorCode")+" - "+a[0].getAttribute("ErrorMessage");
+                    setup.error.call(_this, destination, error);
+                    prom_reject(error);
+                  } else {
+                    setup.success.call(_this, destination);
+                    prom_resolve(destination);
+                  }
 
-            if (setup.useCallback) setup.after.call(_this, destination, error);
-          },
-          error:function(qXHR, textStatus, errorThrown) {
-            setup.error.call(_this, destination, errorThrown);
-            if (setup.useCallback) setup.after.call(_this, destination, errorThrown);
-            else prom_reject(errorThrown);
+                  if (setup.useCallback) setup.after.call(_this, destination, error);
+                },
+                error:function(qXHR, textStatus, errorThrown) {
+                  setup.error.call(_this, destination, errorThrown);
+                  if (setup.useCallback) setup.after.call(_this, destination, errorThrown);
+                  else prom_reject(errorThrown);
+                }
+              });
+            } else {
+              // use REST API
+              // we need to find the RootFolder for the list
+              _this.info(function(infos) {
+                var rootFolder = infos._List.RootFolder;
+                var folder = setup.filename.split("/");
+                var filename = setup.filename;
+                if (folder.length > 1) {
+                  filename=folder.slice(-1);
+                  folder="/"+folder.slice(0,-1).join("/");
+                }
+                else folder="";
+                folder = rootFolder+folder;
+                _this.ajax({
+                  url: _this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(filename)+"',overwrite=true)",
+                  type: "POST",
+                  data: setup.content,
+                  onprogress:function(evt) {
+                    if (evt.lengthComputable) {
+                      var percentComplete = evt.loaded / evt.total;
+                      setup.progress(parseInt(percentComplete * 100));
+                    }
+                  },
+                  success:function(body) {
+                    // if we want to update some fields
+                    if (setup.fields) {
+                      // using "ListItemAllFields.__deferred.uri" we can find the URL to get details about the uploaded file
+                      _this.ajax({
+                        url: body.d.ListItemAllFields.__deferred.uri,
+                        method: "GET",
+                        success:function(body) {
+                          var fileDetails = body.d;
+                          var params = SPExtend({ID:fileDetails.ID}, setup.fields);
+                          _this.update(params, {
+                            after:function(passed,failed) {
+                              prom_resolve(_this.url+folder+filename)
+                            }
+                          })
+                        },
+                        error:function(err) {
+                          prom_resolve(_this.url+folder+filename)
+                        }
+                      });
+                    } else prom_resolve(_this.url+folder+filename)
+                  },
+                  error:function(err) {
+                    prom_reject(err)
+                  }
+                });
+              })
+            }
           }
-        });
+        })
       })
     },
     /**
@@ -2098,7 +2354,7 @@ if (typeof jQuery === "function") {
         var soapEnv = _this._buildBodyForSOAP("CheckInFile", '<pageUrl>'+setup.destination+'</pageUrl><comment>'+setup.comments+'</comment><CheckinType>1</CheckinType>');
         _this.ajax({
           url: setup.url + "/_vti_bin/Lists.asmx",
-          type: "POST",
+          method:"POST",
           dataType: "xml",
           data: soapEnv,
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/CheckInFile'); },
@@ -2152,7 +2408,7 @@ if (typeof jQuery === "function") {
       var soapEnv = _this._buildBodyForSOAP("AddAttachment", "<listName>"+this.listID+"</listName><listItemID>"+setup.ID+"</listItemID><fileName>"+setup.filename+"</fileName><attachment>"+setup.attachment+"</attachment>");
       _this.ajax({
         url: _this.url + "/_vti_bin/Lists.asmx",
-        type: "POST",
+        method:"POST",
         dataType: "xml",
         data: soapEnv,
         beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/AddAttachment'); },
@@ -2201,9 +2457,8 @@ if (typeof jQuery === "function") {
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
       _this.ajax({
-        type: "POST",
+        method:"POST",
         cache: false,
-        async: true,
         url: url,
         data: body,
         contentType: "text/xml; charset=utf-8",
@@ -2267,9 +2522,8 @@ if (typeof jQuery === "function") {
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
       _this.ajax({
-        type: "POST",
+        method:"POST",
         cache: false,
-        async: true,
         url: url,
         data: body,
         contentType: "text/xml; charset=utf-8",
@@ -2360,9 +2614,8 @@ if (typeof jQuery === "function") {
       var url = this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
       _this.ajax({
-        type: "POST",
+        method:"POST",
         cache: false,
-        async: true,
         url: url,
         data: body,
         contentType: "text/xml; charset=utf-8",
@@ -2421,105 +2674,119 @@ if (typeof jQuery === "function") {
     /**
       @name $SP().list.info
       @function
-      @description Get the information (StaticName, DisplayName, Description, Required ("TRUE", "FALSE", null), DefaultValue, Choices, etc...) - metadata - regarding the list for each column
+      @description Get the columns' information/metadata, and the list's details
 
       @param {Function} [function()] A function with the data from the request as first argument
+      @return {Promise}
 
       @example
-      $SP().list("List Name").info(function(fields) {
-        for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
-      });
-
-      $SP().list("My list","http://intranet.site.com/dept/").info(function(fields) {
-        for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+      $SP().list("List Name").info(function(infos) {
+        // for columns' details:
+        for (var i=0; i&lt;infos.length; i++) console.log(infos[i]["DisplayName"]+ ": => "+infos[i]);
+        // for list's details:
+        console.log(infos._List)
       });
     */
     info:function(fct) {
-      // check if we need to queue it
-      if (this.needQueue) { return this._addInQueue(arguments) }
-      if (this.listID == undefined) throw "Error 'info': you have to define the list ID";
-
-      // default values
-      if (this.url == undefined) throw "Error 'info': not able to find the URL!"; // we cannot determine the url
-
       var _this=this;
-
-      // forge the parameters
-      var body = _this._buildBodyForSOAP("GetList", '<listName>'+_this.listID+'</listName>');
-      // do the request
-      var url = this.url + "/_vti_bin/lists.asmx";
-      var aReturn = [];
-      _this.ajax({
-        type: "POST",
-        cache: false,
-        async: true,
-        url: url,
-        data: body,
-        contentType: "text/xml; charset=utf-8",
-        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetList'); },
-        dataType: "xml",
-        success:function(data) {
-          var arr = data.getElementsByTagName('Field');
-          var index = 0, aIndex, attributes, attrName, attrValue, lenDefault, nodeDefault;
-          var i,j,a,r,k,nName,nValue;
-          for (i=0; i < arr.length; i++) {
-            if (arr[i].getAttribute("ID")) {
-              aReturn[index] = [];
-              aIndex=aReturn[index];
-              attributes=arr[i].attributes;
-              for (j=attributes.length; j--;) {
-                attrName=attributes[j].nodeName;
-                attrValue=attributes[j].nodeValue;
-                if (attrName==="Type") {
-                  switch (attrValue) {
-                    case "Choice":
-                    case "MultiChoice": {
-                      aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
-                      a=arr[i].getElementsByTagName("CHOICE");
-                      r=[];
-                      for(k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
-                      aIndex["Choices"]=r;
-                      break;
-                    }
-                    case "Lookup":
-                    case "LookupMulti":
-                      aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
-                      break;
-                    case "TaxonomyFieldType":
-                    case "TaxonomyFieldTypeMulti": {
-                      a=arr[i].getElementsByTagName("Property");
-                      aIndex["Property"]={};
-                      for(k=0; k<a.length; k++) {
-                        nName=a[k].getElementsByTagName('Name');
-                        nValue=a[k].getElementsByTagName('Value');
-                        if (nName.length>0) aIndex["Property"][nName[0].firstChild.nodeValue]=(nValue.length>0?nValue[0].firstChild.nodeValue:null);
-                      }
-                      break;
-                    }
-                    default:
-                      aIndex["Choices"] = [];
-                  }
-                }
-                aIndex[attrName]= attrValue;
-              }
-
-              // find the default values
-              lenDefault=arr[i].getElementsByTagName("Default").length;
-              if (lenDefault>0) {
-                nodeDefault=arr[i].getElementsByTagName("Default");
-                aReturn[index]["DefaultValue"]=[];
-                for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
-                if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
-              } else aReturn[index]["DefaultValue"]=null;
-
-              index++;
-            }
-          }
-
-          if (typeof fct == "function") fct.call(_this,aReturn);
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // check if we need to queue it
+        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.listID == undefined) throw "Error 'info': you have to define the list ID";
+        var useCallback=false;
+        // deal with Promise/callbacks
+        if (typeof fct==="function") { // if we ask for a callback
+          prom_resolve = fct;
+          prom_reject = function(e){ fct([],e) };
+          useCallback = true;
         }
-      });
-      return this;
+        if (!prom_resolve) prom_resolve=prom_reject=function(){}; // no Promise, no callback, no jQuery
+        // default values
+        if (_this.url == undefined) throw "Error 'info': not able to find the URL!"; // we cannot determine the url
+
+        // forge the parameters
+        var body = _this._buildBodyForSOAP("GetList", '<listName>'+_this.listID+'</listName>');
+        // do the request
+        var aReturn = [];
+        _this.ajax({
+          method:"POST",
+          url: _this.url + "/_vti_bin/lists.asmx",
+          data: body,
+          contentType: "text/xml; charset=utf-8",
+          beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetList'); },
+          success:function(data) {
+            var arr = data.getElementsByTagName('Field');
+            var index = 0, aIndex, attributes, attrName, attrValue, lenDefault, nodeDefault;
+            var i,j,a,r,k,nName,nValue;
+            // retrieve list info first
+            var listDetails = data.getElementsByTagName('List')[0];
+            attributes=listDetails.attributes;
+            aReturn["_List"]={};
+            for (i=0; i<attributes.length; i++) {
+              aReturn["_List"][attributes[i].nodeName]=attributes[i].nodeValue
+            }
+            // then retrieve fields info
+            for (i=0; i < arr.length; i++) {
+              if (arr[i].getAttribute("ID")) {
+                aReturn[index] = [];
+                aIndex=aReturn[index];
+                attributes=arr[i].attributes;
+                for (j=attributes.length; j--;) {
+                  attrName=attributes[j].nodeName;
+                  attrValue=attributes[j].nodeValue;
+                  if (attrName==="Type") {
+                    switch (attrValue) {
+                      case "Choice":
+                      case "MultiChoice": {
+                        aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
+                        a=arr[i].getElementsByTagName("CHOICE");
+                        r=[];
+                        for(k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
+                        aIndex["Choices"]=r;
+                        break;
+                      }
+                      case "Lookup":
+                      case "LookupMulti":
+                        aIndex["Choices"]={list:arr[i].getAttribute("List"),field:arr[i].getAttribute("ShowField")};
+                        break;
+                      case "TaxonomyFieldType":
+                      case "TaxonomyFieldTypeMulti": {
+                        a=arr[i].getElementsByTagName("Property");
+                        aIndex["Property"]={};
+                        for(k=0; k<a.length; k++) {
+                          nName=a[k].getElementsByTagName('Name');
+                          nValue=a[k].getElementsByTagName('Value');
+                          if (nName.length>0) aIndex["Property"][nName[0].firstChild.nodeValue]=(nValue.length>0?nValue[0].firstChild.nodeValue:null);
+                        }
+                        break;
+                      }
+                      default:
+                        aIndex["Choices"] = [];
+                    }
+                  }
+                  aIndex[attrName]= attrValue;
+                }
+
+                // find the default values
+                lenDefault=arr[i].getElementsByTagName("Default").length;
+                if (lenDefault>0) {
+                  nodeDefault=arr[i].getElementsByTagName("Default");
+                  aReturn[index]["DefaultValue"]=[];
+                  for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
+                  if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
+                } else aReturn[index]["DefaultValue"]=null;
+
+                index++;
+              }
+            }
+
+            prom_resolve(aReturn);
+          },
+          error:function(qXHR, textStatus, errorThrown) {
+            prom_reject(errorThrown);
+          }
+        });
+      })
     },
     /**
       @name $SP().list.view
@@ -2581,9 +2848,8 @@ if (typeof jQuery === "function") {
       var url = this.url + "/_vti_bin/Views.asmx";
       var aReturn = ["fields","orderby","whereCAML"];
       _this.ajax({
-        type: "POST",
+        method:"POST",
         cache: false,
-        async: true,
         url: url,
         data: body,
         contentType: "text/xml; charset=utf-8",
@@ -2664,9 +2930,8 @@ if (typeof jQuery === "function") {
       var url = _this.url + "/_vti_bin/Views.asmx";
       var aReturn = [];
       _this.ajax({
-        type: "POST",
+        method:"POST",
         cache: false,
-        async: true,
         url: url,
         data: body,
         contentType: "text/xml; charset=utf-8",
@@ -2741,9 +3006,8 @@ if (typeof jQuery === "function") {
       var url = _this.url + "/_vti_bin/lists.asmx";
       var aReturn = [];
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
-        async:true,
         url:url,
         data:body,
         contentType:"text/xml; charset=utf-8",
@@ -2892,9 +3156,8 @@ if (typeof jQuery === "function") {
         // send the request
         var url = _this.url + "/_vti_bin/lists.asmx";
         _this.ajax({
-          type:"POST",
+          method:"POST",
           cache:false,
-          async:true,
           url:url,
           data:body,
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
@@ -3069,9 +3332,8 @@ if (typeof jQuery === "function") {
         // send the request
         var url = _this.url + "/_vti_bin/lists.asmx";
         _this.ajax({
-          type:"POST",
+          method:"POST",
           cache:false,
-          async:true,
           url:url,
           data:body,
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
@@ -3146,9 +3408,8 @@ if (typeof jQuery === "function") {
       // send the request
       var url = _this.url + "/_vti_bin/lists.asmx";
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
-        async:true,
         url:url,
         data:body,
         beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetVersionCollection'); },
@@ -3268,9 +3529,8 @@ if (typeof jQuery === "function") {
       // send the request
       var url = _this.url + "/_vti_bin/lists.asmx";
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
-        async:true,
         url:url,
         data:body,
         beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
@@ -3444,9 +3704,8 @@ if (typeof jQuery === "function") {
         // send the request
         var url = _this.url + "/_vti_bin/lists.asmx";
         _this.ajax({
-          type:"POST",
+          method:"POST",
           cache:false,
-          async:true,
           url:url,
           data:body,
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'); },
@@ -3547,7 +3806,7 @@ if (typeof jQuery === "function") {
       // send the request
       var url = setup.url + "/_vti_bin/usergroup.asmx";
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
         url:url,
         data:body,
@@ -3639,9 +3898,8 @@ if (typeof jQuery === "function") {
         if (fileRef.slice(0,4) !== "http") fileRef = window.location.href.split('/').slice(0,3).join("/") + fileRef;
         var body = _this._buildBodyForSOAP("GetWorkflowDataForItem", '<item>'+fileRef+'</item>', "http://schemas.microsoft.com/sharepoint/soap/workflow/");
         _this.ajax({
-          type: "POST",
+          method:"POST",
           cache: false,
-          async: true,
           url: _this.url+"/_vti_bin/Workflow.asmx",
           data: body,
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/workflow/GetWorkflowDataForItem'); },
@@ -3809,9 +4067,8 @@ if (typeof jQuery === "function") {
         // do the request
         var url = _this.url + "/_vti_bin/Workflow.asmx";
         _this.ajax({
-          type: "POST",
+          method:"POST",
           cache: false,
-          async: true,
           url: url,
           data: body,
           beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/workflow/StartWorkflow'); },
@@ -3991,7 +4248,7 @@ if (typeof jQuery === "function") {
       // send the request
       var url = setup.url + "/_vti_bin/UserProfileService.asmx";
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
         url:url,
         data:body,
@@ -4083,7 +4340,7 @@ if (typeof jQuery === "function") {
       // send the request
       var url = setup.url + "/_vti_bin/usergroup.asmx";
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
         url:url,
         data:body,
@@ -4217,7 +4474,7 @@ if (typeof jQuery === "function") {
       // send the request
       var url = setup.url + "/_vti_bin/UserProfileService.asmx";
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
         url:url,
         data:body,
@@ -4290,7 +4547,7 @@ if (typeof jQuery === "function") {
       // send the request
       var url = setup.url + "/_vti_bin/usergroup.asmx";
       _this.ajax({
-        type:"POST",
+        method:"POST",
         cache:false,
         url:url,
         data:body,
@@ -4530,7 +4787,7 @@ if (typeof jQuery === "function") {
       // send the request
       var url = setup.url + "/_vti_bin/People.asmx";
       _this.ajax({
-        type: "POST",
+        method:"POST",
         cache:false,
         url:url,
         data:body,

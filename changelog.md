@@ -5,6 +5,14 @@
   - Add option `soapURL` to `$SP().webService()` (see https://github.com/Aymkdn/SharepointPlus/issues/51)
   - Add wiki pages for "Term/Taxonomy/Managed Metadata" (see https://github.com/Aymkdn/SharepointPlus/wiki/)
   - Add `Property` property for a `TaxonomyFieldType` returned by `$SP().list().info()`
+  - Add `._List` that returns the details for the list for `$SP().list().info()`
+  - Add Promise for `$SP().list().info()`
+  - Add `$SP().hasREST()` to detect if REST API is supported
+  - Add `progress` function for `$SP().createFile()`
+  - Add support for `ArrayBuffer` for `$SP().createFile()`
+  - Add `SPArrayBufferToBase64` function() to transform an ArrayBuffer to a Base64 string
+  - Add Promise for `$SP().ajax()`
+  - Improve catch error from `$SP().createFile` with Promise
 
 **Change Log v4.0 (May 4, 2017)**
 
