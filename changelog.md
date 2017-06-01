@@ -1,6 +1,34 @@
 # Changelog
 
-**Change Log v4.1 ()**
+**Change Log v5.0 ()**
+
+  - Remove all jQuery references
+  - Remove old IE support; support starts from IE11 (the user will have to verify compatibility for older versions)
+  - Remove `SPArrayIndexOf()`
+  - Remove `SPArrayForEach()`
+  - Remove `Strim.prototype.trim` polyfill
+  - Remove callbacks for all functions
+  - Remove alias `$SP().list().del()` (use `$SP().list().remove()` instead)
+  - Add Promise for all functions
+  - Remove `$SP().encode_b64()` and `$SP().decode_b64()` (the code can be retrieved here https://blog.kodono.info/wordpress/2011/07/27/midi-code-encoder-decoder-en-base64-pour-javascript-programmation/)
+  - Change `$SP().ajax()` to integrate `nanoajax` (no need to call `nanoajax` from a seperate file)
+  - Change options for `$SP().ajax()` to fit with `nanoajax`
+  - Change `$SP().getURL()` to return a Promise (async requests are not supported by recent browsers anymore)
+  - Change parameters for `$SP().list().createFile()`, and it must now be called with `$SP().list()`
+  - Change parameters for `$SP().list().createFolder()`, and it must now be called with `$SP().list()`
+  - Change encoding for `$SP().list().addAttachment()` from `Base64` to `ArrayBuffer`
+  - Change values returned by `$SP().list().view()`
+  - Change values returned by `$SP().list().views()`
+  - Change values returned by `$SP().list().add()`
+  - Change values returned by `$SP().list().update()`
+  - Change values returned by `$SP().list().remove()`
+  - Change values returned by `$SP().list().moderate()`
+  - Add option `cache` for `$SP().list().view()`
+  - Add option `cache` for `$SP().lists()`
+  - Add option `packetsize` for `$SP().list().moderate()`
+  - Optimize code for compression
+
+**Change Log v4.1 (not published)**
 
   - Add option `soapURL` to `$SP().webService()` (see https://github.com/Aymkdn/SharepointPlus/issues/51)
   - Add wiki pages for "Term/Taxonomy/Managed Metadata" (see https://github.com/Aymkdn/SharepointPlus/wiki/)
