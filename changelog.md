@@ -26,6 +26,8 @@
   - Add option `cache` for `$SP().list().view()`
   - Add option `cache` for `$SP().lists()`
   - Add option `packetsize` for `$SP().list().moderate()`
+  - Add `$SP().getPageSize()` that permits to get the size of the document/page
+  - Add more QUnit tests (from 163 to ...)
   - Optimize code for compression
 
 **Change Log v4.1 (not published)**

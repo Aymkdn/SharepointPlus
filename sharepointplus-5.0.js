@@ -227,6 +227,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     _getRequestDigest:function(settings) {
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject){
+        settings=settings||{};
         var e, digest, url=(settings.url||_this.url||window.location.href).split("/").slice(0,3).join("/");
         // check cache
         digest=_SP_CACHE_REQUESTDIGEST[url];
@@ -276,32 +277,37 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     */
     ajax:function(settings) {
       var _this=this;
-      var headers=settings.headers||{}; // for size optimization
+      settings.headers=settings.headers||{};
       // https://github.com/yanatan16/nanoajax
       // eslint-disable-next-line
       !function(t,e){function n(t){return t&&e.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:e.XMLHttpRequest?new XMLHttpRequest:void 0}function o(t,e,n){t[e]=t[e]||n}var r=["responseType","withCredentials","timeout","onprogress"];t.ajax=function(t,a){function s(t,e){return function(){c||(a(void 0===f.status?t:f.status,0===f.status?"Error":f.response||f.responseText||e,f),c=!0)}}var u=t.headers||{},i=t.body,d=t.method||(i?"POST":"GET"),c=!1,f=n(t.cors);f.open(d,t.url,!0);var l=f.onload=s(200);f.onreadystatechange=function(){4===f.readyState&&l()},f.onerror=s(null,"Error"),f.ontimeout=s(null,"Timeout"),f.onabort=s(null,"Abort"),i&&(o(u,"X-Requested-With","XMLHttpRequest"),e.FormData&&i instanceof e.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var p,m=0,v=r.length;v>m;m++)p=r[m],void 0!==t[p]&&(f[p]=t[p]);for(var p in u)f.setRequestHeader(p,u[p]);return f.send(i),f},e.nanoajax=t}({},function(){return this}());
       return _this._promise(function(prom_resolve, prom_reject) {
         // add "Accept": "application/json;odata=verbose" for headers if there is "_api/" in URL
         if (settings.url.indexOf("/_api/") > -1) {
-          if (!headers["Accept"]) headers.Accept = "application/json;odata="+_SP_JSON_ACCEPT;
-          if (!headers["Content-Type"]) headers["Content-Type"] = "application/json;odata="+_SP_JSON_ACCEPT;
-          if (!headers["X-RequestDigest"] && settings.url.indexOf("contextinfo") === -1) {
+          if (!settings.headers["Accept"]) settings.headers.Accept = "application/json;odata="+_SP_JSON_ACCEPT;
+          if (!settings.headers["Content-Type"]) settings.headers["Content-Type"] = "application/json;odata="+_SP_JSON_ACCEPT;
+          if (!settings.headers["X-RequestDigest"] && settings.url.indexOf("contextinfo") === -1) {
             // we need to retrieve the Request Digest
-            _this._getRequestDigest().then(function(requestDigest) {
-              headers["X-RequestDigest"]=requestDigest;
-              _this.ajax(settings).then(function(res) { prom_resolve(res) }, function(rej) { prom_reject(rej) });
-            });
+            _this._getRequestDigest()
+            .then(function(requestDigest) {
+              settings.headers["X-RequestDigest"]=requestDigest;
+              return _this.ajax(settings)
+            })
+            .then(function(res) { prom_resolve(res) })
+            .catch(function(rej) { prom_reject(rej) });
             return
           }
         }
         // use XML as the default content type
-        if (!headers["Content-Type"]) headers["Content-Type"]="text/xml; charset=utf-8";
+        if (!settings.headers["Content-Type"]) settings.headers["Content-Type"]="text/xml; charset=utf-8";
         // check if it's NodeJS
         if (_SP_ISBROWSER) {
           // eslint-disable-next-line
           nanoajax.ajax(settings, function(code, responseText, request) {
             if (code === 200 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
-              prom_resolve(request.responseXML || request.responseText)
+              var body=request.responseXML || request.responseText;
+              if (settings.headers["Content-Type"].indexOf("/json") > -1 && typeof body==="string") body=JSON.parse(body); // parse JSON
+              prom_resolve(body)
             } else {
               prom_reject({statusCode:code, responseText:responseText, request:request});
             }
@@ -310,19 +316,19 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           // we use the module 'sp-request' from https://github.com/s-KaiNet/sp-request
           if (_this.module_sprequest === null) {
             if (_this.credentialOptions === null) {
-              throw "[SharepointPlus] Error 'ajax': please use `$SP().auth()` to provide your credentials first";
+              throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your credentials first";
             }
             _this.module_sprequest = require('sp-request').create(_this.credentialOptions);
           }
-          if (headers['Content-Type'].indexOf('xml') > -1) headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
-          if (!settings.method || settings.method.toUpperCase() === "POST") headers['Content-Length'] = Buffer.byteLength(settings.body);
+          if (settings.headers['Content-Type'].indexOf('xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
+          if (!settings.method || settings.method.toUpperCase() === "POST") settings.headers['Content-Length'] = Buffer.byteLength(settings.body);
           // add User Agent
-          headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
+          settings.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
           var opts = {
             json:false,
             method:settings.method || (settings.body?"POST":"GET"),
             strictSSL: false,
-            headers: headers,
+            headers: settings.headers,
             jar:true
           };
           if (settings.body) opts.body=settings.body;
@@ -461,7 +467,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                     prom_reject("[SharepointPlus '_getURL'] Unable to retrieve the URL")
                   }
                   _this.needQueue=false;
-                });
+                }, function(error) { prom_reject(error) })
                 return;
               }
             }
@@ -1757,18 +1763,19 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           } else {
             // use REST API
             // we need to find the RootFolder for the list
-            _this.info().then(function(infos) {
+            var file = {};
+            _this.info()
+            .then(function(infos) {
               var rootFolder = infos._List.RootFolder;
               var folder = setup.filename.split("/");
               var filename = setup.filename;
-              var file = {};
               if (folder.length > 1) {
                 filename=folder.slice(-1);
                 folder="/"+folder.slice(0,-1).join("/");
               }
               else folder="";
               folder = rootFolder+folder;
-              _this.ajax({
+              return _this.ajax({
                 url: _this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(filename)+"',overwrite=true)",
                 body: setup.content,
                 onprogress:function(evt) {
@@ -1776,29 +1783,34 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                     setup.progress(parseInt(evt.loaded / evt.total * 100));
                   }
                 }
-              }).then(function(body) {
-                file.Url=_this.url.split("/").slice(0,3).join("/")+body.d.ServerRelativeUrl;
-                SPExtend(true, file, body.d);
-                // if we want to update some fields
-                if (setup.fields) {
-                  // using "ListItemAllFields.__deferred.uri" we can find the URL to get details about the uploaded file
-                  return _this.ajax({url:body.d.ListItemAllFields.__deferred.uri})
-                } else {
-                  prom_resolve()
-                }
-              }).then(function(body) {
-                SPExtend(true, file, body.d);
-                var params={ID:file.ID};
-                SPExtend(params, setup.fields);
-                return _this.update(params);
-              }).then(function(rows) {
-                var attributes=rows[0].attributes;
-                for (var j=attributes.length; j--;) {
-                  file[attributes[j].nodeName]=attributes[j].nodeValue;
-                }
-                prom_resolve(file)
-              }).catch(function(err) { prom_reject(err) });
+              })
             })
+            .then(function(body) {
+              // retrieve the full path
+              SPExtend(true, file, body.d);
+              file.Url=file.__metadata.uri.split("/").slice(0,3).join("/")+body.d.ServerRelativeUrl;
+              // if we want to update some fields
+              if (setup.fields) {
+                // using "ListItemAllFields.__deferred.uri" we can find the URL to get details about the uploaded file
+                return _this.ajax({url:body.d.ListItemAllFields.__deferred.uri})
+              } else {
+                prom_resolve(file)
+              }
+            })
+            .then(function(body) {
+              SPExtend(true, file, body.d);
+              var params={ID:file.ID};
+              SPExtend(params, setup.fields);
+              return _this.update(params);
+            })
+            .then(function(rows) {
+              var attributes=rows[0].attributes;
+              for (var j=attributes.length; j--;) {
+                file[attributes[j].nodeName]=attributes[j].nodeValue;
+              }
+              prom_resolve(file)
+            })
+            .catch(function(err) { prom_reject(err) });
           }
         })
       })
@@ -1810,7 +1822,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @description Create a folter in a Document library
 
       @param {String} path The relative path to the new folder
-      @return {Promise} resolve(folder details), reject(error)
+      @return {Promise} resolve({BaseName,ID,FSObjType}), reject(error)
 
       @example
       // create a folder called "first" at the root of the Shared Documents library
@@ -1832,7 +1844,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (_this.needQueue) { return _this._addInQueue(arguments) }
         if (folderPath === undefined) throw "[SharepointPlus 'createFolder']: the folder path is required.";
         // split the path based on '/'
-        var path=folderPath, toAdd=[], tmpPath="", i, folder={};
+        var path=folderPath, toAdd=[], tmpPath="", i;
         // trim "/" at the beginning and end
         if (path.charAt(0)==="/") path=path.slice(1);
         if (path.slice(-1)==="/") path=path.slice(0,-1);
@@ -1841,13 +1853,12 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           tmpPath += (i>0?'/':'') + path[i];
           toAdd.push({FSObjType:1, BaseName:tmpPath})
         }
-        _this.add(toAdd).then(function(rows) {
-          var attributes=rows[0].attributes;
-          for (var j=attributes.length; j--;) {
-            folder[attributes[j].nodeName]=attributes[j].nodeValue;
-          }
-          prom_resolve(folder)
-        }, function(error) { prom_reject(error) });
+        _this.add(toAdd)
+        .then(function(rows) {
+          if (rows.failed.length>0) return Promise.reject(rows.failed);
+          prom_resolve(rows.passed[0])
+        })
+        .catch(function(error) { prom_reject(error) });
       })
     },
     /**
@@ -1877,12 +1888,18 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       // default values
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
-        setup     = setup || {};
-        if (setup.destination == undefined) throw "[SharepointPlus 'checkin'] the file destination path is required.";
-        if (!_this.url) throw "[SharepointPlus 'checkin']: not able to find the URL!"; // we cannot determine the url
-        setup.comments = setup.comments || "";
+        setup = setup || {};
+        if (!setup.destination) throw "[SharepointPlus 'checkin'] the file destination path is required.";
+        if (!setup.url) {
+          _this.getURL()
+          .then(function(url) { setup.url=url; return _this.checkin(setup) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
+        }
+        setup.comments = (setup.comments || "").replace(/&/g,"&amp;");
         _this.ajax({
-          url: _this.url + "/_vti_bin/Lists.asmx",
+          url: setup.url + "/_vti_bin/Lists.asmx",
           body:_this._buildBodyForSOAP("CheckInFile", '<pageUrl>'+setup.destination+'</pageUrl><comment>'+setup.comments+'</comment><CheckinType>1</CheckinType>'),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/CheckInFile'}
         }).then(function(data) {
@@ -1892,7 +1909,6 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           } else {
             prom_resolve();
           }
-          setup.after.call(_this);
         }, function(err) { prom_reject(err) });
       })
     },
@@ -2232,7 +2248,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             }
           }
           prom_resolve(aReturn);
-        }).then(function(error) { prom_reject(error) });
+        }, function(error) { prom_reject(error) });
       })
     },
     /**
@@ -2257,9 +2273,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         // check if we need to queue it
         if (_this.needQueue) { return _this._addInQueue(arguments) }
         if (!_this.listID) throw "[SharepointPlus 'view'] the list ID/Name is required.";
-        if (!_this.viewID) throw "[SharepointPlus 'view'] the view ID/Name is required.";
+        if (!viewID) throw "[SharepointPlus 'view'] the view ID/Name is required.";
         // default values
         var list = _this.listID, i, found=false;
+        options=options||{};
         options.cache=(options.cache===false?false:true);
         if (!_this.url) throw "[SharepointPlus 'view'] not able to find the URL!"; // we cannot determine the url
 
@@ -2352,6 +2369,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         // check if we need to queue it
         if (_this.needQueue) { return _this._addInQueue(arguments) }
         if (!_this.listID) throw "[SharepointPlus 'views'] the list ID/Name is required.";
+        options = options||{};
         options.cache = (options.cache === false ? false : true);
 
         // default values
@@ -2422,7 +2440,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         // if we didn't define the url in the parameters, then we need to find it
         if (!setup.url) {
           _this.getURL()
-          .then(function(url) { return _this.lists({url:url}) })
+          .then(function(url) { setup.url=url; return _this.lists(setup) })
           .then(function(res) { prom_resolve(res) })
           .catch(function(rej) { prom_reject(rej) });
           return;
@@ -2447,14 +2465,13 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body:_this._buildBodyForSOAP("GetListCollection", ""),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetListCollection'}
         }).then(function(data) {
-          var aReturn = [], arr = data.querySelectorAll('List'), i, attributes, attr;
+          var aReturn = [], arr = data.querySelectorAll('List'), i, j, attributes;
           for (i=0; i < arr.length; i++) {
-            attributes=arr[i].getAttributes();
             aReturn[i]={};
-            for (attr in attributes) {
-              aReturn[i][attr] = arr[i].getAttribute(attr);
-            }
+            attributes=arr[i].attributes;
+            for (j=attributes.length; j--;) aReturn[i][attributes[j].nodeName]=attributes[j].nodeValue;
             aReturn[i].Url=arr[i].getAttribute("DefaultViewUrl")
+            aReturn[i].Name=arr[i].getAttribute("Title")
           }
 
           // cache
@@ -2577,7 +2594,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           var result = data.querySelectorAll('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i, rows;
           for (i=0; i < len; i++) {
             if (result[i].querySelector('ErrorCode').firstChild.nodeValue === "0x00000000") { // success
-              rows=result[i].querySelectorAll('z:row');
+              rows=result[i].getElementsByTagName('z:row');
               if (rows.length==0) rows=result[i].querySelectorAll('row'); // for Chrome 'bug'
               if (items[i]) {
                 items[i].ID = rows[0].getAttribute("ows_ID");
@@ -2883,7 +2900,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var result = data.querySelectorAll('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, rows, i;
           for (i=0; i < len; i++) {
-            rows=result[i].querySelectorAll('z:row');
+            rows=result[i].getElementsByTagName('z:row');
             if (rows.length==0) rows=data.querySelectorAll('row'); // for Chrome
             var item = myElem(rows[0]);
             if (result[i].querySelector('ErrorCode').firstChild.nodeValue == "0x00000000") // success
@@ -3017,10 +3034,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var result = data.querySelectorAll('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i;
           for (i=0; i < len; i++) {
-            if (result[i].querySelectorA('ErrorCode').firstChild.nodeValue === "0x00000000") // success
+            if (result[i].querySelector('ErrorCode').firstChild.nodeValue === "0x00000000") // success
               passed.push(items[i]);
             else {
-              items[i].errorMessage = result[i].querySelectorA('ErrorText').firstChild.nodeValue;
+              items[i].errorMessage = result[i].querySelector('ErrorText').firstChild.nodeValue;
               failed.push(items[i]);
             }
           }
@@ -3601,50 +3618,59 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {String} setup.group Name of the group
         @param {String} [setup.url='current website'] The website url
         @param {Boolean} [setup.cache=true] Cache the response from the server
-      @param {Function} [result] Return TRUE if the user is a member of the group, FALSE if not.
+      @return {PRomise} resolve(isMember), reject(error)
 
       @example
-      $SP().isMember({user:"mydomain\\john_doe",group:"my group",url:"http://my.site.com/"}, function(isMember) {
+      $SP().isMember({user:"mydomain\\john_doe",group:"my group",url:"http://my.site.com/"}).then(function(isMember) {
         if (isMember) alert("OK !")
       });
     */
-    isMember:function(setup, fct) {
-      // default values
-      setup         = setup || {};
-      setup.cache = (setup.cache === false ? false : true)
-      if (setup.url == undefined) {
-        if (!this.url) { this._getURL(); return this._addInQueue(arguments) }
-        else setup.url=this.url;
-      } else this.url=setup.url;
-      fct           = fct || (function() {});
-      if (!setup.user) throw "Error 'isMember': you have to set an user.";
-      if (!setup.group) throw "Error 'isMember': you have to set a group.";
-
-      setup.group = setup.group.toLowerCase();
-      // first check with usergroups()
-      this.usergroups(setup.user,{cache:setup.cache,error:false},function(groups) {
-        for (var i=groups.length; i--;) {
-          if (groups[i].toLowerCase() === setup.group) { fct.call(this,true); return this }
+    isMember:function(setup) {
+      var _this=this;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        setup = setup || {};
+        if (!setup.user) throw "[SharepointPlus 'isMember'] the user is required.";
+        if (!setup.group) throw "[SharepointPlus 'isMember'] the group is required.";
+        setup.cache = (setup.cache === false ? false : true)
+        if (!setup.url) {
+          _this.getURL()
+          .then(function(url) { setup.url=url; return _this.isMember(setup) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
         }
-        // if we're there then it means we need to keep investigating
-        // look at the members of the group
-        this.groupMembers(setup.group,{cache:setup.cache,error:false},function(m) {
-          var members=[];
+        setup.group = setup.group.toLowerCase();
+        var members=[];
+        // first check with usergroups()
+        _this.usergroups(setup.user,{cache:setup.cache}).then(function(groups) {
+          for (var i=groups.length; i--;) {
+            if (groups[i].toLowerCase() === setup.group) {
+              prom_resolve(true);
+              return Promise.resolve(false);
+            }
+          }
+          // if we're there then it means we need to keep investigating
+          // look at the members of the group
+          return _this.groupMembers(setup.group,{cache:setup.cache})
+        }).then(function(m) {
+          if (m===false) return Promise.resolve(false)
           for (var i=m.length; i--;) members.push(m[i].Name.toLowerCase())
           // and search if our user is part of the members (like a distribution list)
-          this.distributionLists(setup.user, {cache:setup.cache}, function(distrib) {
+          return _this.distributionLists(setup.user, {cache:setup.cache});
+        }).then(function(distrib) {
+          if (distrib!==false) {
+            var found=false;
             for (var i=distrib.length; i--;) {
-              if (SPArrayIndexOf(members, distrib[i].DisplayName.toLowerCase()) > -1) { fct.call(this,true); return this }
+              if (members.indexOf(distrib[i].DisplayName.toLowerCase()) > -1) {
+                prom_resolve(true);
+                found=true;
+              }
             }
-
-            // if we are here it means we found nothing
-            fct.call(this,false);
-            return this
-          });
-        });
+            if (!found) prom_resolve(false)
+          }
+        })
+        .catch(function(error) { prom_reject(error) })
       })
-
-      return this;
     },
     /**
       @name $SP().people
@@ -3655,73 +3681,49 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
-      @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result, or a String with the error message
+      @return {Function} resolve(people), reject(error)
 
       @example
-      $SP().people("john_doe",{url:"http://my.si.te/subdir/"}, function(people) {
-        if (typeof people === "string") {
-          alert(people); // there was a problem so we prompt it
-        } else
-          for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+      $SP().people("john_doe",{url:"http://my.si.te/subdir/"}).then(function(people) {
+        for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+      }, function(err) {
+        console.log("Err => ",err)
       });
     */
-    people:function(username, setup, fct) {
+    people:function(username, setup) {
       var _this=this;
-      switch (arguments.length) {
-        case 1: {
-          if (typeof username === "object") return _this.people("",username,function(){});
-          else if (typeof username === "function") return _this.people("",{},username);
-          username=undefined;
-          break;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        if (arguments.length===1 && typeof username === "object") { setup=username; username="" }
+        // default values
+        username = username || "";
+        setup = setup || {};
+        if (!setup.url) {
+          _this.getURL()
+          .then(function(url) { setup.url=url; return _this.people(username,setup) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
         }
-        case 2: {
-          if (typeof username === "string" && typeof setup === "function") return _this.people(username,{},setup);
-          if (typeof username === "object" && typeof setup === "function") return _this.people("",username,setup);
-        }
-      }
 
-      // default values
-      setup         = setup || {};
-      if (setup.url == undefined) {
-        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
-        else setup.url=_this.url;
-      } else _this.url=setup.url;
-      fct           = fct || (function() {});
-      username      = username || "";
-
-      // build the request
-      var body = _this._buildBodyForSOAP("GetUserProfileByName", "<AccountName>"+username+"</AccountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService");
-      // send the request
-      var url = setup.url + "/_vti_bin/UserProfileService.asmx";
-      _this.ajax({
-        method:"POST",
-        cache:false,
-        url:url,
-        body:body,
-        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserProfileByName'); },
-        contentType: "text/xml; charset=utf-8",
-        dataType: "xml",
-        success:function(data) {
-          var aResult=[];
+        _this.ajax({
+          url:setup.url + "/_vti_bin/UserProfileService.asmx",
+          body:_this._buildBodyForSOAP("GetUserProfileByName", "<AccountName>"+username+"</AccountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService"),
+          headers:{'SOAPAction':'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserProfileByName'}
+        }).then(function(data) {
+          var aResult=[], name, value;
           // get the details
-          data=data.getElementsByTagName('PropertyData');
+          data=data.querySelectorAll('PropertyData');
           for (var i=0,len=data.length; i<len; i++) {
-            var name=data[i].getElementsByTagName("Name")[0].firstChild.nodeValue;
-            var value=data[i].getElementsByTagName("Value");
-            if (value&&value.length>=1&&value[0].firstChild) value=value[0].firstChild.nodeValue;
+            name=data[i].querySelector("Name").firstChild.nodeValue;
+            value=data[i].querySelector("Value");
+            if (value&&value.firstChild) value=value.firstChild.nodeValue;
             else value="No Value";
             aResult.push(name);
             aResult[name]=value;
           }
-          fct.call(_this,aResult);
-        },
-        error:function(req, textStatus, errorThrown) { // eslint-disable-line
-          // any error ?
-          var error=req.responseXML.getElementsByTagName("faultstring");
-          fct.call(_this,"Error 'people': "+error[0].firstChild.nodeValue);
-        }
-      });
-      return _this;
+          prom_resolve(aResult);
+        }, function(error) { prom_reject(error) });
+      })
     },
     /**
       @name $SP().getUserInfo
@@ -3732,82 +3734,60 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @param {String} username That must be "domain\\login" for Sharepoint 2010, or something like "i:0#.w|domain\\login" for Sharepoint 2013
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
-      @param {Function} [result] A function that will be executed at the end of the request with a param that is an object with the result ({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), or a String with the error message
+      @return {Promise} resolve({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), reject(error)
 
       @example
-      $SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}, function(info) {
-        if (typeof info === "string") {
-          alert("Error:"+info); // there was a problem so we show it
-        } else
-          alert("User ID = "+info.ID)
+      $SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}).then(function(info) {
+        alert("User ID = "+info.ID)
+      }, function(error) {
+        console.log(error)
       });
     */
-    getUserInfo:function(username, setup, fct) {
+    getUserInfo:function(username, setup) {
       var _this=this;
-      if (typeof username !== "string") throw "Error 'getUserInfo': the first argument must be the username";
-      switch (arguments.length) {
-        case 2: {
-          if (typeof setup === "function") return _this.getUserInfo(username,{},setup);
-          if (typeof setup === "object") return _this.getUserInfo(username,setup,function() {});
-          break;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        if (typeof username !== "string") throw "[SharepointPlus 'getUserInfo'] the username is required.";
+        // default values
+        setup = setup || {};
+        if (!setup.url) {
+          _this.getURL()
+          .then(function(url) { setup.url=url; return _this.getUserInfo(username,setup) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
         }
-        case 3: if (typeof setup !== "object" && typeof fct !== "function") throw "Error 'getUserInfo': incorrect arguments, please review the documentation";
-      }
 
-      // default values
-      setup = setup || {};
-      if (setup.url == undefined) {
-        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
-        else setup.url=_this.url;
-      } else _this.url=setup.url;
-      fct = fct || (function() {});
-
-      // build the request
-      var body = _this._buildBodyForSOAP("GetUserInfo", '<userLoginName>'+username+'</userLoginName>', "http://schemas.microsoft.com/sharepoint/soap/directory/");
-      // send the request
-      var url = setup.url + "/_vti_bin/usergroup.asmx";
-      _this.ajax({
-        method:"POST",
-        cache:false,
-        url:url,
-        body:body,
-        contentType: "text/xml; charset=utf-8",
-        dataType: "xml",
-        success:function(data) {
+        _this.ajax({
+          url:setup.url + "/_vti_bin/usergroup.asmx",
+          body:_this._buildBodyForSOAP("GetUserInfo", '<userLoginName>'+username+'</userLoginName>', "http://schemas.microsoft.com/sharepoint/soap/directory/")
+        }).then(function(data) {
           // get the details
-          data=data.getElementsByTagName('User');
+          data=data.querySelectorAll('User');
           if (data.length===0) {
-            fct.call(_this,"Error 'getUserInfo': nothing returned?!")
+            prom_reject("[SharepointPlus 'getUserInfo'] nothing returned?!")
           } else {
-            fct.call(_this,{ID:data[0].getAttribute("ID"),Sid:data[0].getAttribute("Sid"),Name:data[0].getAttribute("Name"),LoginName:data[0].getAttribute("LoginName"),Email:data[0].getAttribute("Email"),Notes:data[0].getAttribute("Notes"),IsSiteAdmin:data[0].getAttribute("IsSiteAdmin"),IsDomainGroup:data[0].getAttribute("IsDomainGroup"),Flags:data[0].getAttribute("Flags")})
+            prom_resolve({ID:data[0].getAttribute("ID"),Sid:data[0].getAttribute("Sid"),Name:data[0].getAttribute("Name"),LoginName:data[0].getAttribute("LoginName"),Email:data[0].getAttribute("Email"),Notes:data[0].getAttribute("Notes"),IsSiteAdmin:data[0].getAttribute("IsSiteAdmin"),IsDomainGroup:data[0].getAttribute("IsDomainGroup"),Flags:data[0].getAttribute("Flags")})
           }
-        },
-        error:function(req, textStatus, errorThrown) { // eslint-disable-line
-          // any error ?
-          var error=req.responseXML.getElementsByTagName("errorstring");
-          fct.call(_this,"Error 'getUserInfo': "+error[0].firstChild.nodeValue);
-        }
-      });
-      return this;
+        }, function(error) { prom_reject(error)  });
+      })
     },
     /**
       @name $SP().whoami
       @function
       @category people
-      @description Find the current user details like manager, email, colleagues, ...
+      @description Find the current user's details like manager, email, colleagues, ...
 
       @param {Object} [setup] Options (see below)
         @param {String} [setup.url='current website'] The website url
-      @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result
+      @return {Promise}} resolve(people), reject(error)
 
       @example
       $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
         for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
       });
     */
-    whoami:function(setup, fct) {
-      if (typeof setup === "function") { fct=setup; setup = {} }
-      return this.people("",setup,fct);
+    whoami:function(setup) {
+      return this.people("",setup);
     },
     /**
       @name $SP().regionalSettings
@@ -3815,33 +3795,35 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @category utils
       @description Find the region settings (of the current user) defined with _layouts/regionalsetng.aspx?Type=User (lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek, timeFormat..)
 
-      @param {Function} [callback] A function with one paramater that contains the parameters returned from the server
+      @return {Promise} resolve({lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek:{days, firstDayOfWeek, firstWeekOfYear, startTime, endTime}}), reject(error)
 
       @example
-      $SP().regionalSettings(function(region) {
-        if (typeof region === "string") {
-          // something went wrong
-          console.log(region); // returns the error
-        } else {
-          // show the selected timezone, and the working days
-          console.log("timeZone: "+region.timeZone);
-          console.log("working days: "+region.workWeek.days.join(", "))
-        }
+      $SP().regionalSettings().then(function(region) {
+        // show the selected timezone, and the working days
+        console.log("timeZone: "+region.timeZone);
+        console.log("working days: "+region.workWeek.days.join(", "))
+      }, function(error) {
+        console.log(error)
       })
     */
-    regionalSettings:function(callback) {
+    regionalSettings:function(url) {
       var _this = this;
-      // find the base URL
-      if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
-      if (typeof callback !== "function") callback = function() {};
-
-      // check cache
-      if (_SP_CACHE_REGIONALSETTINGS) callback.call(_this, _SP_CACHE_REGIONALSETTINGS);
-
-      _this.ajax({
-        method:'GET',
-        url:_this.url + "/_layouts/regionalsetng.aspx?Type=User",
-        success:function(data) {
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // check cache
+        if (_SP_CACHE_REGIONALSETTINGS) {
+          prom_resolve(_SP_CACHE_REGIONALSETTINGS)
+          return;
+        }
+        // find the base URL
+        if (!url) {
+          _this.getURL()
+          .then(function(url) { return _this.regionalSettings(url) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
+        }
+        _this.ajax({url:url + "/_layouts/regionalsetng.aspx?Type=User"})
+        .then(function(data) {
           var result = {lcid:"", cultureInfo:"", timeZone:"", calendar:"", alternateCalendar:""};
           var div = document.createElement('div');
           div.innerHTML = data;
@@ -3871,15 +3853,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
 
           // cache
           _SP_CACHE_REGIONALSETTINGS = result;
-
-          callback.call(_this, result);
-        },
-        error:function(jqXHR, textStatus, errorThrown) {
-          callback.call(_this, "Error: ["+textStatus+"] "+errorThrown);
-        }
-      });
-
-      return _this;
+          prom_resolve(result);
+        }, function(error) {
+          prom_reject(error)
+        });
+      })
     },
     /**
       @name $SP().regionalDateFormat
@@ -3887,7 +3865,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @category utils
       @description Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, D for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)
 
-      @param {Function} [callback] It will pass the date format
+      @return {Promise} resolve(dateFormat), reject(error)
 
       @example
       // you'll typically need that info when parsing a date from a Date Picker field from a form
@@ -3895,7 +3873,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       // eg. we want to verify start date is before end date
       var startDate = $SP().formfields("Start Date").val();
       var endDate = $SP().formfields("End Date").val();
-      $SP().regionalDateFormat(function(dateFormat) {
+      $SP().regionalDateFormat().then(function(dateFormat) {
         // if the user settings are on French, then dateFormat = "DD/MM/YYYY"
         if (moment(startDate, dateFormat).isAfter(moment(endDate, dateFormat))) {
           alert("StartDate must be before EndDate!")
@@ -3905,29 +3883,37 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       // Here is also an example of how you can parse a string date
       // -> https://gist.github.com/Aymkdn/b17903cf7786578300f04f50460ebe96
      */
-    regionalDateFormat:function(callback) {
+    regionalDateFormat:function(url) {
       var _this = this;
-      // find the base URL
-      if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
-      if (typeof callback !== "function") callback = function() {};
+      return _this._promise(function(prom_resolve, prom_reject) {
+        // check cache
+        if (_SP_CACHE_DATEFORMAT) {
+          prom_resolve(_SP_CACHE_DATEFORMAT);
+          return;
+        }
+        // find the base URL
+        if (!url) {
+          _this.getURL()
+          .then(function(url) { return _this.regionalDateFormat(url) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
+        }
 
-      // check cache
-      if (_SP_CACHE_DATEFORMAT) callback.call(_this, _SP_CACHE_DATEFORMAT);
+        // check if we have LCID
+        var lcid = "";
+        if (typeof _spRegionalSettings !== "undefined") lcid=_spRegionalSettings.localeId; // eslint-disable-line
+        else if (_SP_CACHE_REGIONALSETTINGS) lcid=_SP_CACHE_REGIONALSETTINGS.lcid;
+        if (!lcid) {
+          _this.regionalSettings(url)
+          .then(function() { return _this.regionalDateFormat(url) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
+        }
 
-      // check if we have LCID
-      var lcid = "";
-      if (typeof _spRegionalSettings !== "undefined") lcid=_spRegionalSettings.localeId; // eslint-disable-line
-      else if (_SP_CACHE_REGIONALSETTINGS) lcid=_SP_CACHE_REGIONALSETTINGS.lcid;
-      if (!lcid) {
-        return _this.regionalSettings(function() {
-          _this.regionalDateFormat(callback);
-        })
-      }
-
-      _this.ajax({
-        method:'GET',
-        url:_this.url + "/_layouts/iframe.aspx?cal=1&date=1/1/2000&lcid="+lcid,
-        success:function(data) {
+        _this.ajax({url:_this.url + "/_layouts/iframe.aspx?cal=1&date=1/1/2000&lcid="+lcid})
+        .then(function(data) {
           var div = document.createElement('div');
           div.innerHTML = data;
 
@@ -3945,14 +3931,9 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           x = x.replace(/01/, "MM"); // D.1.YYYY
           x = x.replace(/1/, "M"); // D.M.YYYY
           _SP_CACHE_DATEFORMAT = x;
-          callback.call(_this, x)
-        },
-        error:function(jqXHR, textStatus, errorThrown) {
-          callback.call(_this, "Error: ["+textStatus+"] "+errorThrown)
-        }
-      });
-
-      return _this;
+          prom_resolve(x)
+        }, function(error) { prom_reject(error) });
+      })
     },
     /**
       @name $SP().addressbook
@@ -3960,79 +3941,63 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @category people
       @description Find an user based on a part of his name
 
-      @param {String} word A part of the name from the guy you're looking for
+      @param {String} [word] A part of the name from the guy you're looking for
       @param {Object} [setup] Options (see below)
         @param {String} [setup.limit=10] Number of results returned
         @param {String} [setup.type='User'] Possible values are: 'All', 'DistributionList', 'SecurityGroup', 'SharePointGroup', 'User', and 'None' (see http://msdn.microsoft.com/en-us/library/people.spprincipaltype.aspx)
         @param {String} [setup.url='current website'] The website url
-      @param {Function} [result] A function that will be executed at the end of the request with a param that is an array with the result (typically: AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType)
+      @return {Promise} resolve([{AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType}]), reject(error)
 
       @example
-      $SP().addressbook("john", {limit:25}, function(people) {
+      $SP().addressbook("john", {limit:25}).then(function(people) {
         for (var i=0; i &lt; people.length; i++) {
           for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[i][people[i][j]]);
         }
       });
     */
-    addressbook:function(username, setup, fct) {
+    addressbook:function(username, setup) {
       var _this=this;
-      switch (arguments.length) {
-        case 1: {
-          if (typeof username === "object") return _this.addressbook("",username,function(){});
-          else if (typeof username === "function") return _this.addressbook("",{},username);
-          else if (typeof username === "string")  return _this.addressbook(username,{},function(){});
-          username=undefined;
-          break;
+      return _this._promise(function(prom_resolve, prom_reject) {
+        switch(arguments.length) {
+          case 0: username=""; setup={}; break;
+          case 1:{
+            if (typeof username==="string") setup={}
+            else { setup=username; username="" }
+            break;
+          }
         }
-        case 2: {
-          if (typeof username === "string" && typeof setup === "function") return _this.addressbook(username,{},setup);
-          if (typeof username === "object" && typeof setup === "function") return _this.addressbook("",username,setup);
+        if (!setup.url) {
+          _this.getURL()
+          .then(function(url) { setup.url=url; return _this.addressbook(username, setup) })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
+          return;
         }
-      }
+        setup.limit = setup.limit || 10;
+        setup.type  = setup.type || "User";
 
-      // default values
-      setup         = setup || {};
-      if (setup.url == undefined) {
-        if (!_this.url) { _this._getURL(); return _this._addInQueue(arguments) }
-        else setup.url=_this.url;
-      } else _this.url=setup.url;
-      setup.limit   = setup.limit || 10;
-      setup.type    = setup.type || "User";
-      fct           = fct || (function() {});
-      username      = username || "";
-
-
-      // build the request
-      var body = _this._buildBodyForSOAP("SearchPrincipals", "<searchText>"+username+"</searchText><maxResults>"+setup.limit+"</maxResults><principalType>"+setup.type+"</principalType>");
-      // send the request
-      var url = setup.url + "/_vti_bin/People.asmx";
-      _this.ajax({
-        method:"POST",
-        cache:false,
-        url:url,
-        body:body,
-        beforeSend: function(xhr) { xhr.setRequestHeader('SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/SearchPrincipals'); },
-        contentType: "text/xml; charset=utf-8",
-        dataType: "xml",
-        success:function(data) {
-          var aResult=[];
+        _this.ajax({
+          url:setup.url + "/_vti_bin/People.asmx",
+          body:_this._buildBodyForSOAP("SearchPrincipals", "<searchText>"+username+"</searchText><maxResults>"+setup.limit+"</maxResults><principalType>"+setup.type+"</principalType>"),
+          headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/SearchPrincipals'}
+        }).then(function(data) {
+          var aResult=[], children, name, value;
           // get the details
           data=data.getElementsByTagName('PrincipalInfo');
           for (var i=0,lenR=data.length; i<lenR; i++) {
-            var children=data[i].childNodes;
+            children=data[i].childNodes;
             aResult[i]=[];
             for (var j=0,lenC=children.length; j<lenC; j++) {
-              var name=children[j].nodeName;
-              var value=children[j].firstChild;
+              name=children[j].nodeName;
+              value=children[j].firstChild;
               if (value) value=value.nodeValue;
               aResult[i].push(name);
               aResult[i][name]=value;
             }
           }
-          fct.call(_this,aResult);
-        }
-      });
-      return _this;
+          prom_resolve(aResult);
+        }, function(error) { prom_reject(error) });
+      })
     },
     /*
      @ignore
@@ -4149,38 +4114,37 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @example $SP().toXSLString("Big Title"); // --> "Big_x0020_Title"
     */
     toXSLString:function(str) {
-      if (typeof str !== "string") throw "Error 'toXLSString': '"+str+"' is not a string....";
+      if (typeof str !== "string") throw "[SharepointPlus 'toXLSString'] '"+str+"' is not a string....";
       // if the first car is a number, then FullEscape it
       var FullEscape = function(strg) {
         var hexVals = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F");
-        var rstr = "";
-        for (var i=0; i < strg.length; i++) {
-          var c = strg.charAt(i);
-          var num = c.charCodeAt(0);
-          var temp = 0;
-          var hexString = "";
+        var rstr = "", i, c, num, temp, hexString, tmpStr, k;
+        for (i=0; i < strg.length; i++) {
+          c = strg.charAt(i);
+          num = c.charCodeAt(0);
+          temp = 0;
+          hexString = "";
           while (num >= 16) {
             temp = num % 16;
             num = Math.floor(num / 16);
             hexString += hexVals[temp];
           }
           hexString += hexVals[num];
-          var tmpStr = "";
-          for (var k=hexString.length-1; k >= 0; k--) tmpStr += hexString.charAt(k);
+          tmpStr = "";
+          for (k=hexString.length-1; k >= 0; k--) tmpStr += hexString.charAt(k);
           rstr += "%" + tmpStr;
         }
         return rstr;
       };
-      var aSpaces = str.split(" ");
-      var ret = "";
+      var aSpaces = str.split(" "), ret = "", i, c;
       // check if there is a number and work length is smaller than 5 letters
       if (/^[0-9]/.test(aSpaces[0]) && aSpaces[0].length < 5) {
         // change the first letter
         ret = FullEscape(str.charAt(0));
         str = str.substring(1);
       }
-      for (var i=0; i < str.length; i++) {
-        var c = str.charAt(i);
+      for (i=0; i < str.length; i++) {
+        c = str.charAt(i);
         if (/[0-9A-Za-z_]/.test(c) === false) ret += FullEscape(c).toLowerCase();
         else ret += c;
       }
@@ -4245,11 +4209,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         for (i=0;i<len;i++) fieldNames.push(allFields[i]._name)
         // search for the fields defined
         for (i=0; i<limit; i++) {
-          idx=SPArrayIndexOf(fieldNames, fields[i]);
+          idx=fieldNames.indexOf(fields[i]);
           if (idx > -1) aReturn.push(allFields[idx])
         }
         for (i=0,len=(settings.mandatory?allFields.length:0); i<len; i++) {
-          if (allFields[i]._isMandatory && SPArrayIndexOf(fields, allFields[i]._name) === -1) aReturn.push(allFields[i])
+          if (allFields[i]._isMandatory && fields.indexOf(allFields[i]._name) === -1) aReturn.push(allFields[i])
         }
         this.length=aReturn.length;
         this.data=aReturn;
@@ -4324,7 +4288,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           else if (params === "none") options[o].selected = false;
           else {
             v = (params === "text" ? options[o].innerHTML : options[o].value);
-            options[o].selected = (isArray ? SPArrayIndexOf(val, v) > -1 : (val == v));
+            options[o].selected = (isArray ? val.indexOf(v) > -1 : (val == v));
           }
         }
       };
@@ -4370,7 +4334,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (settings.includeAll) includeThisField=true;
 
         if (i === -1) { // handle the content type
-          if (includeThisField || SPArrayIndexOf(fields, 'Content Type') > -1) {
+          if (includeThisField || fields.indexOf('Content Type') > -1) {
             infoFromComments={"Name":"Content Type", "InternalName":"Content_x0020_Type", "SPType":"SPContentType"};
             includeThisField=true;
           }
@@ -4400,7 +4364,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           if (settings.mandatory && isMandatory) includeThisField=true;
           else {
             // check if the field is in the list
-            if (limit !== bigLimit && SPArrayIndexOf(fields, infoFromComments.Name) > -1) {
+            if (limit !== bigLimit && fields.indexOf(infoFromComments.Name) > -1) {
               includeThisField=true;
               done++;
             }
@@ -4627,7 +4591,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                           if (extend) return (tmp.length === 0 ? {"Key":"", "DisplayText":""} : (tmp.length === 1 ? tmp[0] : tmp)); // if we want "extend"
                           else {
                             // return the DisplayText
-                            SPArrayForEach(tmp, function(e) { res.push(e.DisplayText) });
+                            tmp.forEach(function(e) { res.push(e.DisplayText) });
                             return (res.length === 0 ? "" : (res.length === 1 ? res[0] : res))
                           }
                         } else {
@@ -4643,7 +4607,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                     if (typeof EntityEditorCallback === "function") {
                       if (!SPIsArray(v)) v=[v];
                       tmp = '<Entities Append="False" Error="" Separator=";" MaxHeight="3">';
-                      SPArrayForEach(v, function(e) {
+                      v.forEach(function(e) {
                         tmp += '<Entity Key="' + e + '" DisplayText="' + e + '" IsResolved="False" Description="' + e + '"><MultipleMatches /></Entity>'
                       });
                       tmp += '</Entities>';
@@ -4767,7 +4731,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                         len = elems.length;
                         if (type === "choices checkbox plus") len -= 2;
                         for (i=0; i<len; i++) {
-                          idx = SPArrayIndexOf(v, getText(elems[i].nextSibling));
+                          idx = v.indexOf(getText(elems[i].nextSibling));
                           if (idx > -1) {
                             elems[i].checked=true;
                             v.splice(idx, 1);
@@ -5233,8 +5197,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     */
     notify:function(message,options) {
       var _this=this;
-      if (message === undefined) throw "Error 'notify': you must provide the message to show."
-      if (typeof message !== "string") throw "Error 'notify': you must provide a string for the message to show."
+      if (message === undefined) throw "[SharepointPlus notify'] you must provide the message to show."
+      if (typeof message !== "string") throw "[SharepointPlus notify'] you must provide a string for the message to show."
 
       options = options || {};
       options.timeout = (!isNaN(options.timeout) ? options.timeout : 5);
@@ -5252,15 +5216,13 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
 
       if (_SP_NOTIFY_READY === false) {
         _SP_NOTIFY_QUEUE.push({message:message, options:options});
-        $(document).ready(function() {
-          // we need core.js and sp.js
+        // we need core.js and sp.js
+        ExecuteOrDelayUntilScriptLoaded(function() { // eslint-disable-line
           ExecuteOrDelayUntilScriptLoaded(function() { // eslint-disable-line
-            ExecuteOrDelayUntilScriptLoaded(function() { // eslint-disable-line
-              _SP_NOTIFY_READY=true;
-              _this.notify("fake",{fake:true});
-            }, "core.js")
-          }, "sp.js")
-        })
+            _SP_NOTIFY_READY=true;
+            _this.notify("fake",{fake:true});
+          }, "core.js")
+        }, "sp.js")
         return _this
       } else {
         // check if we don't have some notifications in queue first
@@ -5367,13 +5329,13 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return _this;
     },
     /**
-      @ignore
-      @name $SP()._getPageSize()
+      @name $SP().getPageSize()
       @function
+      @category utils
       @description Get the doc and viewport size
       @source https://blog.kodono.info/wordpress/2015/03/23/get-window-viewport-document-height-and-width-javascript/
      */
-    _getPageSize:function(win) {
+    getPageSize:function(win) {
       var vw = {width:0, height:0};
       var doc = {width:0, height:0};
       var w=win||window, d=w.document, dde=d.documentElement, db=d.getElementsByTagName('body')[0];
@@ -5471,7 +5433,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       }
       // if width and height are set to "calculated" then we'll use the viewport size to define them
       if (options.width === "calculated" || options.height === "calculated") {
-        size = _this._getPageSize();
+        size = _this.getPageSize();
         if (options.width === "calculated") {
           options.width = size.vw.width;
           if (options.width > 768) {
@@ -5488,7 +5450,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }
       }
       if (options.width === "full" || options.height === "full") {
-        size = _this._getPageSize();
+        size = _this.getPageSize();
         if (options.width === "full") options.width = size.vw.width;
         if (options.height === "full") options.height = size.vw.height;
       }
@@ -5549,7 +5511,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
 
         wt._SP_MODALDIALOG.push({id:id, modal:modal, zIndex:frame.style.zIndex, options:options, type:"modalDialog"});
         // check the z-index for .ms-dlgOverlay
-        SPArrayForEach(wt._SP_MODALDIALOG, function(val) {
+        wt._SP_MODALDIALOG.forEach(function(val) {
           if (val.zIndex > biggestZ) biggestZ = val.zIndex;
         });
         biggestZ--;
@@ -5694,7 +5656,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
      *     // resize the frame by checking the size of the loaded page
      *     var iframe=window.top.document.getElementById('sp_frame_inmodal').nextSibling.querySelector('iframe');
      *     // define the max size based on the page size
-     *     var size = $SP()._getPageSize();
+     *     var size = $SP().getPageSize();
      *     var maxWidth = 2*size.vw.width/3; // 2/3 of the viewport width
      *     var maxHeight = 90*size.vw.height/100 // 90% of the viewport height
      *     // find the size we want based on the modal
@@ -5748,7 +5710,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       }
 
       // now we recenter
-      var pageSize=this._getPageSize(wt);
+      var pageSize=this.getPageSize(wt);
       dlg.style.top=(pageSize.vw.height / 2 - pxToNum(dlg.style.height) / 2) + "px";
       dlg.style.left=(pageSize.vw.width / 2 - pxToNum(dlg.style.width) / 2 ) + "px";
     },
@@ -5768,7 +5730,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     */
     registerPlugin:function(name,fct) {
       if (typeof _SP_PLUGINS[name] !== "undefined")
-        throw "Error 'registerPlugin': '"+name+"' is already registered.";
+        throw "[SharepointPlus 'registerPlugin'] '"+name+"' is already registered.";
       _SP_PLUGINS[name] = fct;
       return true;
     },
@@ -5787,7 +5749,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     plugin:function(name,options) {
       options = options || {};
       if (typeof _SP_PLUGINS[name] === "function") _SP_PLUGINS[name].call(this,options);
-      else throw "Error $SP().plugin: the plugin '"+name+"' is not registered."
+      else throw "[SharepointPlus 'plugin']: the plugin '"+name+"' is not registered."
       return this;
     }
   };
