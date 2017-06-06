@@ -17,13 +17,16 @@
 <?js } else { ?>
 
     <?js if (i === 0) { ?><div class="span10"><h1>Methods</h1><?js } ?>
+    <a name="<?js= doc.name ?>"></a>
     <div class="member">
-      <h2><a href="#<?js= doc.name ?>" name="<?js= doc.name ?>" title="Direct link to the method '<?js= doc.name ?>'"><?js= doc.name ?></a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/<?js= doc.meta.filename ?>#L<?js= doc.meta.lineno ?>">source code</a>)
+      <h2><a href="#<?js= doc.name ?>" title="Direct link to the method '<?js= doc.name ?>'"><?js= doc.name ?></a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/<?js= doc.meta.filename ?>#L<?js= doc.meta.lineno ?>">source code</a>)
+      <?js if (doc.plugin) { ?>
+      <div class="alert alert-info"><strong>Plugin Required!</strong><br><?js= self.linkify(doc.plugin) ?></div>
+      <?js } ?>
       <div>
         <div class="method well"><?js= doc.name+doc.signature ?></div>
           </div>
-          <blockquote class="description"><?js= doc.description ?></blockquote>
-
+          <blockquote class="description"><?js= self.linkify(doc.description) ?></blockquote>
           <?js if (doc.params) { ?>
           <div class="parameters">
             <h3>Parameters:</h3>

@@ -7,10 +7,11 @@
   - Remove `SPArrayIndexOf()`
   - Remove `SPArrayForEach()`
   - Remove `Strim.prototype.trim` polyfill
-  - Remove callbacks for all functions
-  - Remove alias `$SP().list().del()` (use `$SP().list().remove()` instead)
-  - Add Promise for all functions
   - Remove `$SP().encode_b64()` and `$SP().decode_b64()` (the code can be retrieved here https://blog.kodono.info/wordpress/2011/07/27/midi-code-encoder-decoder-en-base64-pour-javascript-programmation/)
+  - Remove alias `$SP().list().del()` (use `$SP().list().remove()` instead)
+  - Remove native support for `$SP().formfields()` (you now need to call the related plugin)
+  - Remove callbacks for all functions
+  - Add Promise for all functions
   - Change `$SP().ajax()` to integrate `nanoajax` (no need to call `nanoajax` from a seperate file)
   - Change options for `$SP().ajax()` to fit with `nanoajax`
   - Change `$SP().getURL()` to return a Promise (async requests are not supported by recent browsers anymore)
@@ -27,7 +28,7 @@
   - Add option `cache` for `$SP().lists()`
   - Add option `packetsize` for `$SP().list().moderate()`
   - Add `$SP().getPageSize()` that permits to get the size of the document/page
-  - Add more QUnit tests (from 163 to ...)
+  - Add 20 more QUnit tests
   - Optimize code for compression
 
 **Change Log v4.1 (not published)**

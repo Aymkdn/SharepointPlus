@@ -1,6 +1,21 @@
 ﻿QUnit.config.autostart = false;
 
 var __currentUserName=""; // current user name need for tests
+function str2ab(str) {
+  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+  var bufView = new Uint16Array(buf);
+  for (var i=0, strLen=str.length; i<strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
+var testsToCheck={lists:[]};
+function testDone(group, comment) {
+  testsToCheck[group]=testsToCheck[group].filter(function(o) {
+    return (o.comment !== comment)
+  })
+}
 // we use SPServices to create the test environment
 function getListSharepointPlus(list) {
   var deferred = jQuery.Deferred();
@@ -58,7 +73,7 @@ function createListFields(libraryID) {
   fields.push({"DisplayName":"Single line of text", "Type":"Text", "Required":"TRUE"});
   fields.push({"DisplayName":"Person or Group", "Type":"User"});
   fields.push({"DisplayName":"Person or Group (Multiple)", "Type":"UserMulti", "Mult":"TRUE"});
-  fields.push({"DisplayName":"Multiple lines of text (Plain)", "Type":"Note", "RichText":"FALSE"});
+  fields.push({"DisplayName":"Multiple lines of text (Plain)", "Type":"Note", "RichText":"FALSE", "AppendOnly":"TRUE"});
   fields.push({"DisplayName":"Multiple lines of text (Rich)", "Type":"Note", "RichText":"TRUE", "RichTextMode":"FullHtml"});
   //fields.push({"DisplayName":"Multiple lines of text (Append)", "Type":"Note", "RichText":"FALSE", "AppendOnly":"TRUE" });
   fields.push({"DisplayName":"Choices (Dropdown)", "Type":"Choice", "Format":"Dropdown", "FillInChoice":"FALSE", "_CHOICES":[{"CHOICE":"Option 1"},{"CHOICE":"Option 2"},{"CHOICE":"Option 3"}] });
@@ -186,7 +201,7 @@ function addWebPartInSharepointList() {
       "<Assembly>Microsoft.SharePoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c</Assembly>\n  " +
       "<TypeName>Microsoft.SharePoint.WebPartPages.ContentEditorWebPart</TypeName>\n  " +
       "<ContentLink xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\" />\n  " +
-      "<Content xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\"><![CDATA["+ $('script').filter('[src*="jquery"]:first,[src*="sharepointplus"]:first').map(function() { return this.outerHTML }).toArray().join("") +"]]></Content>\n  " +
+      "<Content xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\"><![CDATA["+ $('script').filter('[src*="jquery"]:first,[src*="sharepointplus"]:first,[src*="formfields"]').map(function() { return this.outerHTML }).toArray().join("") +"]]></Content>\n  " +
       "<PartStorage xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\" />\n</WebPart>").replace(/</g,"&lt;").replace(/>/g,"&gt;"),
     storage:"Shared",
     completefunc: function(xData, Status) {
@@ -217,7 +232,7 @@ function addWebPartInSharepointList() {
           "<Assembly>Microsoft.SharePoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c</Assembly>\n  " +
           "<TypeName>Microsoft.SharePoint.WebPartPages.ContentEditorWebPart</TypeName>\n  " +
           "<ContentLink xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\" />\n  " +
-          "<Content xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\"><![CDATA["+ $('script').filter('[src*="jquery"]:first,[src*="sharepointplus"]:first').map(function() { return this.outerHTML }).toArray().join("") +"]]></Content>\n  " +
+          "<Content xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\"><![CDATA["+ $('script').filter('[src*="jquery"]:first,[src*="sharepointplus"]:first,[src*="formfields"]').map(function() { return this.outerHTML }).toArray().join("") +"]]></Content>\n  " +
           "<PartStorage xmlns=\"http://schemas.microsoft.com/WebPart/v2/ContentEditor\" />\n</WebPart>").replace(/</g,"&lt;").replace(/>/g,"&gt;"),
         storage:"Shared",
         completefunc: function(xData, Status) {
@@ -960,21 +975,56 @@ function loadSPtests() {
       });
 
       test('list related stuff', function(assert) {
-        assert.expect(9);
+        assert.expect(22);
 
         var doneLists = assert.async();
         var doneViews = assert.async();
         var doneView = assert.async();
         var doneAdd = assert.async();
+        var doneAddAttachment = assert.async();
         var doneGet = assert.async();
         var doneGetWithJoin = assert.async();
         var doneUpdate = assert.async();
         var doneRemove = assert.async();
+        var doneGetAttachment = assert.async();
+        var doneGetContentTypes = assert.async();
+        var doneGetContentTypeInfo = assert.async();
+        var doneHistory = assert.async();
+        var doneInfo = assert.async();
+        var doneModerate = assert.async();
+        var doneAddMultipleProgress = assert.async();
+        var doneAddMultiple = assert.async();
+        var doneUpdateMultipleProgress = assert.async();
+        var doneUpdateMultiple = assert.async();
+        var doneRemoveMultipleProgress = assert.async();
+        var doneRemoveMultiple = assert.async();
+
+        testsToCheck.lists = [
+          {done:doneAdd, comment:".add()"},
+          {done:doneAddAttachment, comment:".addAttachment()"},
+          {done:doneGet, comment:".get()"},
+          {done:doneGetWithJoin, comment:".get() with join"},
+          {done:doneUpdate, comment:".update()"},
+          {done:doneRemove, comment:".remove()"},
+          {done:doneGetAttachment, comment:".getAttachment()"},
+          {done:doneGetContentTypes, comment:".getContentTypes()"},
+          {done:doneGetContentTypeInfo, comment:".getContentTypeInfo()"},
+          {done:doneHistory, comment:".history()"},
+          {done:doneInfo, comment:".info()"},
+          {done:doneModerate, comment:".moderate()"},
+          {done:doneAddMultipleProgress, comment:".add() multiple progress"},
+          {done:doneAddMultiple, comment:".add() multiple"},
+          {done:doneUpdateMultipleProgress, comment:".update() multiple progress"},
+          {done:doneUpdateMultiple, comment:".update() multiple"},
+          {done:doneRemoveMultipleProgress, comment:".remove() multiple progress"},
+          {done:doneRemoveMultiple, comment:".remove() multiple"}
+        ];
 
         assert.ok(($SP().parse('ContentType = "My Content Type" OR Description <> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"') === '<And><And><Or><Eq><FieldRef Name="ContentType" /><Value Type="Text">My Content Type</Value></Eq><IsNotNull><FieldRef Name="Description" /></IsNotNull></Or><Geq><FieldRef Name="Fiscal_x0020_Week" /><Value Type="Number">43</Value></Geq></And><Lt><FieldRef Name="Result_x0020_Date" /><Value Type="DateTime">2012-02-03</Value></Lt></And>'), 'parse()');
 
         // test lists()
-        $SP().lists(function(lists) {
+        $SP().lists()
+        .then(function(lists) {
           var passed=false;
           for (var i=lists.length; i--;) {
             if (lists[i]['Name'] === "SharepointPlus") {
@@ -982,12 +1032,12 @@ function loadSPtests() {
               break
             }
           }
-          assert.ok(passed, 'lists()');
+          assert.ok(passed, '.lists()');
           doneLists();
         });
 
         // test views()
-        $SP().list("SharepointPlus").views(function(views) {
+        $SP().list("SharepointPlus").views().then(function(views) {
           var passed=false, _viewID="";
           for (var i=views.length; i--;) {
             if (views[i]["Name"] === "All Items") {
@@ -996,174 +1046,395 @@ function loadSPtests() {
               break;
             }
           }
-          assert.ok(passed, 'views()');
+          assert.ok(passed, '.views()');
           doneViews();
           if (passed) {
             // test view()
-            $SP().list("SharepointPlus").view("All Items", function(data,viewID) {
-              assert.ok((viewID === _viewID), 'view()');
+            $SP().list("SharepointPlus").view("All Items").then(function(view) {
+              assert.ok((view.ID === _viewID), '.view()');
               doneView();
             });
           } else {
-            assert.ok(false, 'view()');
+            assert.ok(false, '.view()');
             doneView();
           }
         });
 
         // test .list().add()
+        var itemID;
         var title = new Date().getTime();
-        $SP().list("SharepointPlus").add({'Title':'Add','Single_x0020_line_x0020_of_x0020':title,'Lookup':'2;#Option 2'}, {
-          error:function() {
+        $SP().list("SharepointPlus").add({'Title':'Add','Single_x0020_line_x0020_of_x0020':title,'Multiple_x0020_lines_x0020_of_x0':"test",'Lookup':'2;#Option 2'})
+        .then(function(items) {
+          testDone("lists", ".add()");
+          if (items.failed.length > 0) {
             assert.ok(false, ".add()");
             doneAdd();
-            assert.ok(false, ".get()");
-            doneGet();
-            assert.ok(false, ".update()");
-            doneUpdate();
-            assert.ok(false, ".get() with join");
-            doneGetJoin();
-            assert.ok(false, ".remove()");
-            doneRemove();
-
-          },
-          success:function() {
+            return Promise.reject("add() failed")
+          } else {
             assert.ok(true, ".add()");
             doneAdd();
 
             // test .list().get()
-            $SP().list("SharepointPlus").get({fields:"ID,Title,Single_x0020_line_x0020_of_x0020",where:'Single_x0020_line_x0020_of_x0020 = "'+title+'"'}, function(data) {
-              if (data.length === 1) {
-                assert.ok(true, ".get()");
-                doneGet();
-
-                var itemID = data[0].getAttribute("ID");
-                // test .list().update()
-                $SP().list("SharepointPlus").update({'ID':itemID,'Title':'testUpdate'}, {
-                  error:function() {
-                    assert.ok(false, ".update()");
-                    doneUpdate();
-                    assert.ok(false, ".get() with join");
-                    doneGetWithJoin();
-                    assert.ok(false, ".remove()");
-                    doneRemove();
-                  },
-                  success:function() {
-                    assert.ok(true, ".update()");
-                    doneUpdate();
-
-                    // test .list().get() with 'join'
-                    $SP().list("SharepointPlus").get({
-                      fields:"ID,Lookup",
-                      where:"ID = "+itemID,
-                      outerjoin:{
-                        list:"SharepointPlusLookup",
-                        fields:"ID",
-                        on:"'SharepointPlusLookup'.ID = 'SharepointPlus'.Lookup"
-                      },
-                    }, function(data) {
-                      assert.ok(data.length>0 && data[0].getAttribute("SharepointPlus.Lookup").split(";#")[0]==data[0].getAttribute("SharepointPlusLookup.ID"), ".get() with join");
-                      doneGetWithJoin();
-
-                      // test .list().remove()
-                      $SP().list("SharepointPlus").remove({'ID':itemID}, {
-                        after:function(passed,failed) {
-                          assert.ok(passed.length>0, ".remove()");
-                          doneRemove();
-                        }
-                      });
-                    })
-                  }
-                });
-              } else {
-                assert.ok(false, ".get()");
-                doneGet();
-                assert.ok(false, ".update()");
-                doneUpdate();
-                assert.ok(false, ".get() with join");
-                doneGetWithJoin();
-                assert.ok(false, ".remove()");
-                doneRemove();
-              }
-            });
+            return $SP().list("SharepointPlus").get({fields:"ID,Title,Single_x0020_line_x0020_of_x0020",where:'Single_x0020_line_x0020_of_x0020 = "'+title+'"'})
           }
-        });
-      });
+        })
+        // test .list().update()
+        .then(function(data) {
+          testDone("lists", ".get()");
+          if (data.length === 1) {
+            assert.ok(true, ".get()");
+            doneGet();
+
+            itemID = data[0].getAttribute("ID");
+
+            return $SP().list("SharepointPlus").update({'ID':itemID,'Title':'testUpdate','Multiple_x0020_lines_x0020_of_x0':"next"})
+          } else {
+            assert.ok(false, ".get()");
+            doneGet();
+            return Promise.reject("get() failed")
+          }
+        })
+        // test .list().get() with 'join'
+        .then(function(items) {
+          testDone("lists", ".update()");
+          if (items.failed.length > 0) {
+            assert.ok(false, ".update()");
+            doneUpdate();
+            return Promise.reject("update() failed")
+          } else {
+            assert.ok(true, ".update()");
+            doneUpdate();
+
+            return $SP().list("SharepointPlus").get({
+              fields:"ID,Lookup",
+              where:"ID = "+itemID,
+              outerjoin:{
+                list:"SharepointPlusLookup",
+                fields:"ID",
+                on:"'SharepointPlusLookup'.ID = 'SharepointPlus'.Lookup"
+              },
+            })
+          }
+        })
+        // add Attachment
+        .then(function(data) {
+          var testGet = data.length>0 && data[0].getAttribute("SharepointPlus.Lookup").split(";#")[0]==data[0].getAttribute("SharepointPlusLookup.ID");
+          testDone("lists", ".get() with join");
+          if (testGet) {
+            assert.ok(true, ".get() with join");
+            doneGetWithJoin();
+
+            return $SP().list("SharepointPlus").addAttachment({
+              ID:itemID,
+              filename:"helloworld.txt",
+              attachment:str2ab('Hello World')
+            })
+          } else {
+            assert.ok(false, ".get() with join");
+            doneGetWithJoin();
+            return Promise.reject(".get() with join failed")
+          }
+        })
+        .then(function(fileURL) {
+          var passed=fileURL.indexOf("/Lists/SharepointPlus/Attachments/"+itemID+"/helloworld.txt")>-1;
+          testDone("lists", ".addAttachment()");
+          assert.ok(passed, ".addAttachment()");
+          doneAddAttachment();
+        })
+        // get Attachment
+        .then(function() {
+          return $SP().list("SharepointPlus").getAttachment(itemID)
+        })
+        .then(function(attachments) {
+          testDone("lists", ".getAttachment()");
+          assert.ok(attachments.length===1 && attachments[0].indexOf("Lists/SharepointPlus/Attachments/"+itemID+"/helloworld.txt") > -1, ".getAttachment()");
+          doneGetAttachment();
+        })
+        // get history
+        .then(function() {
+          return $SP().list("SharepointPlus").history({ID:itemID, Name:"Multiple_x0020_lines_x0020_of_x0"})
+        })
+        .then(function(data) {
+          var passed=false;
+          for (var i=0,len=data.length; i<len; i++) {
+            if (data[i].getAttribute("Multiple_x0020_lines_x0020_of_x0") === "test") {
+              passed=true;
+              break;
+            }
+          }
+          testDone("lists", ".history()");
+          assert.ok(passed, ".history()");
+          doneHistory();
+        })
+        // get info()
+        .then(function() {
+          return $SP().list("SharepointPlus").info()
+        })
+        .then(function(infos) {
+          var passed=false;
+          for (var i=0; i<infos.length; i++) {
+            if (infos[i]["StaticName"] === "Multiple_x0020_lines_x0020_of_x0" && infos[i]["AppendOnly"]==="TRUE") {
+              passed=true;
+              break;
+            }
+          }
+          testDone("lists", ".info()");
+          assert.ok(passed, ".info()");
+          doneInfo();
+        })
+        // get content types
+        .then(function() {
+          return $SP().list("SharepointPlus").getContentTypes()
+        })
+        .then(function(contentTypes) {
+          testDone("lists", ".getContentTypes()");
+          var passed=false;
+          for (var i=0; i<contentTypes.length; i++) {
+            if (contentTypes[i].Name==="Item") {
+              passed=true;
+              break;
+            }
+          }
+          assert.ok(passed, ".getContentTypes()");
+          doneGetContentTypes();
+        })
+        // getContentTypeInfo()
+        .then(function() {
+          return $SP().list("SharepointPlus").getContentTypeInfo("Item")
+        })
+        .then(function(fields) {
+          testDone("lists", ".getContentTypeInfo()");
+          var passed=false;
+          for (var i=0; i<fields.length; i++) {
+            if (fields[i]["DisplayName"] === "Title") {
+              passed=true;
+              break;
+            }
+          }
+          assert.ok(passed);
+          doneGetContentTypeInfo();
+        })
+        // set Moderation on list
+        .then(function() {
+          return $SP().webService({
+            service:"Lists",
+            operation:"UpdateList",
+            properties:{
+              listName:"SharepointPlus",
+              listProperties:'<List Title="SharepointPlus" EnableModeration="True" />',
+              newFields:"",
+              updateFields:"",
+              deleteFields:"",
+              listVersion:""
+            }
+          })
+        })
+        .then(function() {
+          return $SP().list("SharepointPlus").update({'ID':itemID,'Title':'testModeration'})
+        })
+        // test moderation()
+        .then(function() {
+          return $SP().list("SharepointPlus").moderate({ID:itemID, ApprovalStatus:"Rejected"})
+        })
+        .then(function(items) {
+          testDone("lists", ".moderate()")
+          var passed=false;
+          if (items.failed.length===0) {
+            items.passed.forEach(function(item) {
+              if (item.getAttribute("_ModerationStatus") == 1) {
+                passed=true;
+              }
+            })
+          }
+          assert.ok(passed,".moderate()");
+          doneModerate();
+        })
+        // test .list().remove()
+        .then(function() {
+          return $SP().list("SharepointPlus").remove({'ID':itemID})
+        })
+        .then(function(items) {
+          testDone("lists", ".remove()");
+          assert.ok(items.passed.length>0, ".remove()");
+          doneRemove();
+        })
+        // add using packetsize/progress
+        .then(function() {
+          return $SP().list("SharepointPlus").add([{Title:"Multiple " + title}, {Title:"Multiple " + title}, {Title:"Multiple " + title}, {Title:"Multiple " + title}, {Title:"Multiple " + title}], {
+            packetsize:2,
+            progress:function(n, total) {
+              if (n === 5 && total === 5) {
+                assert.ok(true, ".add() multiple progress")
+                doneAddMultipleProgress();
+                testDone("lists", ".add() multiple progress");
+              }
+            }
+          })
+        })
+        .then(function(items) {
+          if (testsToCheck.lists.filter(function(t) { return t.comment===".add() multiple progress"}).length > 0) {
+            assert.ok(false, ".add() multiple progress")
+            doneAddMultipleProgress();
+            testDone("lists", ".add() multiple progress");
+          }
+          testDone("lists", ".add() multiple");
+          assert.ok(items.passed.length===5, ".add() multiple")
+          doneAddMultiple();
+        })
+        // update using packetsize/progress
+        .then(function() {
+          return $SP().list("SharepointPlus").update({Title:"Multiple Updated "+title}, {
+            where:"Title = 'Multiple "+title+"'",
+            packetsize:2,
+            progress:function(n, total) {
+              if (n === 5 && total === 5) {
+                assert.ok(true, ".update() multiple progress")
+                doneUpdateMultipleProgress();
+                testDone("lists", ".update() multiple progress");
+              }
+            }
+          })
+        })
+        .then(function(items) {
+          if (testsToCheck.lists.filter(function(t) { return t.comment===".update() multiple progress"}).length > 0) {
+            assert.ok(false, ".update() multiple progress")
+            doneUpdateMultipleProgress();
+            testDone("lists", ".update() multiple progress");
+          }
+          testDone("lists", ".update() multiple");
+          assert.ok(items.passed.length===5, ".update() multiple")
+          doneUpdateMultiple();
+        })
+        // delete using packetsize/progress
+        .then(function() {
+          return $SP().list("SharepointPlus").remove({
+            where:"Title = 'Multiple Updated "+title+"'",
+            packetsize:2,
+            progress:function(n, total) {
+              if (n === 5 && total === 5) {
+                assert.ok(true, ".remove() multiple progress")
+                doneRemoveMultipleProgress();
+                testDone("lists", ".remove() multiple progress");
+              }
+            }
+          })
+        })
+        .then(function(items) {
+          if (testsToCheck.lists.filter(function(t) { return t.comment===".remove() multiple progress"}).length > 0) {
+            assert.ok(false, ".remove() multiple progress")
+            doneRemoveMultipleProgress();
+            testDone("lists", ".remove() multiple progress");
+          }
+          testDone("lists", ".remove() multiple");
+          assert.ok(items.passed.length===5, ".remove() multiple")
+          doneRemoveMultiple();
+        })
+        .catch(function(error) {
+          console.log("error => ",error)
+          testsToCheck.lists.forEach(function(t) {
+            console.log(t.comment +" failed")
+            assert.ok(false, t.comment);
+            t.done();
+          })
+        })
+      })
 
       test('document/file related stuff', function(assert) {
-        assert.expect(4);
+        assert.expect(6);
 
         var doneCreateFileSuccess = assert.async();
         var doneCreateFileError = assert.async();
         var doneCheckOut = assert.async();
         var doneCheckIn = assert.async();
+        var doneCreateFolder = assert.async();
+        var doneCreateFolderError = assert.async();
 
         // test createFile()
         var filename = new Date().getTime() + ".txt";
         var library = "SharepointPlusLibrary";
         var path = library + "/" + filename;
-        $SP().createFile({
-          content:'Hello World',
-          filename:filename,
-          library:library,
-          success:function(fileURL) {
-            assert.ok(fileURL.split("/").slice(-2).join("/")===path, 'createFile() Phase 1');
-            // check out the file
-            $SP().webService({
-              service:"Lists",
-              operation:"CheckOutFile",
-              properties:{
-                "pageUrl":fileURL,
-                checkoutToLocal: "false"
-              }
-            }).then(function() {
-              // verify
-              $SP().list("SharepointPlusLibrary").get({
-                fields:"ID,CheckoutUser",
-                where:'FileRef = "'+fileURL+'"'
-              }, function(data) {
-                var res = (data.length === 1 && data[0].getAttribute("CheckoutUser") !== null);
-                assert.ok(res, "webService() with 'checkout'");
-                doneCheckOut();
-                // checkin
-                if (res) {
-                  $SP().checkin({
-                    destination:fileURL,
-                    comments:"Automatic check in with SharepointPlus",
-                    after:function() {
-                      // verify
-                      $SP().list("SharepointPlusLibrary").get({
-                        fields:"ID,CheckoutUser",
-                        where:'FileRef = "'+fileURL+'"'
-                      }, function(data) {
-                        var res = (data.length === 1 && data[0].getAttribute("CheckoutUser") === null);
-                        assert.ok(res, "checkin()");
-                        doneCheckIn();
-                      })
-                    }
-                  })
-                } else {
-                  doneCheckIn()
-                }
-              })
+        $SP().list(library).createFile({
+          content:str2ab('Hello World'),
+          filename:filename
+        }).then(function(file) {
+          assert.ok(file.Url.split("/").slice(-2).join("/")===path, 'createFile() Phase 1');
+          doneCreateFileSuccess();
+          // check out the file
+          $SP().webService({
+            service:"Lists",
+            operation:"CheckOutFile",
+            properties:{
+              "pageUrl":file.Url,
+              checkoutToLocal: "false"
+            }
+          }).then(function() {
+            // verify
+            $SP().list("SharepointPlusLibrary").get({
+              fields:"ID,CheckoutUser",
+              where:'FileRef = "'+file.Url+'"'
             })
-          },
-          after:function() {
-            doneCreateFileSuccess();
-          }
+            .then(function(data) {
+              var res = (data.length === 1 && data[0].getAttribute("CheckoutUser") !== null);
+              assert.ok(res, "webService() with 'checkout'");
+              doneCheckOut();
+              // checkin
+              if (res) {
+                $SP().checkin({
+                  destination:file.Url,
+                  comments:"Automatic check in with SharepointPlus"
+                }).then(function() {
+                  // verify
+                  $SP().list("SharepointPlusLibrary").get({
+                    fields:"ID,CheckoutUser",
+                    where:'FileRef = "'+file.Url+'"'
+                  }).then(function(data) {
+                    var res = (data.length === 1 && data[0].getAttribute("CheckoutUser") === null);
+                    assert.ok(res, "checkin()");
+                    doneCheckIn();
+                  })
+                }).catch(function() {
+                  assert.ok(false, "checkin()");
+                  doneCheckIn();
+                })
+              } else {
+                doneCheckIn()
+              }
+            }).catch(function() {
+              assert.ok(false, "webService() with 'checkout'");
+              doneCheckOut();
+              assert.ok(false, "checkin()");
+              doneCheckIn();
+            })
+          })
         });
 
-        $SP().createFile({
-          content:'Hello World',
-          filename:filename,
-          library:"fakelibrary",
-          error:function(fileURL, error) {
-            fileURL = fileURL.split("/").slice(-2).join("/");
-            assert.ok(fileURL==="fakelibrary/"+filename, 'createFile() Phase 2');
-          },
-          after:function() {
-            doneCreateFileError();
-          }
+        $SP().list("fakelibrary").createFile({
+          content:str2ab('Hello World'),
+          filename:filename
+        }).catch(function(error) {
+          assert.ok(true, 'createFile() Phase 2');
+          doneCreateFileError();
         });
+
+        var folderName = "folder_"+new Date().getTime() + ".txt";
+        $SP().list(library).createFolder(folderName)
+        .then(function(folder) {
+          assert.ok(folder.BaseName == folderName, 'createFolder() phase 1')
+          doneCreateFolder();
+        })
+        .catch(function(err) {
+          assert.ok(false, 'createFolder() phase 1')
+          doneCreateFolder();
+        });
+
+        $SP().list(library).createFolder("first/two/").then(function(folder) {
+          assert.ok(false, 'createFolder() phase 2')
+          doneCreateFolderError();
+        })
+        .catch(function() {
+          assert.ok(true, 'createFolder() phase 2')
+          doneCreateFolderError();
+        })
       });
 
       test('people and group stuff', function(assert) {
@@ -1175,7 +1446,7 @@ function loadSPtests() {
         var doneAddressbook = assert.async();
         var doneGetUserInfo = assert.async();
 
-        $SP().whoami(function(people) {
+        $SP().whoami().then(function(people) {
           if (people["AccountName"]) {
             var username = people["AccountName"].toLowerCase();
             var spusername = (spversion >= 15 ? "i:0#.w|" : "") + username;
@@ -1184,13 +1455,13 @@ function loadSPtests() {
             doneWhoami();
 
             // test isMember()
-            $SP().isMember({user:spusername, group:"SharepointPlus"}, function(isMember) {
+            $SP().isMember({user:spusername, group:"SharepointPlus"}).then(function(isMember) {
               assert.ok(isMember, 'isMember()');
               doneIsMember();
             });
 
             // test groupMembers
-            $SP().groupMembers("SharepointPlus", function(members) {
+            $SP().groupMembers("SharepointPlus").then(function(members) {
               var passed=false;
               for (var i=members.length; i--;) {
                 if (members[i]["LoginName"].toLowerCase() === spusername) {
@@ -1203,7 +1474,7 @@ function loadSPtests() {
             });
 
             // test addressbook
-            $SP().addressbook(lastname, {limit:100}, function(people) {
+            $SP().addressbook(lastname, {limit:100}).then(function(people) {
               var passed=false;
               for (var i=0; i < people.length; i++) {
                 for (var j=0; j < people[i].length; j++) {
@@ -1218,7 +1489,7 @@ function loadSPtests() {
             });
 
             // test getUserInfo
-            $SP().getUserInfo(spusername, function(info) {
+            $SP().getUserInfo(spusername).then(function(info) {
               assert.ok((typeof info !== "string" && info.LoginName.toLowerCase() === spusername), 'getUserInfo()');
               doneGetUserInfo();
             });
@@ -1238,11 +1509,25 @@ function loadSPtests() {
       });
 
       test('other stuff', function(assert) {
+        assert.expect(10);
+
+        var doneRegionalDateFormat = assert.async();
         assert.ok(($SP().toCurrency(1500000) === '$1,500,000'), 'toCurrency()');
         assert.ok(($SP().toDate("2012-10-31T00:00:00").getFullYear() === 2012), 'toDate()');
         assert.ok(($SP().toSPDate(new Date(2012,9,31), true) === "2012-10-31 00:00:00"), 'toSPDate()');
         assert.ok(($SP().toXSLString("Big Title") === "Big_x0020_Title"), 'toXSLString()');
         assert.ok(($SP().workflowStatusToText(2) === "In Progress"), 'workflowStatusToText()');
+        assert.ok($SP().cleanResult("69;#Aymeric") === "Aymeric", 'cleanResult()');
+        assert.ok(SPIsArray([]), "SPIsArray()");
+        $SP().regionalDateFormat().then(function(dateFormat) {
+          assert.ok(dateFormat.indexOf("YY")>-1, "$SP().regionalDateFormat()");
+          doneRegionalDateFormat();
+        })
+        var ext={a:"a", fct:function() { return "b" }, e:"original"};
+        SPExtend(true, ext, {c:2, d:["first","second"], e:"replaced", f:{g:"h"}});
+        assert.ok(ext.a==="a" && ext.fct() === "b" && ext.c === 2 && ext.d[1] === "second" && ext.e==="original" && ext.f.g==="h", "SPExtend()");
+        var gl=$SP().getLookup("69;#Aymeric");
+        assert.ok(gl.id==69 && gl.value==="Aymeric", "$SP().getLookup()");
       })
 
       QUnit.start();

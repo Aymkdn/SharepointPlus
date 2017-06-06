@@ -408,6 +408,10 @@ var getCategories = function(data) {
             else categories.set(tag.text, [ doclet ]);
             break;
           }
+          // for tag "plugin"
+          if (tag.title === "plugin") {
+            doclet.plugin = "To use this method you need to load the plugin `"+tag.text+"` from https://github.com/Aymkdn/SharepointPlus/tree/master/plugins/"+tag.text;
+          }
         }
       }
 
