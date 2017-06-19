@@ -1709,6 +1709,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (setup.content === undefined) throw "[SharepointPlus 'createFile']: the file content is required.";
         if (setup.filename === undefined) throw "[SharepointPlus 'createFile']: the filename is required.";
         if (!_this.listID) throw "[SharepointPlus 'createFile']: the library name is required.";
+        if (!_this.url) throw "[SharepointPlus 'createFile']: not able to find the URL!"; // we cannot determine the url
         setup.extendedFields = setup.extendedFields || "";
         setup.progress=setup.progress||function(){};
         // we now decide what to do based on if we have REST
@@ -1731,8 +1732,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               });
               return;
             }
-            var destination = "/" + setup.library + "/" + setup.filename
-            destination = (setup.url + destination).replace(/([^:]\/)\//g,"$1");
+            var destination = "/" + _this.listID + "/" + setup.filename
+            destination = (_this.url + destination).replace(/([^:]\/)\//g,"$1");
             if (destination.slice(0,4) !== "http") destination=window.location.protocol + "//" + window.location.host + destination;
             setup.content=SPArrayBufferToBase64(setup.content); // ArrayBuffer to Base64 String
             var soapEnv = "<SourceUrl>http://null</SourceUrl>"

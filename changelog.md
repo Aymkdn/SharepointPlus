@@ -28,11 +28,6 @@
   - Add option `cache` for `$SP().lists()`
   - Add option `packetsize` for `$SP().list().moderate()`
   - Add `$SP().getPageSize()` that permits to get the size of the document/page
-  - Add 20 more QUnit tests
-  - Optimize code for compression
-
-**Change Log v4.1 (not published)**
-
   - Add option `soapURL` to `$SP().webService()` (see https://github.com/Aymkdn/SharepointPlus/issues/51)
   - Add wiki pages for "Term/Taxonomy/Managed Metadata" (see https://github.com/Aymkdn/SharepointPlus/wiki/)
   - Add `Property` property for a `TaxonomyFieldType` returned by `$SP().list().info()`
@@ -43,7 +38,9 @@
   - Add support for `ArrayBuffer` for `$SP().createFile()`
   - Add `SPArrayBufferToBase64` function() to transform an ArrayBuffer to a Base64 string
   - Add Promise for `$SP().ajax()`
-  - Improve catch error from `$SP().createFile` with Promise
+  - Add 25 more QUnit tests
+  - Improve catch error from `$SP().createFile`
+  - Optimize code for compression
 
 **Change Log v4.0 (May 4, 2017)**
 

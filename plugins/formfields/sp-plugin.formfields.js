@@ -764,6 +764,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    * @name $SP().formfields.each
    * @function
+   * @plugin formfields
    * @description Permits to go thru the different fields
    * @example
    * // To print in the console the names of all the fields
@@ -779,6 +780,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    * @name $SP().formfields.val
    * @function
+   * @plugin formfields
    * @description Set or Get the value(s) for the field(s) selected by "formfields"
    * @param {String|Array} [value=empty] If "str" is specified, then it means we want to set a value, if "str" is not specified then it means we want to get the value
    * @param {Object} options
@@ -850,6 +852,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    *  @name $SP().formfields.elem
    *  @function
+   *  @plugin formfields
    *  @description Get the HTML element(s) tied with the field(s) selected by "formfields"
    *  @param {Boolean} [usejQuery=true] If jQuery is loaded, then by default the elements will be jQuery object; use FALSE to get the regular DOM elements
    *  @return {Array|HTMLElement|jQuery} Null is returned if nothing is found, or the found elements... if jQuery is defined then the HTML elements will be jQueryrize
@@ -877,6 +880,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    * @name $SP().formfields.row
    * @function
+   * @plugin formfields
    * @description Get the TR element(s) tied with the field(s) selected by "formfields"
    * @return {Array|HTMLElement|jQuery} Null is returned if nothing is found, or the TR HTMLElement... or a jQuery object is returned if jQuery exists
    *
@@ -902,6 +906,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    * @name $SP().formfields.type
    * @function
+   * @plugin formfields
    * @description
    * Get the type of the field(s) selected by "formfields"
    * Here is the list of different types returned:
@@ -944,6 +949,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
   * @name $SP().formfields.description
   * @function
+  * @plugin formfields
   * @description Get the description of the field(s) selected by "formfields"
   *
   * @return {String|Array} Returns the description of the field(s)
@@ -965,6 +971,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    * @name $SP().formfields.isMandatory
    * @function
+   * @plugin formfields
    * @description Say if a field is mandatory
    *
    * @return {Boolean|Array} Returns the mandatory status of the field(s)
@@ -985,6 +992,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    * @name $SP().formfields.name
    * @function
+   * @plugin formfields
    * @description Return the field name
    * @return {String|Array} Returns the name of the field(s)
    * @example
@@ -1004,6 +1012,7 @@ $SP().registerPlugin('formfields', function(options) {
   /**
    * @name $SP().formfields.internalname
    * @function
+   * @plugin formfields
    * @description Return the field internalname
    * @return {String|Array} Returns the internalname of the field(s)
    * @example

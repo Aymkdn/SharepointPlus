@@ -1,6 +1,6 @@
 {
   "name": "sharepointplus",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "A library that offers an easy interface to deal with Sharepoint",
   "main": "sharepointplus-5.0.js",
   "directories": {
@@ -8,8 +8,9 @@
   },
   "dependencies": {
     "jsdoc": "^3.4.3",
-    "sp-request": ">= 1.1.5",
-    "xmldom": ">= 0.1.27"
+    "lodash": "^4.13.1",
+    "sp-request": "^2.0.3",
+    "xmldom": "^0.1.27"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
