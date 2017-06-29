@@ -35,6 +35,7 @@
   - Add Promise for `$SP().list().info()`
   - Add `$SP().hasREST()` to detect if REST API is supported
   - Add `progress` function for `$SP().createFile()`
+  - Add `getXHR` function for `$SP().createFile()`
   - Add support for `ArrayBuffer` for `$SP().createFile()`
   - Add `SPArrayBufferToBase64` function() to transform an ArrayBuffer to a Base64 string
   - Add Promise for `$SP().ajax()`

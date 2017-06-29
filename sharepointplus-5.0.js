@@ -252,7 +252,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           url:url + "/_api/contextinfo",
           method:"POST"
         }).then(function(data) {
-          digest=data.d.GetContextWebInformation.FormDigestValue;
+          digest=data.d.GetContextWebInformation.FormDigestValue
           // cache
           _SP_CACHE_REQUESTDIGEST[url]=digest;
           prom_resolve(digest);
@@ -271,18 +271,19 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {String} [method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
         @param {Object} [headers] the headers
         @param {String} [body] The data to send to the server
-        @param {Function} [onprogress=function(event){}] The "onprogress" object for XHR
+        @param {Function} [onprogress=function(event){}] The "upload.onprogress" object for XHR
+        @param {Function} [getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter
       @return {Promise} resolve(responseText||responseXML), reject({response, statusCode, responseText})
     */
     ajax:function(settings) {
       var _this=this;
       settings.headers=settings.headers||{};
-      // https://github.com/yanatan16/nanoajax
+      // https://github.com/yanatan16/nanoajax — not the original version (include upload.onprogress and getXHR)
       // eslint-disable-next-line
-      !function(t,e){function n(t){return t&&e.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:e.XMLHttpRequest?new XMLHttpRequest:void 0}function o(t,e,n){t[e]=t[e]||n}var r=["responseType","withCredentials","timeout","onprogress"];t.ajax=function(t,a){function s(t,e){return function(){c||(a(void 0===f.status?t:f.status,0===f.status?"Error":f.response||f.responseText||e,f),c=!0)}}var u=t.headers||{},i=t.body,d=t.method||(i?"POST":"GET"),c=!1,f=n(t.cors);f.open(d,t.url,!0);var l=f.onload=s(200);f.onreadystatechange=function(){4===f.readyState&&l()},f.onerror=s(null,"Error"),f.ontimeout=s(null,"Timeout"),f.onabort=s(null,"Abort"),i&&(o(u,"X-Requested-With","XMLHttpRequest"),e.FormData&&i instanceof e.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var p,m=0,v=r.length;v>m;m++)p=r[m],void 0!==t[p]&&(f[p]=t[p]);for(var p in u)f.setRequestHeader(p,u[p]);return f.send(i),f},e.nanoajax=t}({},function(){return this}());
+      !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}var r=["responseType","withCredentials","timeout"];e.ajax=function(e,a){function s(e,t){return function(){p||(a(void 0===c.status?e:c.status,0===c.status?"Error":c.response||c.responseText||t,c),p=!0)}}var u=e.headers||{},i=e.body,d=e.method||(i?"POST":"GET"),p=!1,c=n(e.cors);c.open(d,e.url,!0);var l=c.onload=s(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=s(null,"Error"),c.ontimeout=s(null,"Timeout"),c.onabort=s(null,"Abort"),i&&(o(u,"X-Requested-With","XMLHttpRequest"),t.FormData&&i instanceof t.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var f,v=0,g=r.length;g>v;v++)f=r[v],void 0!==e[f]&&(c[f]=e[f]);for(var f in u)c.setRequestHeader(f,u[f]);return e.onprogress&&c.upload.addEventListener("progress",e.onprogress,!1),e.getXHR&&e.getXHR(c),c.send(i),c},t.nanoajax=e}({},function(){return this}());
       return _this._promise(function(prom_resolve, prom_reject) {
-        // add "Accept": "application/json;odata=verbose" for headers if there is "_api/" in URL
-        if (settings.url.indexOf("/_api/") > -1) {
+        // add "Accept": "application/json;odata=verbose" for headers if there is "_api/" in URL, except for "_api/web/Url"
+        if (settings.url.indexOf("/_api/") > -1 && settings.url.indexOf("_api/web/Url") === -1) {
           if (!settings.headers["Accept"]) settings.headers.Accept = "application/json;odata="+_SP_JSON_ACCEPT;
           if (!settings.headers["Content-Type"]) settings.headers["Content-Type"] = "application/json;odata="+_SP_JSON_ACCEPT;
           if (!settings.headers["X-RequestDigest"] && settings.url.indexOf("contextinfo") === -1) {
@@ -332,6 +333,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           };
           if (settings.body) opts.body=settings.body;
           if (_this.proxyweb) opts.proxy=_this.proxyweb;
+          // looks like the Content-Length creates some issues
+          if (opts.headers) delete opts.headers["Content-Length"]
           _this.module_sprequest(settings.url, opts)
           .then(function(response) {
             if (response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout") {
@@ -341,13 +344,14 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                 var result = new DOMParser().parseFromString(response.body);
                 prom_resolve(result);
               } else {
+                if (response.headers['content-type'].indexOf('json') > -1 && typeof response.body === "string") response.body=JSON.parse(response.body)
                 prom_resolve(response.body);
               }
             } else {
               prom_reject({response:response, statusCode:response.statusCode, responseText:response.body});
             }
           }, function(err) {
-            prom_reject({statusCode:err.statusCode, response:err.response, responseText:err.response.body});
+            prom_reject({statusCode:err.statusCode, response:err.response, responseText:(err.response?err.response.body:'')});
           });
         }
       })
@@ -457,7 +461,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                   url: "/_vti_bin/Webs.asmx",
                   body: _this._buildBodyForSOAP("WebUrlFromPageUrl", "<pageUrl>"+window.location.href.replace(/&/g,"&amp;")+"</pageUrl>"),
                 }).then(function(data) {
-                  var result=data.querySelectorAll('WebUrlFromPageUrlResult');
+                  var result=data.getElementsByTagName('WebUrlFromPageUrlResult');
                   if (result.length) {
                     var u=result[0].firstChild.nodeValue.toLowerCase();
                     if (setURL) _this.url = _SP_BASEURL = u;
@@ -1673,6 +1677,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {String} setup.filename The relative path (within the document library) to the file to create
         @param {Object} [setup.fields] If you want to set some fields for the created document
         @param {Function} [setup.progress=function(percentage){}] The upload progress in percentage
+        @param {Function} [setup.getXHR=function(xhr){}] To manipulate the XMLHttpRequest object used during the upload
       @return {Promise} resolve(object that represents the file), reject(error)
 
       @example
@@ -1681,6 +1686,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         filename:"Demo/HelloWorld.txt"
       }).then(function(file) {
         console.log(file.Url+" has been created")
+        // and to get more info, like the ID, you can do:
+        $SP().ajax({url:file.AllFieldsUrl}).then(function(body) {
+          console.log(body.d)
+        })
       }, function(error) {
         console.log("Error: ",error)
       })
@@ -1697,6 +1706,25 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         alert("File "+file.Name+" created at " + file.Url);
       });
 
+      // use onprogress and abort
+      $SP().list("Documents").createFile({
+        content:"*ArrayBuffer*",
+        filename:"BigFile.iso",
+        progress:function(perc) {
+          console.log("percentage of progress => ",perc)
+        },
+        getXHR:function(xhr) {
+          // automtically abort after 3 seconds
+          setTimeout(function() {
+            xhr.abort()
+          }, 3000)
+        }
+      }).then(function(file) {
+        console.log(file.Url+" has been created")
+      }, function(error) {
+        console.log("Error: ",error)
+      })
+
       // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
     */
     createFile:function(setup) {
@@ -1712,6 +1740,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (!_this.url) throw "[SharepointPlus 'createFile']: not able to find the URL!"; // we cannot determine the url
         setup.extendedFields = setup.extendedFields || "";
         setup.progress=setup.progress||function(){};
+        setup.getXHR=setup.getXHR||function(){};
         // we now decide what to do based on if we have REST
         // if no, then relay on Copy Web Service
         _this.hasREST().then(function(hasREST) {
@@ -1749,9 +1778,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                   setup.progress(parseInt(evt.loaded / evt.total * 100));
                 }
               },
+              getXHR:setup.getXHR,
               headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/CopyIntoItems'}
             }).then(function(data) {
-              var a = data.querySelector('CopyResult');
+              var a = data.getElementsByTagName('CopyResult');
+              a = (a.length>0 ? a[0] : null);
               if (a && a.getAttribute("ErrorCode") !== "Success") {
                 prom_reject("[SharepointPlus 'createFile'] Error creating ("+destination+"): "+a.getAttribute("ErrorCode")+" - "+a.getAttribute("ErrorMessage"));
               } else {
@@ -1782,17 +1813,19 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                   if (evt.lengthComputable) {
                     setup.progress(parseInt(evt.loaded / evt.total * 100));
                   }
-                }
+                },
+                getXHR:setup.getXHR
               })
             })
             .then(function(body) {
               // retrieve the full path
               SPExtend(true, file, body.d);
               file.Url=file.__metadata.uri.split("/").slice(0,3).join("/")+body.d.ServerRelativeUrl;
+              file.AllFieldsUrl=body.d.ListItemAllFields.__deferred.uri;
               // if we want to update some fields
               if (setup.fields) {
                 // using "ListItemAllFields.__deferred.uri" we can find the URL to get details about the uploaded file
-                return _this.ajax({url:body.d.ListItemAllFields.__deferred.uri})
+                return _this.ajax({url:file.AllFieldsUrl})
               } else {
                 prom_resolve(file)
               }
@@ -1803,12 +1836,16 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               SPExtend(params, setup.fields);
               return _this.update(params);
             })
-            .then(function(rows) {
-              var attributes=rows[0].attributes;
-              for (var j=attributes.length; j--;) {
-                file[attributes[j].nodeName]=attributes[j].nodeValue;
+            .then(function(items) {
+              if (items.failed.length>0) {
+                prom_reject("File '"+file.Url+"' added, but fields not updated: ",items.failed[0].errorMessage)
+              } else {
+                items=items.passed[0];
+                for (var attr in items) {
+                  file[attr]=items[attr];
+                }
+                prom_resolve(file)
               }
-              prom_resolve(file)
             })
             .catch(function(err) { prom_reject(err) });
           }
@@ -1890,6 +1927,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return _this._promise(function(prom_resolve, prom_reject) {
         setup = setup || {};
         if (!setup.destination) throw "[SharepointPlus 'checkin'] the file destination path is required.";
+        if (_this.url && !setup.url) setup.url=_this.url;
         if (!setup.url) {
           _this.getURL()
           .then(function(url) { setup.url=url; return _this.checkin(setup) })
@@ -1903,7 +1941,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body:_this._buildBodyForSOAP("CheckInFile", '<pageUrl>'+setup.destination+'</pageUrl><comment>'+setup.comments+'</comment><CheckinType>1</CheckinType>'),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/CheckInFile'}
         }).then(function(data) {
-          var res = data.querySelector('CheckInFileResult');
+          var res = data.getElementsByTagName('CheckInFileResult');
+          res = (res.length>0 ? res[0] : null);
           if (res && res.firstChild.nodeValue != "true") {
             prom_reject(res);
           } else {
@@ -1948,7 +1987,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body: _this._buildBodyForSOAP("AddAttachment", "<listName>"+_this.listID+"</listName><listItemID>"+setup.ID+"</listItemID><fileName>"+setup.filename+"</fileName><attachment>"+SPArrayBufferToBase64(setup.attachment)+"</attachment>"),
           headers:{'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/AddAttachment' }
         }).then(function(data) {
-          var res = data.querySelector('AddAttachmentResult');
+          var res = data.getElementsByTagName('AddAttachmentResult');
+          res = (res.length>0 ? res[0] : null);
           var fileURL = "";
           if (res) fileURL = _this.url + "/" + res.firstChild.nodeValue;
           if (!fileURL) prom_reject(res);
@@ -1984,7 +2024,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body: _this._buildBodyForSOAP("GetAttachmentCollection", "<listName>"+_this.listID+"</listName><listItemID>"+itemID+"</listItemID>"),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection'}
         }).then(function(data) {
-          var aReturn = [], i=0, a = data.querySelectorAll('Attachment');
+          var aReturn = [], i=0, a = data.getElementsByTagName('Attachment');
           for (; i < a.length; i++) aReturn.push(a[i].firstChild.nodeValue);
           prom_resolve(aReturn)
         }, function(err) { prom_reject(err) });
@@ -2030,7 +2070,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body: _this._buildBodyForSOAP("GetListContentTypes", '<listName>'+_this.listID+'</listName>'),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetListContentTypes'}
         }).then(function(data) {
-          var arr = data.querySelectorAll('ContentType'), ID, i=0, aReturn = [];
+          var arr = data.getElementsByTagName('ContentType'), ID, i=0, aReturn = [];
           for (; i < arr.length; i++) {
             ID = arr[i].getAttribute("ID");
             if (ID) {
@@ -2109,7 +2149,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body: _this._buildBodyForSOAP("GetListContentType", '<listName>'+_this.listID+'</listName><contentTypeId>'+contentType+'</contentTypeId>'),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetListContentType'}
         }).then(function(data) {
-          var aReturn = [], i, j, a, r, k, q, arr = data.querySelectorAll('Field'), index = 0, aIndex, attributes, attrName, lenDefault, attrValue, nodeDefault;
+          var aReturn = [], i, j, a, r, k, q, arr = data.getElementsByTagName('Field'), index = 0, aIndex, attributes, attrName, lenDefault, attrValue, nodeDefault;
           for (i=0; i < arr.length; i++) {
             if (arr[i].getAttribute("ID")) {
               aReturn[index] = [];
@@ -2123,7 +2163,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                     case "Choice":
                     case "MultiChoice": {
                       aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
-                      a=arr[i].querySelectorAll("CHOICE");
+                      a=arr[i].getElementsByTagName("CHOICE");
                       r=[];
                       for(k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
                       aIndex["Choices"]=r;
@@ -2140,9 +2180,9 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                 aIndex[attrName]= attrValue;
               }
               // find the default values
-              lenDefault=arr[i].querySelectorAll("Default").length;
+              lenDefault=arr[i].getElementsByTagName("Default").length;
               if (lenDefault>0) {
-                nodeDefault=arr[i].querySelectorAll("Default");
+                nodeDefault=arr[i].getElementsByTagName("Default");
                 aReturn[index]["DefaultValue"]=[];
                 for (q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
                 if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
@@ -2177,7 +2217,6 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         // check if we need to queue it
         if (_this.needQueue) { return _this._addInQueue(arguments) }
         if (!_this.listID) throw "[SharepointPlus 'info'] the list ID/Name is required.";
-        // default values
         if (!_this.url) throw "[SharepointPlus 'info'] not able to find the URL!"; // we cannot determine the url
 
         // do the request
@@ -2186,9 +2225,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body: _this._buildBodyForSOAP("GetList", '<listName>'+_this.listID+'</listName>'),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetList'}
         }).then(function(data) {
-          var aReturn = [], arr = data.querySelectorAll('Field'), index = 0, aIndex, attributes, attrName, attrValue, lenDefault, nodeDefault,i,j,a,r,k,nName,nValue;
+          var aReturn = [], arr = data.getElementsByTagName('Field'), index = 0, aIndex, attributes, attrName, attrValue, lenDefault, nodeDefault,i,j,a,r,k,nName,nValue;
           // retrieve list info first
-          var listDetails = data.querySelector('List');
+          var listDetails = data.getElementsByTagName('List');
+          listDetails = (listDetails.length>0 ? listDetails[0] : null);
           attributes=listDetails.attributes;
           aReturn["_List"]={};
           for (i=0; i<attributes.length; i++) {
@@ -2208,7 +2248,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                     case "Choice":
                     case "MultiChoice": {
                       aIndex["FillInChoice"] = arr[i].getAttribute("FillInChoice");
-                      a=arr[i].querySelectorAll("CHOICE");
+                      a=arr[i].getElementsByTagName("CHOICE");
                       r=[];
                       for(k=0; k<a.length; k++) r.push(a[k].firstChild.nodeValue);
                       aIndex["Choices"]=r;
@@ -2220,11 +2260,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                       break;
                     case "TaxonomyFieldType":
                     case "TaxonomyFieldTypeMulti": {
-                      a=arr[i].querySelectorAll("Property");
+                      a=arr[i].getElementsByTagName("Property");
                       aIndex["Property"]={};
                       for(k=0; k<a.length; k++) {
-                        nName=a[k].querySelectorAll('Name');
-                        nValue=a[k].querySelectorAll('Value');
+                        nName=a[k].getElementsByTagName('Name');
+                        nValue=a[k].getElementsByTagName('Value');
                         if (nName.length>0) aIndex["Property"][nName[0].firstChild.nodeValue]=(nValue.length>0?nValue[0].firstChild.nodeValue:null);
                       }
                       break;
@@ -2237,9 +2277,9 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               }
 
               // find the default values
-              lenDefault=arr[i].querySelectorAll("Default").length;
+              lenDefault=arr[i].getElementsByTagName("Default").length;
               if (lenDefault>0) {
-                nodeDefault=arr[i].querySelectorAll("Default");
+                nodeDefault=arr[i].getElementsByTagName("Default");
                 aReturn[index]["DefaultValue"]=[];
                 for (var q=0; q<lenDefault; q++) nodeDefault[q].firstChild && aReturn[index]["DefaultValue"].push(nodeDefault[q].firstChild.nodeValue);
                 if (lenDefault===1) aReturn[index]["DefaultValue"]=aReturn[index]["DefaultValue"][0];
@@ -2314,20 +2354,23 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body: _this._buildBodyForSOAP("GetView", '<listName>'+_this.listID+'</listName><viewName>'+viewID+'</viewName>'),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetView'}
         }).then(function(data) {
-          var node=data.querySelector('View'), i, where;
+          var node=data.getElementsByTagName('View'), i, where;
+          node = (node.length>0 ? node[0] : null);
           var oReturn = {DefaultView:(node.getAttribute("DefaultView")=="TRUE"), Name:node.getAttribute("DisplayName"), ID:viewID, Type:node.getAttribute("Type"), Url:node.getAttribute("Url"), OrderBy:[], Fields:[], RowLimit:"", WhereCAML:"", Node:node};
-          var arr = data.querySelector('ViewFields').querySelectorAll('FieldRef');
+          var arr = data.getElementsByTagName('ViewFields')[0].getElementsByTagName('FieldRef');
           // find fields
           for ( i=0; i < arr.length; i++) oReturn.Fields.push(arr[i].getAttribute("Name"));
             // find orderby
-          arr = data.querySelector('OrderBy');
+          arr = data.getElementsByTagName('OrderBy');
+          arr = (arr.length>0 ? arr[0] : null);
           if (arr) {
-            arr = arr.querySelectorAll('FieldRef');
+            arr = arr.getElementsByTagName('FieldRef');
             for (i=0; i<arr.length; i++) oReturn.OrderBy.push(arr[i].getAttribute("Name")+" "+(arr[i].getAttribute("Ascending")==undefined?"ASC":"DESC"));
             oReturn.OrderBy=oReturn.OrderBy.join(",");
           }
           // find where
-          where=data.querySelector('Where');
+          where=data.getElementsByTagName('Where');
+          where = (where.length>0 ? where[0] : null);
           if (where) {
             where=where.xml || (new XMLSerializer()).serializeToString(where);
             where=where.match(/<Where [^>]+>(.*)<\/Where>/);
@@ -2394,7 +2437,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body: _this._buildBodyForSOAP("GetViewCollection", '<listName>'+_this.listID+'</listName>'),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetViewCollection'}
         }).then(function(data) {
-          var aReturn = [], arr = data.querySelectorAll('View'), i=0, found=false;
+          var aReturn = [], arr = data.getElementsByTagName('View'), i=0, found=false;
           for (; i < arr.length; i++) {
             aReturn[i] = {
               ID: arr[i].getAttribute("Name"),
@@ -2466,7 +2509,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body:_this._buildBodyForSOAP("GetListCollection", ""),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetListCollection'}
         }).then(function(data) {
-          var aReturn = [], arr = data.querySelectorAll('List'), i, j, attributes;
+          var aReturn = [], arr = data.getElementsByTagName('List'), i, j, attributes;
           for (i=0; i < arr.length; i++) {
             aReturn[i]={};
             attributes=arr[i].attributes;
@@ -2592,17 +2635,17 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body:_this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>"),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'}
         }).then(function(data) {
-          var result = data.querySelectorAll('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i, rows;
+          var result = data.getElementsByTagName('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i, rows;
           for (i=0; i < len; i++) {
-            if (result[i].querySelector('ErrorCode').firstChild.nodeValue === "0x00000000") { // success
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue === "0x00000000") { // success
               rows=result[i].getElementsByTagName('z:row');
-              if (rows.length==0) rows=result[i].querySelectorAll('row'); // for Chrome 'bug'
+              if (rows.length==0) rows=result[i].getElementsByTagName('row'); // for Chrome 'bug'
               if (items[i]) {
                 items[i].ID = rows[0].getAttribute("ows_ID");
                 passed.push(items[i]);
               }
             } else if (items[i]) {
-              items[i].errorMessage = result[i].querySelector('ErrorText').firstChild.nodeValue;
+              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
               failed.push(items[i]);
             }
           }
@@ -2737,12 +2780,12 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'}
         })
         .then(function(data) {
-          var result = data.querySelectorAll('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i;
+          var result = data.getElementsByTagName('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i;
           for (i=0; i < len; i++) {
-            if (result[i].querySelector('ErrorCode').firstChild.nodeValue === "0x00000000" && items[i]) // success
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue === "0x00000000" && items[i]) // success
               passed.push(items[i]);
             else if (items[i]) {
-              items[i].errorMessage = result[i].querySelector('ErrorText').firstChild.nodeValue;
+              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
               failed.push(items[i]);
             }
           }
@@ -2796,7 +2839,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetVersionCollection'}
         })
         .then(function(data) {
-          prom_resolve(data.querySelectorAll('Version'))
+          prom_resolve(data.getElementsByTagName('Version'))
         }, function(error) { prom_reject(error) })
       })
     },
@@ -2892,15 +2935,15 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body:_this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>"),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'}
         }).then(function(data) {
-          var result = data.querySelectorAll('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, rows, i;
+          var result = data.getElementsByTagName('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, rows, i;
           for (i=0; i < len; i++) {
             rows=result[i].getElementsByTagName('z:row');
-            if (rows.length==0) rows=data.querySelectorAll('row'); // for Chrome
+            if (rows.length==0) rows=data.getElementsByTagName('row'); // for Chrome
             var item = myElem(rows[0]);
-            if (result[i].querySelector('ErrorCode').firstChild.nodeValue == "0x00000000") // success
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
               passed.push(item);
             else {
-              items[i].errorMessage = result[i].querySelector('ErrorText').firstChild.nodeValue;
+              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
               failed.push(items[i]);
             }
           }
@@ -3026,12 +3069,12 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body:_this._buildBodyForSOAP("UpdateListItems", "<listName>"+_this.listID+"</listName><updates>" + updates + "</updates>"),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'}
         }).then(function(data) {
-          var result = data.querySelectorAll('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i;
+          var result = data.getElementsByTagName('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i;
           for (i=0; i < len; i++) {
-            if (result[i].querySelector('ErrorCode').firstChild.nodeValue === "0x00000000") // success
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue === "0x00000000") // success
               passed.push(items[i]);
             else {
-              items[i].errorMessage = result[i].querySelector('ErrorText').firstChild.nodeValue;
+              items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
               failed.push(items[i]);
             }
           }
@@ -3105,7 +3148,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var aResult=[];
           // get the details
-          data=data.querySelectorAll('Group');
+          data=data.getElementsByTagName('Group');
           for (var i=0,len=data.length; i<len; i++) aResult.push(data[i].getAttribute("Name"));
           // cache the result
           found=false;
@@ -3178,9 +3221,14 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         _this.get({fields:"FieldRef",where:"ID = "+setup.ID}).then(function(d) {
           if (d.length===0) throw "[SharepointPlus 'getWorkflowID'] I'm not able to find the item ID "+setup.ID;
 
-          var fileRef = _this.cleanResult(d[0].getAttribute("FileRef"));
-          var c=fileRef.substring(0,fileRef.indexOf("/Lists"))
-          d=_this.url.substring(0,_this.url.indexOf(c));
+          var fileRef = _this.cleanResult(d[0].getAttribute("FileRef")), c;
+          // check if it's a List
+          if (fileRef.indexOf("/Lists") > -1) {
+            c=fileRef.substring(0,fileRef.indexOf("/Lists"))
+            d=_this.url.substring(0,_this.url.indexOf(c));
+          } else {
+            d=_this.url.split("/").slice(0,3).join("/")+"/"
+          }
           fileRef = d+fileRef;
           _this.ajax({
             url: _this.url+"/_vti_bin/Workflow.asmx",
@@ -3188,7 +3236,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/workflow/GetWorkflowDataForItem'}
           }).then(function(data) {
             // we want to use myElem to change the getAttribute function
-            var res={},i,row, rows=data.querySelectorAll('WorkflowTemplate');
+            var res={},i,row, rows=data.getElementsByTagName('WorkflowTemplate');
             if (rows.length===0) {
               // depending of the permissions, we couldn't have the WorkflowTemplate data
               // in that case we have to get the workflow ID with another way
@@ -3225,7 +3273,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                   res = {
                     "fileRef":fileRef,
                     "description":rows[i].getAttribute("Description"),
-                    "workflowID":"{"+rows[i].querySelector('WorkflowTemplateIdSet').getAttribute("TemplateId")+"}",
+                    "workflowID":"{"+rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId")+"}",
                     "instances":[]
                   };
                 }
@@ -3233,7 +3281,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               if (!res.fileRef) {
                 throw "[SharepointPlus 'getWorkflowID'] it seems the requested workflow ('"+setup.workflowName+"') doesn't exist!";
               }
-              rows=data.querySelectorAll("Workflow");
+              rows=data.getElementsByTagName("Workflow");
               for (i=0; i<rows.length; i++) {
                 row=rows[i];
                 res.instances.push({
@@ -3504,10 +3552,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var aResult=[];
           // get the details
-          data=data.querySelectorAll('MembershipData');
+          data=data.getElementsByTagName('MembershipData');
           for (var i=0,len=data.length; i<len; i++) {
-            if (data[i].querySelector("Source").firstChild.nodeValue === "DistributionList") {
-              aResult.push({"SourceReference": data[i].querySelector("SourceReference").firstChild.nodeValue, "DisplayName":data[i].querySelector("DisplayName").firstChild.nodeValue, "MailNickname":data[i].querySelector("MailNickname").firstChild.nodeValue, "Url":data[i].querySelector("Url").firstChild.nodeValue});
+            if (data[i].getElementsByTagName("Source")[0].firstChild.nodeValue === "DistributionList") {
+              aResult.push({"SourceReference": data[i].getElementsByTagName("SourceReference")[0].firstChild.nodeValue, "DisplayName":data[i].getElementsByTagName("DisplayName")[0].firstChild.nodeValue, "MailNickname":data[i].getElementsByTagName("MailNickname")[0].firstChild.nodeValue, "Url":data[i].getElementsByTagName("Url")[0].firstChild.nodeValue});
             }
           }
           // cache the result
@@ -3582,7 +3630,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var aResult=[];
           // get the details
-          data=data.querySelectorAll('User');
+          data=data.getElementsByTagName('User');
           for (var i=0,len=data.length; i<len; i++) {
             aResult.push({"ID": data[i].getAttribute("ID"), "Name":data[i].getAttribute("Name"), "LoginName":data[i].getAttribute("LoginName"), "Email":data[i].getAttribute("Email")});
           }
@@ -3706,10 +3754,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var aResult=[], name, value;
           // get the details
-          data=data.querySelectorAll('PropertyData');
+          data=data.getElementsByTagName('PropertyData');
           for (var i=0,len=data.length; i<len; i++) {
-            name=data[i].querySelector("Name").firstChild.nodeValue;
-            value=data[i].querySelector("Value");
+            name=data[i].getElementsByTagName("Name")[0].firstChild.nodeValue;
+            value=data[i].getElementsByTagName("Value");
+            value = (value.length>0 ? value[0] : null);
             if (value&&value.firstChild) value=value.firstChild.nodeValue;
             else value="No Value";
             aResult.push(name);
@@ -3756,7 +3805,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           body:_this._buildBodyForSOAP("GetUserInfo", '<userLoginName>'+username+'</userLoginName>', "http://schemas.microsoft.com/sharepoint/soap/directory/")
         }).then(function(data) {
           // get the details
-          data=data.querySelectorAll('User');
+          data=data.getElementsByTagName('User');
           if (data.length===0) {
             prom_reject("[SharepointPlus 'getUserInfo'] nothing returned?!")
           } else {
@@ -3977,7 +4026,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var aResult=[], children, name, value;
           // get the details
-          data=data.querySelectorAll('PrincipalInfo');
+          data=data.getElementsByTagName('PrincipalInfo');
           for (var i=0,lenR=data.length; i<lenR; i++) {
             children=data[i].childNodes;
             aResult[i]=[];
