@@ -1838,7 +1838,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             })
             .then(function(items) {
               if (items.failed.length>0) {
-                prom_reject("File '"+file.Url+"' added, but fields not updated: ",items.failed[0].errorMessage)
+                prom_reject("File '"+file.Url+"' added, but fields not updated: "+items.failed[0].errorMessage)
               } else {
                 items=items.passed[0];
                 for (var attr in items) {
