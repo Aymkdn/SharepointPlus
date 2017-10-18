@@ -1421,7 +1421,7 @@ function loadSPtests() {
             doneCreateFileError();
           });
 
-          var folderName = "folder_"+new Date().getTime() + ".txt";
+          var folderName = "folder_"+new Date().getTime();
           $SP().list(library).createFolder(folderName)
           .then(function(folder) {
             assert.ok(folder.BaseName == folderName, 'createFolder() phase 1')
@@ -1433,7 +1433,7 @@ function loadSPtests() {
           });
 
           $SP().list(library).createFolder("first/two/").then(function(folder) {
-            assert.ok(false, 'createFolder() phase 2')
+            assert.ok(folder.errorMessage==="Folder 'first/two' already exists.", 'createFolder() phase 2')
             doneCreateFolderError();
           })
           .catch(function() {
@@ -1514,12 +1514,12 @@ function loadSPtests() {
         });
 
         test('other stuff', function(assert) {
-          assert.expect(10);
+          assert.expect(12);
 
           var doneRegionalDateFormat = assert.async();
           assert.ok(($SP().toCurrency(1500000) === '$1,500,000'), 'toCurrency()');
           assert.ok(($SP().toDate("2012-10-31T00:00:00").getFullYear() === 2012), 'toDate()');
-          assert.ok(($SP().toSPDate(new Date(2012,9,31), true) === "2012-10-31 00:00:00"), 'toSPDate()');
+          assert.ok(($SP().toSPDate(new Date(2012,9,31), true) === "2012-10-31T00:00:00Z"), 'toSPDate()');
           assert.ok(($SP().toXSLString("Big Title") === "Big_x0020_Title"), 'toXSLString()');
           assert.ok(($SP().workflowStatusToText(2) === "In Progress"), 'workflowStatusToText()');
           assert.ok($SP().cleanResult("69;#Aymeric") === "Aymeric", 'cleanResult()');
@@ -1532,7 +1532,11 @@ function loadSPtests() {
           SPExtend(true, ext, {c:2, d:["first","second"], e:"replaced", f:{g:"h"}});
           assert.ok(ext.a==="a" && ext.fct() === "b" && ext.c === 2 && ext.d[1] === "second" && ext.e==="original" && ext.f.g==="h", "SPExtend()");
           var gl=$SP().getLookup("69;#Aymeric");
-          assert.ok(gl.id==69 && gl.value==="Aymeric", "$SP().getLookup()");
+          assert.ok(gl.id==69 && gl.value==="Aymeric", "$SP().getLookup() simple");
+          gl=$SP().getLookup("69;#Aymeric;#70;#Martin");
+          assert.ok(gl.id[0]==="69" && gl.value[0]==="Aymeric" && gl.id[1]==70 && gl.value[1]==="Martin", "$SP().getLookup() complex");
+          gl=$SP().getLookup("69");
+          assert.ok(gl.id==69 && gl.value==="69", "$SP().getLookup() unvalid");
         })
 
         test('modals', function(assert) {

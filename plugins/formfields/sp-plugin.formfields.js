@@ -109,7 +109,7 @@ $SP().registerPlugin('formfields', function(options) {
       }
 
       var mtch = comments.join("").replace(/\s\s*/g," ").match(/FieldName="([^"]+)".* FieldInternalName="([^"]+)".* FieldType="([^"]+)"/)
-      return (mtch ? {"Name":mtch[1], "InternalName":mtch[2], "SPType":mtch[3]} : {"Name":"", "InternalName":"", "SPType":""});
+      return (mtch ? {"Name":mtch[1].replace(/&amp;/g,"&"), "InternalName":mtch[2], "SPType":mtch[3]} : {"Name":"", "InternalName":"", "SPType":""});
     };
 
     // Retrieve the text of an HTML element (from jQuery source)

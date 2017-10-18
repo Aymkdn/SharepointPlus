@@ -24,22 +24,32 @@
   - Change values returned by `$SP().list().update()`
   - Change values returned by `$SP().list().remove()`
   - Change values returned by `$SP().list().moderate()`
+  - Change behavior for `$SP().list().add()` and `$SP().list().update()` when an empty array of values is passed as a column value to be added/updated (it will now return '' instead of ';#;#')
   - Add option `cache` for `$SP().list().view()`
   - Add option `cache` for `$SP().lists()`
   - Add option `packetsize` for `$SP().list().moderate()`
   - Add `$SP().getPageSize()` that permits to get the size of the document/page
   - Add option `soapURL` to `$SP().webService()` (see https://github.com/Aymkdn/SharepointPlus/issues/51)
   - Add wiki pages for "Term/Taxonomy/Managed Metadata" (see https://github.com/Aymkdn/SharepointPlus/wiki/)
+  - Add wiki page for Discussion Board (see https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board)
   - Add `Property` property for a `TaxonomyFieldType` returned by `$SP().list().info()`
   - Add `._List` that returns the details for the list for `$SP().list().info()`
-  - Add Promise for `$SP().list().info()`
   - Add `$SP().hasREST()` to detect if REST API is supported
   - Add `progress` function for `$SP().createFile()`
   - Add `getXHR` function for `$SP().createFile()`
   - Add support for `ArrayBuffer` for `$SP().createFile()`
   - Add `SPArrayBufferToBase64` function() to transform an ArrayBuffer to a Base64 string
-  - Add Promise for `$SP().ajax()`
-  - Add 25 more QUnit tests
+  - Add automatic JSON parsing for results from `$SP().ajax()` which Content-Type that matchs json
+  - Add option `soapAction` for `$SP().webService()`
+  - Add support for multiple ids/values for `$SP().getLookup()`
+  - Add automatic support for digest token on `$SP().ajax()`
+  - Add `$SP().getRequestDigest()`
+  - Add option `rootFolder` for `$SP().list().add()` and `$SP().list().update()` for support of Discussion Board
+  - Add 30+ new QUnit tests
+  - Fix `$SP().formfields()` when there is ampersand (&) into the field's name
+  - Fix `$SP().toSPDate()` when time is required (see issue #64)
+  - Fix `SP().createFile()` for big upload with REST API (see https://stackoverflow.com/questions/46297625/large-arraybuffer-crashes-with-xmlhttprequest-send/46299028#46299028)
+  - Fix `$SP.ajax()` to resolve when the status code returned by the server is 2xx and not 200 only
   - Improve catch error from `$SP().createFile`
   - Optimize code for compression
 

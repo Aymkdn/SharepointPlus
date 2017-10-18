@@ -214,22 +214,23 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       })
     },
     /**
-     * @name $SP()._getRequestDigest
-     * @ignore
+     * @name $SP().getRequestDigest
      * @function
      * @category utils
      * @description Retrieve the Request Digest
      * @param {Object} settings
      *   @param {String} [settings.url=current] To check another URL (or if you need on a Node server)
+     *   @param {Boolean} [settings.cache=true] TRUE to use the cache and/or the one into the page for the digest, FALSE to get a new one
      * @return {Promise} resolve(Request Digest), reject(reject from $SP().ajax())
      */
-    _getRequestDigest:function(settings) {
+    getRequestDigest:function(settings) {
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject){
         settings=settings||{};
+        settings.cache=(settings.cache===false?false:true);
         var e, digest, url=(settings.url||_this.url||window.location.href).split("/").slice(0,3).join("/");
         // check cache
-        digest=_SP_CACHE_REQUESTDIGEST[url];
+        if (settings.cache) digest=_SP_CACHE_REQUESTDIGEST[url];
         if (digest) {
           // check date to be less than 24h
           if (new Date().getTime() - new Date(digest.split(",")[1]).getTime() < 86400000) {
@@ -237,7 +238,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             return;
           }
         }
-        if (_SP_ISBROWSER && document) {
+        if (_SP_ISBROWSER && document && settings.cache) {
           e=document.querySelector("#__REQUESTDIGEST");
           if (e) {
             digest=e.value;
@@ -255,6 +256,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           digest=data.d.GetContextWebInformation.FormDigestValue
           // cache
           _SP_CACHE_REQUESTDIGEST[url]=digest;
+          if (document) {
+            e=document.querySelector("#__REQUESTDIGEST");
+            if (e) e.value=digest;
+          }
           prom_resolve(digest);
         }, function(rej) {
           prom_reject(rej)
@@ -282,34 +287,56 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       // eslint-disable-next-line
       !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}var r=["responseType","withCredentials","timeout"];e.ajax=function(e,a){function s(e,t){return function(){p||(a(void 0===c.status?e:c.status,0===c.status?"Error":c.response||c.responseText||t,c),p=!0)}}var u=e.headers||{},i=e.body,d=e.method||(i?"POST":"GET"),p=!1,c=n(e.cors);c.open(d,e.url,!0);var l=c.onload=s(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=s(null,"Error"),c.ontimeout=s(null,"Timeout"),c.onabort=s(null,"Abort"),i&&(o(u,"X-Requested-With","XMLHttpRequest"),t.FormData&&i instanceof t.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var f,v=0,g=r.length;g>v;v++)f=r[v],void 0!==e[f]&&(c[f]=e[f]);for(var f in u)c.setRequestHeader(f,u[f]);return e.onprogress&&c.upload.addEventListener("progress",e.onprogress,!1),e.getXHR&&e.getXHR(c),c.send(i),c},t.nanoajax=e}({},function(){return this}());
       return _this._promise(function(prom_resolve, prom_reject) {
+        var addRequestDigest=false;
         // add "Accept": "application/json;odata=verbose" for headers if there is "_api/" in URL, except for "_api/web/Url"
-        if (settings.url.indexOf("/_api/") > -1 && settings.url.indexOf("_api/web/Url") === -1) {
+        if (settings.url.toLowerCase().indexOf("/_api/") > -1 && settings.url.toLowerCase().indexOf("_api/web/url") === -1) {
           if (!settings.headers["Accept"]) settings.headers.Accept = "application/json;odata="+_SP_JSON_ACCEPT;
           if (!settings.headers["Content-Type"]) settings.headers["Content-Type"] = "application/json;odata="+_SP_JSON_ACCEPT;
           if (!settings.headers["X-RequestDigest"] && settings.url.indexOf("contextinfo") === -1) {
-            // we need to retrieve the Request Digest
-            _this._getRequestDigest()
-            .then(function(requestDigest) {
-              settings.headers["X-RequestDigest"]=requestDigest;
-              return _this.ajax(settings)
-            })
-            .then(function(res) { prom_resolve(res) })
-            .catch(function(rej) { prom_reject(rej) });
-            return
+            addRequestDigest=true;
           }
+        }
+        // if "_vti_bin/client.svc/ProcessQuery" we want to add the RequestDigest
+        if (settings.url.toLowerCase().indexOf("_vti_bin/client.svc/processquery") > -1 && !settings.headers["X-RequestDigest"]) {
+          addRequestDigest=true
+        }
+        if (addRequestDigest) {
+          // we need to retrieve the Request Digest
+          _this.getRequestDigest()
+          .then(function(requestDigest) {
+            settings.headers["X-RequestDigest"]=requestDigest;
+            return _this.ajax(settings)
+          })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) });
+          return;
         }
         // use XML as the default content type
         if (!settings.headers["Content-Type"]) settings.headers["Content-Type"]="text/xml; charset=utf-8";
         // check if it's NodeJS
         if (_SP_ISBROWSER) {
+          // IE will return an "400 Bad Request" if it's a POST with no body
+          if (settings.method==="POST" && !settings.body) settings.body="";
           // eslint-disable-next-line
           nanoajax.ajax(settings, function(code, responseText, request) {
-            if (code === 200 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
+            if (code >= 200 && code < 300 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
               var body=request.responseXML || request.responseText;
-              if (settings.headers["Content-Type"].indexOf("/json") > -1 && typeof body==="string") body=JSON.parse(body); // parse JSON
+              if (request.getResponseHeader("Content-Type").indexOf("/json") > -1 && typeof body==="string") body=JSON.parse(body); // parse JSON
               prom_resolve(body)
             } else {
-              prom_reject({statusCode:code, responseText:responseText, request:request});
+              // check if it's an issue with validation code
+              if (code == 403 && responseText.indexOf("The security validation for this page is invalid and might be corrupted. Please use your web browser's Back button to try your operation again.") > -1) {
+                // then we retry
+                delete settings.headers["X-RequestDigest"];
+                _this.getRequestDigest({cache:false})
+                .then(function(requestDigest) {
+                  settings.headers["X-RequestDigest"]=requestDigest;
+                  return _this.ajax(settings)
+                })
+                .then(function(res) { prom_resolve(res) })
+                .catch(function(rej) { prom_reject(rej) });
+
+              } else prom_reject({statusCode:code, responseText:responseText, request:request});
             }
           })
         } else {
@@ -510,7 +537,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
      *   @param {String} service The name of the service (Lists, Versions, PublishedLinksService, ...) it's the ".asmx" name without the extension
      *   @param {Object} [properties={}] The properties to call
      *   @param {String} [webURL=current website] The URL of the website
-     *   @param {String} [soapURL='http://schemas.microsoft.com/sharepoint/soap/'] If the SOAP url is not the default one, then you can customize it
+     *   @param {String|Boolean} [soapURL='http://schemas.microsoft.com/sharepoint/soap/'] If the SOAP url is not the default one, then you can customize it... it will be send in the request's headers as "SOAPAction"
+     *   @param {Boolean} [soapAction=true] Some web services don't want the "SOAPAction" header
      * @return {Promise} resolve(responseBody), reject(see $SP().ajax())
      *
      * @example
@@ -548,7 +576,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     webService:function(options) {
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
-        var bodyContent="", prop;
+        var bodyContent="", prop, params;
         if (!options.service) throw "Error 'webService': the option 'service' is required";
         if (!options.operation) throw "Error 'webService': the option 'operation' is required";
         options.webURL = options.webURL || _this.url;
@@ -572,13 +600,16 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             bodyContent += '<'+prop+'>'+options.properties[prop]+'</'+prop+'>'
           }
         }
+        options.soapAction=(options.soapAction===false?false:true);
         options.soapURL=options.soapURL||'http://schemas.microsoft.com/sharepoint/soap/';
+        if (!options.soapAction) options.soapURL=options.soapURL.replace(/\/$/,"");
         bodyContent = _this._buildBodyForSOAP(options.operation, bodyContent, options.soapURL);
-        _this.ajax({
+        params={
           url: options.webURL+"/_vti_bin/"+options.service+".asmx",
-          body: bodyContent,
-          headers: {'SOAPAction':options.soapURL+options.operation },
-        }).then(function(data) { prom_resolve(data) }, function(rej) { prom_reject(rej) });
+          body: bodyContent
+        };
+        if (options.soapAction) params.headers={'SOAPAction':options.soapURL+options.operation };
+        _this.ajax(params).then(function(data) { prom_resolve(data) }, function(rej) { prom_reject(rej) });
       })
     },
     /**
@@ -938,7 +969,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     cleanResult:function(str,separator) {
       if (str===null || typeof str==="undefined") return "";
       separator = separator || ";";
-      return (typeof str==="string"?str.replace(/^(string;|float;)#?/,"").replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator):str);
+      return (typeof str==="string"?str.replace(/^(string;|float;|datetime;)#?/,"").replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator):str);
     },
     /**
       @name $SP().list.get
@@ -975,7 +1006,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Boolean} [options.calendar=false] If you want to get the events from a Calendar List
         @param {Object} [options.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
           @param {Boolean} [options.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
-          @param {String|Date} [options.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String)
+          @param {String|Date} [options.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String) [attention: if 'splitRecurrence' is FALSE, then Sharepoint will ignore this 'referenceDate'...]
           @param {String} [options.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
       @return {Promise} resolve(data returned by the server), reject(error from $SP().ajax())
 
@@ -1258,6 +1289,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           // --> it will return a SP Date
         }
       })
+
+      // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
 
       // [It doesn't work with Sharepoint 2013 anymore, only for SP2010]
       // You can use `useIndexForOrderBy:true` to override the list view threshold -- see https://spservices.codeplex.com/discussions/280642
@@ -1725,6 +1758,46 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         console.log("Error: ",error)
       })
 
+      // example with a input[type="file"]
+      // <input type="file" id="file_to_upload"> <button type="button" onclick="_uploadFile()">Upload</button>
+      function _uploadFile() {
+        var files;
+        // retrive file from INPUT
+        files = document.querySelector('#file_to_upload').files;
+        if (!files || files.length === 0) {
+          alert("ERROR: Select a file");
+          return;
+        }
+        files = Array.prototype.slice.call(files);
+        // read the files
+        Promise.all(files.map(function(file) {
+          return new Promise(function(prom_res, prom_rej) {
+            // use fileReader
+            var fileReader = new FileReader();
+            fileReader.onloadend = function(e) {
+              file.content = e.target.result;
+              prom_res(file);
+            }
+            fileReader.onerror = function(e) {
+              prom_rej(e.target.error);
+            }
+            fileReader.readAsArrayBuffer(file);
+          })
+        })).then(function(files) {
+          // upload files
+          return Promise.all(files.map(function(file) {
+            return $SP().list("SharepointPlusLibrary").createFile({
+              content:file.content,
+              encoded:true,
+              filename:file.name,
+              progress:function(perc) {
+                console.log("Progress => ",perc+"%")
+              }
+            })
+          }))
+        })
+      }
+
       // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
     */
     createFile:function(setup) {
@@ -1806,6 +1879,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               }
               else folder="";
               folder = rootFolder+folder;
+              // The browsers could crash if we try to use send() with a large ArrayBuffer (https://stackoverflow.com/questions/46297625/large-arraybuffer-crashes-with-xmlhttprequest-send)
+              // so I convert ArrayBuffer into a Blob
+              // note: we cannot use startUpload/continueUpload/finishUpload because it's only available for Sharepoint Online
+              setup.content = new Blob([setup.content]);
               return _this.ajax({
                 url: _this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(filename)+"',overwrite=true)",
                 body: setup.content,
@@ -1869,7 +1946,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       // create a folder called "second" under "first"
       // the result should be "http://mysite/Shared Documents/first/second/"
       // if "first" doesn't exist then it will return an error
-      $SP().createFolder("first/second").then(function(folder) { alert("Folder created!"); }
+      $SP().list("Documents").createFolder("first/second").then(function(folder) { alert("Folder created!"); }
 
       // Note: To delete a folder you can use $SP().list().remove() with ID and FileRef parameters
     */
@@ -1892,8 +1969,29 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }
         _this.add(toAdd)
         .then(function(rows) {
-          if (rows.failed.length>0) return Promise.reject(rows.failed);
-          prom_resolve(rows.passed[0])
+          // remove first and last "/" for folderPath
+          if (folderPath.charAt(0)==="/") folderPath=folderPath.slice(1);
+          if (folderPath.slice(-1)==="/") folderPath=folderPath.slice(0,-1);
+          // check if our final folder has been correctly created
+          var i;
+          for (i=rows.passed.length; i--;) {
+            if (rows.passed[i].BaseName === folderPath) {
+              prom_resolve(rows.passed[i]);
+              return;
+            }
+          }
+          for (i=rows.failed.length; i--;) {
+            if (rows.failed[i].BaseName === folderPath) {
+              if (rows.failed[i].errorMessage.indexOf('0x8107090d') > -1) { // duplicate folder
+                rows.failed[i].errorMessage="Folder '"+rows.failed[i].BaseName+"' already exists.";
+                prom_resolve(rows.failed[i]);
+              } else {
+                prom_reject(rows.failed[i].errorMessage);
+              }
+              return;
+            }
+          }
+          prom_reject("Unknown error");
         })
         .catch(function(error) { prom_reject(error) });
       })
@@ -2206,7 +2304,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @example
       $SP().list("List Name").info().then(function(infos) {
         // for columns' details:
-        for (var i=0; i&lt;infos.length; i++) console.log(infos[i]["DisplayName"]+ ": => "+infos[i]);
+        for (var i=0; i&lt;infos.length; i++) console.log(infos[i]["DisplayName"]+ ": => ",infos[i]);
         // for list's details:
         console.log(infos._List)
       });
@@ -2552,6 +2650,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Number} [options.packetsize=15] If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
         @param {Function} [options.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
+        @param {String} [options.rootFolder=''] When dealing with Discussion Board you need to provide the rootFolder of the Message when you post a reply
       @return {Promise} resolve({passed, failed}), reject(error)
 
       @example
@@ -2571,6 +2670,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       // different ways to add John and Tom into the table
       $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
       $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
+
+      // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
     */
     add:function(items, options) {
       var _this=this;
@@ -2586,6 +2687,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
         setup.progress= setup.progress || function(){};
         setup.packetsize=setup.packetsize||15;
+        setup.rootFolder=setup.rootFolder||"";
 
         if (!SPIsArray(items)) items = [ items ];
 
@@ -2612,7 +2714,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.progressVar.current += itemsLength;
 
         // build a part of the request
-        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
+        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName=""'+(setup.rootFolder?' RootFolder="'+setup.rootFolder+'"':'')+'>';
         for (i=0; i < items.length; i++) {
           updates += '<Method ID="'+(i+1)+'" Cmd="New">';
           updates += '<Field Name=\'ID\'>New</Field>';
@@ -2620,7 +2722,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             if (items[i].hasOwnProperty(it)) {
               itemKey = it;
               itemValue = items[i][it];
-              if (SPIsArray(itemValue)) itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
+              if (SPIsArray(itemValue)) {
+                if (itemValue.length === 0) itemValue='';
+                else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
+              }
               if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
               updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
             }
@@ -2674,6 +2779,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Number} [options.packetsize=15] If you have too many items to update, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
         @param {Function} [options.progress] Two parameters: 'current' and 'max' -- if you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
+        @param {String} [options.rootFolder=''] When dealing with Discussion Board you need to provide the rootFolder of the Message when you post a reply
       @return {Promise} resolve({passed, failed}), reject(error)
 
       @example
@@ -2688,6 +2794,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         var len=items.passed.length;
         console.log(len+(len>1?" items have been successfully added":" item has been successfully added"))
       });
+
+      // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
     */
     update:function(items, options) {
       var _this=this;
@@ -2704,6 +2812,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
         setup.progress= setup.progress || function(){};
         setup.packetsize=setup.packetsize||15;
+        setup.rootFolder=setup.rootFolder||"";
 
         if (!SPIsArray(items)) items = [ items ];
         var itemsLength=items.length, nextPacket, cutted, itemKey, itemValue, it, i;
@@ -2756,7 +2865,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.progressVar.current += itemsLength;
 
         // build a part of the request
-        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
+        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName=""'+(setup.rootFolder?' RootFolder="'+setup.rootFolder+'"':'')+'>';
         for (i=0; i < itemsLength; i++) {
           updates += '<Method ID="'+(i+1)+'" Cmd="Update">';
           if (!items[i].ID) throw "[SharepointPlus 'update'] you have to provide the item ID called 'ID'";
@@ -2764,7 +2873,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             if (items[i].hasOwnProperty(it)) {
               itemKey = it;
               itemValue = items[i][it];
-              if (SPIsArray(itemValue)) itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
+              if (SPIsArray(itemValue)) {
+                if (itemValue.length===0) itemValue='';
+                else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
+              }
               if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
               updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
             }
@@ -4068,8 +4180,9 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     toDate:function(strDate, forceUTC) {
       if (!strDate) return ""
       // 2008-10-31(T)00:00:00(Z)
-      if (strDate instanceof Date) return strDate
-      if (strDate.length!=19 && strDate.length!=20) throw "toDate: '"+strDate+"' is invalid."
+      if (strDate instanceof Date) return strDate;
+      if (strDate.slice(0,10)==="datetime;#") strDate=strDate.slice(10);
+      if (strDate.length!=19 && strDate.length!=20) throw "[SharepointPlus toDate] '"+strDate+"' is invalid."
       var year  = strDate.substring(0,4);
       var month = strDate.substring(5,7);
       var day   = strDate.substring(8,10);
@@ -4089,7 +4202,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @return {String} the equivalent string for the Date object passed
 
       @example
-      $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31 00:00:00"
+      $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31T00:00:00Z"
       $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"
     */
     toSPDate:function(oDate, includeTime) {
@@ -4104,7 +4217,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var hours   = pad(oDate.getHours());
       var minutes = pad(oDate.getMinutes());
       var seconds = pad(oDate.getSeconds());
-      return year+"-"+month+"-"+day+(includeTime?" "+hours+":"+minutes+":"+seconds : "");
+      return year+"-"+month+"-"+day+(includeTime?"T"+hours+":"+minutes+":"+seconds+"Z" : "");
     },
     /**
       @name $SP().toCurrency
@@ -4144,10 +4257,21 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @category utils
       @description Split the ID and Value
       @param {String} text The string to retrieve data
-      @return {Object} .id returns the ID, and .value returns the value
-      @example $SP().getLookup("328;#Foo"); // --> {id:328, value:"Foo"}
+      @return {Object} .id returns the ID (or an array of IDs), and .value returns the value (or an array of values)
+      @example
+      $SP().getLookup("328;#Foo"); // --> {id:"328", value:"Foo"}
+      $SP().getLookup("328;#Foo;#191;#Other Value"); // --> {id:["328", "191"], value:["Foo", "Other Value"]}
+      $SP().getLookup("328"); // --> {id:"328", value:"328"}
     */
-    getLookup:function(str) { if (!str) { return {id:"", value:""} } var a=str.split(";#"); return {id:a[0], value:a[1]}; },
+    getLookup:function(str) {
+      if (!str) return {id:"", value:""}
+      var a=str.split(";#");
+      if (a.length<=2) return {id:a[0], value:(typeof a[1]==="undefined"?a[0]:a[1])};
+      else {
+        // we have several lookups
+        return {id:str.replace(/([0-9]+;#)([^;]+)/g,"$1").replace(/;#;#/g,",").slice(0,-2).split(","), value:str.replace(/([0-9]+;#)([^;]+)/g,"$2").split(";#")}
+      }
+    },
     /**
       @name $SP().toXSLString
       @function
@@ -4446,7 +4570,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @example
       $SP().showModalDialog({
         title:"Dialog",
-        html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModialDialog(\'here\')">Close&lt;/button>&lt;/p>',
+        html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModalDialog(\'here\')">Close&lt;/button>&lt;/p>',
         callback:function(dialogResult, returnValue) {
           alert("Result="+dialogResult); // -> "here"
         }
