@@ -1,8 +1,8 @@
 {
   "name": "sharepointplus",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "A library that offers an easy interface to deal with Sharepoint",
-  "main": "sharepointplus-5.0.js",
+  "main": "sharepointplus-5.1.js",
   "directories": {
     "doc": "docs"
   },
@@ -11,9 +11,6 @@
     "lodash": "^4.17.4",
     "sp-request": "^2.1.2",
     "xmldom": "^0.1.27"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
