@@ -1425,7 +1425,7 @@ function loadSPtests() {
             assert.ok(true, 'createFile() Phase 2');
             doneCreateFileError();
           });
-
+          console.log('createFolder() phase 1');
           var folderName = "folder_"+new Date().getTime();
           $SP().list(library).createFolder(folderName)
           .then(function(folder) {
@@ -1436,9 +1436,9 @@ function loadSPtests() {
             assert.ok(false, 'createFolder() phase 1')
             doneCreateFolder();
           });
-
-          $SP().list(library).createFolder("first/two/").then(function(folder) {
-            assert.ok(folder.errorMessage==="Folder 'first/two' already exists.", 'createFolder() phase 2')
+          console.log('createFolder() phase 2');
+          $SP().list(library).createFolder(folderName).then(function(folder) {
+            assert.ok(folder.errorMessage==="Folder '"+folderName+"' already exists.", 'createFolder() phase 2')
             doneCreateFolderError();
           })
           .catch(function() {
