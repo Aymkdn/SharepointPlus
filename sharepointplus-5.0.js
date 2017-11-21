@@ -7,14 +7,6 @@
  */
 
 /**
- @name SPIsArray
- @function
- @category utils
- @description Return true when the arg is an array
-*/
-var SPIsArray = function(v) { return (Object.prototype.toString.call(v) === '[object Array]') }
-
-/**
  * @name SPArrayChunk
  * @category utils
  * @function
@@ -217,11 +209,14 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
      * @name $SP().getRequestDigest
      * @function
      * @category utils
-     * @description Retrieve the Request Digest
+     * @description Retrieve a Request Digest (and it will change the value of document.querySelector("#__REQUESTDIGEST") when a new Request Digest is created)
      * @param {Object} settings
-     *   @param {String} [settings.url=current] To check another URL (or if you need on a Node server)
+     *   @param {String} [settings.url=current] To check another URL (or if you use it on a Node server)
      *   @param {Boolean} [settings.cache=true] TRUE to use the cache and/or the one into the page for the digest, FALSE to get a new one
      * @return {Promise} resolve(Request Digest), reject(reject from $SP().ajax())
+     *
+     * @example
+     * $SP().getRequestDigest(false).then(function(digest) { console.log("The new digest is "+digest)})
      */
     getRequestDigest:function(settings) {
       var _this=this;
@@ -270,34 +265,46 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @name $SP().ajax
       @function
       @category utils
-      @description Permits to do an Ajax request (for internal use) based on https://github.com/yanatan16/nanoajax
-      @param {Object} settings
-        @param {String} url The url to call
-        @param {String} [method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
-        @param {Object} [headers] the headers
-        @param {String} [body] The data to send to the server
-        @param {Function} [onprogress=function(event){}] The "upload.onprogress" object for XHR
-        @param {Function} [getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter
+      @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax
+      @param {Object} settings (See options below)
+        @param {String} settings.url The url to call
+        @param {String} [settings.method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
+        @param {Object} [settings.headers] the headers
+        @param {String} [settings.body] The data to send to the server
+        @param {Function} [settings.onprogress=function(event){}] The "upload.onprogress" object for XHR
+        @param {Function} [settings.getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter
       @return {Promise} resolve(responseText||responseXML), reject({response, statusCode, responseText})
+
+      @example
+      // for a regular request
+      $SP().ajax({url:'https://my.web.site'}).then(function(data) { console.log(data) })
+
+      // manipulate xhr for specific needs
+      $SP().ajax({url:'https://url.com/file.jpg', getXHR:function(xhr){ xhr.responseType = 'arraybuffer' }}).then(function(data) {
+        // ArrayBuffer result
+      })
+
+      // for a CORS/cross-domain request you may need to use 'false' for 'Content-Type'
+      $SP().ajax({url:'https://my.cross-domain.web/site', headers:{"Content-Type":false}}).then(function(data) { console.log(data) })
     */
     ajax:function(settings) {
       var _this=this;
       settings.headers=settings.headers||{};
       // https://github.com/yanatan16/nanoajax — not the original version (include upload.onprogress and getXHR)
       // eslint-disable-next-line
-      !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}var r=["responseType","withCredentials","timeout"];e.ajax=function(e,a){function s(e,t){return function(){p||(a(void 0===c.status?e:c.status,0===c.status?"Error":c.response||c.responseText||t,c),p=!0)}}var u=e.headers||{},i=e.body,d=e.method||(i?"POST":"GET"),p=!1,c=n(e.cors);c.open(d,e.url,!0);var l=c.onload=s(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=s(null,"Error"),c.ontimeout=s(null,"Timeout"),c.onabort=s(null,"Abort"),i&&(o(u,"X-Requested-With","XMLHttpRequest"),t.FormData&&i instanceof t.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var f,v=0,g=r.length;g>v;v++)f=r[v],void 0!==e[f]&&(c[f]=e[f]);for(var f in u)c.setRequestHeader(f,u[f]);return e.onprogress&&c.upload.addEventListener("progress",e.onprogress,!1),e.getXHR&&e.getXHR(c),c.send(i),c},t.nanoajax=e}({},function(){return this}());
+      !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}var r=["responseType","withCredentials","timeout"];e.ajax=function(e,a){function s(e,t){return function(){p||(a(void 0===c.status?e:c.status,0===c.status?"Error":c.response||c.responseText||t,c),p=!0)}}var u=e.headers||{},i=e.body,d=e.method||(i?"POST":"GET"),p=!1,c=n(e.cors);c.open(d,e.url,!0);var l=c.onload=s(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=s(null,"Error"),c.ontimeout=s(null,"Timeout"),c.onabort=s(null,"Abort"),i&&(t.FormData&&i instanceof t.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var f,v=0,g=r.length;g>v;v++)f=r[v],void 0!==e[f]&&(c[f]=e[f]);for(var f in u)u[f]!==!1&&c.setRequestHeader(f,u[f]);return e.onprogress&&c.upload.addEventListener("progress",e.onprogress,!1),e.getXHR&&e.getXHR(c),c.send(i),c},t.nanoajax=e}({},function(){return this}());
       return _this._promise(function(prom_resolve, prom_reject) {
         var addRequestDigest=false;
         // add "Accept": "application/json;odata=verbose" for headers if there is "_api/" in URL, except for "_api/web/Url"
         if (settings.url.toLowerCase().indexOf("/_api/") > -1 && settings.url.toLowerCase().indexOf("_api/web/url") === -1) {
-          if (!settings.headers["Accept"]) settings.headers.Accept = "application/json;odata="+_SP_JSON_ACCEPT;
-          if (!settings.headers["Content-Type"]) settings.headers["Content-Type"] = "application/json;odata="+_SP_JSON_ACCEPT;
-          if (!settings.headers["X-RequestDigest"] && settings.url.indexOf("contextinfo") === -1) {
+          if (typeof settings.headers["Accept"]==="undefined") settings.headers.Accept = "application/json;odata="+_SP_JSON_ACCEPT;
+          if (typeof settings.headers["Content-Type"]==="undefined") settings.headers["Content-Type"] = "application/json;odata="+_SP_JSON_ACCEPT;
+          if (typeof settings.headers["X-RequestDigest"]==="undefined" && settings.url.indexOf("contextinfo") === -1) {
             addRequestDigest=true;
           }
         }
         // if "_vti_bin/client.svc/ProcessQuery" we want to add the RequestDigest
-        if (settings.url.toLowerCase().indexOf("_vti_bin/client.svc/processquery") > -1 && !settings.headers["X-RequestDigest"]) {
+        if (settings.url.toLowerCase().indexOf("_vti_bin/client.svc/processquery") > -1 && typeof settings.headers["X-RequestDigest"]==="undefined") {
           addRequestDigest=true
         }
         if (addRequestDigest) {
@@ -312,7 +319,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           return;
         }
         // use XML as the default content type
-        if (!settings.headers["Content-Type"]) settings.headers["Content-Type"]="text/xml; charset=utf-8";
+        if (typeof settings.headers["Content-Type"]==="undefined") settings.headers["Content-Type"]="text/xml; charset=utf-8";
         // check if it's NodeJS
         if (_SP_ISBROWSER) {
           // IE will return an "400 Bad Request" if it's a POST with no body
@@ -320,7 +327,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           // eslint-disable-next-line
           nanoajax.ajax(settings, function(code, responseText, request) {
             if (code >= 200 && code < 300 && responseText !== "Error" && responseText !== "Abort" && responseText !== "Timeout") {
-              var body=request.responseXML || request.responseText;
+              var body=(!request.responseType || request.responseType==='document'?request.responseXML || request.responseText : responseText);
               if (request.getResponseHeader("Content-Type").indexOf("/json") > -1 && typeof body==="string") body=JSON.parse(body); // parse JSON
               prom_resolve(body)
             } else {
@@ -619,7 +626,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @description (internal use only) Add a function in the queue
     */
     _addInQueue:function(args) {
-      var _this;
+      var _this=this;
       _this.listQueue.push(args);
       if (_this.listQueue.length===1) _this._testQueue();
       return _this
@@ -652,7 +659,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @description Use a WHERE sentence to transform it into a CAML Syntax sentence
 
       @param {String} where The WHERE sentence to change
-      @param {String} [escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
+      @param {String} [escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
       @example
       $SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
       // -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;IsNotNull>&lt;FieldRef Name="Description" />&lt;/IsNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
@@ -990,7 +997,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Boolean} [options.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
         @param {Integer} [options.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
         @param {String}  [options.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
-        @param {Boolean} [options.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items  limit in an unique call -- see the example below to know how to use it
+        @param {Boolean} [options.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items limit in an unique call (for Sharepoint 2010 only) -- see the example below to know how to use it
         @param {Boolean} [options.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
         @param {Boolean} [options.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
         @param {Object} [options.folderOptions] Permits to read the content of a Document Library (see below)
@@ -1350,7 +1357,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
 
         // if setup.where is an array, then it means we want to do several requests
         // so we keep the first WHERE
-        if (SPIsArray(setup.where)) {
+        if (Array.isArray(setup.where)) {
           setup.where = setup.where.slice(0); // clone the original array
           if (!setup.originalWhere) setup.originalWhere = setup.where.slice(0);
           setup.nextWhere = setup.where.slice(1);
@@ -1664,7 +1671,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                   wh = "(" + wh.join(" OR ") + ")";
                   // now we add this WHERE into the existing where
                   if (setup.join.where) {
-                    if (SPIsArray(setup.join.where)) {
+                    if (Array.isArray(setup.join.where)) {
                       setup.join.where.forEach(function(e,i) { setup.join.where[i]=wh + " AND ("+e+")" })
                     } else {
                       setup.join.where=wh + " AND (" + setup.join.where + ")";
@@ -1678,7 +1685,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               }
               // make sure the lookup fields is in the fields list
               if (!setup.join.fields) setup.join.fields=[];
-              if (!SPIsArray(setup.join.fields)) {
+              if (!Array.isArray(setup.join.fields)) {
                 tmp=setup.join.fields.split(",");
                 tmp.push(setup.join.onLookup);
                 setup.join.fields=tmp.join(",");
@@ -1759,7 +1766,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       })
 
       // example with a input[type="file"]
-      // <input type="file" id="file_to_upload"> <button type="button" onclick="_uploadFile()">Upload</button>
+      // &lt;input type="file" id="file_to_upload"> &lt;button type="button" onclick="_uploadFile()">Upload&lt;/button>
       function _uploadFile() {
         var files;
         // retrive file from INPUT
@@ -2015,7 +2022,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         comments:"Automatic check in with SharepointPlus"
       }).then(function() {
         alert("Done");
-      }).catchfunction(error) {
+      }).catch(function(error) {
         alert("Check in failed")
       })
     */
@@ -2397,7 +2404,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
 
       @param {String} [viewID="The default view"] The view ID or view Name
       @param {Object} [options] (see below)
-        @param {Boolean} [cache=true] Get the view's info from the cache
+        @param {Boolean} [options.cache=true] Get the view's info from the cache
       @return {Promise} resolve({DefaultView, Name, ID, Type, Url, OrderBy, Fields, RowLimit, WhereCAML}), reject(error)
 
       @example
@@ -2494,7 +2501,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @description Get the views' info for a List
 
       @param {Hash} [options]
-        @param {Boolean} [cache=true] Get the info from the cache
+        @param {Boolean} [options.cache=true] Get the info from the cache
       @return {Promise} resolve({DefaultView, Name, ID, Type, Url}), reject(error)
 
       @example
@@ -2648,7 +2655,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @param {Object|Array} items List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])
       @param {Object} [options] Options (see below)
         @param {Number} [options.packetsize=15] If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [options.progress] (current,max) If you provide more than 15 items then they will be treated by packets and you can use "progress" to know more about the steps
+        @param {Function} [options.progress] (current,max) If you provide more than 'packetsize' items then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
         @param {String} [options.rootFolder=''] When dealing with Discussion Board you need to provide the rootFolder of the Message when you post a reply
       @return {Promise} resolve({passed, failed}), reject(error)
@@ -2689,7 +2696,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.packetsize=setup.packetsize||15;
         setup.rootFolder=setup.rootFolder||"";
 
-        if (!SPIsArray(items)) items = [ items ];
+        if (!Array.isArray(items)) items = [ items ];
 
         var itemsLength=items.length, nextPacket, cutted, itemKey, itemValue, it, i;
         // define current and max for the progress
@@ -2722,7 +2729,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             if (items[i].hasOwnProperty(it)) {
               itemKey = it;
               itemValue = items[i][it];
-              if (SPIsArray(itemValue)) {
+              if (Array.isArray(itemValue)) {
                 if (itemValue.length === 0) itemValue='';
                 else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
               }
@@ -2747,6 +2754,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               if (rows.length==0) rows=result[i].getElementsByTagName('row'); // for Chrome 'bug'
               if (items[i]) {
                 items[i].ID = rows[0].getAttribute("ows_ID");
+                items[i].raw = rows[0];
                 passed.push(items[i]);
               }
             } else if (items[i]) {
@@ -2777,9 +2785,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @param {Object} [options] Options (see below)
         @param {String} [options.where=""] You can define a WHERE clause
         @param {Number} [options.packetsize=15] If you have too many items to update, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- if you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
-        @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;')
-        @param {String} [options.rootFolder=''] When dealing with Discussion Board you need to provide the rootFolder of the Message when you post a reply
+        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- if you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
+        @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
       @return {Promise} resolve({passed, failed}), reject(error)
 
       @example
@@ -2794,8 +2801,6 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         var len=items.passed.length;
         console.log(len+(len>1?" items have been successfully added":" item has been successfully added"))
       });
-
-      // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
     */
     update:function(items, options) {
       var _this=this;
@@ -2812,9 +2817,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.escapeChar = (setup.escapeChar == undefined) ? true : setup.escapeChar;
         setup.progress= setup.progress || function(){};
         setup.packetsize=setup.packetsize||15;
-        setup.rootFolder=setup.rootFolder||"";
 
-        if (!SPIsArray(items)) items = [ items ];
+        if (!Array.isArray(items)) items = [ items ];
         var itemsLength=items.length, nextPacket, cutted, itemKey, itemValue, it, i;
 
         // if there is a WHERE clause
@@ -2865,7 +2869,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.progressVar.current += itemsLength;
 
         // build a part of the request
-        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName=""'+(setup.rootFolder?' RootFolder="'+setup.rootFolder+'"':'')+'>';
+        var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
         for (i=0; i < itemsLength; i++) {
           updates += '<Method ID="'+(i+1)+'" Cmd="Update">';
           if (!items[i].ID) throw "[SharepointPlus 'update'] you have to provide the item ID called 'ID'";
@@ -2873,7 +2877,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             if (items[i].hasOwnProperty(it)) {
               itemKey = it;
               itemValue = items[i][it];
-              if (SPIsArray(itemValue)) {
+              if (Array.isArray(itemValue)) {
                 if (itemValue.length===0) itemValue='';
                 else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
               }
@@ -2894,8 +2898,12 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         .then(function(data) {
           var result = data.getElementsByTagName('Result'), len=result.length, passed = setup.progressVar.passed, failed = setup.progressVar.failed, i;
           for (i=0; i < len; i++) {
-            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue === "0x00000000" && items[i]) // success
+            if (result[i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue === "0x00000000" && items[i]) {// success
+              var raw=result[i].getElementsByTagName('z:row');
+              if (raw.length===0) raw=result[i].getElementsByTagName('row'); // for Chrome 'bug'
+              items[i].raw=raw[0];
               passed.push(items[i]);
+            }
             else if (items[i]) {
               items[i].errorMessage = result[i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
               failed.push(items[i]);
@@ -2986,7 +2994,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (!_this.url) throw "[SharepointPlus 'moderate'] not able to find the URL!"; // we cannot determine the url
         setup.progress= setup.progress || function(){};
 
-        if (!SPIsArray(items)) items = [ items ];
+        if (!Array.isArray(items)) items = [ items ];
         var itemsLength=items.length, nextPacket, cutted, itemKey, itemValue, it, i;
 
         // define current and max for the progress
@@ -3082,7 +3090,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @param {Object} [options] Options (see below)
         @param {String} [options.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
         @param {Number} [options.packetsize=15] If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- If you provide more than 15 ID then they will be treated by packets and you can use "progress" to know more about the steps
+        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- If you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
       @return {Promise} resolve({passed, failed}), reject(error)
 
       @example
@@ -3115,7 +3123,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         setup.progress= setup.progress || (function() {});
         setup.packetsize = setup.packetsize || 15;
 
-        if (!SPIsArray(items)) items = [ items ];
+        if (!Array.isArray(items)) items = [ items ];
         var itemsLength=items.length, nextPacket, cutted, i;
 
         // if there is a WHERE clause
@@ -3330,18 +3338,17 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (!setup.ID || !setup.workflowName) throw "[SharepointPlus 'getWorkflowID'] all parameters are mandatory";
 
         // find the fileRef
-        _this.get({fields:"FieldRef",where:"ID = "+setup.ID}).then(function(d) {
+        _this.get({fields:"FieldRef",where:"ID = "+setup.ID})
+        .then(function(d) {
           if (d.length===0) throw "[SharepointPlus 'getWorkflowID'] I'm not able to find the item ID "+setup.ID;
 
-          var fileRef = _this.cleanResult(d[0].getAttribute("FileRef")), c;
-          // check if it's a List
-          if (fileRef.indexOf("/Lists") > -1) {
-            c=fileRef.substring(0,fileRef.indexOf("/Lists"))
-            d=_this.url.substring(0,_this.url.indexOf(c));
-          } else {
-            d=_this.url.split("/").slice(0,3).join("/")+"/"
+          var fileRef = _this.cleanResult(d[0].getAttribute("FileRef"));
+          if(!_this.url.startsWith("http")) {
+            // we need to find the full path
+            fileRef=window.location.href.split("/").slice(0,3).join("/") + "/" + fileRef;
+          } else if (!fileRef.startsWith("http")) {
+            fileRef = _this.url + fileRef
           }
-          fileRef = d+fileRef;
           _this.ajax({
             url: _this.url+"/_vti_bin/Workflow.asmx",
             body: _this._buildBodyForSOAP("GetWorkflowDataForItem", '<item>'+fileRef+'</item>', "http://schemas.microsoft.com/sharepoint/soap/workflow/"),
@@ -3492,7 +3499,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           // define the parameters if any
           var workflowParameters = "<root />", p, i;
           if (setup.parameters) {
-            if (!SPIsArray(setup.parameters)) setup.parameters = [ setup.parameters ];
+            if (!Array.isArray(setup.parameters)) setup.parameters = [ setup.parameters ];
             p = setup.parameters.slice(0);
             workflowParameters = "<Data>";
             for (i=0; i<p.length; i++) workflowParameters += "<"+p[i].name+">"+p[i].value+"</"+p[i].name+">";

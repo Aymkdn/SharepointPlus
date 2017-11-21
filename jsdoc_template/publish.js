@@ -344,7 +344,8 @@ function buildLeftNav(members) {
   let nav = '';
   let categories = new Map([...members.categories.entries()].sort());
   for (let cat of categories) {
-    nav += '<li class="nav-parent">'+cat[0]+'</li>';
+    //console.log("cat => ",cat)
+    nav += '<li class="nav-parent"><a href="'+cat[0]+'.html">'+cat[0]+'</a></li>';
     let subcats = cat[1];
     subcats.sort((a,b) => { return (a.name < b.name?-1:1) });
     subcats.forEach((c) => {

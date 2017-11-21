@@ -7,9 +7,9 @@
     "doc": "docs"
   },
   "dependencies": {
-    "jsdoc": "^3.4.3",
-    "lodash": "^4.13.1",
-    "sp-request": "^2.0.3",
+    "jsdoc": "^3.5.5",
+    "lodash": "^4.17.4",
+    "sp-request": "^2.1.2",
     "xmldom": "^0.1.27"
   },
   "scripts": {

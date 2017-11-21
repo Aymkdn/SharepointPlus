@@ -519,7 +519,7 @@ function loadSPtests() {
           assert.ok(
             (function() {
               var el = $SP().formfields("Person or Group").elem(false);
-              if (SPIsArray(el)) el=el[0];
+              if (Array.isArray(el)) el=el[0];
               return el.tagName.toUpperCase() === "DIV"
             }()), "Person or Group -- elem()");
           // test type()
@@ -535,7 +535,7 @@ function loadSPtests() {
           assert.ok(function() {
             $SP().formfields("Person or Group (Multiple)").val([currentUserName, currentUserName]);
             var arr = $SP().formfields("Person or Group (Multiple)").val({extend:true});
-            if (SPIsArray(arr)) {
+            if (Array.isArray(arr)) {
               return arr.length === 2 && (arr[0].Key.toLowerCase() == __currentUserName.toLowerCase() || arr[0].Key.toLowerCase() == currentUserName.toLowerCase()) && (arr[1].Key.toLowerCase() == __currentUserName.toLowerCase() || arr[1].Key.toLowerCase() == currentUserName.toLowerCase());
             } else {
               return (arr.Key.toLowerCase() == __currentUserName.toLowerCase() || arr.Key.toLowerCase() == currentUserName.toLowerCase());
@@ -551,7 +551,7 @@ function loadSPtests() {
           assert.ok(
             (function() {
               var el = $SP().formfields("Person or Group (Multiple)").elem(false);
-              if (SPIsArray(el)) el=el[0];
+              if (Array.isArray(el)) el=el[0];
               return el.tagName.toUpperCase() === "DIV"
             }()), "Person or Group (Multiple) -- elem()");
           // test type()
@@ -854,7 +854,7 @@ function loadSPtests() {
           assert.ok(function() {
             $SP().formfields("Date and Time").val(["1/1/2015", "1 PM", "15"]);
             var a = $SP().formfields("Date and Time").val();
-            return SPIsArray(a) && a.length===3 && a[0] === "1/1/2015" && a[2] == "15";
+            return Array.isArray(a) && a.length===3 && a[0] === "1/1/2015" && a[2] == "15";
           }(), "Date and Time -- val()");
           // test isMandatory()
           assert.ok(($SP().formfields("Date and Time").isMandatory() === false), "Date and Time -- isMandatory()");
@@ -905,7 +905,7 @@ function loadSPtests() {
             test1bis = ($SP().formfields("Lookup (Multiple)").val()[0] == "2 - Option 2");
             $SP().formfields("Lookup (Multiple)").val(["Option 3", "3 - Option 3", "Option 1", "1 - Option 1"]);
             arr = $SP().formfields("Lookup (Multiple)").val();
-            test2 = SPIsArray(arr) && arr.length===2 && (arr[0] == "Option 3" || arr[0] == "3 - Option 3") && (arr[1] == "Option 1" || arr[1] == "1 - Option 1");
+            test2 = Array.isArray(arr) && arr.length===2 && (arr[0] == "Option 3" || arr[0] == "3 - Option 3") && (arr[1] == "Option 1" || arr[1] == "1 - Option 1");
             return (test1 || test1bis) && test2;
           }(), "Lookup (Multiple) -- val()");
           // test isMandatory()
@@ -955,10 +955,10 @@ function loadSPtests() {
             var res, test1, test2;
             $SP().formfields("Hyperlink").val(["SharepointPlus", "https://github.com/Aymkdn/SharepointPlus"]);
             res = $SP().formfields("Hyperlink").val();
-            test1 = (SPIsArray(res) && res.length === 2 && res[0] === "SharepointPlus" && res[1] === "https://github.com/Aymkdn/SharepointPlus");
+            test1 = (Array.isArray(res) && res.length === 2 && res[0] === "SharepointPlus" && res[1] === "https://github.com/Aymkdn/SharepointPlus");
             $SP().formfields("Hyperlink").val("https://github.com/Aymkdn/SharepointPlus");
             res = $SP().formfields("Hyperlink").val();
-            test2 = (SPIsArray(res) && res.length === 2 && res[0] === "https://github.com/Aymkdn/SharepointPlus" && res[1] === "https://github.com/Aymkdn/SharepointPlus");
+            test2 = (Array.isArray(res) && res.length === 2 && res[0] === "https://github.com/Aymkdn/SharepointPlus" && res[1] === "https://github.com/Aymkdn/SharepointPlus");
             return test1 && test2;
           }(), "Hyperlink -- val()");
           // test isMandatory()
@@ -1205,6 +1205,7 @@ function loadSPtests() {
           })
           // getContentTypeInfo()
           .then(function() {
+            console.log(".getContentTypeInfo()");
             return $SP().list("SharepointPlus").getContentTypeInfo("Item")
           })
           .then(function(fields) {
@@ -1239,6 +1240,7 @@ function loadSPtests() {
           })
           // test moderation()
           .then(function() {
+            console.log(".moderate()");
             return $SP().list("SharepointPlus").moderate({ID:itemID, ApprovalStatus:"Rejected"})
           })
           .then(function(items) {
@@ -1265,6 +1267,7 @@ function loadSPtests() {
           })
           // add using packetsize/progress
           .then(function() {
+            console.log(".add() multiple");
             return $SP().list("SharepointPlus").add([{Title:"Multiple " + title}, {Title:"Multiple " + title}, {Title:"Multiple " + title}, {Title:"Multiple " + title}, {Title:"Multiple " + title}], {
               packetsize:2,
               progress:function(n, total) {
@@ -1288,6 +1291,7 @@ function loadSPtests() {
           })
           // update using packetsize/progress
           .then(function() {
+            console.log(".update() multiple");
             return $SP().list("SharepointPlus").update({Title:"Multiple Updated "+title}, {
               where:"Title = 'Multiple "+title+"'",
               packetsize:2,
@@ -1312,6 +1316,7 @@ function loadSPtests() {
           })
           // delete using packetsize/progress
           .then(function() {
+            console.log(".remove() multiple");
             return $SP().list("SharepointPlus").remove({
               where:"Title = 'Multiple Updated "+title+"'",
               packetsize:2,
@@ -1523,7 +1528,7 @@ function loadSPtests() {
           assert.ok(($SP().toXSLString("Big Title") === "Big_x0020_Title"), 'toXSLString()');
           assert.ok(($SP().workflowStatusToText(2) === "In Progress"), 'workflowStatusToText()');
           assert.ok($SP().cleanResult("69;#Aymeric") === "Aymeric", 'cleanResult()');
-          assert.ok(SPIsArray([]), "SPIsArray()");
+          assert.ok(Array.isArray([]), "Array.isArray()");
           $SP().regionalDateFormat().then(function(dateFormat) {
             assert.ok(dateFormat.indexOf("YY")>-1, "$SP().regionalDateFormat()");
             doneRegionalDateFormat();

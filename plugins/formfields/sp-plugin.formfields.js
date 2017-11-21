@@ -109,7 +109,7 @@ $SP().registerPlugin('formfields', function(options) {
       }
 
       var mtch = comments.join("").replace(/\s\s*/g," ").match(/FieldName="([^"]+)".* FieldInternalName="([^"]+)".* FieldType="([^"]+)"/)
-      return (mtch ? {"Name":mtch[1].replace(/&amp;/g,"&"), "InternalName":mtch[2], "SPType":mtch[3]} : {"Name":"", "InternalName":"", "SPType":""});
+      return (mtch ? {"Name":mtch[1], "InternalName":mtch[2], "SPType":mtch[3]} : {"Name":"", "InternalName":"", "SPType":""});
     };
 
     // Retrieve the text of an HTML element (from jQuery source)
@@ -142,7 +142,7 @@ $SP().registerPlugin('formfields', function(options) {
     var setSelectedOption = function(select, val, params) {
       params = params || "text";
       var options = select.querySelectorAll('option');
-      var v, isArray = SPIsArray(val);
+      var v, isArray = Array.isArray(val);
       for (var o=0, len=options.length; o<len; o++) {
         if (params === "all") options[o].selected = true;
         else if (params === "none") options[o].selected = false;
@@ -258,7 +258,7 @@ $SP().registerPlugin('formfields', function(options) {
           var aReturn = this._elements;
           var hasJQuery=(typeof jQuery === "function" && usejQuery === true);
           if (aReturn instanceof NodeList) aReturn = [].slice.call(aReturn)
-          if (!SPIsArray(aReturn)) return hasJQuery ? jQuery(aReturn) : aReturn;
+          if (!Array.isArray(aReturn)) return hasJQuery ? jQuery(aReturn) : aReturn;
           switch(aReturn.length) {
             case 0: return hasJQuery ? jQuery() : null;
             case 1: return hasJQuery ? jQuery(aReturn[0]) : aReturn[0];
@@ -421,13 +421,13 @@ $SP().registerPlugin('formfields', function(options) {
               // 'v' can be {extend:true} to get all the info from SP2013
               obj.val = function(v) {
                 var tmp, res=[], extend=false, id, elems=this.elem(false);
-                if (typeof v === "object" && !SPIsArray(v) && v.extend === true) {
+                if (typeof v === "object" && !Array.isArray(v) && v.extend === true) {
                   v = void 0;
                   extend=true;
                 }
 
                 // get people picker ID
-                id=(SPIsArray(elems) ? elems[0] : elems).getAttribute("id").replace(/_upLevelDiv$/,"")
+                id=(Array.isArray(elems) ? elems[0] : elems).getAttribute("id").replace(/_upLevelDiv$/,"")
                 // get
                 if (typeof v === "undefined") {
                   // if GetPickerControlValue is defined -- SP2010
@@ -465,7 +465,7 @@ $SP().registerPlugin('formfields', function(options) {
                 } else { // set
                   // if EntityEditorCallback is defined -- SP2010
                   if (typeof EntityEditorCallback === "function") {
-                    if (!SPIsArray(v)) v=[v];
+                    if (!Array.isArray(v)) v=[v];
                     tmp = '<Entities Append="False" Error="" Separator=";" MaxHeight="3">';
                     v.forEach(function(e) {
                       tmp += '<Entity Key="' + e + '" DisplayText="' + e + '" IsResolved="False" Description="' + e + '"><MultipleMatches /></Entity>'
@@ -489,7 +489,7 @@ $SP().registerPlugin('formfields', function(options) {
                           }
                         }
 
-                        if (SPIsArray(v)) v=v.join(";")
+                        if (Array.isArray(v)) v=v.join(";")
                         res.AddUserKeys(v, false)
                       } else {
                         throw new Error("$SP().formfields().val() failed with a People Picker, because SPClientPeoplePicker.SPClientPeoplePickerDict['"+id+"'] returned an unexpected value");
@@ -587,7 +587,7 @@ $SP().registerPlugin('formfields', function(options) {
                     }
                     case "choices checkbox":
                     case "choices checkbox plus": {
-                      if (!SPIsArray(v)) v=[v];
+                      if (!Array.isArray(v)) v=[v];
                       len = elems.length;
                       if (type === "choices checkbox plus") len -= 2;
                       for (i=0; i<len; i++) {
@@ -646,7 +646,7 @@ $SP().registerPlugin('formfields', function(options) {
               obj.val = function(v) {
                 var e=this.elem();
                 if (typeof v !== "undefined") { // set
-                  if (!SPIsArray(v)) v = [ v ];
+                  if (!Array.isArray(v)) v = [ v ];
                   e[0].value = v[0];
                   if (e.length === 4) {
                     if (v.length > 1) setSelectedOption(e[2], v[1]);
@@ -670,7 +670,7 @@ $SP().registerPlugin('formfields', function(options) {
               // params: {selectReturn} with "text", "value" or "both"
               obj.val = function(v) {
                 var params = "text";
-                if (typeof v === "object" && !SPIsArray(v)) {
+                if (typeof v === "object" && !Array.isArray(v)) {
                   params = v.selectReturn || "text";
                   v = void 0;
                 }
@@ -679,7 +679,7 @@ $SP().registerPlugin('formfields', function(options) {
                 var e = this.elem(false), o;
                 if (typeof v !== "undefined") {
                   if (type === "lookup multiple") {
-                    if (!SPIsArray(v)) v = [ v ];
+                    if (!Array.isArray(v)) v = [ v ];
                     //  we want to use the Add/Remove buttons -- the behavior changes between SP2010 and SP2013
                     var clickAdd = e[1].getAttribute("onclick");
                     var clickRemove = e[2].getAttribute("onclick");
@@ -741,7 +741,7 @@ $SP().registerPlugin('formfields', function(options) {
               obj.val = function(v) {
                 var e = this.elem();
                 if (typeof v !== "undefined") {
-                  if (!SPIsArray(v)) v = [ v, v ];
+                  if (!Array.isArray(v)) v = [ v, v ];
                   if (v.length < 2) v = [ v[0], v[0] ];
                   e[1].value = v[0];
                   e[3].value = v[1];
@@ -814,7 +814,7 @@ $SP().registerPlugin('formfields', function(options) {
    */
   SharepointPlusFormFields.prototype.val=function(str) {
     var identity=false, extend=false;
-    if (typeof str==="object" && !SPIsArray(str)) {
+    if (typeof str==="object" && !Array.isArray(str)) {
       identity = (str.identity === true ? true : false);
       extend = (str.extend === true ? true : false);
       str=void 0;

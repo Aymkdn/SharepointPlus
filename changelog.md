@@ -1,11 +1,12 @@
 # Changelog
 
-**Change Log v5.0 ()**
+**Change Log v5.0 (November 21, 2017)**
 
   - Remove all jQuery references
   - Remove old IE support; support starts from IE11 (the user will have to verify compatibility for older versions)
   - Remove `SPArrayIndexOf()`
   - Remove `SPArrayForEach()`
+  - Remove `SPIsArray()` (use Array.isArray instead)
   - Remove `Strim.prototype.trim` polyfill
   - Remove `$SP().encode_b64()` and `$SP().decode_b64()` (the code can be retrieved here https://blog.kodono.info/wordpress/2011/07/27/midi-code-encoder-decoder-en-base64-pour-javascript-programmation/)
   - Remove alias `$SP().list().del()` (use `$SP().list().remove()` instead)
@@ -44,7 +45,7 @@
   - Add support for multiple ids/values for `$SP().getLookup()`
   - Add automatic support for digest token on `$SP().ajax()`
   - Add `$SP().getRequestDigest()`
-  - Add option `rootFolder` for `$SP().list().add()` and `$SP().list().update()` for support of Discussion Board
+  - Add option `rootFolder` for `$SP().list().add()` for support of Discussion Board
   - Add 30+ new QUnit tests
   - Fix `$SP().formfields()` when there is ampersand (&) into the field's name
   - Fix `$SP().toSPDate()` when time is required (see issue #64)
