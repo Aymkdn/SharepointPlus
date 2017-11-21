@@ -1,5 +1,59 @@
 # Changelog
 
+**Change Log v5.0 (November 21, 2017)**
+
+  - Remove all jQuery references
+  - Remove old IE support; support starts from IE11 (the user will have to verify compatibility for older versions)
+  - Remove `SPArrayIndexOf()`
+  - Remove `SPArrayForEach()`
+  - Remove `SPIsArray()` (use Array.isArray instead)
+  - Remove `Strim.prototype.trim` polyfill
+  - Remove `$SP().encode_b64()` and `$SP().decode_b64()` (the code can be retrieved here https://blog.kodono.info/wordpress/2011/07/27/midi-code-encoder-decoder-en-base64-pour-javascript-programmation/)
+  - Remove alias `$SP().list().del()` (use `$SP().list().remove()` instead)
+  - Remove native support for `$SP().formfields()` (you now need to call the related plugin)
+  - Remove callbacks for all functions
+  - Add Promise for all functions
+  - Change `$SP().ajax()` to integrate `nanoajax` (no need to call `nanoajax` from a seperate file)
+  - Change options for `$SP().ajax()` to fit with `nanoajax`
+  - Change `$SP().getURL()` to return a Promise (async requests are not supported by recent browsers anymore)
+  - Change parameters for `$SP().list().createFile()`, and it must now be called with `$SP().list()`
+  - Change parameters for `$SP().list().createFolder()`, and it must now be called with `$SP().list()`
+  - Change encoding for `$SP().list().addAttachment()` from `Base64` to `ArrayBuffer`
+  - Change values returned by `$SP().list().view()`
+  - Change values returned by `$SP().list().views()`
+  - Change values returned by `$SP().list().add()`
+  - Change values returned by `$SP().list().update()`
+  - Change values returned by `$SP().list().remove()`
+  - Change values returned by `$SP().list().moderate()`
+  - Change behavior for `$SP().list().add()` and `$SP().list().update()` when an empty array of values is passed as a column value to be added/updated (it will now return '' instead of ';#;#')
+  - Add option `cache` for `$SP().list().view()`
+  - Add option `cache` for `$SP().lists()`
+  - Add option `packetsize` for `$SP().list().moderate()`
+  - Add `$SP().getPageSize()` that permits to get the size of the document/page
+  - Add option `soapURL` to `$SP().webService()` (see https://github.com/Aymkdn/SharepointPlus/issues/51)
+  - Add wiki pages for "Term/Taxonomy/Managed Metadata" (see https://github.com/Aymkdn/SharepointPlus/wiki/)
+  - Add wiki page for Discussion Board (see https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board)
+  - Add `Property` property for a `TaxonomyFieldType` returned by `$SP().list().info()`
+  - Add `._List` that returns the details for the list for `$SP().list().info()`
+  - Add `$SP().hasREST()` to detect if REST API is supported
+  - Add `progress` function for `$SP().createFile()`
+  - Add `getXHR` function for `$SP().createFile()`
+  - Add support for `ArrayBuffer` for `$SP().createFile()`
+  - Add `SPArrayBufferToBase64` function() to transform an ArrayBuffer to a Base64 string
+  - Add automatic JSON parsing for results from `$SP().ajax()` which Content-Type that matchs json
+  - Add option `soapAction` for `$SP().webService()`
+  - Add support for multiple ids/values for `$SP().getLookup()`
+  - Add automatic support for digest token on `$SP().ajax()`
+  - Add `$SP().getRequestDigest()`
+  - Add option `rootFolder` for `$SP().list().add()` for support of Discussion Board
+  - Add 30+ new QUnit tests
+  - Fix `$SP().formfields()` when there is ampersand (&) into the field's name
+  - Fix `$SP().toSPDate()` when time is required (see issue #64)
+  - Fix `SP().createFile()` for big upload with REST API (see https://stackoverflow.com/questions/46297625/large-arraybuffer-crashes-with-xmlhttprequest-send/46299028#46299028)
+  - Fix `$SP.ajax()` to resolve when the status code returned by the server is 2xx and not 200 only
+  - Improve catch error from `$SP().createFile`
+  - Optimize code for compression
+
 **Change Log v4.0 (May 4, 2017)**
 
   - Add NodeJS support: SharepointPlus can now be called as a node module and can be used on server side

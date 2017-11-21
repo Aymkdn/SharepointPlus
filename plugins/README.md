@@ -5,6 +5,10 @@ Plugins repository
 
 ## Available Plugins
 
+### [Formfields](formfields)
+
+This plugin permits to manage the fields from the NewForm.aspx and EditForm.aspx pages.
+
 ### [People Ahead](peopleahead)
 
 Change an input field into a field that will search for a name into the Sharepoint Address Book (= people picker)
