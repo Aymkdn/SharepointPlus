@@ -212,13 +212,13 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return new Promise(fct)
     },
     /**
-      @name $SP().hasREST
-      @function
-      @category utils
-      @description Verify if the website supports REST API (Sharepoint 2013 and later)
-      @param {Object} settings
-        @param {String} [settings.url=current] To check another URL (or if you need on a Node server)
-      @return {Promise} A resolved Promise that gives TRUE or FALSE
+     * @name $SP().hasREST
+     * @function
+     * @category utils
+     * @description Verify if the website supports REST API (Sharepoint 2013 and later)
+     * @param {Object} settings
+     * @param {String} [settings.url=current] To check another URL (or if you need on a Node server)
+     * @return {Promise} A resolved Promise that gives TRUE or FALSE
     */
     hasREST: function (settings) {
       var _this = this
@@ -262,8 +262,8 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
      * @category utils
      * @description Retrieve a Request Digest (and it will change the value of document.querySelector("#__REQUESTDIGEST") when a new Request Digest is created)
      * @param {Object} settings
-     *   @param {String} [settings.url=current] To check another URL (or if you use it on a Node server)
-     *   @param {Boolean} [settings.cache=true] TRUE to use the cache and/or the one into the page for the digest, FALSE to get a new one
+     * @param {String} [settings.url=current] To check another URL (or if you use it on a Node server)
+     * @param {Boolean} [settings.cache=true] TRUE to use the cache and/or the one into the page for the digest, FALSE to get a new one
      * @return {Promise} resolve(Request Digest), reject(reject from $SP().ajax())
      *
      * @example
@@ -313,30 +313,30 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().ajax
-      @function
-      @category utils
-      @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax
-      @param {Object} settings (See options below)
-        @param {String} settings.url The url to call
-        @param {String} [settings.method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
-        @param {Object} [settings.headers] the headers
-        @param {String} [settings.body] The data to send to the server
-        @param {Function} [settings.onprogress=function(event){}] The "upload.onprogress" object for XHR
-        @param {Function} [settings.getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter
-      @return {Promise} resolve(responseText||responseXML), reject({response, statusCode, responseText})
-
-      @example
-      // for a regular request
-      $SP().ajax({url:'https://my.web.site'}).then(function(data) { console.log(data) })
-
-      // manipulate xhr for specific needs
-      $SP().ajax({url:'https://url.com/file.jpg', getXHR:function(xhr){ xhr.responseType = 'arraybuffer' }}).then(function(data) {
-        // ArrayBuffer result
-      })
-
-      // for a CORS/cross-domain request you may need to use 'false' for 'Content-Type'
-      $SP().ajax({url:'https://my.cross-domain.web/site', headers:{"Content-Type":false}}).then(function(data) { console.log(data) })
+     * @name $SP().ajax
+     * @function
+     * @category utils
+     * @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax
+     * @param {Object} settings (See options below)
+     * @param {String} settings.url The url to call
+     * @param {String} [settings.method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
+     * @param {Object} [settings.headers] the headers
+     * @param {String} [settings.body] The data to send to the server
+     * @param {Function} [settings.onprogress=function(event){}] The "upload.onprogress" object for XHR
+     * @param {Function} [settings.getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter
+     * @return {Promise} resolve(responseText||responseXML), reject({response, statusCode, responseText})
+     *
+     * @example
+     * // for a regular request
+     * $SP().ajax({url:'https://my.web.site'}).then(function(data) { console.log(data) })
+     *
+     * // manipulate xhr for specific needs
+     * $SP().ajax({url:'https://url.com/file.jpg', getXHR:function(xhr){ xhr.responseType = 'arraybuffer' }}).then(function(data) {
+     *   // ArrayBuffer result
+     * })
+     *
+     * // for a CORS/cross-domain request you may need to use 'false' for 'Content-Type'
+     * $SP().ajax({url:'https://my.cross-domain.web/site', headers:{"Content-Type":false}}).then(function(data) { console.log(data) })
     */
     ajax: function (settings) {
       var _this = this
@@ -496,64 +496,64 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().auth
-      @function
-      @category node
-      @description Permits to use credentials when doing requests (for Node module only)
-
-      @param {Object} credentialOptions Options from https://github.com/s-KaiNet/node-sp-auth
-      @return {Object} the current SharepointPlus object
-
-      @example
-      var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
-      $SP().auth(user1)
-           .list("My List","http://my.sharpoi.nt/other.directory/")
-          .get({...});
-      // or :
-      var sp = $SP().auth(user1);
-      sp.list("My List", "https://web.si.te").get({...});
-      sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
+     * @name $SP().auth
+     * @function
+     * @category node
+     * @description Permits to use credentials when doing requests (for Node module only)
+     *
+     * @param {Object} credentialOptions Options from https://github.com/s-KaiNet/node-sp-auth
+     * @return {Object} the current SharepointPlus object
+     *
+     * @example
+     * var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
+     * $SP().auth(user1)
+     *      .list("My List","http://my.sharpoi.nt/other.directory/")
+     *     .get({...});
+     * // or :
+     * var sp = $SP().auth(user1);
+     * sp.list("My List", "https://web.si.te").get({...});
+     * sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
     */
     auth: function (credentialOptions) {
       this.credentialOptions = credentialOptions
       return this
     },
     /**
-      @name $SP().proxy
-      @function
-      @category node
-      @description Permits to define a proxy server (for Node module only)
-
-      @param {String} proxyURL Looks like "http://domain%5Cusername:password@proxy.something:80"
-      @return {Object} the current SharepointPlus object
-
-      @example
-      var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
-      var proxy = "http://" + user1.domain + "%5C" + user1.username + ":" + user1.password + "@proxy:80";
-      $SP().proxy(proxy).auth(user1)
-           .list("My List","http://my.sharpoi.nt/other.directory/")
-          .get({...});
-      // or :
-      var sp = $SP().proxy(proxy).auth(user1);
-      sp.list("My List", "https://web.si.te").get({...});
-      sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
+     * @name $SP().proxy
+     * @function
+     * @category node
+     * @description Permits to define a proxy server (for Node module only)
+     *
+     * @param {String} proxyURL Looks like "http://domain%5Cusername:password@proxy.something:80"
+     * @return {Object} the current SharepointPlus object
+     *
+     * @example
+     * var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
+     * var proxy = "http://" + user1.domain + "%5C" + user1.username + ":" + user1.password + "@proxy:80";
+     * $SP().proxy(proxy).auth(user1)
+     *      .list("My List","http://my.sharpoi.nt/other.directory/")
+     *     .get({...});
+     * // or :
+     * var sp = $SP().proxy(proxy).auth(user1);
+     * sp.list("My List", "https://web.si.te").get({...});
+     * sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
     */
     proxy: function (proxy) {
       this.proxyweb = proxy
       return this
     },
     /**
-      @name $SP().list
-      @namespace
-      @description Permits to define the list ID/name
-
-      @param {String} listID Ths list ID or the list name
-      @param {String} [url] If the list name is provided, then you need to make sure URL is provided too (then no need to define the URL again for the chained functions like 'get' or 'update')
-      @return {Object} the current SharepointPlus object
-
-      @example
-      $SP().list("My List");
-      $SP().list("My List","http://my.sharpoi.nt/other.directory/");
+     * @name $SP().list
+     * @namespace
+     * @description Permits to define the list ID/name
+     *
+     * @param {String} listID Ths list ID or the list name
+     * @param {String} [url] If the list name is provided, then you need to make sure URL is provided too (then no need to define the URL again for the chained functions like 'get' or 'update')
+     * @return {Object} the current SharepointPlus object
+     *
+     * @example
+     * $SP().list("My List");
+     * $SP().list("My List","http://my.sharpoi.nt/other.directory/");
     */
     list: function (list, url) {
       var _this = this.reset()
@@ -565,13 +565,13 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return _this
     },
     /**
-      @ignore
-      @name $SP()._getURL
-      @function
-      @param {Boolean} [setURL=true] If we don't want to set this.url but just return the URL found
-
-      @description (internal use only) Store the current URL website into this.url
-      @return {Promise} resolve(url), reject(error)
+     * @ignore
+     * @name $SP()._getURL
+     * @function
+     * @param {Boolean} [setURL=true] If we don't want to set this.url but just return the URL found
+     *
+     * @description (internal use only) Store the current URL website into this.url
+     * @return {Promise} resolve(url), reject(error)
      */
     _getURL: function (setURL) {
       var _this = this
@@ -620,23 +620,23 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().getURL
-      @function
-      @category utils
-      @description Return the current base URL website
-      @return {Promise} resolve(The current base URL website), reject(error)
+     * @name $SP().getURL
+     * @function
+     * @category utils
+     * @description Return the current base URL website
+     * @return {Promise} resolve(The current base URL website), reject(error)
      */
     getURL: function () {
       return this._getURL(false)
     },
     /**
-      @ignore
-      @name $SP()._buildBodyForSOAP
-      @function
-      @param {String} methodName
-      @param {String} bodyContent
-      @param {String} [xmlns="http://schemas.microsoft.com/sharepoint/soap/"]
-      @description (internal use only) Permits to create the body for a SOAP request
+     * @ignore
+     * @name $SP()._buildBodyForSOAP
+     * @function
+     * @param {String} methodName
+     * @param {String} bodyContent
+     * @param {String} [xmlns="http://schemas.microsoft.com/sharepoint/soap/"]
+     * @description (internal use only) Permits to create the body for a SOAP request
     */
     _buildBodyForSOAP: function (methodName, bodyContent, xmlns) {
       xmlns = xmlns || 'http://schemas.microsoft.com/sharepoint/soap/'
@@ -648,12 +648,12 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
      * @category core
      * @description Permits to directly deal with a WebService (similar to SPServices http://sympmarc.github.io/SPServices/core/web-services.html)
      * @param  {Object} options
-     *   @param {String} operation The method name to use (e.g. UpdateList, GetList, ....)
-     *   @param {String} service The name of the service (Lists, Versions, PublishedLinksService, ...) it's the ".asmx" name without the extension
-     *   @param {Object} [properties={}] The properties to call
-     *   @param {String} [webURL=current website] The URL of the website
-     *   @param {String|Boolean} [soapURL='http://schemas.microsoft.com/sharepoint/soap/'] If the SOAP url is not the default one, then you can customize it... it will be send in the request's headers as "SOAPAction"
-     *   @param {Boolean} [soapAction=true] Some web services don't want the "SOAPAction" header
+     * @param {String} operation The method name to use (e.g. UpdateList, GetList, ....)
+     * @param {String} service The name of the service (Lists, Versions, PublishedLinksService, ...) it's the ".asmx" name without the extension
+     * @param {Object} [properties={}] The properties to call
+     * @param {String} [webURL=current website] The URL of the website
+     * @param {String|Boolean} [soapURL='http://schemas.microsoft.com/sharepoint/soap/'] If the SOAP url is not the default one, then you can customize it... it will be send in the request's headers as "SOAPAction"
+     * @param {Boolean} [soapAction=true] Some web services don't want the "SOAPAction" header
      * @return {Promise} resolve(responseBody), reject(see $SP().ajax())
      *
      * @example
@@ -737,10 +737,10 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @ignore
-      @name $SP()._addInQueue
-      @function
-      @description (internal use only) Add a function in the queue
+     * @ignore
+     * @name $SP()._addInQueue
+     * @function
+     * @description (internal use only) Add a function in the queue
     */
     _addInQueue: function (args) {
       var _this = this
@@ -749,10 +749,10 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return _this
     },
     /**
-      @ignore
-      @name $SP()._testQueue
-      @function
-      @description (internal use only) Permits to treat the queue
+     * @ignore
+     * @name $SP()._testQueue
+     * @function
+     * @description (internal use only) Permits to treat the queue
     */
     _testQueue: function () {
       var _this = this
@@ -774,42 +774,42 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       }
     },
     /**
-      @name $SP().parse
-      @function
-      @category lists
-      @description Use a WHERE sentence to transform it into a CAML Syntax sentence
-
-      @param {String} where The WHERE sentence to change
-      @param {String} [escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
-      @example
-      $SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
-      // -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;IsNotNull>&lt;FieldRef Name="Description" />&lt;/IsNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
-
-      // available operators :
-      // "&lt;" : less than
-      // "&lt;=" : less than or equal to
-      // ">" : greater than
-      // ">=" : greater than or equal to
-      // "<>" : different
-      // "~=" : this must be only used when comparing to a number that represents the User ID (e.g. 'User ~= 328') - that permits to query a list with too many items but with the User column that is indexed
-      // " AND "
-      // " OR "
-      // " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
-      // " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"' — SP2013 limits each IN to 60 items. If you want to check Lookup IDs instead of text you can use '~' followed by the ID, for example 'Location IN ["~23", "~26", "~30"]'
-
-      // special words:
-      // '[Me]' : for the current user
-      // '[Today]' : to use the today date
-      // '[Today+X]' : to use today + X days
-      // Null : for the Null value
-      // TRUE : for the Yes/No columns
-      // FALSE : for the Yes/No columns
-
-      // in the below example, on the "&" will be escaped
-      var bar="Bob & Marley";
-      var foo="O'Conney";
-      $SP().parse('Bar = "'+bar+'" AND Foo = "'+foo+'"'); // -> &lt;And>&lt;Eq>&lt;FieldRef Name="Bar" />&lt;Value Type="Text">Bob &amp; Marley&lt;/Value>&lt;/Eq>&lt;Eq>&lt;FieldRef Name="Foo" />&lt;Value Type="Text">O'Conney&lt;/Value>&lt;/Eq>&lt;/And>
-      $SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney
+     * @name $SP().parse
+     * @function
+     * @category lists
+     * @description Use a WHERE sentence to transform it into a CAML Syntax sentence
+     *
+     * @param {String} where The WHERE sentence to change
+     * @param {String} [escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
+     * @example
+     * $SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
+     * // -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;IsNotNull>&lt;FieldRef Name="Description" />&lt;/IsNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
+     *
+     * // available operators :
+     * // "&lt;" : less than
+     * // "&lt;=" : less than or equal to
+     * // ">" : greater than
+     * // ">=" : greater than or equal to
+     * // "<>" : different
+     * // "~=" : this must be only used when comparing to a number that represents the User ID (e.g. 'User ~= 328') - that permits to query a list with too many items but with the User column that is indexed
+     * // " AND "
+     * // " OR "
+     * // " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
+     * // " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"' — SP2013 limits each IN to 60 items. If you want to check Lookup IDs instead of text you can use '~' followed by the ID, for example 'Location IN ["~23", "~26", "~30"]'
+     *
+     * // special words:
+     * // '[Me]' : for the current user
+     * // '[Today]' : to use the today date
+     * // '[Today+X]' : to use today + X days
+     * // Null : for the Null value
+     * // TRUE : for the Yes/No columns
+     * // FALSE : for the Yes/No columns
+     *
+     * // in the below example, on the "&" will be escaped
+     * var bar="Bob & Marley";
+     * var foo="O'Conney";
+     * $SP().parse('Bar = "'+bar+'" AND Foo = "'+foo+'"'); // -> &lt;And>&lt;Eq>&lt;FieldRef Name="Bar" />&lt;Value Type="Text">Bob &amp; Marley&lt;/Value>&lt;/Eq>&lt;Eq>&lt;FieldRef Name="Foo" />&lt;Value Type="Text">O'Conney&lt;/Value>&lt;/Eq>&lt;/And>
+     * $SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney
     */
     parse: function (q, escapeChar) {
       var queryString = q.replace(/(\s+)?(=|~=|<=|>=|<>|<|>| LIKE | IN )(\s+)?/g, '$2').replace(/""|''/g, 'Null').replace(/==/g, '=') // remove unnecessary white space & replace '
@@ -1060,15 +1060,15 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return factory.join('')
     },
     /**
-      @ignore
-      @name $SP()._parseOn
-      @function
-      @description (internal use only) Look at the ON clause to convert it
-
-      @param {String} on The ON clause
-      @return {Array} array of clauses
-      @example
-      $SP()._parseOn("'List1'.field1 = 'List2'.field2 AND 'List1'.Other_x0020_Field = 'List2'.Some_x0020_Field")
+     * @ignore
+     * @name $SP()._parseOn
+     * @function
+     * @description (internal use only) Look at the ON clause to convert it
+     *
+     * @param {String} on The ON clause
+     * @return {Array} array of clauses
+     * @example
+     * $SP()._parseOn("'List1'.field1 = 'List2'.field2 AND 'List1'.Other_x0020_Field = 'List2'.Some_x0020_Field")
     */
     _parseOn: function (q) {
       var factory = [],
@@ -1086,32 +1086,32 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return factory
     },
     /**
-      @ignore
-      @name $SP()._cleanString
-      @function
-      @description clean a string to remove the bad characters when using AJAX over Sharepoint web services (like <, > and &)
-      Note: That should only be used as an internal function
-      @param {String} string The string to clean
+     * @ignore
+     * @name $SP()._cleanString
+     * @function
+     * @description clean a string to remove the bad characters when using AJAX over Sharepoint web services (like <, > and &)
+     * Note: That should only be used as an internal function
+     * @param {String} string The string to clean
     */
     _cleanString: function (str) {
       return str.replace(/&(?!amp;|lt;|gt;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     },
     /**
-      @name $SP().cleanResult
-      @function
-      @category lists
-      @description clean a string returned by a GET (remove ";#" and "string;#" and null becomes "")
-
-      @param {String} str The string to clean
-      @param {String} [separator=";"] When it's a list we may want to have a different output (see examples)
-      @return {String} the cleaned string
-
-      @example
-      $SP().cleanResult("15;#Paul"); // -> "Paul"
-      $SP().cleanResult("string;#Paul"); // -> "Paul"
-      $SP().cleanResult("string;#"); // -> ""
-      $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#"); // -> "Paul;Jacques;Aymeric"
-      $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aymeric"
+     * @name $SP().cleanResult
+     * @function
+     * @category lists
+     * @description clean a string returned by a GET (remove ";#" and "string;#" and null becomes "")
+     *
+     * @param {String} str The string to clean
+     * @param {String} [separator=";"] When it's a list we may want to have a different output (see examples)
+     * @return {String} the cleaned string
+     *
+     * @example
+     * $SP().cleanResult("15;#Paul"); // -> "Paul"
+     * $SP().cleanResult("string;#Paul"); // -> "Paul"
+     * $SP().cleanResult("string;#"); // -> ""
+     * $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#"); // -> "Paul;Jacques;Aymeric"
+     * $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aymeric"
     */
     cleanResult: function (str, separator) {
       if (str === null || typeof str === 'undefined') return ''
@@ -1119,342 +1119,342 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return (typeof str === 'string' ? str.replace(/^(string;|float;|datetime;)#?/, '').replace(/;#[0-9]+;#/g, separator).replace(/^[0-9]+;#/, '').replace(/^;#|;#$/g, '').replace(/;#/g, separator) : str)
     },
     /**
-      @name $SP().list.get
-      @function
-      @description Get the content of the list based on different criteria (by default the default view is used)
-
-      @param {Object} [options] Options (see below)
-        @param {String}  [options.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
-        @param {String}  [options.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
-        @param {String|Array}  [options.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
-        @param {Boolean} [options.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
-        @param {Boolean} [options.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
-        @param {Function} [options.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
-        @param {Function} [options.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
-        @param {String}  [options.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
-        @param {String}  [options.groupby=""] The field used to group by the list result
-        @param {Integer} [options.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
-        @param {Boolean} [options.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
-        @param {Integer} [options.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
-        @param {String}  [options.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
-        @param {Boolean} [options.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items limit in an unique call (for Sharepoint 2010 only) -- see the example below to know how to use it
-        @param {Boolean} [options.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
-        @param {Boolean} [options.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
-        @param {Object} [options.folderOptions] Permits to read the content of a Document Library (see below)
-          @param {String} [options.folderOptions.path=""] Relative path of the folders we want to explore (by default it's the root of the document library)
-          @param {String} [options.folderOptions.show="FilesAndFolders_InFolder"] Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path
-        @param {Boolean} [options.queryOptions=undefined] If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see https://msdn.microsoft.com/en-us/library/lists.lists.getlistitems%28v=office.12%29.aspx?f=255&MSPPError=-2147217396)
-        @param {Object} [options.join] Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)
-          @param {String} [options.join.list] Permits to establish the link between two lists (see the example below)
-          @param {String} [options.join.url='current website'] The website url (if different than the current website)
-          @param {String} [options.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
-          @param {String} [options.join.onLookup] Permits to establish the link between two lists based on a lookup field... it's more optimized than the simple `join.on` (see the example below)
-          @param {Boolean} [options.join.outer=false] If you want to do an outer join (you can also directly use "outerjoin" instead of "join")
-        @param {Boolean} [options.calendar=false] If you want to get the events from a Calendar List
-        @param {Object} [options.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
-          @param {Boolean} [options.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
-          @param {String|Date} [options.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String) [attention: if 'splitRecurrence' is FALSE, then Sharepoint will ignore this 'referenceDate'...]
-          @param {String} [options.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
-      @return {Promise} resolve(data returned by the server), reject(error from $SP().ajax())
-
-      @example
-      $SP().list("List Name").get().then(function(data) {
-        for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
-      });
-
-      // with some fields and an orderby command
-      $SP().list("ListName","http://www.mysharepoint.com/mydir/").get({
-        fields:"Title,Organization",
-        orderby:"Title DESC,Test_x0020_Date ASC"
-      }).then(function(data) {
-        for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
-      });
-
-      // handle the errors
-      $SP().list("List Name").get().then(function(data) {
-        for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
-      }).catch(function(err) {
-        console.log("Error => ",err)
-      });
-
-      // the WHERE clause must be SQL-like
-      // the field names must be the internal names used by Sharepoint
-      // ATTENTION - note that here we open the WHERE string with simple quotes (') and that should be your default behavior each time you use WHERE
-      var name = "O'Sullivan, James";
-      $SP().list("My List").get({
-        fields:"Title",
-        where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "'+name+'"'
-      }).then(function(row) {
-        for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
-      });
-
-      // Same example but this time we write the name directly inside the query...
-      // So make sure to use a single backslash (\) if you have a simple quote ' inside your WHERE with a double quotes (") to open/close the string
-      $SP().list("My List").get({
-        fields:"Title",
-        where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "O\'Sullivan, James"'
-      }).then(function(row) {
-        for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
-      });
-      // Or to use a double backslash (\\) if you have a simple quote ' inside your WHERE with a simple quote (') to open/close the string
-      $SP().list("My List").get({
-        fields:"Title",
-        where:"Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = 'O\\'Sullivan, James'"
-      }).then(function(row) {
-        for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
-      });
-
-      // also in the WHERE clause you can use '[Me]' to filter by the current user,
-      $SP().list("My List").get({
-        fields:"Title",
-        where:"Author = '[Me]'"
-      }).then(function(row) {
-        console.log(row[0].getAttribute("Title"));
-      });
-
-      // also in the WHERE clause you can use '[Today]' or '[Today-X]' with 'X' a number,
-      // Here it will return the records done yesterday
-      $SP().list("My List").get({
-        fields:"Title",
-        where:"Created = '[Today-1]'"
-      }).then(function(row) {
-        console.log(row[0].getAttribute("Title"));
-      });
-
-      // Since 3.0.8, if you do a WHERE on a Date with the Time included, then it will compare with the tim
-      // see http://blogs.syrinx.com/blogs/sharepoint/archive/2008/08/05/caml-queries-with-dates.aspx
-      // here it will only show the items created at 2PM exactly -- if you want to check only the today, then use "Created = '2014-03-12'"
-      $SP().list("My List").get({
-        fields:"Title",
-        where:"Created = '2014-03-12 14:00:00'"
-      }).then(function(row) {
-        console.log(row[0].getAttribute("Title"));
-      });
-
-      // We have a list called "My List" with a view already set that is called "Marketing View" with some FIELDS and a WHERE clause
-      // so the function will grab the view information and will get the data from the list with "Author = '[Me]'" and adding the view's WHERE clause too
-      $SP().list("My List","http://my.sharepoint.com/my/site/").get({
-        view:"Marketing View",
-        where:"Author = '[Me]'"
-      }).then(function(data) {
-        for (var i=data.length; i--;) console.log(data[i].getAttribute("Title") + " by " + data[i].getAttribute("Author"));
-      });
-
-      // use the paging option for the large list to avoid the message "the attempted operation is prohibited because it exceeds the list view threshold enforced by the administrator"
-      // ATTENTION: if you use the WHERE option then it could return the "view threshold" error message because the packet from the WHERE is too big and SharePoint is too stupid...
-      $SP().list("My List").get({
-        fields:"ID,Title",
-        rowlimit:5000,
-        paging:true,
-        progress:function progress(nbItemsLoaded) {
-          // for each new page this function will be called
-          console.log("It's still loading... already "+nbItemsLoaded+" items have been loaded!");
-        }
-      }).then(function(data) {
-        console.log(data.length); // -> 23587
-      })
-      // add the `page` option to stop after a number of requests/pages
-      // for example you only want the last record from a list that has more than 5,000 items
-      $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:1,paging:true,page:1}).then(function(data) {
-        console.log("last ID : "+data[0].getAttribute("ID"));
-      })
-      // use `listItemCollectionPositionNext` to start from this index
-      $SP().list("My List").get({
-        fields:"ID",
-        orderby:"ID DESC",
-        rowlimit:10,
-        paging:true,
-        page:1
-      }).then(function(data) {
-        // "data" is our first page of data
-        // get the next block
-        return $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:data.NextPage})
-      }).then(function(data) {
-        // here "data" is the 2nd block of data
-      })
-
-      // We can also find the files from a Document Shared Library
-      $SP().list("Shared Documents","http://my.share.point.com/my_site/").get({
-        fields:"FileLeafRef,File_x0020_Size",
-      }).then(function(data) {
-        for (var i=0; i<&lt;data.length; i++) console.log("FileName:"+data[i].getAttribute("FileLeafRef"),"FileSize:"+data[i].getAttribute("File_x0020_Size"));
-      });
-
-      // We can join two or more lists together based on a condition
-      // ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
-      // ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
-      $SP().list("Finance and Expense","http://my.sharepoint.com/my_sub/dir/").get({
-        fields:"Expense_x0020_Type",
-        where:"Finance_x0020_Category = 'Supplies'",
-        join:{
-          list:"Purchasing List",
-          fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
-          where:"Region = 'EMEA' AND Year = 2012",
-          orderby:"Expense_x0020_Type,Finance_x0020_Category",
-          on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
-          join:{
-            list:"Financial Static Data",
-            fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
-            where:"Region = 'EMEA' AND Year = 2012",
-            on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
-          }
-        }
-      }).then(function(data) {
-        for (var i=0; i&lt;data.length; i++) {
-          console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
-        }
-      });
-
-      // By default "join" is an "inner join", but you can also do an "outerjoin"
-      // ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
-      // ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
-      $SP().list("Finance and Expense","http://my.sharepoint.com/my_sub/dir/").get({
-        fields:"Expense_x0020_Type",
-        where:"Finance_x0020_Category = 'Supplies'",
-        join:{
-          list:"Purchasing List",
-          fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
-          where:"Region = 'EMEA' AND Year = 2012",
-          orderby:"Expense_x0020_Type,Finance_x0020_Category",
-          on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
-          outerjoin:{
-            list:"Financial Static Data",
-            fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
-            where:"Region = 'EMEA' AND Year = 2012",
-            on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
-          }
-        }
-      }).then(function(data) {
-        for (var i=0; i&lt;data.length; i++)
-          console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
-      })
-
-      // Another example of "outerjoin", but this time with fields tied to a Lookup ID
-      // Here 1 Project can have several Deliverables based on field "Project ID", and 1 Deliverable can have several team members based on "Deliverable ID"
-      $SP().list("Projects").get({
-        fields:"ID,Project_x0020_Name",
-        where:"Status = 'In Progress'",
-        outerjoin:{
-          list:"Deliverables",
-          fields:"ID,Name",
-          onLookup:"Project_x0020_ID",
-          outerjoin:{
-            list:"Team Members",
-            fields:"ID,Deliverable_x0020_ID,Name",
-            onLookup:"Deliverable_x0020_ID"
-          }
-        }
-      }).then(function(data) {
-        var html = '&lt;table class="table default">&lt;thead>&lt;tr>&lt;th>Project ID&lt;/th>&lt;th>Project Name&lt;/th>&lt;th>Deliverable ID&lt;/th>&lt;th>Deliverable Name&lt;/th>&lt;th>Team ID&lt;/th>&lt;th>Member Name&lt;/th>&lt;/tr>&lt;/thead>&lt;tbody>'
-        for (var i=0;i&lt;data.length; i++) {
-          html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.Name")+'&lt;/td>&lt;/tr>'
-        }
-        html += '&lt;/tbody>&lt;/table>';
-        $('#part1').html(html);
-      })
-
-      // With Sharepoint 2010 we are limited due to the throttling limit (see here for some very interesting information http://www.glynblogs.com/2011/03/sharepoint-2010-list-view-throttling-and-custom-caml-queries.html)
-      // So for example if I do WHERE:'Fiscal_x0020_Year = 2012' it will return an error because I have 6,500 items
-      // So I'll do several requests for each Fiscal_x0020_Week into this Fiscal Year
-      var query=[],q=[];
-      for (var i=1; i&lt;54; i++) {
-        q.push("Fiscal_x0020_Week = "+i);
-        if (i%8==0 || i == 53) {
-          query.push("("+q.join(" OR ")+") AND Fiscal_x0020_Year = 2012");
-          q=[]
-        }
-      }
-      // it returns :
-      // [
-      //   "(Fiscal_x0020_Week = 1 OR Fiscal_x0020_Week = 2 OR Fiscal_x0020_Week = 3 OR Fiscal_x0020_Week = 4 OR Fiscal_x0020_Week = 5 OR Fiscal_x0020_Week = 6 OR Fiscal_x0020_Week = 7 OR Fiscal_x0020_Week = 8) AND Fiscal_x0020_Year = 2012",
-      //   ...
-      //   "(Fiscal_x0020_Week = 49 OR Fiscal_x0020_Week = 50 OR Fiscal_x0020_Week = 51 OR Fiscal_x0020_Week = 52 OR Fiscal_x0020_Week = 53) AND Fiscal_x0020_Year = 2012"
-      // ]
-      $SP().list("Sessions").get({
-        fields:"Title,Score",
-        where:query,
-        progress:function progress(current,max) {
-          // when we use an array for the WHERE clause we are able to provide `current` and `max`
-          console.log("Progress: "+current+" / "+max);
-        }
-      }).then(function(data) {
-        console.log(data.length); // -> 6,523
-      });
-      // also regarding the throttling limit, you can query a list on a user column in using the User ID
-      // For example if John Doe is recorded as "328;#Doe, John" then you'll have to use the special operator "~="
-      $SP().list("Sessions").get({
-        fields:"Title",
-        where:'User ~= 328"
-      }).then(function(data) {
-        console.log(data.length);
-      });
-
-      // if you want to list only the files visible into a folder for a Document Library
-      $SP().list("My Shared Documents").get({
-        fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult()), "File_x0020_Size" the filesize in bytes
-        folderOptions:{
-          path:"My Folder/Sub Folder/",
-          show:"FilesOnly_InFolder"
-        }
-      });
-
-      // if you want to list all the files and folders for a Document Library
-      $SP().list("My Shared Documents").get({
-        fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult())
-        folderOptions:{
-          show:"FilesAndFolders_Recursive"
-        }
-      });
-
-      // How to retrieve the events from a Calendar List
-      // NOTE -- when "calendar:true" we automatically get some fields: "Title", "EventDate" -- the Start Date --, "EndDate", "RecurrenceData", Duration", fAllDayEvent", "fRecurrence", "ID"
-      $SP().list("My Calendar").get({
-        fields:"Description",
-        calendar:true,
-        calendarOptions:{
-          referenceDate:new Date(2012,4,4),
-          range: "Week"
-        }
-        where:"Category = 'Yellow'"
-      }).then(function(data) {
-        var events=[];
-        for (var i=0; i&lt;data.length; i++) {
-          // several information are available -- see below
-          events.push({
-            Title:         data[i].getAttribute("Title"),
-            StartDateTime: data[i].getAttribute("EventDate"), // you can use $SP().toDate() to have a JS Date
-            EndDateTime:   data[i].getAttribute("EndDate"), // you can use $SP().toDate() to have a JS Date
-            Recurrence:    (data[i].getAttribute("fRecurrence") == 1 ? true : false),
-            AllDayEvent:   (data[i].getAttribute("fAllDayEvent") == 1 ? true : false),
-            RecurrenceEnd: (data[i].getAttribute("RecurrenceData")||"").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1"), // see the NOTE below
-            ID:            data[i].getAttribute("ID"), // the ID for the recurrence events is special but can be also passed to "Display.aspx?ID="
-            Duration:      1*data[i].getAttribute("Duration") // Duration is in SECONDS
-          })
-          // NOTE: with data[i].getAttribute("RecurrenceData") you'll find more info about the recurrence (like the end date for the serie, and much more),
-          // but because there are a lot of scenario, I won't handle the different cases.
-          // e.g. for a daily recurrence you can find the end date of the serie with: data[i].getAttribute("RecurrenceData").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1")
-          // --> it will return a SP Date
-        }
-      })
-
-      // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
-
-      // [It doesn't work with Sharepoint 2013 anymore, only for SP2010]
-      // You can use `useIndexForOrderBy:true` to override the list view threshold -- see https://spservices.codeplex.com/discussions/280642
-      // To make it to work, you need :
-      // 1) to have "ID > 0 AND Another_Index_Column_Filtered" in the WHERE Clause (so at least two filters), and then we can add some other WHERE (even the not indexed columns)
-      // 2) To use `orderby`, with an indexed column
-      // 3) To use `useIndexForOrderBy:true`
-      // see the below example with Trainer an indexed column, and Equipment a column not indexed
-      // NOTE: you need to test your WHERE to see if it works or not, because it's vary a lot depending of the kind of WHERE clause you'll use
-      $SP().list("Calendar",'http://intranet.dell.com/services/Educate/Toolbox/scheduling_tool/').get({
-        fields:"Trainer",
-        where:'ID > 0 AND Trainer <> "" AND Equipment LIKE "Box"',
-        orderby:'Trainer',
-        useIndexForOrderBy:true
-      }).then(function(d) {
-        console.log(d.length)
-      })
+     * @name $SP().list.get
+     * @function
+     * @description Get the content of the list based on different criteria (by default the default view is used)
+     *
+     * @param {Object} [options] Options (see below)
+     * @param {String} [options.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
+     * @param {String} [options.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
+     * @param {String|Array} [options.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
+     * @param {Boolean} [options.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
+     * @param {Boolean} [options.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
+     * @param {Function} [options.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
+     * @param {Function} [options.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
+     * @param {String} [options.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
+     * @param {String} [options.groupby=""] The field used to group by the list result
+     * @param {Integer} [options.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
+     * @param {Boolean} [options.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
+     * @param {Integer} [options.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
+     * @param {String} [options.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
+     * @param {Boolean} [options.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items limit in an unique call (for Sharepoint 2010 only) -- see the example below to know how to use it
+     * @param {Boolean} [options.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
+     * @param {Boolean} [options.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
+     * @param {Object} [options.folderOptions] Permits to read the content of a Document Library (see below)
+     * @param {String} [options.folderOptions.path=""] Relative path of the folders we want to explore (by default it's the root of the document library)
+     * @param {String} [options.folderOptions.show="FilesAndFolders_InFolder"] Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path
+     * @param {Boolean} [options.queryOptions=undefined] If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see https://msdn.microsoft.com/en-us/library/lists.lists.getlistitems%28v=office.12%29.aspx?f=255&MSPPError=-2147217396)
+     * @param {Object} [options.join] Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)
+     * @param {String} [options.join.list] Permits to establish the link between two lists (see the example below)
+     * @param {String} [options.join.url='current website'] The website url (if different than the current website)
+     * @param {String} [options.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
+     * @param {String} [options.join.onLookup] Permits to establish the link between two lists based on a lookup field... it's more optimized than the simple `join.on` (see the example below)
+     * @param {Boolean} [options.join.outer=false] If you want to do an outer join (you can also directly use "outerjoin" instead of "join")
+     * @param {Boolean} [options.calendar=false] If you want to get the events from a Calendar List
+     * @param {Object} [options.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
+     * @param {Boolean} [options.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
+     * @param {String|Date} [options.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String) [attention: if 'splitRecurrence' is FALSE, then Sharepoint will ignore this 'referenceDate'...]
+     * @param {String} [options.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
+     * @return {Promise} resolve(data returned by the server), reject(error from $SP().ajax())
+     *
+     * @example
+     * $SP().list("List Name").get().then(function(data) {
+     *   for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
+     * });
+     *
+     * // with some fields and an orderby command
+     * $SP().list("ListName","http://www.mysharepoint.com/mydir/").get({
+     *   fields:"Title,Organization",
+     *   orderby:"Title DESC,Test_x0020_Date ASC"
+     * }).then(function(data) {
+     *   for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
+     * });
+     *
+     * // handle the errors
+     * $SP().list("List Name").get().then(function(data) {
+     *   for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
+     * }).catch(function(err) {
+     *   console.log("Error => ",err)
+     * });
+     *
+     * // the WHERE clause must be SQL-like
+     * // the field names must be the internal names used by Sharepoint
+     * // ATTENTION - note that here we open the WHERE string with simple quotes (') and that should be your default behavior each time you use WHERE
+     * var name = "O'Sullivan, James";
+     * $SP().list("My List").get({
+     *   fields:"Title",
+     *   where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "'+name+'"'
+     * }).then(function(row) {
+     *   for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+     * });
+     *
+     * // Same example but this time we write the name directly inside the query...
+     * // So make sure to use a single backslash (\) if you have a simple quote ' inside your WHERE with a double quotes (") to open/close the string
+     * $SP().list("My List").get({
+     *   fields:"Title",
+     *   where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "O\'Sullivan, James"'
+     * }).then(function(row) {
+     *   for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+     * });
+     * // Or to use a double backslash (\\) if you have a simple quote ' inside your WHERE with a simple quote (') to open/close the string
+     * $SP().list("My List").get({
+     *   fields:"Title",
+     *   where:"Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = 'O\\'Sullivan, James'"
+     * }).then(function(row) {
+     *   for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+     * });
+     *
+     * // also in the WHERE clause you can use '[Me]' to filter by the current user,
+     * $SP().list("My List").get({
+     *   fields:"Title",
+     *   where:"Author = '[Me]'"
+     * }).then(function(row) {
+     *   console.log(row[0].getAttribute("Title"));
+     * });
+     *
+     * // also in the WHERE clause you can use '[Today]' or '[Today-X]' with 'X' a number,
+     * // Here it will return the records done yesterday
+     * $SP().list("My List").get({
+     *   fields:"Title",
+     *   where:"Created = '[Today-1]'"
+     * }).then(function(row) {
+     *   console.log(row[0].getAttribute("Title"));
+     * });
+     *
+     * // Since 3.0.8, if you do a WHERE on a Date with the Time included, then it will compare with the tim
+     * // see http://blogs.syrinx.com/blogs/sharepoint/archive/2008/08/05/caml-queries-with-dates.aspx
+     * // here it will only show the items created at 2PM exactly -- if you want to check only the today, then use "Created = '2014-03-12'"
+     * $SP().list("My List").get({
+     *   fields:"Title",
+     *   where:"Created = '2014-03-12 14:00:00'"
+     * }).then(function(row) {
+     *   console.log(row[0].getAttribute("Title"));
+     * });
+     *
+     * // We have a list called "My List" with a view already set that is called "Marketing View" with some FIELDS and a WHERE clause
+     * // so the function will grab the view information and will get the data from the list with "Author = '[Me]'" and adding the view's WHERE clause too
+     * $SP().list("My List","http://my.sharepoint.com/my/site/").get({
+     *   view:"Marketing View",
+     *   where:"Author = '[Me]'"
+     * }).then(function(data) {
+     *   for (var i=data.length; i--;) console.log(data[i].getAttribute("Title") + " by " + data[i].getAttribute("Author"));
+     * });
+     *
+     * // use the paging option for the large list to avoid the message "the attempted operation is prohibited because it exceeds the list view threshold enforced by the administrator"
+     * // ATTENTION: if you use the WHERE option then it could return the "view threshold" error message because the packet from the WHERE is too big and SharePoint is too stupid...
+     * $SP().list("My List").get({
+     *   fields:"ID,Title",
+     *   rowlimit:5000,
+     *   paging:true,
+     *   progress:function progress(nbItemsLoaded) {
+     *     // for each new page this function will be called
+     *     console.log("It's still loading... already "+nbItemsLoaded+" items have been loaded!");
+     *   }
+     * }).then(function(data) {
+     *   console.log(data.length); // -> 23587
+     * })
+     * // add the `page` option to stop after a number of requests/pages
+     * // for example you only want the last record from a list that has more than 5,000 items
+     * $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:1,paging:true,page:1}).then(function(data) {
+     *   console.log("last ID : "+data[0].getAttribute("ID"));
+     * })
+     * // use `listItemCollectionPositionNext` to start from this index
+     * $SP().list("My List").get({
+     *   fields:"ID",
+     *   orderby:"ID DESC",
+     *   rowlimit:10,
+     *   paging:true,
+     *   page:1
+     * }).then(function(data) {
+     *   // "data" is our first page of data
+     *   // get the next block
+     *   return $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:data.NextPage})
+     * }).then(function(data) {
+     *   // here "data" is the 2nd block of data
+     * })
+     *
+     * // We can also find the files from a Document Shared Library
+     * $SP().list("Shared Documents","http://my.share.point.com/my_site/").get({
+     *   fields:"FileLeafRef,File_x0020_Size",
+     * }).then(function(data) {
+     *   for (var i=0; i<&lt;data.length; i++) console.log("FileName:"+data[i].getAttribute("FileLeafRef"),"FileSize:"+data[i].getAttribute("File_x0020_Size"));
+     * });
+     *
+     * // We can join two or more lists together based on a condition
+     * // ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
+     * // ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
+     * $SP().list("Finance and Expense","http://my.sharepoint.com/my_sub/dir/").get({
+     *   fields:"Expense_x0020_Type",
+     *   where:"Finance_x0020_Category = 'Supplies'",
+     *   join:{
+     *     list:"Purchasing List",
+     *     fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
+     *     where:"Region = 'EMEA' AND Year = 2012",
+     *     orderby:"Expense_x0020_Type,Finance_x0020_Category",
+     *     on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
+     *     join:{
+     *       list:"Financial Static Data",
+     *       fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
+     *       where:"Region = 'EMEA' AND Year = 2012",
+     *       on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
+     *     }
+     *   }
+     * }).then(function(data) {
+     *   for (var i=0; i&lt;data.length; i++) {
+     *     console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
+     *   }
+     * });
+     *
+     * // By default "join" is an "inner join", but you can also do an "outerjoin"
+     * // ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
+     * // ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
+     * $SP().list("Finance and Expense","http://my.sharepoint.com/my_sub/dir/").get({
+     *   fields:"Expense_x0020_Type",
+     *   where:"Finance_x0020_Category = 'Supplies'",
+     *   join:{
+     *     list:"Purchasing List",
+     *     fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
+     *     where:"Region = 'EMEA' AND Year = 2012",
+     *     orderby:"Expense_x0020_Type,Finance_x0020_Category",
+     *     on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
+     *     outerjoin:{
+     *       list:"Financial Static Data",
+     *       fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
+     *       where:"Region = 'EMEA' AND Year = 2012",
+     *       on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
+     *     }
+     *   }
+     * }).then(function(data) {
+     *   for (var i=0; i&lt;data.length; i++)
+     *     console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
+     * })
+     *
+     * // Another example of "outerjoin", but this time with fields tied to a Lookup ID
+     * // Here 1 Project can have several Deliverables based on field "Project ID", and 1 Deliverable can have several team members based on "Deliverable ID"
+     * $SP().list("Projects").get({
+     *   fields:"ID,Project_x0020_Name",
+     *   where:"Status = 'In Progress'",
+     *   outerjoin:{
+     *     list:"Deliverables",
+     *     fields:"ID,Name",
+     *     onLookup:"Project_x0020_ID",
+     *     outerjoin:{
+     *       list:"Team Members",
+     *       fields:"ID,Deliverable_x0020_ID,Name",
+     *       onLookup:"Deliverable_x0020_ID"
+     *     }
+     *   }
+     * }).then(function(data) {
+     *   var html = '&lt;table class="table default">&lt;thead>&lt;tr>&lt;th>Project ID&lt;/th>&lt;th>Project Name&lt;/th>&lt;th>Deliverable ID&lt;/th>&lt;th>Deliverable Name&lt;/th>&lt;th>Team ID&lt;/th>&lt;th>Member Name&lt;/th>&lt;/tr>&lt;/thead>&lt;tbody>'
+     *   for (var i=0;i&lt;data.length; i++) {
+     *     html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.Name")+'&lt;/td>&lt;/tr>'
+     *   }
+     *   html += '&lt;/tbody>&lt;/table>';
+     *   $('#part1').html(html);
+     * })
+     *
+     * // With Sharepoint 2010 we are limited due to the throttling limit (see here for some very interesting information http://www.glynblogs.com/2011/03/sharepoint-2010-list-view-throttling-and-custom-caml-queries.html)
+     * // So for example if I do WHERE:'Fiscal_x0020_Year = 2012' it will return an error because I have 6,500 items
+     * // So I'll do several requests for each Fiscal_x0020_Week into this Fiscal Year
+     * var query=[],q=[];
+     * for (var i=1; i&lt;54; i++) {
+     *   q.push("Fiscal_x0020_Week = "+i);
+     *   if (i%8==0 || i == 53) {
+     *     query.push("("+q.join(" OR ")+") AND Fiscal_x0020_Year = 2012");
+     *     q=[]
+     *   }
+     * }
+     * // it returns :
+     * // [
+     * //   "(Fiscal_x0020_Week = 1 OR Fiscal_x0020_Week = 2 OR Fiscal_x0020_Week = 3 OR Fiscal_x0020_Week = 4 OR Fiscal_x0020_Week = 5 OR Fiscal_x0020_Week = 6 OR Fiscal_x0020_Week = 7 OR Fiscal_x0020_Week = 8) AND Fiscal_x0020_Year = 2012",
+     * //   ...
+     * //   "(Fiscal_x0020_Week = 49 OR Fiscal_x0020_Week = 50 OR Fiscal_x0020_Week = 51 OR Fiscal_x0020_Week = 52 OR Fiscal_x0020_Week = 53) AND Fiscal_x0020_Year = 2012"
+     * // ]
+     * $SP().list("Sessions").get({
+     *   fields:"Title,Score",
+     *   where:query,
+     *   progress:function progress(current,max) {
+     *     // when we use an array for the WHERE clause we are able to provide `current` and `max`
+     *     console.log("Progress: "+current+" / "+max);
+     *   }
+     * }).then(function(data) {
+     *   console.log(data.length); // -> 6,523
+     * });
+     * // also regarding the throttling limit, you can query a list on a user column in using the User ID
+     * // For example if John Doe is recorded as "328;#Doe, John" then you'll have to use the special operator "~="
+     * $SP().list("Sessions").get({
+     *   fields:"Title",
+     *   where:'User ~= 328"
+     * }).then(function(data) {
+     *   console.log(data.length);
+     * });
+     *
+     * // if you want to list only the files visible into a folder for a Document Library
+     * $SP().list("My Shared Documents").get({
+     *   fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult()), "File_x0020_Size" the filesize in bytes
+     *   folderOptions:{
+     *     path:"My Folder/Sub Folder/",
+     *     show:"FilesOnly_InFolder"
+     *   }
+     * });
+     *
+     * // if you want to list all the files and folders for a Document Library
+     * $SP().list("My Shared Documents").get({
+     *   fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult())
+     *   folderOptions:{
+     *     show:"FilesAndFolders_Recursive"
+     *   }
+     * });
+     *
+     * // How to retrieve the events from a Calendar List
+     * // NOTE -- when "calendar:true" we automatically get some fields: "Title", "EventDate" -- the Start Date --, "EndDate", "RecurrenceData", Duration", fAllDayEvent", "fRecurrence", "ID"
+     * $SP().list("My Calendar").get({
+     *   fields:"Description",
+     *   calendar:true,
+     *   calendarOptions:{
+     *     referenceDate:new Date(2012,4,4),
+     *     range: "Week"
+     *   }
+     *   where:"Category = 'Yellow'"
+     * }).then(function(data) {
+     *   var events=[];
+     *   for (var i=0; i&lt;data.length; i++) {
+     *     // several information are available -- see below
+     *     events.push({
+     *       Title:         data[i].getAttribute("Title"),
+     *       StartDateTime: data[i].getAttribute("EventDate"), // you can use $SP().toDate() to have a JS Date
+     *       EndDateTime:   data[i].getAttribute("EndDate"), // you can use $SP().toDate() to have a JS Date
+     *       Recurrence:    (data[i].getAttribute("fRecurrence") == 1 ? true : false),
+     *       AllDayEvent:   (data[i].getAttribute("fAllDayEvent") == 1 ? true : false),
+     *       RecurrenceEnd: (data[i].getAttribute("RecurrenceData")||"").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1"), // see the NOTE below
+     *       ID:            data[i].getAttribute("ID"), // the ID for the recurrence events is special but can be also passed to "Display.aspx?ID="
+     *       Duration:      1*data[i].getAttribute("Duration") // Duration is in SECONDS
+     *     })
+     *     // NOTE: with data[i].getAttribute("RecurrenceData") you'll find more info about the recurrence (like the end date for the serie, and much more),
+     *     // but because there are a lot of scenario, I won't handle the different cases.
+     *     // e.g. for a daily recurrence you can find the end date of the serie with: data[i].getAttribute("RecurrenceData").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1")
+     *     // --> it will return a SP Date
+     *   }
+     * })
+     *
+     * // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
+     *
+     * // [It doesn't work with Sharepoint 2013 anymore, only for SP2010]
+     * // You can use `useIndexForOrderBy:true` to override the list view threshold -- see https://spservices.codeplex.com/discussions/280642
+     * // To make it to work, you need :
+     * // 1) to have "ID > 0 AND Another_Index_Column_Filtered" in the WHERE Clause (so at least two filters), and then we can add some other WHERE (even the not indexed columns)
+     * // 2) To use `orderby`, with an indexed column
+     * // 3) To use `useIndexForOrderBy:true`
+     * // see the below example with Trainer an indexed column, and Equipment a column not indexed
+     * // NOTE: you need to test your WHERE to see if it works or not, because it's vary a lot depending of the kind of WHERE clause you'll use
+     * $SP().list("Calendar",'http://intranet.dell.com/services/Educate/Toolbox/scheduling_tool/').get({
+     *   fields:"Trainer",
+     *   where:'ID > 0 AND Trainer <> "" AND Equipment LIKE "Box"',
+     *   orderby:'Trainer',
+     *   useIndexForOrderBy:true
+     * }).then(function(d) {
+     *   console.log(d.length)
+     * })
     */
     get: function (options) {
       var _this = this
@@ -1880,105 +1880,105 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.createFile
-      @function
-      @category files
-      @description Create/Upload a file into a Document library
-
-      @param {Object} setup Options (see below)
-        @param {ArrayBuffer} setup.content The file content
-        @param {String} setup.filename The relative path (within the document library) to the file to create
-        @param {Object} [setup.fields] If you want to set some fields for the created document
-        @param {Function} [setup.progress=function(percentage){}] The upload progress in percentage
-        @param {Function} [setup.getXHR=function(xhr){}] To manipulate the XMLHttpRequest object used during the upload
-      @return {Promise} resolve(object that represents the file), reject(error)
-
-      @example
-      $SP().list("Documents", "http://my.other.site/website/").createFile({
-        content:"*ArrayBuffer*",
-        filename:"Demo/HelloWorld.txt"
-      }).then(function(file) {
-        console.log(file.Url+" has been created")
-        // and to get more info, like the ID, you can do:
-        $SP().ajax({url:file.AllFieldsUrl}).then(function(body) {
-          console.log(body.d)
-        })
-      }, function(error) {
-        console.log("Error: ",error)
-      })
-
-      // create a text document with some fields
-      $SP().list("Shared Documents").createFile({
-        content:"ArrayBuffer*",
-        filename:"SubFolder/myfile.txt",
-        fields:{
-          "Title":"My Document",
-          "File_x0020_Description":"This is my file!"
-        }
-      }).then(function(file) {
-        alert("File "+file.Name+" created at " + file.Url);
-      });
-
-      // use onprogress and abort
-      $SP().list("Documents").createFile({
-        content:"*ArrayBuffer*",
-        filename:"BigFile.iso",
-        progress:function(perc) {
-          console.log("percentage of progress => ",perc)
-        },
-        getXHR:function(xhr) {
-          // automtically abort after 3 seconds
-          setTimeout(function() {
-            xhr.abort()
-          }, 3000)
-        }
-      }).then(function(file) {
-        console.log(file.Url+" has been created")
-      }, function(error) {
-        console.log("Error: ",error)
-      })
-
-      // example with a input[type="file"]
-      // &lt;input type="file" id="file_to_upload"> &lt;button type="button" onclick="_uploadFile()">Upload&lt;/button>
-      function _uploadFile() {
-        var files;
-        // retrive file from INPUT
-        files = document.querySelector('#file_to_upload').files;
-        if (!files || files.length === 0) {
-          alert("ERROR: Select a file");
-          return;
-        }
-        files = Array.prototype.slice.call(files);
-        // read the files
-        Promise.all(files.map(function(file) {
-          return new Promise(function(prom_res, prom_rej) {
-            // use fileReader
-            var fileReader = new FileReader();
-            fileReader.onloadend = function(e) {
-              file.content = e.target.result;
-              prom_res(file);
-            }
-            fileReader.onerror = function(e) {
-              prom_rej(e.target.error);
-            }
-            fileReader.readAsArrayBuffer(file);
-          })
-        })).then(function(files) {
-          // upload files
-          return Promise.all(files.map(function(file) {
-            return $SP().list("SharepointPlusLibrary").createFile({
-              content:file.content,
-              encoded:true,
-              filename:file.name,
-              progress:function(perc) {
-                console.log("Progress => ",perc+"%")
-              }
-            })
-          }))
-        })
-      }
-
-      // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
+     * @name $SP().list.createFile
+     * @function
+     * @category files
+     * @description Create/Upload a file into a Document library
+     *
+     * @param {Object} setup Options (see below)
+     * @param {ArrayBuffer} setup.content The file content
+     * @param {String} setup.filename The relative path (within the document library) to the file to create
+     * @param {Object} [setup.fields] If you want to set some fields for the created document
+     * @param {Function} [setup.progress=function(percentage){}] The upload progress in percentage
+     * @param {Function} [setup.getXHR=function(xhr){}] To manipulate the XMLHttpRequest object used during the upload
+     * @return {Promise} resolve(object that represents the file), reject(error)
+     *
+     * @example
+     * $SP().list("Documents", "http://my.other.site/website/").createFile({
+     *   content:"*ArrayBuffer*",
+     *   filename:"Demo/HelloWorld.txt"
+     * }).then(function(file) {
+     *   console.log(file.Url+" has been created")
+     *   // and to get more info, like the ID, you can do:
+     *   $SP().ajax({url:file.AllFieldsUrl}).then(function(body) {
+     *     console.log(body.d)
+     *   })
+     * }, function(error) {
+     *   console.log("Error: ",error)
+     * })
+     *
+     * // create a text document with some fields
+     * $SP().list("Shared Documents").createFile({
+     *   content:"ArrayBuffer*",
+     *   filename:"SubFolder/myfile.txt",
+     *   fields:{
+     *     "Title":"My Document",
+     *     "File_x0020_Description":"This is my file!"
+     *   }
+     * }).then(function(file) {
+     *   alert("File "+file.Name+" created at " + file.Url);
+     * });
+     *
+     * // use onprogress and abort
+     * $SP().list("Documents").createFile({
+     *   content:"*ArrayBuffer*",
+     *   filename:"BigFile.iso",
+     *   progress:function(perc) {
+     *     console.log("percentage of progress => ",perc)
+     *   },
+     *   getXHR:function(xhr) {
+     *     // automtically abort after 3 seconds
+     *     setTimeout(function() {
+     *       xhr.abort()
+     *     }, 3000)
+     *   }
+     * }).then(function(file) {
+     *   console.log(file.Url+" has been created")
+     * }, function(error) {
+     *   console.log("Error: ",error)
+     * })
+     *
+     * // example with a input[type="file"]
+     * // &lt;input type="file" id="file_to_upload"> &lt;button type="button" onclick="_uploadFile()">Upload&lt;/button>
+     * function _uploadFile() {
+     *   var files;
+     *   // retrive file from INPUT
+     *   files = document.querySelector('#file_to_upload').files;
+     *   if (!files || files.length === 0) {
+     *     alert("ERROR: Select a file");
+     *     return;
+     *   }
+     *   files = Array.prototype.slice.call(files);
+     *   // read the files
+     *   Promise.all(files.map(function(file) {
+     *     return new Promise(function(prom_res, prom_rej) {
+     *       // use fileReader
+     *       var fileReader = new FileReader();
+     *       fileReader.onloadend = function(e) {
+     *         file.content = e.target.result;
+     *         prom_res(file);
+     *       }
+     *       fileReader.onerror = function(e) {
+     *         prom_rej(e.target.error);
+     *       }
+     *       fileReader.readAsArrayBuffer(file);
+     *     })
+     *   })).then(function(files) {
+     *     // upload files
+     *     return Promise.all(files.map(function(file) {
+     *       return $SP().list("SharepointPlusLibrary").createFile({
+     *         content:file.content,
+     *         encoded:true,
+     *         filename:file.name,
+     *         progress:function(perc) {
+     *           console.log("Progress => ",perc+"%")
+     *         }
+     *       })
+     *     }))
+     *   })
+     * }
+     *
+     * // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
     */
     createFile: function (setup) {
       var _this = this
@@ -2128,25 +2128,23 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.createFolder
-      @function
-      @category files
-      @description Create a folter in a Document library
-
-      @param {String} path The relative path to the new folder
-      @return {Promise} resolve({BaseName,ID,FSObjType}), reject(error)
-
-      @example
-      // create a folder called "first" at the root of the Shared Documents library
-      // the result should be "http://mysite/Shared Documents/first/"
-      $SP().list("Shared Documents").createFolder("first").then(function(folder) { alert("Folder created!"); })
-
-      // create a folder called "second" under "first"
-      // the result should be "http://mysite/Shared Documents/first/second/"
-      // if "first" doesn't exist then it will return an error
-      $SP().list("Documents").createFolder("first/second").then(function(folder) { alert("Folder created!"); }
-
-      // Note: To delete a folder you can use $SP().list().remove() with ID and FileRef parameters
+     * @name $SP().list.createFolder
+     * @function
+     * @category files
+     * @description Create a folter in a Document library
+     * @param {String} path The relative path to the new folder
+     * @return {Promise} resolve({BaseName,ID,FSObjType}), reject(error)
+     * @example
+     * // create a folder called "first" at the root of the Shared Documents library
+     * // the result should be "http://mysite/Shared Documents/first/"
+     * $SP().list("Shared Documents").createFolder("first").then(function(folder) { alert("Folder created!"); })
+     *
+     * // create a folder called "second" under "first"
+     * // the result should be "http://mysite/Shared Documents/first/second/"
+     * // if "first" doesn't exist then it will return an error
+     * $SP().list("Documents").createFolder("first/second").then(function(folder) { alert("Folder created!"); }
+     *
+     * // Note: To delete a folder you can use $SP().list().remove() with ID and FileRef parameters
     */
     createFolder: function (folderPath) {
       // default values
@@ -2205,27 +2203,26 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().checkin
-      @function
-      @category files
-      @description Checkin a file
-
-      @param {Object} [setup] Options (see below)
-        @param {String} setup.destination The full path to the file to check in
-        @param {String} [setup.comments=""] The comments related to the check in
-        @param {String} [setup.url='current website'] The website url
-      @return {Promise} resolve() then checked in is done, reject(error) otherwise
-
-      @example
-      // with Promise
-      $SP().checkin({
-        destination:"http://mysite/Shared Documents/myfile.txt",
-        comments:"Automatic check in with SharepointPlus"
-      }).then(function() {
-        alert("Done");
-      }).catch(function(error) {
-        alert("Check in failed")
-      })
+     * @name $SP().checkin
+     * @function
+     * @category files
+     * @description Checkin a file
+     * @param {Object} [setup] Options (see below)
+     * @param {String} setup.destination The full path to the file to check in
+     * @param {String} [setup.comments=""] The comments related to the check in
+     * @param {String} [setup.url='current website'] The website url
+     * @return {Promise} resolve() then checked in is done, reject(error) otherwise
+     *
+     * @example
+     * // with Promise
+     * $SP().checkin({
+     *   destination:"http://mysite/Shared Documents/myfile.txt",
+     *   comments:"Automatic check in with SharepointPlus"
+     * }).then(function() {
+     *   alert("Done");
+     * }).catch(function(error) {
+     *   alert("Check in failed")
+     * })
     */
     checkin: function (setup) {
       // default values
@@ -2269,24 +2266,23 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.addAttachment
-      @function
-      @description Add an attachment to a Sharepoint List Item
-
-      @param {Object} setup Options (see below)
-        @param {Number} setup.ID The item ID to attach the file
-        @param {String} setup.filename The name of the file
-        @param {String} setup.attachment An array buffer of the file content
-      @return {Promise} resolve(fileURL), reject()
-
-      @example
-      $SP().list("My List").addAttachment({
-        ID:1,
-        filename:"helloworld.txt",
-        attachment:"*ArrayBuffer*"
-      }).then(function(fileURL) {
-        alert(fileURL)
-      });
+     * @name $SP().list.addAttachment
+     * @function
+     * @description Add an attachment to a Sharepoint List Item
+     * @param {Object} setup Options (see below)
+     * @param {Number} setup.ID The item ID to attach the file
+     * @param {String} setup.filename The name of the file
+     * @param {String} setup.attachment An array buffer of the file content
+     * @return {Promise} resolve(fileURL), reject()
+     *
+     * @example
+     * $SP().list("My List").addAttachment({
+     *   ID:1,
+     *   filename:"helloworld.txt",
+     *   attachment:"*ArrayBuffer*"
+     * }).then(function(fileURL) {
+     *   alert(fileURL)
+     * });
     */
     addAttachment: function (setup) {
       var _this = this
@@ -2320,19 +2316,19 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.getAttachment
-      @function
-      @description Get the attachment(s) for an item
-
-      @param {String|Number} itemID The item ID
-      @return {Promise} resolve([results])
-
-      @example
-      $SP().list("My List","http://my.site.com/mydir/").getAttachment(1).then(function(attachments) {
-        for (var i=0; i&lt;attachments.length; i++) console.log(attachments[i]); -> "https://my.site.com/site/Lists/Something/Attachments/46/helloworld.txt"
-      });
-
-      // you can also use $SP().list().get() using the "Attachments" field
+     * @name $SP().list.getAttachment
+     * @function
+     * @description Get the attachment(s) for an item
+     *
+     * @param {String|Number} itemID The item ID
+     * @return {Promise} resolve([results])
+     *
+     * @example
+     * $SP().list("My List","http://my.site.com/mydir/").getAttachment(1).then(function(attachments) {
+     *   for (var i=0; i&lt;attachments.length; i++) console.log(attachments[i]); -> "https://my.site.com/site/Lists/Something/Attachments/46/helloworld.txt"
+     * });
+     *
+     * // you can also use $SP().list().get() using the "Attachments" field
     */
     getAttachment: function (itemID) {
       var _this = this
@@ -2362,18 +2358,18 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.getContentTypes
-      @function
-      @description Get the Content Types for the list (returns Name, ID and Description)
-
-      @param {Object} [options]
-        @param {Boolean} [options.cache=true] Do we want to use the cache on recall for this function?
-      @return {Promise} resolve(contentTypes), reject(error)
-
-      @example
-      $SP().list("List Name").getContentTypes().then(function(contentTypes) {
-        for (var i=0; i&lt;contentTypes.length; i++) console.log(contentTypes[i].Name, contentTypes[i].ID, contentTypes[i].Description);
-      });
+     * @name $SP().list.getContentTypes
+     * @function
+     * @description Get the Content Types for the list (returns Name, ID and Description)
+     * 
+     * @param {Object} [options]
+     * @param {Boolean} [options.cache=true] Do we want to use the cache on recall for this function?
+     * @return {Promise} resolve(contentTypes), reject(error)
+     *   
+     * @example
+     * $SP().list("List Name").getContentTypes().then(function(contentTypes) {
+     *   for (var i=0; i&lt;contentTypes.length; i++) console.log(contentTypes[i].Name, contentTypes[i].ID, contentTypes[i].Description);
+     * });
     */
     getContentTypes: function (options) {
       var _this = this
@@ -2433,23 +2429,23 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.getContentTypeInfo
-      @function
-      @description Get the Content Type Info for a Content Type into the list
-
-      @param {String} contentType The Name or the ID (from $SP().list.getContentTypes) of the Content Type
-      @param {Object} [options]
-        @param {Boolean} [options.cache=true] Do we use the cache?
-      @return {Promise} resolve(fields), reject(error)
-
-      @example
-      $SP().list("List Name").getContentTypeInfo("Item").then(function(fields) {
-        for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
-      });
-
-      $SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0F9001").then(function(fields) {
-        for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
-      });
+      * @name $SP().list.getContentTypeInfo
+      * @function
+      * @description Get the Content Type Info for a Content Type into the list
+      * 
+      * @param {String} contentType The Name or the ID (from $SP().list.getContentTypes) of the Content Type
+      * @param {Object} [options]
+      * @param {Boolean} [options.cache=true] Do we use the cache?
+      * @return {Promise} resolve(fields), reject(error)
+      * 
+      * @example
+      * $SP().list("List Name").getContentTypeInfo("Item").then(function(fields) {
+      *   for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+      * });
+      * 
+      * $SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0F9001").then(function(fields) {
+      *   for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+      * });
     */
     getContentTypeInfo: function (contentType, options) {
       var _this = this
@@ -2566,19 +2562,19 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.info
-      @function
-      @description Get the columns' information/metadata, and the list's details
-
-      @return {Promise} resolve(infos), reject(error)
-
-      @example
-      $SP().list("List Name").info().then(function(infos) {
-        // for columns' details:
-        for (var i=0; i&lt;infos.length; i++) console.log(infos[i]["DisplayName"]+ ": => ",infos[i]);
-        // for list's details:
-        console.log(infos._List)
-      });
+     * @name $SP().list.info
+     * @function
+     * @description Get the columns' information/metadata, and the list's details
+     * 
+     * @return {Promise} resolve(infos), reject(error)
+     * 
+     * @example
+     * $SP().list("List Name").info().then(function(infos) {
+     *   // for columns' details:
+     *   for (var i=0; i&lt;infos.length; i++) console.log(infos[i]["DisplayName"]+ ": => ",infos[i]);
+     *   // for list's details:
+     *   console.log(infos._List)
+     * });
     */
     info: function () {
       var _this = this
@@ -2676,20 +2672,20 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.view
-      @function
-      @description Get the view's details (like selected fields, order by, where, ....)
-
-      @param {String} [viewID="The default view"] The view ID or view Name
-      @param {Object} [options] (see below)
-        @param {Boolean} [options.cache=true] Get the view's info from the cache
-      @return {Promise} resolve({DefaultView, Name, ID, Type, Url, OrderBy, Fields, RowLimit, WhereCAML}), reject(error)
-
-      @example
-      $SP().list("List Name").view("All Items").then(function(res) {
-        for (var i=0; i&lt;res.Fields.length; i++) console.log("Column "+i+": "+res.Fields[i]);
-        console.log("And the GUI for this view is :"+res.ID);
-      });
+     * @name $SP().list.view
+     * @function
+     * @description Get the view's details (like selected fields, order by, where, ....)
+     * 
+     * @param {String} [viewID="The default view"] The view ID or view Name
+     * @param {Object} [options] (see below)
+     * @param {Boolean} [options.cache=true] Get the view's info from the cache
+     * @return {Promise} resolve({DefaultView, Name, ID, Type, Url, OrderBy, Fields, RowLimit, WhereCAML}), reject(error)
+     * 
+     * @example
+     * $SP().list("List Name").view("All Items").then(function(res) {
+     *   for (var i=0; i&lt;res.Fields.length; i++) console.log("Column "+i+": "+res.Fields[i]);
+     *   console.log("And the GUI for this view is :"+res.ID);
+     * });
     */
     view: function (viewID, options) {
       var _this = this
@@ -2805,21 +2801,20 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.views
-      @function
-      @description Get the views' info for a List
-
-      @param {Hash} [options]
-        @param {Boolean} [options.cache=true] Get the info from the cache
-      @return {Promise} resolve({DefaultView, Name, ID, Type, Url}), reject(error)
-
-      @example
-      $SP().list("My List").views().then(function(view) {
-        for (var i=0; i&lt;view.length; i++) {
-          console.log("View #"+i+": "+view[i].Name);
-        }
-      });
-
+     * @name $SP().list.views
+     * @function
+     * @description Get the views' info for a List
+     * 
+     * @param {Hash} [options]
+     * @param {Boolean} [options.cache=true] Get the info from the cache
+     * @return {Promise} resolve({DefaultView, Name, ID, Type, Url}), reject(error)
+     * 
+     * @example
+     * $SP().list("My List").views().then(function(view) {
+     *   for (var i=0; i&lt;view.length; i++) {
+     *     console.log("View #"+i+": "+view[i].Name);
+     *   }
+     * });
     */
     views: function (options) {
       var _this = this
@@ -2891,19 +2886,19 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().lists
-      @function
-      @description Get all the lists from the site
-
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.url='current website'] The website url
-        @param {Boolean} [setup.cache=true] To get the result from the cache when available
-      @return {Promise} resolve({ID, Name, Description, Url, .....}), reject(error)
-
-      @example
-      $SP().lists().then(function(lists) {
-        for (var i=0; i&lt;lists.length; i++) console.log("List #"+i+": "+lists[i].Name);
-      });
+     * @name $SP().lists
+     * @function
+     * @description Get all the lists from the site
+     *
+     * @param {Object} [setup] Options (see below)
+     * @param {String} [setup.url='current website'] The website url
+     * @param {Boolean} [setup.cache=true] To get the result from the cache when available
+     * @return {Promise} resolve({ID, Name, Description, Url, .....}), reject(error)
+     *
+     * @example
+     * $SP().lists().then(function(lists) {
+     *   for (var i=0; i&lt;lists.length; i++) console.log("List #"+i+": "+lists[i].Name);
+     * });
     */
     lists: function (setup) {
       var _this = this
@@ -2978,49 +2973,49 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.add
-      @function
-      @description Add items into a Sharepoint List
-                   note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
-                   note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
-                   note SP2013: If "-1;#" doesn't work on Sharepoint 2013, then try with "i:0#.w|" (e.g. "i:0#.w|europe\\foo_bar") ("i:0#.w|" may vary based on your authentification system -- see https://social.technet.microsoft.com/wiki/contents/articles/13921.sharepoint-20102013-claims-encoding.aspx)
-                   note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
-                         --> it should also be possible to not pass the value but only the ID, e.g.: "X;#"
-                   note: A URL field must be provided as "http://www.website.com, Name"
-                   note: A multiple selection must be provided as ";#choice 1;#choice 2;#", or just pass an array as the value and it will do the trick
-                   note: A multiple selection of Lookup must be provided as ";#X;#Choice 1;#Y;#Choice 2;#" (with X the ID for "Choice 1", and "Y" for "Choice 2")
-                         --> it should also be possible to not pass the values but only the ID, e.g.: ";#X;#;#Y;#;#"
-                   note: A Yes/No checkbox must be provided as "1" (for TRUE) or "0" (for "False")
-                   note: A Term / Taxonomy / Managed Metadata field must be provided as "0;#|UniqueIdentifier" for the special hidden related column (see https://github.com/Aymkdn/SharepointPlus/wiki/ to know more)
-                   note: You cannot change the Approval Status when adding, you need to use the $SP().moderate function
-
-      @param {Object|Array} items List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])
-      @param {Object} [options] Options (see below)
-        @param {Number} [options.packetsize=15] If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [options.progress] (current,max) If you provide more than 'packetsize' items then they will be treated by packets and you can use "progress" to know more about the steps
-        @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
-        @param {String} [options.rootFolder=''] When dealing with Discussion Board you need to provide the rootFolder of the Message when you post a reply
-      @return {Promise} resolve({passed, failed}), reject(error)
-
-      @example
-      $SP().list("My List").add({Title:"Ok"});
-
-      $SP().list("List Name").add([{Title:"Ok"}, {Title:"Good"}]).then(function(items) { alert("Done!"); });
-
-      $SP().list("My List","http://my.sharepoi.nt/dir/").add({Title:"Ok"}).then(function(items) {
-        if (items.failed.length > 0) {
-          for (var i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title); // the 'errorMessage' attribute is added to the object
-        }
-        if (items.passed.length > 0) {
-          for (var i=0; i &lt; items.passed.length; i++) console.log("Success for:"+items.passed[i].Title+" (ID:"+items.passed[i].ID+")");
-        }
-      });
-
-      // different ways to add John and Tom into the table
-      $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
-      $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
-
-      // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
+     * @name $SP().list.add
+     * @function
+     * @description Add items into a Sharepoint List
+     *              note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
+     *              note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
+     *              note SP2013: If "-1;#" doesn't work on Sharepoint 2013, then try with "i:0#.w|" (e.g. "i:0#.w|europe\\foo_bar") ("i:0#.w|" may vary based on your authentification system -- see https://social.technet.microsoft.com/wiki/contents/articles/13921.sharepoint-20102013-claims-encoding.aspx)
+     *              note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
+     *                    --> it should also be possible to not pass the value but only the ID, e.g.: "X;#"
+     *              note: A URL field must be provided as "http://www.website.com, Name"
+     *              note: A multiple selection must be provided as ";#choice 1;#choice 2;#", or just pass an array as the value and it will do the trick
+     *              note: A multiple selection of Lookup must be provided as ";#X;#Choice 1;#Y;#Choice 2;#" (with X the ID for "Choice 1", and "Y" for "Choice 2")
+     *                    --> it should also be possible to not pass the values but only the ID, e.g.: ";#X;#;#Y;#;#"
+     *              note: A Yes/No checkbox must be provided as "1" (for TRUE) or "0" (for "False")
+     *              note: A Term / Taxonomy / Managed Metadata field must be provided as "0;#|UniqueIdentifier" for the special hidden related column (see https://github.com/Aymkdn/SharepointPlus/wiki/ to know more)
+     *              note: You cannot change the Approval Status when adding, you need to use the $SP().moderate function
+     *              
+     * @param {Object|Array} items List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])
+     * @param {Object} [options] Options (see below)
+     * @param {Number} [options.packetsize=15] If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+     * @param {Function} [options.progress] (current,max) If you provide more than 'packetsize' items then they will be treated by packets and you can use "progress" to know more about the steps
+     * @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
+     * @param {String} [options.rootFolder=''] When dealing with Discussion Board you need to provide the rootFolder of the Message when you post a reply
+     * @return {Promise} resolve({passed, failed}), reject(error)
+     * 
+     * @example
+     * $SP().list("My List").add({Title:"Ok"});
+     * 
+     * $SP().list("List Name").add([{Title:"Ok"}, {Title:"Good"}]).then(function(items) { alert("Done!"); });
+     * 
+     * $SP().list("My List","http://my.sharepoi.nt/dir/").add({Title:"Ok"}).then(function(items) {
+     *   if (items.failed.length > 0) {
+     *     for (var i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title); // the 'errorMessage' attribute is added to the object
+     *   }
+     *   if (items.passed.length > 0) {
+     *     for (var i=0; i &lt; items.passed.length; i++) console.log("Success for:"+items.passed[i].Title+" (ID:"+items.passed[i].ID+")");
+     *   }
+     * });
+     * 
+     * // different ways to add John and Tom into the table
+     * $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
+     * $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
+     * 
+     * // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
     */
     add: function (items, options) {
       var _this = this
@@ -3146,30 +3141,30 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.update
-      @function
-      @description Update items from a Sharepoint List
-
-      @param {Array} items List of items (e.g. [{ID: 1, Field_x0020_Name: "Value", OtherField: "new value"}, {ID:22, Field_x0020_Name: "Value2", OtherField: "new value2"}])
-      @param {Object} [options] Options (see below)
-        @param {String} [options.where=""] You can define a WHERE clause
-        @param {Number} [options.packetsize=15] If you have too many items to update, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- if you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
-        @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
-      @return {Promise} resolve({passed, failed}), reject(error)
-
-      @example
-      $SP().list("My List").update({ID:1, Title:"Ok"});
-      // if you use the WHERE then you must not provide the item ID:
-      $SP().list("List Name").update({Title:"Ok"},{where:"Status = 'Complete'"});
-
-      $SP().list("My List","http://sharepoint.org/mydir/").update([{ID:5, Title:"Ok"}, {ID: 15, Title:"Good"}]);
-
-      $SP().list("List Name").update({ID:43, Title:"Ok"}).then(function(items) {
-        for (var i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title);
-        var len=items.passed.length;
-        console.log(len+(len>1?" items have been successfully added":" item has been successfully added"))
-      });
+     * @name $SP().list.update
+     * @function
+     * @description Update items from a Sharepoint List
+     * 
+     * @param {Array} items List of items (e.g. [{ID: 1, Field_x0020_Name: "Value", OtherField: "new value"}, {ID:22, Field_x0020_Name: "Value2", OtherField: "new value2"}])
+     * @param {Object} [options] Options (see below)
+     * @param {String} [options.where=""] You can define a WHERE clause
+     * @param {Number} [options.packetsize=15] If you have too many items to update, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+     * @param {Function} [options.progress] Two parameters: 'current' and 'max' -- if you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
+     * @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
+     * @return {Promise} resolve({passed, failed}), reject(error)
+     * 
+     * @example
+     * $SP().list("My List").update({ID:1, Title:"Ok"});
+     * // if you use the WHERE then you must not provide the item ID:
+     * $SP().list("List Name").update({Title:"Ok"},{where:"Status = 'Complete'"});
+     * 
+     * $SP().list("My List","http://sharepoint.org/mydir/").update([{ID:5, Title:"Ok"}, {ID: 15, Title:"Good"}]);
+     * 
+     * $SP().list("List Name").update({ID:43, Title:"Ok"}).then(function(items) {
+     *   for (var i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title);
+     *   var len=items.passed.length;
+     *   console.log(len+(len>1?" items have been successfully added":" item has been successfully added"))
+     * });
     */
     update: function (items, options) {
       var _this = this
@@ -3328,23 +3323,23 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.history
-      @function
-      @description When versioning is an active option for your list, then you can use this function to find the previous values for a field
-
-      @param {Object} params See below
-        @param {String|Number} params.ID The item ID
-        @param {String} params.Name The field name
-      @return {Promise} resolve(data), reject(error)
-
-      @example
-      $SP().list("My List").history({ID:1981, Name:"Critical_x0020_Comments"}).then(function(data) {
-        for (var i=0,len=data.length; i&lt;len; i++) {
-          console.log("Date: "+data[i].getAttribute("Modified")); // you can use $SP().toDate() to convert it to a JavaScript Date object
-          console.log("Editor: "+data[i].getAttribute("Editor")); // it's the long format type, so the result looks like that "328;#Doe,, John,#DOMAIN\john_doe,#John_Doe@example.com,#,#Doe,, John"
-          console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use the field name here
-        }
-      });
+     * @name $SP().list.history
+     * @function
+     * @description When versioning is an active option for your list, then you can use this function to find the previous values for a field
+     * 
+     * @param {Object} params See below
+     * @param {String|Number} params.ID The item ID
+     * @param {String} params.Name The field name
+     * @return {Promise} resolve(data), reject(error)
+     * 
+     * @example
+     * $SP().list("My List").history({ID:1981, Name:"Critical_x0020_Comments"}).then(function(data) {
+     *   for (var i=0,len=data.length; i&lt;len; i++) {
+     *     console.log("Date: "+data[i].getAttribute("Modified")); // you can use $SP().toDate() to convert it to a JavaScript Date object
+     *     console.log("Editor: "+data[i].getAttribute("Editor")); // it's the long format type, so the result looks like that "328;#Doe,, John,#DOMAIN\john_doe,#John_Doe@example.com,#,#Doe,, John"
+     *     console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use the field name here
+     *   }
+     * });
     */
     history: function (params) {
       var _this = this
@@ -3373,23 +3368,23 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.moderate
-      @function
-      @description Moderate items from a Sharepoint List
-
-      @param {Array} approval List of items and ApprovalStatus (e.g. [{ID:1, ApprovalStatus:"Approved"}, {ID:22, ApprovalStatus:"Pending"}])
-      @param {Object} [setup] Options (see below)
-        @param {Number} [setup.packetsize=15] If you have too many items to moderate, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- if you provide more than `packetsize` ID then they will be treated by packets and you can use "progress" to know more about the steps
-      @return {Promise} resolve({passed, failed}), reject(error)
-
-      @example
-      $SP().list("My List").moderate({ID:1, ApprovalStatus:"Rejected"}); // you must always provide the ID
-
-      $SP().list("Other List").moderate([{ID:5, ApprovalStatus:"Pending"}, {ID: 15, ApprovalStatus:"Approved"}]).then(function(items) {
-        for (var i=0; i &lt; items.failed.length; i++) console.log("Error with:"+items.failed[i].ID);
-        for (var i=0; i &lt; items.passed.length; i++) console.log("Success with:"+items.passed[i].getAttribute("Title"));
-      });
+     * @name $SP().list.moderate
+     * @function
+     * @description Moderate items from a Sharepoint List
+     * 
+     * @param {Array} approval List of items and ApprovalStatus (e.g. [{ID:1, ApprovalStatus:"Approved"}, {ID:22, ApprovalStatus:"Pending"}])
+     * @param {Object} [setup] Options (see below)
+     * @param {Number} [setup.packetsize=15] If you have too many items to moderate, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+     * @param {Function} [setup.progress] Two parameters: 'current' and 'max' -- if you provide more than `packetsize` ID then they will be treated by packets and you can use "progress" to know more about the steps
+     * @return {Promise} resolve({passed, failed}), reject(error)
+     * 
+     * @example
+     * $SP().list("My List").moderate({ID:1, ApprovalStatus:"Rejected"}); // you must always provide the ID
+     * 
+     * $SP().list("Other List").moderate([{ID:5, ApprovalStatus:"Pending"}, {ID: 15, ApprovalStatus:"Approved"}]).then(function(items) {
+     *   for (var i=0; i &lt; items.failed.length; i++) console.log("Error with:"+items.failed[i].ID);
+     *   for (var i=0; i &lt; items.passed.length; i++) console.log("Success with:"+items.passed[i].getAttribute("Title"));
+     * });
     */
     moderate: function (items, setup) {
       var _this = this
@@ -3529,33 +3524,33 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.remove
-      @function
-      @description Delete items from a Sharepoint List
-
-      @param {Objet|Array} [itemsID] List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}
-      @param {Object} [options] Options (see below)
-        @param {String} [options.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
-        @param {Number} [options.packetsize=15] If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
-        @param {Function} [options.progress] Two parameters: 'current' and 'max' -- If you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
-      @return {Promise} resolve({passed, failed}), reject(error)
-
-      @example
-      $SP().list("My List").remove({ID:1});
-      // we can use the WHERE clause instead providing the ID
-      $SP().list("My List").remove({where:"Title = 'OK'",progress:function(current,max) {
-        console.log(current+"/"+max);
-      }});
-
-      // delete several items
-      $SP().list("List Name", "http://my.sharepoint.com/sub/dir/").remove([{ID:5}, {ID:7}]);
-
-      $SP().list("List").remove({ID:43, Title:"My title"}).then(function(items) {
-        for (var i=0; i &lt; items.failed.length; i++) console.log("Error with:"+items.failed[i].ID+" ("+items.failed[i].errorMessage+")"); // only .ID and .errorMessage are available
-      });
-
-      // example for deleting a file
-      $SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared Documents/something.xls"});
+     * @name $SP().list.remove
+     * @function
+     * @description Delete items from a Sharepoint List
+     * 
+     * @param {Objet|Array} [itemsID] List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}
+     * @param {Object} [options] Options (see below)
+     * @param {String} [options.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
+     * @param {Number} [options.packetsize=15] If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
+     * @param {Function} [options.progress] Two parameters: 'current' and 'max' -- If you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
+     * @return {Promise} resolve({passed, failed}), reject(error)
+     * 
+     * @example
+     * $SP().list("My List").remove({ID:1});
+     * // we can use the WHERE clause instead providing the ID
+     * $SP().list("My List").remove({where:"Title = 'OK'",progress:function(current,max) {
+     *   console.log(current+"/"+max);
+     * }});
+     * 
+     * // delete several items
+     * $SP().list("List Name", "http://my.sharepoint.com/sub/dir/").remove([{ID:5}, {ID:7}]);
+     * 
+     * $SP().list("List").remove({ID:43, Title:"My title"}).then(function(items) {
+     *   for (var i=0; i &lt; items.failed.length; i++) console.log("Error with:"+items.failed[i].ID+" ("+items.failed[i].errorMessage+")"); // only .ID and .errorMessage are available
+     * });
+     * 
+     * // example for deleting a file
+     * $SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared Documents/something.xls"});
     */
     remove: function (items, options) {
       var _this = this
@@ -3699,21 +3694,21 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().usergroups
-      @function
-      @category people
-      @description Find the Sharepoint groups where the specified user is member of
-
-      @param {String} username The username with the domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.url='current website'] The website url
-        @param {Boolean} [setup.cache=true] Keep a cache of the result
-      @return {Promise} result(groups), reject(error)
-
-      @example
-      $SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}).then(function(groups) {
-        for (var i=0; i &lt; groups.length; i++) console.log(groups[i]); // -> "Roadmap Admin", "Global Viewers", ...
-      });
+     * @name $SP().usergroups
+     * @function
+     * @category people
+     * @description Find the Sharepoint groups where the specified user is member of
+     * 
+     * @param {String} username The username with the domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
+     * @param {Object} [setup] Options (see below)
+     * @param {String} [setup.url='current website'] The website url
+     * @param {Boolean} [setup.cache=true] Keep a cache of the result
+     * @return {Promise} result(groups), reject(error)
+     *
+     * @example
+     * $SP().usergroups("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}).then(function(groups) {
+     *   for (var i=0; i &lt; groups.length; i++) console.log(groups[i]); // -> "Roadmap Admin", "Global Viewers", ...
+     * });
     */
     usergroups: function (username, setup) {
       var _this = this
@@ -3787,15 +3782,15 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().workflowStatusToText
-      @function
-      @category utils
-      @description Return the text related to a workflow status code
-
-      @param {String|Number} code This is the code returned by a workflow
-
-      @example
-      $SP().workflowStatusToText(2); // -> "In Progress"
+     * @name $SP().workflowStatusToText
+     * @function
+     * @category utils
+     * @description Return the text related to a workflow status code
+     * 
+     * @param {String|Number} code This is the code returned by a workflow
+     * 
+     * @example
+     * $SP().workflowStatusToText(2); // -> "In Progress"
      */
     workflowStatusToText: function (code) {
       code = code * 1
@@ -3829,19 +3824,19 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       }
     },
     /**
-      @name $SP().list.getWorkflowID
-      @function
-      @description Find the WorkflowID for a workflow, and some other related info
-
-      @param {Object} setup
-        @param {Number} setup.ID The item ID that is tied to the workflow
-        @param {String} setup.workflowName The name of the workflow
-      @return {Promise} resolve({workflowID, fileRef, description, instances}), reject(error)
-
-      @example
-      $SP().list("List Name").getWorkflowID({ID:15, workflowName:"Workflow for List Name (manual)"}).then(function(params) {
-        alert("Workflow ID:"+params.workflowID+" and the FileRef is: "+params.fileRef);
-      });
+     * @name $SP().list.getWorkflowID
+     * @function
+     * @description Find the WorkflowID for a workflow, and some other related info
+     *
+     * @param {Object} setup
+     * @param {Number} setup.ID The item ID that is tied to the workflow
+     * @param {String} setup.workflowName The name of the workflow
+     * @return {Promise} resolve({workflowID, fileRef, description, instances}), reject(error)
+     *
+     * @example
+     * $SP().list("List Name").getWorkflowID({ID:15, workflowName:"Workflow for List Name (manual)"}).then(function(params) {
+     *   alert("Workflow ID:"+params.workflowID+" and the FileRef is: "+params.fileRef);
+     * });
      */
     getWorkflowID: function (setup) {
       var _this = this
@@ -4001,29 +3996,29 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.startWorkflow
-      @function
-      @description Manually start a workflow (that has been set to be manually started) (for "Sharepoint 2010 workflow" as the platform type)
-
-      @param {Object} setup
-        @param {String} setup.workflowName The name of the workflow
-        @param {Number} [setup.ID] The item ID that tied to the workflow
-        @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
-        @param {String} [setup.fileRef] Optional: you can provide the fileRef to avoid calling the $SP().list().getWorkflowID()
-        @param {String} [setup.workflowID] Optional: you can provide the workflowID to avoid calling the $SP().list().getWorkflowID()
-      @return {Promise} resolve() if it's started, reject(error)
-
-      @example
-      // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
-      $SP().list("").startWorkflow({workflowName:"My Site Workflow"});
-
-      // to start a workflow for a list item
-      $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}).then(function() {
-        alert("Worflow Started!")
-      }).catch(function(error) {
-          console.log("Error: ",error);
-      });
-    **/
+     * @name $SP().list.startWorkflow
+     * @function
+     * @description Manually start a workflow (that has been set to be manually started) (for "Sharepoint 2010 workflow" as the platform type)
+     * 
+     * @param {Object} setup
+     * @param {String} setup.workflowName The name of the workflow
+     * @param {Number} [setup.ID] The item ID that tied to the workflow
+     * @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
+     * @param {String} [setup.fileRef] Optional: you can provide the fileRef to avoid calling the $SP().list().getWorkflowID()
+     * @param {String} [setup.workflowID] Optional: you can provide the workflowID to avoid calling the $SP().list().getWorkflowID()
+     * @return {Promise} resolve() if it's started, reject(error)
+     * 
+     * @example
+     * // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
+     * $SP().list("").startWorkflow({workflowName:"My Site Workflow"});
+     * 
+     * // to start a workflow for a list item
+     * $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}).then(function() {
+     *   alert("Worflow Started!")
+     * }).catch(function(error) {
+     *     console.log("Error: ",error);
+     * });
+    */
     startWorkflow: function (setup) {
       var _this = this
       return _this._promise(function (prom_resolve, prom_reject) {
@@ -4083,26 +4078,26 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().list.startWorkflow2013
-      @function
-      @description Manually start a work (that has been set to be manually started) (for "Sharepoint 2013 workflow" as the platform type)
-
-      @param {Object} setup
-        @param {Number} [setup.ID] The item ID that tied to the workflow
-        @param {String} setup.workflowName The name of the workflow
-        @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
-      @return {Promise} resolve() when started, reject(error)
-
-      @example
-      // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
-      $SP().list("").startWorkflow2013({workflowName:"My Site Workflow"});
-
-      // to start a workflow for a list item
-      $SP().list("List Name").startWorkflow2013({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}).then(function() {
-        console.log("workflow started")
-      }, function(error) {
-        console.log("Error: ",error);
-      });
+    * @name $SP().list.startWorkflow2013
+    * @function
+    * @description Manually start a work (that has been set to be manually started) (for "Sharepoint 2013 workflow" as the platform type)
+    *
+    * @param {Object} setup
+    * @param {Number} [setup.ID] The item ID that tied to the workflow
+    * @param {String} setup.workflowName The name of the workflow
+    * @param {Array|Object} [setup.parameters] An array of object with {name:"Name of the parameter", value:"Value of the parameter"}
+    * @return {Promise} resolve() when started, reject(error)
+    *
+    * @example
+    * // if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
+    * $SP().list("").startWorkflow2013({workflowName:"My Site Workflow"});
+    *
+    * // to start a workflow for a list item
+    * $SP().list("List Name").startWorkflow2013({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}).then(function() {
+    *   console.log("workflow started")
+    * }, function(error) {
+    *   console.log("Error: ",error);
+    * });
     **/
     startWorkflow2013: function (setup) {
       var _this = this
@@ -4185,21 +4180,21 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().distributionLists
-      @function
-      @category people
-      @description Find the distribution lists where the specified user is member of
-
-      @param {String} username The username with or without the domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.url='current website'] The website url
-        @param {Boolean} [setup.cache=true] Cache the response from the server
-      @return {Promise} resolve(mailings), reject(error)
-
-      @example
-      $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}).then(function(mailing) {
-        for (var i=0; i &lt; mailing.length; i++) console.log(mailing[i]); // -> {SourceReference: "cn=listname,ou=distribution lists,ou=rainbow,dc=com", DisplayName:"listname", MailNickname:"List Name", Url:"mailto:listname@rainbow.com"}
-      });
+     * @name $SP().distributionLists
+     * @function
+     * @category people
+     * @description Find the distribution lists where the specified user is member of
+     * 
+     * @param {String} username The username with or without the domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
+     * @param {Object} [setup] Options (see below)
+     * @param {String} [setup.url='current website'] The website url
+     * @param {Boolean} [setup.cache=true] Cache the response from the server
+     * @return {Promise} resolve(mailings), reject(error)
+     * 
+     * @example
+     * $SP().distributionLists("mydomain\\john_doe",{url:"http://my.si.te/subdir/"}).then(function(mailing) {
+     *   for (var i=0; i &lt; mailing.length; i++) console.log(mailing[i]); // -> {SourceReference: "cn=listname,ou=distribution lists,ou=rainbow,dc=com", DisplayName:"listname", MailNickname:"List Name", Url:"mailto:listname@rainbow.com"}
+     * });
     */
     distributionLists: function (username, setup) {
       var _this = this
@@ -4281,21 +4276,21 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().groupMembers
-      @function
-      @category people
-      @description Find the members of a Sharepoint group
-
-      @param {String} groupname Name of the group
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.url='current website'] The website url
-        @param {Boolean} [setup.cache=true] By default the function will cache the group members (so if you call several times it will use the cache)
-      @return {Promise} resolve(members), reject(error)
-
-      @example
-      $SP().groupMembers("my group").then(function(members) {
-        for (var i=0; i &lt; members.length; i++) console.log(members[i]); // -> {ID:"1234", Name:"Doe, John", LoginName:"mydomain\john_doe", Email:"john_doe@rainbow.com"}
-      });
+     * @name $SP().groupMembers
+     * @function
+     * @category people
+     * @description Find the members of a Sharepoint group
+     * 
+     * @param {String} groupname Name of the group
+     * @param {Object} [setup] Options (see below)
+     * @param {String} [setup.url='current website'] The website url
+     * @param {Boolean} [setup.cache=true] By default the function will cache the group members (so if you call several times it will use the cache)
+     * @return {Promise} resolve(members), reject(error)
+     * 
+     * @example
+     * $SP().groupMembers("my group").then(function(members) {
+     *   for (var i=0; i &lt; members.length; i++) console.log(members[i]); // -> {ID:"1234", Name:"Doe, John", LoginName:"mydomain\john_doe", Email:"john_doe@rainbow.com"}
+     * });
     */
     groupMembers: function (groupname, setup) {
       var _this = this
@@ -4377,22 +4372,22 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().isMember
-      @function
-      @category people
-      @description Find if the user is member of the Sharepoint group
-
-      @param {Object} [setup] Options (see below)
-        @param {String} setup.user Username with domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
-        @param {String} setup.group Name of the group
-        @param {String} [setup.url='current website'] The website url
-        @param {Boolean} [setup.cache=true] Cache the response from the server
-      @return {PRomise} resolve(isMember), reject(error)
-
-      @example
-      $SP().isMember({user:"mydomain\\john_doe",group:"my group",url:"http://my.site.com/"}).then(function(isMember) {
-        if (isMember) alert("OK !")
-      });
+     * @name $SP().isMember
+     * @function
+     * @category people
+     * @description Find if the user is member of the Sharepoint group
+     * 
+     * @param {Object} [setup] Options (see below)
+     * @param {String} setup.user Username with domain ("domain\\login" for Sharepoint 2010, or e.g. "i:0#.w|domain\\login" for Sharepoint 2013)
+     * @param {String} setup.group Name of the group
+     * @param {String} [setup.url='current website'] The website url
+     * @param {Boolean} [setup.cache=true] Cache the response from the server
+     * @return {PRomise} resolve(isMember), reject(error)
+     * 
+     * @example
+     * $SP().isMember({user:"mydomain\\john_doe",group:"my group",url:"http://my.site.com/"}).then(function(isMember) {
+     *   if (isMember) alert("OK !")
+     * });
     */
     isMember: function (setup) {
       var _this = this
@@ -4457,22 +4452,22 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().people
-      @function
-      @category people
-      @description Find the user details like manager, email, ...
-
-      @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.url='current website'] The website url
-      @return {Function} resolve(people), reject(error)
-
-      @example
-      $SP().people("john_doe",{url:"http://my.si.te/subdir/"}).then(function(people) {
-        for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
-      }, function(err) {
-        console.log("Err => ",err)
-      });
+     * @name $SP().people
+     * @function
+     * @category people
+     * @description Find the user details like manager, email, ...
+     * 
+     * @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")
+     * @param {Object} [setup] Options (see below)
+     * @param {String} [setup.url='current website'] The website url
+     * @return {Function} resolve(people), reject(error)
+     * 
+     * @example
+     * $SP().people("john_doe",{url:"http://my.si.te/subdir/"}).then(function(people) {
+     *   for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+     * }, function(err) {
+     *   console.log("Err => ",err)
+     * });
     */
     people: function (username, setup) {
       var _this = this
@@ -4526,22 +4521,22 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().getUserInfo
-      @function
-      @category people
-      @description Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)
-
-      @param {String} username That must be "domain\\login" for Sharepoint 2010, or something like "i:0#.w|domain\\login" for Sharepoint 2013
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.url='current website'] The website url
-      @return {Promise} resolve({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), reject(error)
-
-      @example
-      $SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}).then(function(info) {
-        alert("User ID = "+info.ID)
-      }, function(error) {
-        console.log(error)
-      });
+     * @name $SP().getUserInfo
+     * @function
+     * @category people
+     * @description Find the User ID, work email, and preferred name for the specified username (this is useful because of the User ID that can then be used for filtering a list)
+     * 
+     * @param {String} username That must be "domain\\login" for Sharepoint 2010, or something like "i:0#.w|domain\\login" for Sharepoint 2013
+     * @param {Object} [setup] Options (see below)
+     *   @param {String} [setup.url='current website'] The website url
+     * @return {Promise} resolve({ID,Sid,Name,LoginName,Email,Notes,IsSiteAdmin,IsDomainGroup,Flags}), reject(error)
+     * 
+     * @example
+     * $SP().getUserInfo("domain\\john_doe",{url:"http://my.si.te/subdir/"}).then(function(info) {
+     *   alert("User ID = "+info.ID)
+     * }, function(error) {
+     *   console.log(error)
+     * });
     */
     getUserInfo: function (username, setup) {
       var _this = this
@@ -4591,39 +4586,39 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().whoami
-      @function
-      @category people
-      @description Find the current user's details like manager, email, colleagues, ...
-
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.url='current website'] The website url
-      @return {Promise}} resolve(people), reject(error)
-
-      @example
-      $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
-        for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
-      });
+     * @name $SP().whoami
+     * @function
+     * @category people
+     * @description Find the current user's details like manager, email, colleagues, ...
+     *
+     * @param {Object} [setup] Options (see below)
+     *   @param {String} [setup.url='current website'] The website url
+     * @return {Promise}} resolve(people), reject(error)
+     *
+     * @example
+     * $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
+     *   for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
+     * });
     */
     whoami: function (setup) {
       return this.people('', setup)
     },
     /**
-      @name $SP().regionalSettings
-      @function
-      @category utils
-      @description Find the region settings (of the current user) defined with _layouts/regionalsetng.aspx?Type=User (lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek, timeFormat..)
-
-      @return {Promise} resolve({lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek:{days, firstDayOfWeek, firstWeekOfYear, startTime, endTime}}), reject(error)
-
-      @example
-      $SP().regionalSettings().then(function(region) {
-        // show the selected timezone, and the working days
-        console.log("timeZone: "+region.timeZone);
-        console.log("working days: "+region.workWeek.days.join(", "))
-      }, function(error) {
-        console.log(error)
-      })
+     * @name $SP().regionalSettings
+     * @function
+     * @category utils
+     * @description Find the region settings (of the current user) defined with _layouts/regionalsetng.aspx?Type=User (lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek, timeFormat..)
+     *
+     * @return {Promise} resolve({lcid, cultureInfo, timeZone, calendar, alternateCalendar, workWeek:{days, firstDayOfWeek, firstWeekOfYear, startTime, endTime}}), reject(error)
+     *
+     *  @example
+     *  $SP().regionalSettings().then(function(region) {
+     *    // show the selected timezone, and the working days
+     *    console.log("timeZone: "+region.timeZone);
+     *    console.log("working days: "+region.workWeek.days.join(", "))
+     *  }, function(error) {
+     *    console.log(error)
+     *  })
     */
     regionalSettings: function (url) {
       var _this = this
@@ -4699,28 +4694,28 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().regionalDateFormat
-      @function
-      @category utils
-      @description Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, D for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)
-
-      @return {Promise} resolve(dateFormat), reject(error)
-
-      @example
-      // you'll typically need that info when parsing a date from a Date Picker field from a form
-      // we suppose here you're using momentjs
-      // eg. we want to verify start date is before end date
-      var startDate = $SP().formfields("Start Date").val();
-      var endDate = $SP().formfields("End Date").val();
-      $SP().regionalDateFormat().then(function(dateFormat) {
-        // if the user settings are on French, then dateFormat = "DD/MM/YYYY"
-        if (moment(startDate, dateFormat).isAfter(moment(endDate, dateFormat))) {
-          alert("StartDate must be before EndDate!")
-        }
-      })
-
-      // Here is also an example of how you can parse a string date
-      // -> https://gist.github.com/Aymkdn/b17903cf7786578300f04f50460ebe96
+     * @name $SP().regionalDateFormat
+     * @function
+     * @category utils
+     * @description Provide the Date Format based on the user regional settings (YYYY for 4-digits Year, YY for 2-digits day, MM for 2-digits Month, M for 1-digit Month, DD for 2-digits day, D for 1-digit day) -- it's using the DatePicker iFrame (so an AJAX request)
+     *
+     * @return {Promise} resolve(dateFormat), reject(error)
+     *
+     * @example
+     * // you'll typically need that info when parsing a date from a Date Picker field from a form
+     * // we suppose here you're using momentjs
+     * // eg. we want to verify start date is before end date
+     * var startDate = $SP().formfields("Start Date").val();
+     * var endDate = $SP().formfields("End Date").val();
+     * $SP().regionalDateFormat().then(function(dateFormat) {
+     *   // if the user settings are on French, then dateFormat = "DD/MM/YYYY"
+     *   if (moment(startDate, dateFormat).isAfter(moment(endDate, dateFormat))) {
+     *     alert("StartDate must be before EndDate!")
+     *   }
+     * })
+     *
+     * // Here is also an example of how you can parse a string date
+     * // -> https://gist.github.com/Aymkdn/b17903cf7786578300f04f50460ebe96
      */
     regionalDateFormat: function (url) {
       var _this = this
@@ -4793,24 +4788,24 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       })
     },
     /**
-      @name $SP().addressbook
-      @function
-      @category people
-      @description Find an user based on a part of his name
-
-      @param {String} [word] A part of the name from the guy you're looking for
-      @param {Object} [setup] Options (see below)
-        @param {String} [setup.limit=10] Number of results returned
-        @param {String} [setup.type='User'] Possible values are: 'All', 'DistributionList', 'SecurityGroup', 'SharePointGroup', 'User', and 'None' (see http://msdn.microsoft.com/en-us/library/people.spprincipaltype.aspx)
-        @param {String} [setup.url='current website'] The website url
-      @return {Promise} resolve([{AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType}]), reject(error)
-
-      @example
-      $SP().addressbook("john", {limit:25}).then(function(people) {
-        for (var i=0; i &lt; people.length; i++) {
-          for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[i][people[i][j]]);
-        }
-      });
+     * @name $SP().addressbook
+     * @function
+     * @category people
+     * @description Find an user based on a part of his name
+     *
+     * @param {String} [word] A part of the name from the guy you're looking for
+     * @param {Object} [setup] Options (see below)
+     * @param {String} [setup.limit=10] Number of results returned
+     * @param {String} [setup.type='User'] Possible values are: 'All', 'DistributionList', 'SecurityGroup', 'SharePointGroup', 'User', and 'None' (see http://msdn.microsoft.com/en-us/library/people.spprincipaltype.aspx)
+     * @param {String} [setup.url='current website'] The website url
+     * @return {Promise} resolve([{AccountName,UserInfoID,DisplayName,Email,Departement,Title,PrincipalType}]), reject(error)
+     *
+     * @example
+     * $SP().addressbook("john", {limit:25}).then(function(people) {
+     *   for (var i=0; i &lt; people.length; i++) {
+     *     for (var j=0; j &lt; people[i].length; j++) console.log(people[i][j]+" = "+people[i][people[i][j]]);
+     *   }
+     * });
     */
     addressbook: function (username, setup) {
       var _this = this
@@ -4889,14 +4884,14 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return _this
     },
     /**
-      @name $SP().toDate
-      @function
-      @category utils
-      @description Change a Sharepoint date (as a string) to a Date Object
-      @param {String} textDate the Sharepoint date string
-      @param {Boolean} [forceUTC=false] Permits to force the reading of the date in UTC
-      @return {Date} the equivalent Date object for the Sharepoint date string passed
-      @example $SP().toDate("2012-10-31T00:00:00").getFullYear(); // 2012
+     * @name $SP().toDate
+     * @function
+     * @category utils
+     * @description Change a Sharepoint date (as a string) to a Date Object
+     * @param {String} textDate the Sharepoint date string
+     * @param {Boolean} [forceUTC=false] Permits to force the reading of the date in UTC
+     * @return {Date} the equivalent Date object for the Sharepoint date string passed
+     * @example $SP().toDate("2012-10-31T00:00:00").getFullYear(); // 2012
     */
     toDate: function (strDate, forceUTC) {
       if (!strDate) return ''
@@ -4914,17 +4909,17 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return (strDate.indexOf('Z') > -1 || forceUTC ? new Date(Date.UTC(year, month - 1, day, hour, min, sec)) : new Date(year, month - 1, day, hour, min, sec))
     },
     /**
-      @name $SP().toSPDate
-      @function
-      @category utils
-      @description Change a Date object into a Sharepoint date string
-      @param {Date} dateObject The Date object you want to convert
-      @param {Date} [includeTime=false] By default the time is not returned (if the time appears then the WHERE clause will do a time comparison)
-      @return {String} the equivalent string for the Date object passed
-
-      @example
-      $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31T00:00:00Z"
-      $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"
+     * @name $SP().toSPDate
+     * @function
+     * @category utils
+     * @description Change a Date object into a Sharepoint date string
+     * @param {Date} dateObject The Date object you want to convert
+     * @param {Date} [includeTime=false] By default the time is not returned (if the time appears then the WHERE clause will do a time comparison)
+     * @return {String} the equivalent string for the Date object passed
+     * 
+     * @example
+     * $SP().toSPDate(new Date(2012,9,31), true); // --> "2012-10-31T00:00:00Z"
+     * $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"
     */
     toSPDate: function (oDate, includeTime) {
       if (!oDate || typeof oDate !== 'object' || typeof oDate.getFullYear !== 'function') return '' // "oDate instanceof Date" returns false for an unknown reason
@@ -4943,19 +4938,19 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return year + '-' + month + '-' + day + (includeTime ? 'T' + hours + ':' + minutes + ':' + seconds + 'Z' : '')
     },
     /**
-      @name $SP().toCurrency
-      @function
-      @category utils
-      @description It will return a number with commas, currency sign and a specific number of decimals
-      @param {Number|String} number The number to format
-      @param {Number} [decimal=-1] The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00)
-      @param {String} [sign='$'] The currency sign to add
-
-      @return {String} The converted number
-      @example
-
-      $SP().toCurrency(1500000); // --> $1,500,000
-      $SP().toCurrency(1500000,2,''); // --> 1,500,000.00
+     * @name $SP().toCurrency
+     * @function
+     * @category utils
+     * @description It will return a number with commas, currency sign and a specific number of decimals
+     * @param {Number|String} number The number to format
+     * @param {Number} [decimal=-1] The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00)
+     * @param {String} [sign='$'] The currency sign to add
+     * 
+     * @return {String} The converted number
+     * @example
+     * 
+     * $SP().toCurrency(1500000); // --> $1,500,000
+     * $SP().toCurrency(1500000,2,''); // --> 1,500,000.00
      */
     toCurrency: function (n, dec, sign) {
       n = Number(n)
@@ -4978,16 +4973,16 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return (sign != '' ? sign : '') + m + s + (sign != '' ? '' : ' ' + sign)
     },
     /**
-      @name $SP().getLookup
-      @function
-      @category utils
-      @description Split the ID and Value
-      @param {String} text The string to retrieve data
-      @return {Object} .id returns the ID (or an array of IDs), and .value returns the value (or an array of values)
-      @example
-      $SP().getLookup("328;#Foo"); // --> {id:"328", value:"Foo"}
-      $SP().getLookup("328;#Foo;#191;#Other Value"); // --> {id:["328", "191"], value:["Foo", "Other Value"]}
-      $SP().getLookup("328"); // --> {id:"328", value:"328"}
+     * @name $SP().getLookup
+     * @function
+     * @category utils
+     * @description Split the ID and Value
+     * @param {String} text The string to retrieve data
+     * @return {Object} .id returns the ID (or an array of IDs), and .value returns the value (or an array of values)
+     * @example
+     * $SP().getLookup("328;#Foo"); // --> {id:"328", value:"Foo"}
+     * $SP().getLookup("328;#Foo;#191;#Other Value"); // --> {id:["328", "191"], value:["Foo", "Other Value"]}
+     * $SP().getLookup("328"); // --> {id:"328", value:"328"}
     */
     getLookup: function (str) {
       if (!str) {
@@ -5011,13 +5006,13 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       }
     },
     /**
-      @name $SP().toXSLString
-      @function
-      @category utils
-      @description Change a string into a XSL format string
-      @param {String} text The string to change
-      @return {String} the XSL version of the string passed
-      @example $SP().toXSLString("Big Title"); // --> "Big_x0020_Title"
+     * @name $SP().toXSLString
+     * @function
+     * @category utils
+     * @description Change a string into a XSL format string
+     * @param {String} text The string to change
+     * @return {String} the XSL version of the string passed
+     * @example $SP().toXSLString("Big Title"); // --> "Big_x0020_Title"
     */
     toXSLString: function (str) {
       if (typeof str !== 'string') throw "[SharepointPlus 'toXLSString'] '" + str + "' is not a string...."
@@ -5060,34 +5055,34 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return ret.replace(/%([a-zA-Z0-9][a-zA-Z0-9])/g, '_x00$1_').substring(0, 32)
     },
     /**
-      @name $SP().formfields
-      @namespace
-      @description Retrieve the fields info in the NewForm and in the EditForm
-      @return {Array} An array of hash with several keys: name, values, elements, type, and tr
-
-      @param {String|Array} [fields=""] A list of fields to get (e.g. "field1,other field,field2" or ["field1","other field","field2"]) and by default we take all fields ... ATTENTION if you have a field with "," then use only the Array as a parameter
-      @param {Object} [setup] Options (see below)
-        @param {Boolean} [setup.mandatory=undefined] Set it to 'true' to look for the mandatory fields (the "false" value has no effect)
-        @param {Boolean} [setup.cache=true] By default the form is scanned only once, but you can use {cache:false} to force the form to be rescanned
-
-      @example
-      $SP().formfields(); // return all the fields
-
-      $SP().formfields({mandatory:true}).each(function() { // return all the mandatory fields
-        var field = this;
-        if (field.val().length==0) console.log(field.name()+" is empty!");
-      });
-      $SP().formfields("Title,Contact Name,Email").each(function() { // return these three fields
-        var field = this;
-        console.log(field.name()+" has these values: "+field.val());
-      });
-      // if you have a field with a comma use an Array
-      $SP().formfields(["Title","Long field, isn't it?","Contact Name","Email"]).each(function() {
-        var field = this;
-        console.log(field.name()+" has the description: "+field.description());
-      });
-      // returns the fields "Title" and "New & York", and also the mandatory fields
-      $SP().formfields(["Title", "New & York"],{mandatory:true});
+     * @name $SP().formfields
+     * @namespace
+     * @description Retrieve the fields info in the NewForm and in the EditForm
+     * @return {Array} An array of hash with several keys: name, values, elements, type, and tr
+     * 
+     * @param {String|Array} [fields=""] A list of fields to get (e.g. "field1,other field,field2" or ["field1","other field","field2"]) and by default we take all fields ... ATTENTION if you have a field with "," then use only the Array as a parameter
+     * @param {Object} [setup] Options (see below)
+     * @param {Boolean} [setup.mandatory=undefined] Set it to 'true' to look for the mandatory fields (the "false" value has no effect)
+     * @param {Boolean} [setup.cache=true] By default the form is scanned only once, but you can use {cache:false} to force the form to be rescanned
+     * 
+     * @example
+     * $SP().formfields(); // return all the fields
+     * 
+     * $SP().formfields({mandatory:true}).each(function() { // return all the mandatory fields
+     *   var field = this;
+     *   if (field.val().length==0) console.log(field.name()+" is empty!");
+     * });
+     * $SP().formfields("Title,Contact Name,Email").each(function() { // return these three fields
+     *   var field = this;
+     *   console.log(field.name()+" has these values: "+field.val());
+     * });
+     * // if you have a field with a comma use an Array
+     * $SP().formfields(["Title","Long field, isn't it?","Contact Name","Email"]).each(function() {
+     *   var field = this;
+     *   console.log(field.name()+" has the description: "+field.description());
+     * });
+     * // returns the fields "Title" and "New & York", and also the mandatory fields
+     * $SP().formfields(["Title", "New & York"],{mandatory:true});
     */
     formfields: function (fields, settings) {
       return this.plugin('formfields', {
@@ -5097,33 +5092,33 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       // throw "[SharepointPlus 'formfields'] You need to load the 'formfields' plugin.";
     },
     /**
-      @name $SP().notify
-      @function
-      @category modals
-      @description Permits to notify the user using the SP.UI.Notify.addNotification system
-
-      @param {String} message Message to show
-      @param {Object} [options]
-        @param {Integer}  [options.timeout=5] The number of seconds that the notification is shown
-        @param {Boolean}  [options.override=false] This option to TRUE permits to remove the previous/current notification that is showing (even if the timeout is not over and even if it's a sticky) and replace it with the new one
-        @param {Boolean}  [options.overrideAll=false] Same as previously except that it will remove *all* the previous notifications that are currently showing
-        @param {Boolean}  [options.overrideSticky=true] When "overrideAll:true" then even the sticky notifications are removed, but you can block this behavior with "overrideSticky:false"
-        @param {Boolean}  [options.sticky=false] Keep the notification on the screen until it's manually removed (or automatically removed with "overrideAll:true" and "overrideSticky:true")
-        @param {String}   [options.name=random()] You can give a name to the notification (to use it with $SP().removeNotify('name'))
-        @param {Function} [options.after=function(name,afterDelay){}] You can call this function when the notification is removed -- the argument "name" is the name of the notification (see previous option), the argument "afterDelay" is TRUE when the notification has been removed by the system after it's normal timeout
-
-      @example
-      $SP().notify('Processing the data...', {sticky:true}); // the notification will stay on the screen until we remove it
-      $SP().notify('All done!', {overrideAll:true}); // the "Processing the data..." is removed from the screen and a 5 seconds message says "All done!"
-
-      $SP().notify('Please wait 10 seconds...', {
-        name:"My 10 seconds notification",
-        timeout:10,
-        after:function(name,afterDelay) {
-          if (afterDelay) alert("OK, you waited during 10 seconds!")
-          else alert("Something just removed this notification called '"+name+"'' before the timeout :-(")
-        }
-      })
+     * @name $SP().notify
+     * @function
+     * @category modals
+     * @description Permits to notify the user using the SP.UI.Notify.addNotification system
+     * 
+     * @param {String} message Message to show
+     * @param {Object} [options]
+     * @param {Integer} [options.timeout=5] The number of seconds that the notification is shown
+     * @param {Boolean} [options.override=false] This option to TRUE permits to remove the previous/current notification that is showing (even if the timeout is not over and even if it's a sticky) and replace it with the new one
+     * @param {Boolean} [options.overrideAll=false] Same as previously except that it will remove *all* the previous notifications that are currently showing
+     * @param {Boolean} [options.overrideSticky=true] When "overrideAll:true" then even the sticky notifications are removed, but you can block this behavior with "overrideSticky:false"
+     * @param {Boolean} [options.sticky=false] Keep the notification on the screen until it's manually removed (or automatically removed with "overrideAll:true" and "overrideSticky:true")
+     * @param {String} [options.name=random()] You can give a name to the notification (to use it with $SP().removeNotify('name'))
+     * @param {Function} [options.after=function(name,afterDelay){}] You can call this function when the notification is removed -- the argument "name" is the name of the notification (see previous option), the argument "afterDelay" is TRUE when the notification has been removed by the system after it's normal timeout
+     *   
+     * @example
+     * $SP().notify('Processing the data...', {sticky:true}); // the notification will stay on the screen until we remove it
+     * $SP().notify('All done!', {overrideAll:true}); // the "Processing the data..." is removed from the screen and a 5 seconds message says "All done!"
+     * 
+     * $SP().notify('Please wait 10 seconds...', {
+     *   name:"My 10 seconds notification",
+     *   timeout:10,
+     *   after:function(name,afterDelay) {
+     *     if (afterDelay) alert("OK, you waited during 10 seconds!")
+     *     else alert("Something just removed this notification called '"+name+"'' before the timeout :-(")
+     *   }
+     * })
     */
     notify: function (message, options) {
       var _this = this
@@ -5199,28 +5194,28 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return _this
     },
     /**
-      @name $SP().removeNotify
-      @function
-      @category modals
-      @description Permits to remove a notification that is shown on the screen
-
-      @param {String} [name] Name of the notification
-      @param {Object} [options] If you pass the options, then the 'name' is ignored
-        @param {Boolean} [options.all=false] To TRUE to remove ALL notifications
-        @param {Boolean} [options.includeSticky=true] To FALSE if you don't want to remove the sticky notifications (only works with the "all:true" option)
-
-      @example
-      $SP().notify('Processing the data...', {sticky:true,name:"Processing data"}); // the notification will stay on the screen until we remove it
-      $SP().removeNotify("Processing data"); // the notification is removed
-
-      $SP().notify('Doing some stuff...');
-      $SP().notify('Doing some other stuff...');
-      $SP().removeNotify({all:true}); // all the notifications are removed
-
-      $SP().notify('Doing some stuff...');
-      $SP().notify('Doing some other stuff...');
-      $SP().notify('This is a sticky message', {sticky:true});
-      $SP().removeNotify({all:true, includeSticky:false}); // all the notifications are removed except the sticky one
+     * @name $SP().removeNotify
+     * @function
+     * @category modals
+     * @description Permits to remove a notification that is shown on the screen
+     * 
+     * @param {String} [name] Name of the notification
+     * @param {Object} [options] If you pass the options, then the 'name' is ignored
+     * @param {Boolean} [options.all=false] To TRUE to remove ALL notifications
+     * @param {Boolean} [options.includeSticky=true] To FALSE if you don't want to remove the sticky notifications (only works with the "all:true" option)
+     * 
+     * @example
+     * $SP().notify('Processing the data...', {sticky:true,name:"Processing data"}); // the notification will stay on the screen until we remove it
+     * $SP().removeNotify("Processing data"); // the notification is removed
+     * 
+     * $SP().notify('Doing some stuff...');
+     * $SP().notify('Doing some other stuff...');
+     * $SP().removeNotify({all:true}); // all the notifications are removed
+     * 
+     * $SP().notify('Doing some stuff...');
+     * $SP().notify('Doing some other stuff...');
+     * $SP().notify('This is a sticky message', {sticky:true});
+     * $SP().removeNotify({all:true, includeSticky:false}); // all the notifications are removed except the sticky one
     */
     removeNotify: function (name, options) {
       var _this = this
@@ -5282,10 +5277,10 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return _this
     },
     /**
-      @name $SP().getPageSize
-      @function
-      @category utils
-      @description Get the doc and viewport size (source: https://blog.kodono.info/wordpress/2015/03/23/get-window-viewport-document-height-and-width-javascript/)
+     * @name $SP().getPageSize
+     * @function
+     * @category utils
+     * @description Get the doc and viewport size (source: https://blog.kodono.info/wordpress/2015/03/23/get-window-viewport-document-height-and-width-javascript/)
      */
     getPageSize: function (win) {
       var vw = {
@@ -5321,50 +5316,50 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       }
     },
     /**
-      @name $SP().showModalDialog
-      @function
-      @category modals
-      @description Show a modal dialog (based on SP.UI.ModalDialog.showModalDialog) but provides some advanced functions and better management of the modals (for example when you launch several modals)
-
-      @param {Object} [options] Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx with some additional ones or some changes
-        @param {String} [options.html] We can directly provide the HTML code as a string
-        @param {String} [options.width] If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)
-        @param {String} [options.height] If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)
-        @param {Boolean} [options.closePrevious=false] It permits to close a previous modal dialog before opening this one
-        @param {Boolean} [options.wait=false] If we want to show a Wait Screen (alias for $SP().waitModalDialog())
-        @param {String} [options.id=random()] An unique ID to identify the modal dialog (don't use space or special characters)
-        @param {Function} [options.callback] A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue
-        @param {Function} [options.onload] The modal might be delayed as we need to load some Sharepoint JS files; the `onload` function is called once the modal is shown
-        @param {Function} [options.onurlload] When we use the "url" parameter, this is triggered when the DOMContent of the iframe is loaded (if it's the same origin)
-        @param {String} [options.title] The title to give to the modal (if you use `wait:true` then it will be the main text that will appear on 2013, and the modal title for 2010)
-        @param {String} [options.message] This parameter is only use if there is `wait:true` and permits to define the subtitle message for 2013, or the main message for 2010
-        @param {String} [options.url] A string that contains the URL of the page that appears in the dialog. If both url and html are specified, url takes precedence. Either url or html must be specified.
-        @param {Number} [options.x] An integer value that specifies the x-offset of the dialog. This value works like the CSS left value.
-        @param {Number} [options.y] An integer value that specifies the y-offset of the dialog. This value works like the CSS top value.
-        @param {Boolean} [options.allowMaximize] A Boolean value that specifies whether the dialog can be maximized. true if the Maximize button is shown; otherwise, false.
-        @param {Boolean} [options.showMaximized] A Boolean value that specifies whether the dialog opens in a maximized state. true the dialog opens maximized. Otherwise, the dialog is opened at the requested sized if specified; otherwise, the default size, if specified; otherwise, the autosized size.
-        @param {Boolean} [options.showClose=true] A Boolean value that specifies whether the Close button appears on the dialog.
-        @param {Boolean} [options.autoSize] A Boolean value that specifies whether the dialog platform handles dialog sizing.
-
-      @example
-      $SP().showModalDialog({
-        title:"Dialog",
-        html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModalDialog(\'here\')">Close&lt;/button>&lt;/p>',
-        callback:function(dialogResult, returnValue) {
-          alert("Result="+dialogResult); // -> "here"
-        }
-      })
-
-      // show a waiting message
-      $SP().waitModalDialog("Working...");
-      // --- do some stuff ---
-      // close the waiting message and open a new modal dialog
-      $SP().showModalDialog({
-        closePrevious:true,
-        title:"Success",
-        html:'&lt;h1>Done!&lt;/h1>'
-      })
-      // and use $SP().closeModalDialog() to close it
+     * @name $SP().showModalDialog
+     * @function
+     * @category modals
+     * @description Show a modal dialog (based on SP.UI.ModalDialog.showModalDialog) but provides some advanced functions and better management of the modals (for example when you launch several modals)
+     * 
+     * @param {Object} [options] Regular options from http://msdn.microsoft.com/en-us/library/office/ff410058%28v=office.14%29.aspx with some additional ones or some changes
+     * @param {String} [options.html] We can directly provide the HTML code as a string
+     * @param {String} [options.width] If equals to "calculated", then we use the 2/3 of the viewport width; if equals to "full" then we use the full viewport width; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)
+     * @param {String} [options.height] If equals to "calculated", then we use 90% of the viewport height; if equals to "full" then we use the full viewport height; otherwise see the original documentation (https://msdn.microsoft.com/en-us/library/office/ff410058(v=office.14).aspx)
+     * @param {Boolean} [options.closePrevious=false] It permits to close a previous modal dialog before opening this one
+     * @param {Boolean} [options.wait=false] If we want to show a Wait Screen (alias for $SP().waitModalDialog())
+     * @param {String} [options.id=random()] An unique ID to identify the modal dialog (don't use space or special characters)
+     * @param {Function} [options.callback] A shortcut to `dialogReturnValueCallback` with dialogResult and returnValue
+     * @param {Function} [options.onload] The modal might be delayed as we need to load some Sharepoint JS files; the `onload` function is called once the modal is shown
+     * @param {Function} [options.onurlload] When we use the "url" parameter, this is triggered when the DOMContent of the iframe is loaded (if it's the same origin)
+     * @param {String} [options.title] The title to give to the modal (if you use `wait:true` then it will be the main text that will appear on 2013, and the modal title for 2010)
+     * @param {String} [options.message] This parameter is only use if there is `wait:true` and permits to define the subtitle message for 2013, or the main message for 2010
+     * @param {String} [options.url] A string that contains the URL of the page that appears in the dialog. If both url and html are specified, url takes precedence. Either url or html must be specified.
+     * @param {Number} [options.x] An integer value that specifies the x-offset of the dialog. This value works like the CSS left value.
+     * @param {Number} [options.y] An integer value that specifies the y-offset of the dialog. This value works like the CSS top value.
+     * @param {Boolean} [options.allowMaximize] A Boolean value that specifies whether the dialog can be maximized. true if the Maximize button is shown; otherwise, false.
+     * @param {Boolean} [options.showMaximized] A Boolean value that specifies whether the dialog opens in a maximized state. true the dialog opens maximized. Otherwise, the dialog is opened at the requested sized if specified; otherwise, the default size, if specified; otherwise, the autosized size.
+     * @param {Boolean} [options.showClose=true] A Boolean value that specifies whether the Close button appears on the dialog.
+     * @param {Boolean} [options.autoSize] A Boolean value that specifies whether the dialog platform handles dialog sizing.
+     * 
+     * @example
+     * $SP().showModalDialog({
+     *   title:"Dialog",
+     *   html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModalDialog(\'here\')">Close&lt;/button>&lt;/p>',
+     *   callback:function(dialogResult, returnValue) {
+     *     alert("Result="+dialogResult); // -> "here"
+     *   }
+     * })
+     * 
+     * // show a waiting message
+     * $SP().waitModalDialog("Working...");
+     * // --- do some stuff ---
+     * // close the waiting message and open a new modal dialog
+     * $SP().showModalDialog({
+     *   closePrevious:true,
+     *   title:"Success",
+     *   html:'&lt;h1>Done!&lt;/h1>'
+     * })
+     * // and use $SP().closeModalDialog() to close it
      */
     showModalDialog: function (options) {
       var _this = this
@@ -5530,29 +5525,29 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js'); // eslint-disable-line
     },
     /**
-      @name $SP().closeModalDialog
-      @function
-      @category modals
-      @description Close the last modal dialog
-
-      @param {Object} [dialogResult] One of the enumeration values specifying the result of the modal dialog (SP.UI.DialogResult|), or the modal object returned by $SP().getModalDialog()
-      @param {Object} [returnValue] The return value of the modal dialog
-
-      @example
-      // if the user use the cross to close the modal, then `dialogResult` equals to 0 in the callback
-      // but you can trigger the close of the modal and pass anything you want
-      $SP().showModalDialog({
-        id:"demo",
-        title:"Hello World",
-        html:'&lt;p>This is an example. Click one of the buttons.&lt;/p>&lt;p class="ms-alignCenter">&lt;button onclick="$SP().closeModalDialog(\'Continue has been clicked\')">Continue&lt;/button>&lt;/p>',
-        callback:function(res) {
-          alert(res)
-        }
-      })
-
-      // or
-      var modal = $SP().getModalDialog('demo');
-      if (modal) $SP().closeModalDialog(modal);
+     * @name $SP().closeModalDialog
+     * @function
+     * @category modals
+     * @description Close the last modal dialog
+     * 
+     * @param {Object} [dialogResult] One of the enumeration values specifying the result of the modal dialog (SP.UI.DialogResult|), or the modal object returned by $SP().getModalDialog()
+     * @param {Object} [returnValue] The return value of the modal dialog
+     * 
+     * @example
+     * // if the user use the cross to close the modal, then `dialogResult` equals to 0 in the callback
+     * // but you can trigger the close of the modal and pass anything you want
+     * $SP().showModalDialog({
+     *   id:"demo",
+     *   title:"Hello World",
+     *   html:'&lt;p>This is an example. Click one of the buttons.&lt;/p>&lt;p class="ms-alignCenter">&lt;button onclick="$SP().closeModalDialog(\'Continue has been clicked\')">Continue&lt;/button>&lt;/p>',
+     *   callback:function(res) {
+     *     alert(res)
+     *   }
+     * })
+     * 
+     * // or
+     * var modal = $SP().getModalDialog('demo');
+     * if (modal) $SP().closeModalDialog(modal);
      */
     closeModalDialog: function (dialogResult, returnValue) {
       var fct = function () {
@@ -5643,9 +5638,9 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
      * @category modals
      * @description Resize a ModalDialog and recenter it
      * @param  {Object} options
-     *   @param {Number} width
-     *   @param {Number} height
-     *   @param {String} [id] The id of the modal to resize, or the last opened dialog will be used
+     * @param {Number} width
+     * @param {Number} height
+     * @param {String} [id] The id of the modal to resize, or the last opened dialog will be used
      * @return {Boolean} FALSE if something went wrong
      *
      * @example
@@ -5721,18 +5716,18 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       dlg.style.left = (pageSize.vw.width / 2 - pxToNum(dlg.style.width) / 2) + 'px'
     },
     /**
-      @name $SP().registerPlugin
-      @function
-      @category core
-      @description Permits to register a plugin
-
-      @param {String} pluginName You have to define the plugin name
-      @param {Function} pluginFct You have to define the function of the plugin with one parameter that are the options passed
-
-      @example
-      $SP().registerPlugin('test', function(options) {
-        console.log(options.message);
-      })
+     * @name $SP().registerPlugin
+     * @function
+     * @category core
+     * @description Permits to register a plugin
+     * 
+     * @param {String} pluginName You have to define the plugin name
+     * @param {Function} pluginFct You have to define the function of the plugin with one parameter that are the options passed
+     * 
+     * @example
+     * $SP().registerPlugin('test', function(options) {
+     *   console.log(options.message);
+     * })
     */
     registerPlugin: function (name, fct) {
       if (typeof _SP_PLUGINS[name] !== 'undefined') { throw "[SharepointPlus 'registerPlugin'] '" + name + "' is already registered." }
@@ -5740,16 +5735,16 @@ var _SP_JSON_ACCEPT = 'verbose'; // other options are "minimalmetadata" and "nom
       return true
     },
     /**
-      @name $SP().plugin
-      @function
-      @category core
-      @description Permits to use a plugin
-
-      @param {String} pluginName The plugin name to call
-      @param {Object} [options] The options for the plugin
-
-      @example
-      $SP().plugin('test',{message:"This is a test !"})
+     * @name $SP().plugin
+     * @function
+     * @category core
+     * @description Permits to use a plugin
+     * 
+     * @param {String} pluginName The plugin name to call
+     * @param {Object} [options] The options for the plugin
+     * 
+     * @example
+     * $SP().plugin('test',{message:"This is a test !"})
     */
     plugin: function (name, options) {
       options = options || {}
