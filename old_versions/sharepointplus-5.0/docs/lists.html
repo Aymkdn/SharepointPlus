@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharepointPlus :: JavaScript API for Sharepoint</title>
+    <link rel="shortcut icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/SharepointPlus/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="css/sunburst.css" />
+    <link rel="stylesheet" type="text/css" href="css/default.css" />
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="js/bootstrap-scrollspy.js"></script>
+    <script type="text/javascript" src="js/bootstrap-dropdown.js"></script>
+</head>
+
+<body>
+<header>
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href=".">SharepointPlus</a>
+        <div class="nav-collapse">
+          <ul class="nav"><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">core (4)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="core.html#getVersion">getVersion</a></li><li><a href="core.html#plugin">plugin</a></li><li><a href="core.html#registerPlugin">registerPlugin</a></li><li><a href="core.html#webService">webService</a></li></ul></li><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">files (3)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="files.html#checkin">checkin</a></li><li><a href="files.html#createFile">createFile</a></li><li><a href="files.html#createFolder">createFolder</a></li></ul></li><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">forms (10)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="forms.html#description">description</a></li><li><a href="forms.html#each">each</a></li><li><a href="forms.html#elem">elem</a></li><li><a href="forms.html#formfields">formfields</a></li><li><a href="forms.html#internalname">internalname</a></li><li><a href="forms.html#isMandatory">isMandatory</a></li><li><a href="forms.html#name">name</a></li><li><a href="forms.html#row">row</a></li><li><a href="forms.html#type">type</a></li><li><a href="forms.html#val">val</a></li></ul></li><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">lists (19)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="lists.html#add">add</a></li><li><a href="lists.html#addAttachment">addAttachment</a></li><li><a href="lists.html#cleanResult">cleanResult</a></li><li><a href="lists.html#get">get</a></li><li><a href="lists.html#getAttachment">getAttachment</a></li><li><a href="lists.html#getContentTypeInfo">getContentTypeInfo</a></li><li><a href="lists.html#getContentTypes">getContentTypes</a></li><li><a href="lists.html#getWorkflowID">getWorkflowID</a></li><li><a href="lists.html#history">history</a></li><li><a href="lists.html#info">info</a></li><li><a href="lists.html#lists">lists</a></li><li><a href="lists.html#moderate">moderate</a></li><li><a href="lists.html#parse">parse</a></li><li><a href="lists.html#remove">remove</a></li><li><a href="lists.html#startWorkflow">startWorkflow</a></li><li><a href="lists.html#startWorkflow2013">startWorkflow2013</a></li><li><a href="lists.html#update">update</a></li><li><a href="lists.html#view">view</a></li><li><a href="lists.html#views">views</a></li></ul></li><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">modals (7)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="modals.html#closeModalDialog">closeModalDialog</a></li><li><a href="modals.html#getModalDialog">getModalDialog</a></li><li><a href="modals.html#notify">notify</a></li><li><a href="modals.html#removeNotify">removeNotify</a></li><li><a href="modals.html#resizeModalDialog">resizeModalDialog</a></li><li><a href="modals.html#showModalDialog">showModalDialog</a></li><li><a href="modals.html#waitModalDialog">waitModalDialog</a></li></ul></li><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">node (2)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="node.html#auth">auth</a></li><li><a href="node.html#proxy">proxy</a></li></ul></li><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">people (8)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="people.html#addressbook">addressbook</a></li><li><a href="people.html#distributionLists">distributionLists</a></li><li><a href="people.html#getUserInfo">getUserInfo</a></li><li><a href="people.html#groupMembers">groupMembers</a></li><li><a href="people.html#isMember">isMember</a></li><li><a href="people.html#people">people</a></li><li><a href="people.html#usergroups">usergroups</a></li><li><a href="people.html#whoami">whoami</a></li></ul></li><li class="dropdown"><a href="#nogo" class="dropdown-toggle" data-toggle="dropdown">utils (15)<b class="caret"></b></a><ul class="dropdown-menu"><li><a href="utils.html#SPArrayChunk">SPArrayChunk</a></li><li><a href="utils.html#SPExtend">SPExtend</a></li><li><a href="utils.html#ajax">ajax</a></li><li><a href="utils.html#getLookup">getLookup</a></li><li><a href="utils.html#getPageSize">getPageSize</a></li><li><a href="utils.html#getRequestDigest">getRequestDigest</a></li><li><a href="utils.html#getURL">getURL</a></li><li><a href="utils.html#hasREST">hasREST</a></li><li><a href="utils.html#regionalDateFormat">regionalDateFormat</a></li><li><a href="utils.html#regionalSettings">regionalSettings</a></li><li><a href="utils.html#toCurrency">toCurrency</a></li><li><a href="utils.html#toDate">toDate</a></li><li><a href="utils.html#toSPDate">toSPDate</a></li><li><a href="utils.html#toXSLString">toXSLString</a></li><li><a href="utils.html#workflowStatusToText">workflowStatusToText</a></li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2 hidden-tablet hidden-phone"> <!-- left side bar -->
+      <a id="logo" href="."><img src="img/sharepointplus.svg" style="width:100px"></a>
+      <ul class="nav nav-list">
+        <li class="nav-header">Download</li>
+        <li><a href="https://github.com/Aymkdn/SharepointPlus">GitHub Repository</a></li>
+        <li><a href="https://github.com/Aymkdn/SharepointPlus/wiki">Wiki</a></li>
+        <li><a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md">Changelog</a></li>
+        <li><a href="https://github.com/Aymkdn/SharepointPlus/blob/master/plugins/">Plugins</a></li>
+        <li class="nav-header">API</li>
+        <li class="nav-parent"><a href="core.html">core</a></li><li class="nav-children"><a href="core.html#getVersion">getVersion</a></li><li class="nav-children"><a href="core.html#plugin">plugin</a></li><li class="nav-children"><a href="core.html#registerPlugin">registerPlugin</a></li><li class="nav-children"><a href="core.html#webService">webService</a></li><li class="nav-parent"><a href="files.html">files</a></li><li class="nav-children"><a href="files.html#checkin">checkin</a></li><li class="nav-children"><a href="files.html#createFile">createFile</a></li><li class="nav-children"><a href="files.html#createFolder">createFolder</a></li><li class="nav-parent"><a href="forms.html">forms</a></li><li class="nav-children"><a href="forms.html#description">description</a></li><li class="nav-children"><a href="forms.html#each">each</a></li><li class="nav-children"><a href="forms.html#elem">elem</a></li><li class="nav-children"><a href="forms.html#formfields">formfields</a></li><li class="nav-children"><a href="forms.html#internalname">internalname</a></li><li class="nav-children"><a href="forms.html#isMandatory">isMandatory</a></li><li class="nav-children"><a href="forms.html#name">name</a></li><li class="nav-children"><a href="forms.html#row">row</a></li><li class="nav-children"><a href="forms.html#type">type</a></li><li class="nav-children"><a href="forms.html#val">val</a></li><li class="nav-parent"><a href="lists.html">lists</a></li><li class="nav-children"><a href="lists.html#add">add</a></li><li class="nav-children"><a href="lists.html#addAttachment">addAttachment</a></li><li class="nav-children"><a href="lists.html#cleanResult">cleanResult</a></li><li class="nav-children"><a href="lists.html#get">get</a></li><li class="nav-children"><a href="lists.html#getAttachment">getAttachment</a></li><li class="nav-children"><a href="lists.html#getContentTypeInfo">getContentTypeInfo</a></li><li class="nav-children"><a href="lists.html#getContentTypes">getContentTypes</a></li><li class="nav-children"><a href="lists.html#getWorkflowID">getWorkflowID</a></li><li class="nav-children"><a href="lists.html#history">history</a></li><li class="nav-children"><a href="lists.html#info">info</a></li><li class="nav-children"><a href="lists.html#lists">lists</a></li><li class="nav-children"><a href="lists.html#moderate">moderate</a></li><li class="nav-children"><a href="lists.html#parse">parse</a></li><li class="nav-children"><a href="lists.html#remove">remove</a></li><li class="nav-children"><a href="lists.html#startWorkflow">startWorkflow</a></li><li class="nav-children"><a href="lists.html#startWorkflow2013">startWorkflow2013</a></li><li class="nav-children"><a href="lists.html#update">update</a></li><li class="nav-children"><a href="lists.html#view">view</a></li><li class="nav-children"><a href="lists.html#views">views</a></li><li class="nav-parent"><a href="modals.html">modals</a></li><li class="nav-children"><a href="modals.html#closeModalDialog">closeModalDialog</a></li><li class="nav-children"><a href="modals.html#getModalDialog">getModalDialog</a></li><li class="nav-children"><a href="modals.html#notify">notify</a></li><li class="nav-children"><a href="modals.html#removeNotify">removeNotify</a></li><li class="nav-children"><a href="modals.html#resizeModalDialog">resizeModalDialog</a></li><li class="nav-children"><a href="modals.html#showModalDialog">showModalDialog</a></li><li class="nav-children"><a href="modals.html#waitModalDialog">waitModalDialog</a></li><li class="nav-parent"><a href="node.html">node</a></li><li class="nav-children"><a href="node.html#auth">auth</a></li><li class="nav-children"><a href="node.html#proxy">proxy</a></li><li class="nav-parent"><a href="people.html">people</a></li><li class="nav-children"><a href="people.html#addressbook">addressbook</a></li><li class="nav-children"><a href="people.html#distributionLists">distributionLists</a></li><li class="nav-children"><a href="people.html#getUserInfo">getUserInfo</a></li><li class="nav-children"><a href="people.html#groupMembers">groupMembers</a></li><li class="nav-children"><a href="people.html#isMember">isMember</a></li><li class="nav-children"><a href="people.html#people">people</a></li><li class="nav-children"><a href="people.html#usergroups">usergroups</a></li><li class="nav-children"><a href="people.html#whoami">whoami</a></li><li class="nav-parent"><a href="utils.html">utils</a></li><li class="nav-children"><a href="utils.html#SPArrayChunk">SPArrayChunk</a></li><li class="nav-children"><a href="utils.html#SPExtend">SPExtend</a></li><li class="nav-children"><a href="utils.html#ajax">ajax</a></li><li class="nav-children"><a href="utils.html#getLookup">getLookup</a></li><li class="nav-children"><a href="utils.html#getPageSize">getPageSize</a></li><li class="nav-children"><a href="utils.html#getRequestDigest">getRequestDigest</a></li><li class="nav-children"><a href="utils.html#getURL">getURL</a></li><li class="nav-children"><a href="utils.html#hasREST">hasREST</a></li><li class="nav-children"><a href="utils.html#regionalDateFormat">regionalDateFormat</a></li><li class="nav-children"><a href="utils.html#regionalSettings">regionalSettings</a></li><li class="nav-children"><a href="utils.html#toCurrency">toCurrency</a></li><li class="nav-children"><a href="utils.html#toDate">toDate</a></li><li class="nav-children"><a href="utils.html#toSPDate">toSPDate</a></li><li class="nav-children"><a href="utils.html#toXSLString">toXSLString</a></li><li class="nav-children"><a href="utils.html#workflowStatusToText">workflowStatusToText</a></li>
+      </ul>
+    </div>
+    
+
+
+
+
+    <div class="span10"><h1>Methods</h1>
+    <a name="add"></a>
+    <div class="member">
+      <h2><a href="#add" title="Direct link to the method 'add'">add</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2638">source code</a>)
+      
+      <div>
+        <div class="method well">add<span class="signature">(items, options)</span></div>
+          </div>
+          <blockquote class="description">Add items into a Sharepoint List
+                   note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
+                   note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
+                   note SP2013: If "-1;#" doesn't work on Sharepoint 2013, then try with "i:0#.w|" (e.g. "i:0#.w|europe\\foo_bar") ("i:0#.w|" may vary based on your authentification system -- see <a href="https://social.technet.microsoft.com/wiki/contents/articles/13921.sharepoint-20102013-claims-encoding.aspx">https://social.technet.microsoft.com/wiki/contents/articles/13921.sharepoint-20102013-claims-encoding.aspx</a>)
+                   note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
+                         --> it should also be possible to not pass the value but only the ID, e.g.: "X;#"
+                   note: A URL field must be provided as "<a href="http://www.website.com">http://www.website.com</a>, Name"
+                   note: A multiple selection must be provided as ";#choice 1;#choice 2;#", or just pass an array as the value and it will do the trick
+                   note: A multiple selection of Lookup must be provided as ";#X;#Choice 1;#Y;#Choice 2;#" (with X the ID for "Choice 1", and "Y" for "Choice 2")
+                         --> it should also be possible to not pass the values but only the ID, e.g.: ";#X;#;#Y;#;#"
+                   note: A Yes/No checkbox must be provided as "1" (for TRUE) or "0" (for "False")
+                   note: A Term / Taxonomy / Managed Metadata field must be provided as "0;#|UniqueIdentifier" for the special hidden related column (see <a href="https://github.com/Aymkdn/SharepointPlus/wiki/">https://github.com/Aymkdn/SharepointPlus/wiki/</a> to know more)
+                   note: You cannot change the Approval Status when adding, you need to use the $SP().moderate function</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object|Array</div>  <div class="name span4"><b data-param="items">items</b> </div>  <div class="param_description span7">List of items (e.g. [{Field_x0020_Name: "Value", OtherField: "new value"}, {Field_x0020_Name: "Value2", OtherField: "new value2"}])</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="options.packetsize">options.packetsize</b> <i>Optional, Default: 15</i></div>  <div class="param_description span7">If you have too many items to add, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.progress">options.progress</b> <i>Optional</i></div>  <div class="param_description span7">(current,max) If you provide more than 'packetsize' items then they will be treated by packets and you can use "progress" to know more about the steps</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.escapeChar">options.escapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.rootFolder">options.rootFolder</b> <i>Optional, Default: ''</i></div>  <div class="param_description span7">When dealing with Discussion Board you need to provide the rootFolder of the Message when you post a reply</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({passed, failed}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List").add({Title:"Ok"});
+
+$SP().list("List Name").add([{Title:"Ok"}, {Title:"Good"}]).then(function(items) { alert("Done!"); });
+
+$SP().list("My List","http://my.sharepoi.nt/dir/").add({Title:"Ok"}).then(function(items) {
+  if (items.failed.length > 0) {
+    for (var i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title); // the 'errorMessage' attribute is added to the object
+  }
+  if (items.passed.length > 0) {
+    for (var i=0; i &lt; items.passed.length; i++) console.log("Success for:"+items.passed[i].Title+" (ID:"+items.passed[i].ID+")");
+  }
+});
+
+// different ways to add John and Tom into the table
+$SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
+$SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
+
+// for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="addAttachment"></a>
+    <div class="member">
+      <h2><a href="#addAttachment" title="Direct link to the method 'addAttachment'">addAttachment</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2059">source code</a>)
+      
+      <div>
+        <div class="method well">addAttachment<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Add an attachment to a Sharepoint List Item</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="setup.ID">setup.ID</b> </div>  <div class="param_description span7">The item ID to attach the file</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.filename">setup.filename</b> </div>  <div class="param_description span7">The name of the file</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.attachment">setup.attachment</b> </div>  <div class="param_description span7">An array buffer of the file content</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve(fileURL), reject()</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List").addAttachment({
+  ID:1,
+  filename:"helloworld.txt",
+  attachment:"*ArrayBuffer*"
+}).then(function(fileURL) {
+  alert(fileURL)
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="cleanResult"></a>
+    <div class="member">
+      <h2><a href="#cleanResult" title="Direct link to the method 'cleanResult'">cleanResult</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L959">source code</a>)
+      
+      <div>
+        <div class="method well">cleanResult<span class="signature">(str, separator)</span></div>
+          </div>
+          <blockquote class="description">clean a string returned by a GET (remove ";#" and "string;#" and null becomes "")</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="str">str</b> </div>  <div class="param_description span7">The string to clean</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="separator">separator</b> <i>Optional, Default: ";"</i></div>  <div class="param_description span7">When it's a list we may want to have a different output (see examples)</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">String</div><div class="span10">the cleaned string</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().cleanResult("15;#Paul"); // -> "Paul"
+$SP().cleanResult("string;#Paul"); // -> "Paul"
+$SP().cleanResult("string;#"); // -> ""
+$SP().cleanResult(";#Paul;#Jacques;#Aymeric;#"); // -> "Paul;Jacques;Aymeric"
+$SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aymeric"</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="get"></a>
+    <div class="member">
+      <h2><a href="#get" title="Direct link to the method 'get'">get</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L981">source code</a>)
+      
+      <div>
+        <div class="method well">get<span class="signature">(options)</span></div>
+          </div>
+          <blockquote class="description">Get the content of the list based on different criteria (by default the default view is used)</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.fields">options.fields</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.view">options.view</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Array</div>  <div class="name span4"><b data-param="options.where">options.where</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.whereCAML">options.whereCAML</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.whereEscapeChar">options.whereEscapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.whereFct">options.whereFct</b> <i>Optional, Default: function(w){return w}</i></div>  <div class="param_description span7">Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.progress">options.progress</b> <i>Optional</i></div>  <div class="param_description span7">When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.orderby">options.orderby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to sort the list result (you can also add "ASC" -default- or "DESC")</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.groupby">options.groupby</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">The field used to group by the list result</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="options.rowlimit">options.rowlimit</b> <i>Optional, Default: 0</i></div>  <div class="param_description span7">You can define the number of rows you want to receive back (0 is infinite)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.paging">options.paging</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)</div></div><div class="parameter row-fluid">  <div class="type span1">Integer</div>  <div class="name span4"><b data-param="options.page">options.page</b> <i>Optional, Default: infinite</i></div>  <div class="param_description span7">When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.listItemCollectionPositionNext">options.listItemCollectionPositionNext</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">When doing paging, this is the index used by Sharepoint to get the next page</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.useIndexForOrderBy">options.useIndexForOrderBy</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">Based on <a href="https://spservices.codeplex.com/discussions/280642#post1323410">https://spservices.codeplex.com/discussions/280642#post1323410</a> it permits to override the 5,000 items limit in an unique call (for Sharepoint 2010 only) -- see the example below to know how to use it</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.expandUserField">options.expandUserField</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.dateInUTC">options.dateInUTC</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options.folderOptions">options.folderOptions</b> <i>Optional</i></div>  <div class="param_description span7">Permits to read the content of a Document Library (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.folderOptions.path">options.folderOptions.path</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">Relative path of the folders we want to explore (by default it's the root of the document library)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.folderOptions.show">options.folderOptions.show</b> <i>Optional, Default: "FilesAndFolders_InFolder"</i></div>  <div class="param_description span7">Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.queryOptions">options.queryOptions</b> <i>Optional</i></div>  <div class="param_description span7">If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see <a href="https://msdn.microsoft.com/en-us/library/lists.lists.getlistitems%28v=office.12%29.aspx?f=255&MSPPError=-2147217396">https://msdn.microsoft.com/en-us/library/lists.lists.getlistitems%28v=office.12%29.aspx?f=255&MSPPError=-2147217396</a>)</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options.join">options.join</b> <i>Optional</i></div>  <div class="param_description span7">Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.join.list">options.join.list</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.join.url">options.join.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url (if different than the current website)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.join.on">options.join.on</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.join.onLookup">options.join.onLookup</b> <i>Optional</i></div>  <div class="param_description span7">Permits to establish the link between two lists based on a lookup field... it's more optimized than the simple `join.on` (see the example below)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.join.outer">options.join.outer</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to do an outer join (you can also directly use "outerjoin" instead of "join")</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.calendar">options.calendar</b> <i>Optional, Default: false</i></div>  <div class="param_description span7">If you want to get the events from a Calendar List</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options.calendarOptions">options.calendarOptions</b> <i>Optional</i></div>  <div class="param_description span7">Options that will be used when "calendar:true" (see the example to know how to use it)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.calendarOptions.splitRecurrence">options.calendarOptions.splitRecurrence</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)</div></div><div class="parameter row-fluid">  <div class="type span1">String|Date</div>  <div class="name span4"><b data-param="options.calendarOptions.referenceDate">options.calendarOptions.referenceDate</b> <i>Optional, Default: today</i></div>  <div class="param_description span7">This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String) [attention: if 'splitRecurrence' is FALSE, then Sharepoint will ignore this 'referenceDate'...]</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.calendarOptions.range">options.calendarOptions.range</b> <i>Optional, Default: "Month"</i></div>  <div class="param_description span7">By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see <a href="https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx">https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx</a>)</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve(data returned by the server), reject(error from $SP().ajax())</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("List Name").get().then(function(data) {
+  for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
+});
+
+// with some fields and an orderby command
+$SP().list("ListName","http://www.mysharepoint.com/mydir/").get({
+  fields:"Title,Organization",
+  orderby:"Title DESC,Test_x0020_Date ASC"
+}).then(function(data) {
+  for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
+});
+
+// handle the errors
+$SP().list("List Name").get().then(function(data) {
+  for (var i=0; i&lt;data.length; i++) console.log(data[i].getAttribute("Title"));
+}).catch(function(err) {
+  console.log("Error => ",err)
+});
+
+// the WHERE clause must be SQL-like
+// the field names must be the internal names used by Sharepoint
+// ATTENTION - note that here we open the WHERE string with simple quotes (') and that should be your default behavior each time you use WHERE
+var name = "O'Sullivan, James";
+$SP().list("My List").get({
+  fields:"Title",
+  where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "'+name+'"'
+}).then(function(row) {
+  for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+});
+
+// Same example but this time we write the name directly inside the query...
+// So make sure to use a single backslash (\) if you have a simple quote ' inside your WHERE with a double quotes (") to open/close the string
+$SP().list("My List").get({
+  fields:"Title",
+  where:'Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = "O\'Sullivan, James"'
+}).then(function(row) {
+  for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+});
+// Or to use a double backslash (\\) if you have a simple quote ' inside your WHERE with a simple quote (') to open/close the string
+$SP().list("My List").get({
+  fields:"Title",
+  where:"Fiscal_x0020_Week > 30 AND Fiscal_x0020_Week &lt; 50 AND Name = 'O\\'Sullivan, James'"
+}).then(function(row) {
+  for (var i=row.length;i--;) console.log(row[i].getAttribute("Title"));
+});
+
+// also in the WHERE clause you can use '[Me]' to filter by the current user,
+$SP().list("My List").get({
+  fields:"Title",
+  where:"Author = '[Me]'"
+}).then(function(row) {
+  console.log(row[0].getAttribute("Title"));
+});
+
+// also in the WHERE clause you can use '[Today]' or '[Today-X]' with 'X' a number,
+// Here it will return the records done yesterday
+$SP().list("My List").get({
+  fields:"Title",
+  where:"Created = '[Today-1]'"
+}).then(function(row) {
+  console.log(row[0].getAttribute("Title"));
+});
+
+// Since 3.0.8, if you do a WHERE on a Date with the Time included, then it will compare with the tim
+// see http://blogs.syrinx.com/blogs/sharepoint/archive/2008/08/05/caml-queries-with-dates.aspx
+// here it will only show the items created at 2PM exactly -- if you want to check only the today, then use "Created = '2014-03-12'"
+$SP().list("My List").get({
+  fields:"Title",
+  where:"Created = '2014-03-12 14:00:00'"
+}).then(function(row) {
+  console.log(row[0].getAttribute("Title"));
+});
+
+// We have a list called "My List" with a view already set that is called "Marketing View" with some FIELDS and a WHERE clause
+// so the function will grab the view information and will get the data from the list with "Author = '[Me]'" and adding the view's WHERE clause too
+$SP().list("My List","http://my.sharepoint.com/my/site/").get({
+  view:"Marketing View",
+  where:"Author = '[Me]'"
+}).then(function(data) {
+  for (var i=data.length; i--;) console.log(data[i].getAttribute("Title") + " by " + data[i].getAttribute("Author"));
+});
+
+// use the paging option for the large list to avoid the message "the attempted operation is prohibited because it exceeds the list view threshold enforced by the administrator"
+// ATTENTION: if you use the WHERE option then it could return the "view threshold" error message because the packet from the WHERE is too big and SharePoint is too stupid...
+$SP().list("My List").get({
+  fields:"ID,Title",
+  rowlimit:5000,
+  paging:true,
+  progress:function progress(nbItemsLoaded) {
+    // for each new page this function will be called
+    console.log("It's still loading... already "+nbItemsLoaded+" items have been loaded!");
+  }
+}).then(function(data) {
+  console.log(data.length); // -> 23587
+})
+// add the `page` option to stop after a number of requests/pages
+// for example you only want the last record from a list that has more than 5,000 items
+$SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:1,paging:true,page:1}).then(function(data) {
+  console.log("last ID : "+data[0].getAttribute("ID"));
+})
+// use `listItemCollectionPositionNext` to start from this index
+$SP().list("My List").get({
+  fields:"ID",
+  orderby:"ID DESC",
+  rowlimit:10,
+  paging:true,
+  page:1
+}).then(function(data) {
+  // "data" is our first page of data
+  // get the next block
+  return $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:data.NextPage})
+}).then(function(data) {
+  // here "data" is the 2nd block of data
+})
+
+// We can also find the files from a Document Shared Library
+$SP().list("Shared Documents","http://my.share.point.com/my_site/").get({
+  fields:"FileLeafRef,File_x0020_Size",
+}).then(function(data) {
+  for (var i=0; i<&lt;data.length; i++) console.log("FileName:"+data[i].getAttribute("FileLeafRef"),"FileSize:"+data[i].getAttribute("File_x0020_Size"));
+});
+
+// We can join two or more lists together based on a condition
+// ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
+// ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
+$SP().list("Finance and Expense","http://my.sharepoint.com/my_sub/dir/").get({
+  fields:"Expense_x0020_Type",
+  where:"Finance_x0020_Category = 'Supplies'",
+  join:{
+    list:"Purchasing List",
+    fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
+    where:"Region = 'EMEA' AND Year = 2012",
+    orderby:"Expense_x0020_Type,Finance_x0020_Category",
+    on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
+    join:{
+      list:"Financial Static Data",
+      fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
+      where:"Region = 'EMEA' AND Year = 2012",
+      on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
+    }
+  }
+}).then(function(data) {
+  for (var i=0; i&lt;data.length; i++) {
+    console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
+  }
+});
+
+// By default "join" is an "inner join", but you can also do an "outerjoin"
+// ATTENTION: in that case the DATA passed to the callback will return a value for "LIST NAME.FIELD_x0020_NAME" and not directly "FIELD_x0020_NAME"
+// ATTENTION: you need to make sure to call the 'fields' that will be used in the 'on' clause
+$SP().list("Finance and Expense","http://my.sharepoint.com/my_sub/dir/").get({
+  fields:"Expense_x0020_Type",
+  where:"Finance_x0020_Category = 'Supplies'",
+  join:{
+    list:"Purchasing List",
+    fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
+    where:"Region = 'EMEA' AND Year = 2012",
+    orderby:"Expense_x0020_Type,Finance_x0020_Category",
+    on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
+    outerjoin:{
+      list:"Financial Static Data",
+      fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
+      where:"Region = 'EMEA' AND Year = 2012",
+      on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
+    }
+  }
+}).then(function(data) {
+  for (var i=0; i&lt;data.length; i++)
+    console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
+})
+
+// Another example of "outerjoin", but this time with fields tied to a Lookup ID
+// Here 1 Project can have several Deliverables based on field "Project ID", and 1 Deliverable can have several team members based on "Deliverable ID"
+$SP().list("Projects").get({
+  fields:"ID,Project_x0020_Name",
+  where:"Status = 'In Progress'",
+  outerjoin:{
+    list:"Deliverables",
+    fields:"ID,Name",
+    onLookup:"Project_x0020_ID",
+    outerjoin:{
+      list:"Team Members",
+      fields:"ID,Deliverable_x0020_ID,Name",
+      onLookup:"Deliverable_x0020_ID"
+    }
+  }
+}).then(function(data) {
+  var html = '&lt;table class="table default">&lt;thead>&lt;tr>&lt;th>Project ID&lt;/th>&lt;th>Project Name&lt;/th>&lt;th>Deliverable ID&lt;/th>&lt;th>Deliverable Name&lt;/th>&lt;th>Team ID&lt;/th>&lt;th>Member Name&lt;/th>&lt;/tr>&lt;/thead>&lt;tbody>'
+  for (var i=0;i&lt;data.length; i++) {
+    html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.Name")+'&lt;/td>&lt;/tr>'
+  }
+  html += '&lt;/tbody>&lt;/table>';
+  $('#part1').html(html);
+})
+
+// With Sharepoint 2010 we are limited due to the throttling limit (see here for some very interesting information http://www.glynblogs.com/2011/03/sharepoint-2010-list-view-throttling-and-custom-caml-queries.html)
+// So for example if I do WHERE:'Fiscal_x0020_Year = 2012' it will return an error because I have 6,500 items
+// So I'll do several requests for each Fiscal_x0020_Week into this Fiscal Year
+var query=[],q=[];
+for (var i=1; i&lt;54; i++) {
+  q.push("Fiscal_x0020_Week = "+i);
+  if (i%8==0 || i == 53) {
+    query.push("("+q.join(" OR ")+") AND Fiscal_x0020_Year = 2012");
+    q=[]
+  }
+}
+// it returns :
+// [
+//   "(Fiscal_x0020_Week = 1 OR Fiscal_x0020_Week = 2 OR Fiscal_x0020_Week = 3 OR Fiscal_x0020_Week = 4 OR Fiscal_x0020_Week = 5 OR Fiscal_x0020_Week = 6 OR Fiscal_x0020_Week = 7 OR Fiscal_x0020_Week = 8) AND Fiscal_x0020_Year = 2012",
+//   ...
+//   "(Fiscal_x0020_Week = 49 OR Fiscal_x0020_Week = 50 OR Fiscal_x0020_Week = 51 OR Fiscal_x0020_Week = 52 OR Fiscal_x0020_Week = 53) AND Fiscal_x0020_Year = 2012"
+// ]
+$SP().list("Sessions").get({
+  fields:"Title,Score",
+  where:query,
+  progress:function progress(current,max) {
+    // when we use an array for the WHERE clause we are able to provide `current` and `max`
+    console.log("Progress: "+current+" / "+max);
+  }
+}).then(function(data) {
+  console.log(data.length); // -> 6,523
+});
+// also regarding the throttling limit, you can query a list on a user column in using the User ID
+// For example if John Doe is recorded as "328;#Doe, John" then you'll have to use the special operator "~="
+$SP().list("Sessions").get({
+  fields:"Title",
+  where:'User ~= 328"
+}).then(function(data) {
+  console.log(data.length);
+});
+
+// if you want to list only the files visible into a folder for a Document Library
+$SP().list("My Shared Documents").get({
+  fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult()), "File_x0020_Size" the filesize in bytes
+  folderOptions:{
+    path:"My Folder/Sub Folder/",
+    show:"FilesOnly_InFolder"
+  }
+});
+
+// if you want to list all the files and folders for a Document Library
+$SP().list("My Shared Documents").get({
+  fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult())
+  folderOptions:{
+    show:"FilesAndFolders_Recursive"
+  }
+});
+
+// How to retrieve the events from a Calendar List
+// NOTE -- when "calendar:true" we automatically get some fields: "Title", "EventDate" -- the Start Date --, "EndDate", "RecurrenceData", Duration", fAllDayEvent", "fRecurrence", "ID"
+$SP().list("My Calendar").get({
+  fields:"Description",
+  calendar:true,
+  calendarOptions:{
+    referenceDate:new Date(2012,4,4),
+    range: "Week"
+  }
+  where:"Category = 'Yellow'"
+}).then(function(data) {
+  var events=[];
+  for (var i=0; i&lt;data.length; i++) {
+    // several information are available -- see below
+    events.push({
+      Title:         data[i].getAttribute("Title"),
+      StartDateTime: data[i].getAttribute("EventDate"), // you can use $SP().toDate() to have a JS Date
+      EndDateTime:   data[i].getAttribute("EndDate"), // you can use $SP().toDate() to have a JS Date
+      Recurrence:    (data[i].getAttribute("fRecurrence") == 1 ? true : false),
+      AllDayEvent:   (data[i].getAttribute("fAllDayEvent") == 1 ? true : false),
+      RecurrenceEnd: (data[i].getAttribute("RecurrenceData")||"").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1"), // see the NOTE below
+      ID:            data[i].getAttribute("ID"), // the ID for the recurrence events is special but can be also passed to "Display.aspx?ID="
+      Duration:      1*data[i].getAttribute("Duration") // Duration is in SECONDS
+    })
+    // NOTE: with data[i].getAttribute("RecurrenceData") you'll find more info about the recurrence (like the end date for the serie, and much more),
+    // but because there are a lot of scenario, I won't handle the different cases.
+    // e.g. for a daily recurrence you can find the end date of the serie with: data[i].getAttribute("RecurrenceData").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1")
+    // --> it will return a SP Date
+  }
+})
+
+// for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
+
+// [It doesn't work with Sharepoint 2013 anymore, only for SP2010]
+// You can use `useIndexForOrderBy:true` to override the list view threshold -- see https://spservices.codeplex.com/discussions/280642
+// To make it to work, you need :
+// 1) to have "ID > 0 AND Another_Index_Column_Filtered" in the WHERE Clause (so at least two filters), and then we can add some other WHERE (even the not indexed columns)
+// 2) To use `orderby`, with an indexed column
+// 3) To use `useIndexForOrderBy:true`
+// see the below example with Trainer an indexed column, and Equipment a column not indexed
+// NOTE: you need to test your WHERE to see if it works or not, because it's vary a lot depending of the kind of WHERE clause you'll use
+$SP().list("Calendar",'http://intranet.dell.com/services/Educate/Toolbox/scheduling_tool/').get({
+  fields:"Trainer",
+  where:'ID > 0 AND Trainer <> "" AND Equipment LIKE "Box"',
+  orderby:'Trainer',
+  useIndexForOrderBy:true
+}).then(function(d) {
+  console.log(d.length)
+})</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="getAttachment"></a>
+    <div class="member">
+      <h2><a href="#getAttachment" title="Direct link to the method 'getAttachment'">getAttachment</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2104">source code</a>)
+      
+      <div>
+        <div class="method well">getAttachment<span class="signature">(itemID)</span></div>
+          </div>
+          <blockquote class="description">Get the attachment(s) for an item</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">String|Number</div>  <div class="name span4"><b data-param="itemID">itemID</b> </div>  <div class="param_description span7">The item ID</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve([results])</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List","http://my.site.com/mydir/").getAttachment(1).then(function(attachments) {
+  for (var i=0; i&lt;attachments.length; i++) console.log(attachments[i]); -> "https://my.site.com/site/Lists/Something/Attachments/46/helloworld.txt"
+});
+
+// you can also use $SP().list().get() using the "Attachments" field</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="getContentTypeInfo"></a>
+    <div class="member">
+      <h2><a href="#getContentTypeInfo" title="Direct link to the method 'getContentTypeInfo'">getContentTypeInfo</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2195">source code</a>)
+      
+      <div>
+        <div class="method well">getContentTypeInfo<span class="signature">(contentType, options)</span></div>
+          </div>
+          <blockquote class="description">Get the Content Type Info for a Content Type into the list</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="contentType">contentType</b> </div>  <div class="param_description span7">The Name or the ID (from $SP().list.getContentTypes) of the Content Type</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.cache">options.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Do we use the cache?</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve(fields), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("List Name").getContentTypeInfo("Item").then(function(fields) {
+  for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+});
+
+$SP().list("List Name").getContentTypeInfo("0x01009C5212B2D8FF564EBE4873A01C57D0F9001").then(function(fields) {
+  for (var i=0; i&lt;fields.length; i++) console.log(fields[i]["DisplayName"]+ ": "+fields[i]["Description"]);
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="getContentTypes"></a>
+    <div class="member">
+      <h2><a href="#getContentTypes" title="Direct link to the method 'getContentTypes'">getContentTypes</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2138">source code</a>)
+      
+      <div>
+        <div class="method well">getContentTypes<span class="signature">(options)</span></div>
+          </div>
+          <blockquote class="description">Get the Content Types for the list (returns Name, ID and Description)</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.cache">options.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Do we want to use the cache on recall for this function?</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve(contentTypes), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("List Name").getContentTypes().then(function(contentTypes) {
+  for (var i=0; i&lt;contentTypes.length; i++) console.log(contentTypes[i].Name, contentTypes[i].ID, contentTypes[i].Description);
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="getWorkflowID"></a>
+    <div class="member">
+      <h2><a href="#getWorkflowID" title="Direct link to the method 'getWorkflowID'">getWorkflowID</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L3315">source code</a>)
+      
+      <div>
+        <div class="method well">getWorkflowID<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Find the WorkflowID for a workflow, and some other related info</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="setup.ID">setup.ID</b> </div>  <div class="param_description span7">The item ID that is tied to the workflow</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.workflowName">setup.workflowName</b> </div>  <div class="param_description span7">The name of the workflow</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({workflowID, fileRef, description, instances}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("List Name").getWorkflowID({ID:15, workflowName:"Workflow for List Name (manual)"}).then(function(params) {
+  alert("Workflow ID:"+params.workflowID+" and the FileRef is: "+params.fileRef);
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="history"></a>
+    <div class="member">
+      <h2><a href="#history" title="Direct link to the method 'history'">history</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2927">source code</a>)
+      
+      <div>
+        <div class="method well">history<span class="signature">(params)</span></div>
+          </div>
+          <blockquote class="description">When versioning is an active option for your list, then you can use this function to find the previous values for a field</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="params">params</b> </div>  <div class="param_description span7">See below</div></div><div class="parameter row-fluid">  <div class="type span1">String|Number</div>  <div class="name span4"><b data-param="params.ID">params.ID</b> </div>  <div class="param_description span7">The item ID</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="params.Name">params.Name</b> </div>  <div class="param_description span7">The field name</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve(data), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List").history({ID:1981, Name:"Critical_x0020_Comments"}).then(function(data) {
+  for (var i=0,len=data.length; i&lt;len; i++) {
+    console.log("Date: "+data[i].getAttribute("Modified")); // you can use $SP().toDate() to convert it to a JavaScript Date object
+    console.log("Editor: "+data[i].getAttribute("Editor")); // it's the long format type, so the result looks like that "328;#Doe,, John,#DOMAIN\john_doe,#John_Doe@example.com,#,#Doe,, John"
+    console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use the field name here
+  }
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="info"></a>
+    <div class="member">
+      <h2><a href="#info" title="Direct link to the method 'info'">info</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2304">source code</a>)
+      
+      <div>
+        <div class="method well">info<span class="signature">()</span></div>
+          </div>
+          <blockquote class="description">Get the columns' information/metadata, and the list's details</blockquote>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve(infos), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("List Name").info().then(function(infos) {
+  // for columns' details:
+  for (var i=0; i&lt;infos.length; i++) console.log(infos[i]["DisplayName"]+ ": => ",infos[i]);
+  // for list's details:
+  console.log(infos._List)
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="lists"></a>
+    <div class="member">
+      <h2><a href="#lists" title="Direct link to the method 'lists'">lists</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2569">source code</a>)
+      
+      <div>
+        <div class="method well">lists<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Get all the lists from the site</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.url">setup.url</b> <i>Optional, Default: 'current website'</i></div>  <div class="param_description span7">The website url</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="setup.cache">setup.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">To get the result from the cache when available</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({ID, Name, Description, Url, .....}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().lists().then(function(lists) {
+  for (var i=0; i&lt;lists.length; i++) console.log("List #"+i+": "+lists[i].Name);
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="moderate"></a>
+    <div class="member">
+      <h2><a href="#moderate" title="Direct link to the method 'moderate'">moderate</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2966">source code</a>)
+      
+      <div>
+        <div class="method well">moderate<span class="signature">(approval, setup)</span></div>
+          </div>
+          <blockquote class="description">Moderate items from a Sharepoint List</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Array</div>  <div class="name span4"><b data-param="approval">approval</b> </div>  <div class="param_description span7">List of items and ApprovalStatus (e.g. [{ID:1, ApprovalStatus:"Approved"}, {ID:22, ApprovalStatus:"Pending"}])</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="setup.packetsize">setup.packetsize</b> <i>Optional, Default: 15</i></div>  <div class="param_description span7">If you have too many items to moderate, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="setup.progress">setup.progress</b> <i>Optional</i></div>  <div class="param_description span7">Two parameters: 'current' and 'max' -- if you provide more than `packetsize` ID then they will be treated by packets and you can use "progress" to know more about the steps</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({passed, failed}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List").moderate({ID:1, ApprovalStatus:"Rejected"}); // you must always provide the ID
+
+$SP().list("Other List").moderate([{ID:5, ApprovalStatus:"Pending"}, {ID: 15, ApprovalStatus:"Approved"}]).then(function(items) {
+  for (var i=0; i &lt; items.failed.length; i++) console.log("Error with:"+items.failed[i].ID);
+  for (var i=0; i &lt; items.passed.length; i++) console.log("Success with:"+items.passed[i].getAttribute("Title"));
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="parse"></a>
+    <div class="member">
+      <h2><a href="#parse" title="Direct link to the method 'parse'">parse</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L655">source code</a>)
+      
+      <div>
+        <div class="method well">parse<span class="signature">(where, escapeChar)</span></div>
+          </div>
+          <blockquote class="description">Use a WHERE sentence to transform it into a CAML Syntax sentence</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="where">where</b> </div>  <div class="param_description span7">The WHERE sentence to change</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="escapeChar">escapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')</div></div>
+          </div>
+          
+
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().parse('ContentType = "My Content Type" OR Description &lt;> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"');
+// -> return &lt;And>&lt;And>&lt;Or>&lt;Eq>&lt;FieldRef Name="ContentType" />&lt;Value Type="Text">My Content Type&lt;/Value>&lt;/Eq>&lt;IsNotNull>&lt;FieldRef Name="Description" />&lt;/IsNotNull>&lt;/Or>&lt;Geq>&lt;FieldRef Name="Fiscal_x0020_Week" />&lt;Value Type="Number">43&lt;/Value>&lt;/Geq>&lt;/And>&lt;Lt>&lt;FieldRef Name="Result_x0020_Date" />&lt;Value Type="DateTime">2012-02-03&lt;/Value>&lt;/Lt>&lt;/And>
+
+// available operators :
+// "&lt;" : less than
+// "&lt;=" : less than or equal to
+// ">" : greater than
+// ">=" : greater than or equal to
+// "<>" : different
+// "~=" : this must be only used when comparing to a number that represents the User ID (e.g. 'User ~= 328') - that permits to query a list with too many items but with the User column that is indexed
+// " AND "
+// " OR "
+// " LIKE " : for example 'Title LIKE "foo"' will return "foobar" "foo" "barfoobar" "barfoo" and so on
+// " IN " : for example 'Location IN ["Los Angeles","San Francisco","New York"]', equivalent to 'Location = "Los Angeles" OR Location = "San Francisco" OR Location = "New York"' — SP2013 limits each IN to 60 items. If you want to check Lookup IDs instead of text you can use '~' followed by the ID, for example 'Location IN ["~23", "~26", "~30"]'
+
+// special words:
+// '[Me]' : for the current user
+// '[Today]' : to use the today date
+// '[Today+X]' : to use today + X days
+// Null : for the Null value
+// TRUE : for the Yes/No columns
+// FALSE : for the Yes/No columns
+
+// in the below example, on the "&" will be escaped
+var bar="Bob & Marley";
+var foo="O'Conney";
+$SP().parse('Bar = "'+bar+'" AND Foo = "'+foo+'"'); // -> &lt;And>&lt;Eq>&lt;FieldRef Name="Bar" />&lt;Value Type="Text">Bob &amp; Marley&lt;/Value>&lt;/Eq>&lt;Eq>&lt;FieldRef Name="Foo" />&lt;Value Type="Text">O'Conney&lt;/Value>&lt;/Eq>&lt;/And>
+$SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="remove"></a>
+    <div class="member">
+      <h2><a href="#remove" title="Direct link to the method 'remove'">remove</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L3084">source code</a>)
+      
+      <div>
+        <div class="method well">remove<span class="signature">(itemsID, options)</span></div>
+          </div>
+          <blockquote class="description">Delete items from a Sharepoint List</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Objet|Array</div>  <div class="name span4"><b data-param="itemsID">itemsID</b> <i>Optional</i></div>  <div class="param_description span7">List of items ID (e.g. [{ID:1}, {ID:22}]) | ATTENTION if you want to delete a file you have to add the "FileRef" e.g. {ID:2,FileRef:"path/to/the/file.ext"}</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.where">options.where</b> <i>Optional</i></div>  <div class="param_description span7">If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="options.packetsize">options.packetsize</b> <i>Optional, Default: 15</i></div>  <div class="param_description span7">If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.progress">options.progress</b> <i>Optional</i></div>  <div class="param_description span7">Two parameters: 'current' and 'max' -- If you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({passed, failed}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List").remove({ID:1});
+// we can use the WHERE clause instead providing the ID
+$SP().list("My List").remove({where:"Title = 'OK'",progress:function(current,max) {
+  console.log(current+"/"+max);
+}});
+
+// delete several items
+$SP().list("List Name", "http://my.sharepoint.com/sub/dir/").remove([{ID:5}, {ID:7}]);
+
+$SP().list("List").remove({ID:43, Title:"My title"}).then(function(items) {
+  for (var i=0; i &lt; items.failed.length; i++) console.log("Error with:"+items.failed[i].ID+" ("+items.failed[i].errorMessage+")"); // only .ID and .errorMessage are available
+});
+
+// example for deleting a file
+$SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared Documents/something.xls"});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="startWorkflow"></a>
+    <div class="member">
+      <h2><a href="#startWorkflow" title="Direct link to the method 'startWorkflow'">startWorkflow</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L3450">source code</a>)
+      
+      <div>
+        <div class="method well">startWorkflow<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Manually start a workflow (that has been set to be manually started) (for "Sharepoint 2010 workflow" as the platform type)</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.workflowName">setup.workflowName</b> </div>  <div class="param_description span7">The name of the workflow</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="setup.ID">setup.ID</b> <i>Optional</i></div>  <div class="param_description span7">The item ID that tied to the workflow</div></div><div class="parameter row-fluid">  <div class="type span1">Array|Object</div>  <div class="name span4"><b data-param="setup.parameters">setup.parameters</b> <i>Optional</i></div>  <div class="param_description span7">An array of object with {name:"Name of the parameter", value:"Value of the parameter"}</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.fileRef">setup.fileRef</b> <i>Optional</i></div>  <div class="param_description span7">Optional: you can provide the fileRef to avoid calling the $SP().list().getWorkflowID()</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.workflowID">setup.workflowID</b> <i>Optional</i></div>  <div class="param_description span7">Optional: you can provide the workflowID to avoid calling the $SP().list().getWorkflowID()</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve() if it's started, reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">// if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
+$SP().list("").startWorkflow({workflowName:"My Site Workflow"});
+
+// to start a workflow for a list item
+$SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}).then(function() {
+  alert("Worflow Started!")
+}).catch(function(error) {
+    console.log("Error: ",error);
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="startWorkflow2013"></a>
+    <div class="member">
+      <h2><a href="#startWorkflow2013" title="Direct link to the method 'startWorkflow2013'">startWorkflow2013</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L3519">source code</a>)
+      
+      <div>
+        <div class="method well">startWorkflow2013<span class="signature">(setup)</span></div>
+          </div>
+          <blockquote class="description">Manually start a work (that has been set to be manually started) (for "Sharepoint 2013 workflow" as the platform type)</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="setup">setup</b> </div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="setup.ID">setup.ID</b> <i>Optional</i></div>  <div class="param_description span7">The item ID that tied to the workflow</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="setup.workflowName">setup.workflowName</b> </div>  <div class="param_description span7">The name of the workflow</div></div><div class="parameter row-fluid">  <div class="type span1">Array|Object</div>  <div class="name span4"><b data-param="setup.parameters">setup.parameters</b> <i>Optional</i></div>  <div class="param_description span7">An array of object with {name:"Name of the parameter", value:"Value of the parameter"}</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve() when started, reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">// if you want to call a Site Workflow, just leave the list name empty and don't provide an item ID, e.g.:
+$SP().list("").startWorkflow2013({workflowName:"My Site Workflow"});
+
+// to start a workflow for a list item
+$SP().list("List Name").startWorkflow2013({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}).then(function() {
+  console.log("workflow started")
+}, function(error) {
+  console.log("Error: ",error);
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="update"></a>
+    <div class="member">
+      <h2><a href="#update" title="Direct link to the method 'update'">update</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2779">source code</a>)
+      
+      <div>
+        <div class="method well">update<span class="signature">(items, options)</span></div>
+          </div>
+          <blockquote class="description">Update items from a Sharepoint List</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Array</div>  <div class="name span4"><b data-param="items">items</b> </div>  <div class="param_description span7">List of items (e.g. [{ID: 1, Field_x0020_Name: "Value", OtherField: "new value"}, {ID:22, Field_x0020_Name: "Value2", OtherField: "new value2"}])</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">Options (see below)</div></div><div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="options.where">options.where</b> <i>Optional, Default: ""</i></div>  <div class="param_description span7">You can define a WHERE clause</div></div><div class="parameter row-fluid">  <div class="type span1">Number</div>  <div class="name span4"><b data-param="options.packetsize">options.packetsize</b> <i>Optional, Default: 15</i></div>  <div class="param_description span7">If you have too many items to update, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)</div></div><div class="parameter row-fluid">  <div class="type span1">Function</div>  <div class="name span4"><b data-param="options.progress">options.progress</b> <i>Optional</i></div>  <div class="param_description span7">Two parameters: 'current' and 'max' -- if you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.escapeChar">options.escapeChar</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({passed, failed}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List").update({ID:1, Title:"Ok"});
+// if you use the WHERE then you must not provide the item ID:
+$SP().list("List Name").update({Title:"Ok"},{where:"Status = 'Complete'"});
+
+$SP().list("My List","http://sharepoint.org/mydir/").update([{ID:5, Title:"Ok"}, {ID: 15, Title:"Good"}]);
+
+$SP().list("List Name").update({ID:43, Title:"Ok"}).then(function(items) {
+  for (var i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title);
+  var len=items.passed.length;
+  console.log(len+(len>1?" items have been successfully added":" item has been successfully added"))
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="view"></a>
+    <div class="member">
+      <h2><a href="#view" title="Direct link to the method 'view'">view</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2400">source code</a>)
+      
+      <div>
+        <div class="method well">view<span class="signature">(viewID, options)</span></div>
+          </div>
+          <blockquote class="description">Get the view's details (like selected fields, order by, where, ....)</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">String</div>  <div class="name span4"><b data-param="viewID">viewID</b> <i>Optional, Default: "The default view"</i></div>  <div class="param_description span7">The view ID or view Name</div></div><div class="parameter row-fluid">  <div class="type span1">Object</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7">(see below)</div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.cache">options.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Get the view's info from the cache</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({DefaultView, Name, ID, Type, Url, OrderBy, Fields, RowLimit, WhereCAML}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("List Name").view("All Items").then(function(res) {
+  for (var i=0; i&lt;res.Fields.length; i++) console.log("Column "+i+": "+res.Fields[i]);
+  console.log("And the GUI for this view is :"+res.ID);
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+
+
+
+    
+    <a name="views"></a>
+    <div class="member">
+      <h2><a href="#views" title="Direct link to the method 'views'">views</a></h2> (<a href="https://github.com/Aymkdn/SharepointPlus/blob/master/sharepointplus-5.0.js#L2498">source code</a>)
+      
+      <div>
+        <div class="method well">views<span class="signature">(options)</span></div>
+          </div>
+          <blockquote class="description">Get the views' info for a List</blockquote>
+          
+          <div class="parameters">
+            <h3>Parameters:</h3>
+            
+            <div class="parameter row-fluid">  <div class="type span1">Hash</div>  <div class="name span4"><b data-param="options">options</b> <i>Optional</i></div>  <div class="param_description span7"></div></div><div class="parameter row-fluid">  <div class="type span1">Boolean</div>  <div class="name span4"><b data-param="options.cache">options.cache</b> <i>Optional, Default: true</i></div>  <div class="param_description span7">Get the info from the cache</div></div>
+          </div>
+          
+
+          
+          <div class="returns">
+            <h3>Returns:</h3>
+            <div class="row-fluid">
+            
+              <div class="span2">Promise</div><div class="span10">resolve({DefaultView, Name, ID, Type, Url}), reject(error)</div>
+            </div>
+          </div>
+          
+
+          
+          <h3>Example:</h3>
+          
+          <pre class="prettyprint lang-js">$SP().list("My List").views().then(function(view) {
+  for (var i=0; i&lt;view.length; i++) {
+    console.log("View #"+i+": "+view[i].Name);
+  }
+});</pre>
+          
+          <hr>
+        </div>
+      
+
+
+
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="pull-right"><a href="#">Back to top</a></div>
+  <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="http://usejsdoc.org/">JSDoc 3</a>.</div>
+  <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
+  <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
+  <div>Automatically generated with JSDoc 3 on Tue, 21 Nov 2017 09:31:52 GMT</div>
+</footer>
+<script>prettyPrint()</script>
+<script>
+WebFont.load({
+  google: {
+    families: ['Droid Sans']
+  }
+});
+(function(d) {
+  var wf = d.createElement('script'), s = d.scripts[0];
+  wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+  wf.async = true;
+  s.parentNode.insertBefore(wf, s);
+})(document);
+</script>
+</body>
+</html>
