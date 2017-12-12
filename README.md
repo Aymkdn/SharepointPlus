@@ -1,5 +1,4 @@
-SharepointPlus
-==============
+# SharepointPlus
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/aymkdn/sharepointplus.svg)](http://isitmaintained.com/project/aymkdn/sharepointplus "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/aymkdn/sharepointplus.svg)](http://isitmaintained.com/project/aymkdn/sharepointplus "Percentage of issues still open")
@@ -9,4 +8,89 @@ SharepointPlus ($SP) is a JavaScript library which offers some extended features
 
 Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (like the SQL syntax) and you'll find examples for each method.
 
-See: http://aymkdn.github.com/SharepointPlus/
+## Documentation
+
+The documentation is in the docs directory, it serves as the demo as well.
+
+Browse [online documentation here](http://aymkdn.github.com/SharepointPlus/).
+
+## Quick Start
+
+### Requirements
+
+If you plan to use IE11, you need to add the [Promise polyfill](https://github.com/taylorhakes/promise-polyfill).
+
+### CDN / Standalone
+
+```html
+  <script type="text/javascript" src="sharepointplus-5.0.min.js"></script>
+```
+
+You may also want to use a CDN: [SharepointPlus on JSDelivr](http://www.jsdelivr.com/#!sharepointplus)
+
+### Node.js
+
+Install
+
+```sh
+npm install sharepointplus # npm
+yarn add --dev sharepointplus # yarn
+```
+
+Usage:
+
+```javascript
+// the credentials depend of your authentication system
+// see: https://github.com/s-KaiNet/node-sp-auth
+const credentials = {
+  username:'my_username',
+  password:'mypassword',
+  domain:'mydomain'
+};
+// you can also define a proxy
+const proxyweb = "http://" + credentials.domain + "%5C" + credentials.username + ":" + credentials.password + "@proxy:80";
+
+const $SP = require('sharepointplus');
+const sp = $SP().proxy(proxyweb).auth(credentials);
+```
+
+#### Webpack
+
+For Webpack, you need to ignore `sp-request` with `IgnorePlugin` for builds to succeed:
+
+```javascript
+// webpack.config.js
+
+plugins: [
+  new webpack.IgnorePlugin(/^sp-request$/)
+]
+```
+
+## Usage / Examples
+
+Update all items with an "Amount" value bigger than 1000:
+
+```javascript
+$SP().list('My List Name').update({
+  Title:"Too expensive"
+}, {
+  where:"Amount > 1000"
+}).then(function(res) {
+  alert(res.passed.length+" items successfully updated!");
+});
+```
+
+Get all items with "Requestor" as the current user and with "Default Color" is "pink":
+
+```javascript
+$SP().list('ListName').get({
+  fields:"Title,Size",
+  where:"Requestor = '[Me]' AND Default_x0020_Color = 'pink'",
+  orderby:"Size DESC"
+}).then(function(data) {
+  var html = "<ul>";
+  for (var i=data.length; i--;)
+    html += "<li>Model '"+data[i].getAttribute("Title")+"' (size: "+data[i].getAttribute("Default_x0020_Color")+")<li>";
+  $('#list').append(html+'</ul>');
+});
+```
