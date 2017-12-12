@@ -1,5 +1,5 @@
 ﻿/*!
- * SharepointPlus v5.
+ * SharepointPlus v5.1
  * Copyright 2017, Aymeric (@aymkdn)
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/
