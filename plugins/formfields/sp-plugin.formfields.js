@@ -893,7 +893,7 @@ $SP().registerPlugin('formfields', function(options) {
     var hasJQuery=(typeof jQuery === "function");
     this.each(function() {
       var row=this.row();
-      if (row instanceof jQuery === true) row=row[0]
+      if (hasJQuery && row instanceof jQuery === true) row=row[0]
       aReturn.push(row)
     })
 
