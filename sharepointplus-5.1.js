@@ -223,7 +223,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return _this._promise(function(prom_resolve, prom_reject){
         settings=settings||{};
         settings.cache=(settings.cache===false?false:true);
-        var e, digest, url=(settings.url||_this.url||window.location.href).split("/").slice(0,3).join("/");
+        var e, digest, url=(settings.url||_this.url);
+        if (!url) url=window.location.href.split("/").slice(0,3).join("/");
+        url=url.toLowerCase();
+        if (url.indexOf("_api") !== -1) url=url.split("_api")[0];
+        else if (url.indexOf("_vti_bin/client.svc/processquery") !== -1) url=url.split("_vti_bin/client.svc/processquery")[0];
         // check cache
         if (settings.cache) digest=_SP_CACHE_REQUESTDIGEST[url];
         if (digest) {
@@ -262,31 +266,38 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       })
     },
     /**
-      @name $SP().ajax
-      @function
-      @category utils
-      @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax
-      @param {Object} settings (See options below)
-        @param {String} settings.url The url to call
-        @param {String} [settings.method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
-        @param {Object} [settings.headers] the headers
-        @param {String} [settings.body] The data to send to the server
-        @param {Function} [settings.onprogress=function(event){}] The "upload.onprogress" object for XHR
-        @param {Function} [settings.getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter
-      @return {Promise} resolve(responseText||responseXML), reject({response, statusCode, responseText})
-
-      @example
-      // for a regular request
-      $SP().ajax({url:'https://my.web.site'}).then(function(data) { console.log(data) })
-
-      // manipulate xhr for specific needs
-      $SP().ajax({url:'https://url.com/file.jpg', getXHR:function(xhr){ xhr.responseType = 'arraybuffer' }}).then(function(data) {
-        // ArrayBuffer result
-      })
-
-      // for a CORS/cross-domain request you may need to use 'false' for 'Content-Type'
-      $SP().ajax({url:'https://my.cross-domain.web/site', headers:{"Content-Type":false}}).then(function(data) { console.log(data) })
-    */
+     * @name $SP().ajax
+     * @function
+     * @category utils
+     * @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax for Browsers, and https://github.com/s-KaiNet/sp-request for NodeKS
+     * @param {Object} settings (See options below)
+     *   @param {String} settings.url The url to call
+     *   @param {String} [settings.method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
+     *   @param {Object} [settings.headers] the headers
+     *   @param {String} [settings.body] The data to send to the server
+     *   @param {Function} [settings.onprogress=function(event){}] The "upload.onprogress" object for XHR (within browser only)
+     *   @param {Function} [settings.getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter (within browser only)
+     * @return {Promise} resolve(responseText||responseXML), reject({response, statusCode, responseText})
+     *
+     * @example
+     * // for a regular request
+     * $SP().ajax({url:'https://my.web.site'}).then(function(data) { console.log(data) })
+     *
+     * // (in browser) manipulate xhr for specific needs, like reading a remote file (based on https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data)
+     * $SP().ajax({url:'https://url.com/file.png', getXHR:function(xhr){ xhr.responseType = 'arraybuffer' }}).then(function(data) {
+     *   // ArrayBuffer result
+     *   var blob = new Blob([data], {type: "image/png"});
+     *   fileReader.readAsArrayBuffer(blob);
+     * })
+     *
+     * // (in Node) to get the Buffer from a remote file we could use `encoding:null` from https://github.com/request/request
+     * sp.ajax({url:'https://my.web.site/lib/file.pdf', encoding:null}).then(data => {
+     *   // 'data' is a Buffer
+     * })
+     *
+     * // for a CORS/cross-domain request you may need to use 'false' for 'Content-Type'
+     * $SP().ajax({url:'https://my.cross-domain.web/site', headers:{"Content-Type":false}}).then(function(data) { console.log(data) })
+     */
     ajax:function(settings) {
       var _this=this;
       settings.headers=settings.headers||{};
@@ -309,7 +320,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }
         if (addRequestDigest) {
           // we need to retrieve the Request Digest
-          _this.getRequestDigest()
+          _this.getRequestDigest({url:settings.url.toLowerCase().split("_api")[0]})
           .then(function(requestDigest) {
             settings.headers["X-RequestDigest"]=requestDigest;
             return _this.ajax(settings)
@@ -355,12 +366,13 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             _this.module_sprequest = require('sp-request').create(_this.credentialOptions);
           }
           if (settings.headers['Content-Type'].indexOf('xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
-          if (!settings.method || settings.method.toUpperCase() === "POST") settings.headers['Content-Length'] = Buffer.byteLength(settings.body);
+          if (!settings.method) settings.method=(typeof settings.body !== "undefined"?"POST":"GET");
+          if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body);
           // add User Agent
           settings.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
           var opts = {
             json:false,
-            method:settings.method || (settings.body?"POST":"GET"),
+            method:settings.method,
             strictSSL: false,
             headers: settings.headers,
             jar:true
@@ -368,7 +380,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           if (settings.body) opts.body=settings.body;
           if (_this.proxyweb) opts.proxy=_this.proxyweb;
           // looks like the Content-Length creates some issues
-          if (opts.headers) delete opts.headers["Content-Length"]
+          if (opts.headers) delete opts.headers["Content-Length"];
+          // check if we have some other parameters
+          for (var stg in settings) {
+            if (settings.hasOwnProperty(stg) && !opts[stg]) opts[stg] = settings[stg];
+          }
           _this.module_sprequest(settings.url, opts)
           .then(function(response) {
             if (response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout") {
@@ -384,8 +400,9 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             } else {
               prom_reject({response:response, statusCode:response.statusCode, responseText:response.body});
             }
-          }, function(err) {
-            prom_reject({statusCode:err.statusCode, response:err.response, responseText:(err.response?err.response.body:'')});
+          })
+          .catch(function(err) {
+            prom_reject({error:err, statusCode:err.statusCode, response:err.response, responseText:(err.response?err.response.body:'')});
           });
         }
       })
@@ -477,16 +494,19 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           // search for the local base URL
           if (typeof _SP_BASEURL !== "undefined") {
             if (setURL) _this.url=_SP_BASEURL;
+            if (_this.url==="" || _this.url==="/") _this.url=window.location.protocol+"//"+window.location.host+"/";
             prom_resolve(_SP_BASEURL)
           } else {
             // try to build it
             if (typeof L_Menu_BaseUrl!=="undefined") {
               if (setURL) _this.url=_SP_BASEURL=L_Menu_BaseUrl; // eslint-disable-line
+              if (_this.url==="" || _this.url==="/") _this.url=window.location.protocol+"//"+window.location.host+"/";
               prom_resolve(L_Menu_BaseUrl) // eslint-disable-line
             } else {
               // eslint-disable-next-line
               if (typeof _spPageContextInfo !== "undefined" && typeof _spPageContextInfo.webServerRelativeUrl !== "undefined") {
                 if (setURL) _this.url=_SP_BASEURL=_spPageContextInfo.webServerRelativeUrl; // eslint-disable-line
+                if (_this.url==="" || _this.url==="/") _this.url=window.location.protocol+"//"+window.location.host+"/";
                 prom_resolve(_spPageContextInfo.webServerRelativeUrl) // eslint-disable-line
               } else {
                 // we'll use the Webs.asmx service to find the base URL
@@ -1889,7 +1909,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               // The browsers could crash if we try to use send() with a large ArrayBuffer (https://stackoverflow.com/questions/46297625/large-arraybuffer-crashes-with-xmlhttprequest-send)
               // so I convert ArrayBuffer into a Blob
               // note: we cannot use startUpload/continueUpload/finishUpload because it's only available for Sharepoint Online
-              setup.content = new Blob([setup.content]);
+              if (typeof Blob !== "undefined") setup.content = new Blob([setup.content]);
               return _this.ajax({
                 url: _this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(filename)+"',overwrite=true)",
                 body: setup.content,
@@ -3313,19 +3333,19 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       }
     },
     /**
-      @name $SP().list.getWorkflowID
-      @function
-      @description Find the WorkflowID for a workflow, and some other related info
-
-      @param {Object} setup
-        @param {Number} setup.ID The item ID that is tied to the workflow
-        @param {String} setup.workflowName The name of the workflow
-      @return {Promise} resolve({workflowID, fileRef, description, instances}), reject(error)
-
-      @example
-      $SP().list("List Name").getWorkflowID({ID:15, workflowName:"Workflow for List Name (manual)"}).then(function(params) {
-        alert("Workflow ID:"+params.workflowID+" and the FileRef is: "+params.fileRef);
-      });
+     * @name $SP().list.getWorkflowID
+     * @function
+     * @description Find the WorkflowID for a workflow, and some other related info
+     *
+     * @param {Object} setup
+     *   @param {Number} setup.ID The item ID that is tied to the workflow
+     *   @param {String} setup.workflowName The name of the workflow
+     * @return {Promise} resolve({workflowID, fileRef, description, instances}), reject(error)
+     *
+     * @example
+     * $SP().list("List Name").getWorkflowID({ID:15, workflowName:"Workflow for List Name (manual)"}).then(function(params) {
+     *   alert("Workflow ID:"+params.workflowID+" and the FileRef is: "+params.fileRef);
+     * });
      */
     getWorkflowID:function(setup) {
       var _this=this;
@@ -3346,8 +3366,9 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           if(!_this.url.startsWith("http")) {
             // we need to find the full path
             fileRef=window.location.href.split("/").slice(0,3).join("/") + "/" + fileRef;
-          } else if (!fileRef.startsWith("http")) {
-            fileRef = _this.url + fileRef
+          }
+          if (!fileRef.startsWith("http")) {
+            fileRef = _this.url.split("/").slice(0,3).join("/") +"/" + fileRef;
           }
           _this.ajax({
             url: _this.url+"/_vti_bin/Workflow.asmx",

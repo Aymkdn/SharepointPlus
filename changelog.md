@@ -2,6 +2,12 @@
 
 **Change Log v5.1 ()**
 
+  - Fix url issue in `$SP().getWorkflowID()`
+  - Fix url issue when SharepointPlus is called from the root (see https://github.com/Aymkdn/SharepointPlus/issues/86)
+  - Fix `parse()` (see https://github.com/Aymkdn/SharepointPlus/issues/89)
+  - Fix `getRequestDigest()` when using it with NodeJS on a sub site collection
+  - Use method `GET` by default when calling `ajax()` with NodeJS
+  - Improve support for NodeJS
 
 **Change Log v5.0 (November 21, 2017)**
 
