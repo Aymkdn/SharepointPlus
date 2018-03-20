@@ -4979,4 +4979,4 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
   }
 
   return SharepointPlus;
-})(this,(typeof document!=="undefined"?document:null));
+})(window || this,(typeof document!=="undefined"?document:null));
