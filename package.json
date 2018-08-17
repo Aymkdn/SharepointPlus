@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "dependencies": {
-    "sp-request": "^2.1.2"
+    "sp-request": "^2.1.3"
   },
   "devDependencies": {
     "jsdoc": "^3.5.5",

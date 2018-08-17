@@ -233,7 +233,7 @@ $SP().registerPlugin('formfields', function(options) {
 
       // the field must be included
       if (includeThisField) {
-        fieldName = infoFromComments.Name;
+        fieldName = infoFromComments.Name.replace(/&#39;/g,"'");
         obj       = {
           _name: fieldName,
           _internalname: infoFromComments.InternalName,

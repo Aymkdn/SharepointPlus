@@ -1,6 +1,6 @@
 ﻿/*!
  * SharepointPlus v5.1
- * Copyright 2017, Aymeric (@aymkdn)
+ * Copyright 2018, Aymeric (@aymkdn)
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/
  * License: LGPL-3 (http://aymkdn.github.com/SharepointPlus/license.md)
@@ -216,7 +216,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
      * @return {Promise} resolve(Request Digest), reject(reject from $SP().ajax())
      *
      * @example
-     * $SP().getRequestDigest(false).then(function(digest) { console.log("The new digest is "+digest)})
+     * $SP().getRequestDigest({cache:false}).then(function(digest) { console.log("The new digest is "+digest)})
      */
     getRequestDigest:function(settings) {
       var _this=this;
@@ -365,7 +365,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             }
             _this.module_sprequest = require('sp-request').create(_this.credentialOptions);
           }
-          if (settings.headers['Content-Type'].indexOf('xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
+          if (settings.headers['Content-Type'] && settings.headers['Content-Type'].indexOf('xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
           if (!settings.method) settings.method=(typeof settings.body !== "undefined"?"POST":"GET");
           if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body);
           // add User Agent
@@ -996,7 +996,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     cleanResult:function(str,separator) {
       if (str===null || typeof str==="undefined") return "";
       separator = separator || ";";
-      return (typeof str==="string"?str.replace(/^(string;|float;|datetime;)#?/,"").replace(/;#[0-9]+;#/g,separator).replace(/^[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator):str);
+      return (typeof str==="string"?str.replace(/^(string;|float;|datetime;)#?/,"").replace(/;#-?[0-9]+;#/g,separator).replace(/^-?[0-9]+;#/,"").replace(/^;#|;#$/g,"").replace(/;#/g,separator):str);
     },
     /**
       @name $SP().list.get
@@ -1008,7 +1008,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {String}  [options.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
         @param {String|Array}  [options.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
         @param {Boolean} [options.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
-        @param {Boolean} [options.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;') -- this is applied to the WHERE clause only
+        @param {Boolean} [options.whereEscapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&&amp;amp;') -- this is applied to the WHERE clause only
         @param {Function} [options.whereFct=function(w){return w}] Permits to apply your own function on the WHERE clause after conversion to CAML (can be useful also when you use the "view" parameter)
         @param {Function} [options.progress] When using an array for the WHERE or the PAGING option then you can call the progress function (see the example)
         @param {String}  [options.orderby=""] The field used to sort the list result (you can also add "ASC" -default- or "DESC")
@@ -1016,7 +1016,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Integer} [options.rowlimit=0] You can define the number of rows you want to receive back (0 is infinite)
         @param {Boolean} [options.paging=false] If you have defined the 'rowlimit' then you can use 'paging' to cut by packets your full request -- this is useful when there is a list view threshold (attention: we cannot use "WHERE" or "ORDERBY" with this option)
         @param {Integer} [options.page=infinite] When you use the `paging` option, several requests will be done until we get all the data, but using the `page` option you can define the number of requests/pages you want to get
-        @param {String}  [options.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next page
+        @param {String}  [options.listItemCollectionPositionNext=""] When doing paging, this is the index used by Sharepoint to get the next/previous page
         @param {Boolean} [options.useIndexForOrderBy=false] Based on https://spservices.codeplex.com/discussions/280642#post1323410 it permits to override the 5,000 items limit in an unique call (for Sharepoint 2010 only) -- see the example below to know how to use it
         @param {Boolean} [options.expandUserField=false] When you get a user field, you can have more information (like name,email,sip,...) by switching this to TRUE
         @param {Boolean} [options.dateInUTC=false] TRUE to return dates in Coordinated Universal Time (UTC) format. FALSE to return dates in ISO format.
@@ -1024,7 +1024,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           @param {String} [options.folderOptions.path=""] Relative path of the folders we want to explore (by default it's the root of the document library)
           @param {String} [options.folderOptions.show="FilesAndFolders_InFolder"] Four values: "FilesOnly_Recursive" that lists all the files recursively from the provided path (and its children); "FilesAndFolders_Recursive" that lists all the files and folders recursively from the provided path (and its children); "FilesOnly_InFolder" that lists all the files from the provided path; "FilesAndFolders_InFolder" that lists all the files and folders from the provided path
         @param {Boolean} [options.queryOptions=undefined] If you want to provide your own QueryOptions and overwrite the ones built for you -- it should be some XML code (see https://msdn.microsoft.com/en-us/library/lists.lists.getlistitems%28v=office.12%29.aspx?f=255&MSPPError=-2147217396)
-        @param {Object} [options.join] Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below) (it doesn't use yet the JOIN options provided with Sharepoint 2010)
+        @param {Object} [options.join] Permits to create a JOIN closure between the current list and another one: it will be the same syntax than a regular GET (see the example below)
           @param {String} [options.join.list] Permits to establish the link between two lists (see the example below)
           @param {String} [options.join.url='current website'] The website url (if different than the current website)
           @param {String} [options.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
@@ -1034,7 +1034,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Object} [options.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
           @param {Boolean} [options.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
           @param {String|Date} [options.calendarOptions.referenceDate=today] This is the date used to retrieve the events -- that can be a JS Date object or a SP Date (String) [attention: if 'splitRecurrence' is FALSE, then Sharepoint will ignore this 'referenceDate'...]
-          @param {String} [options.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://www.nothingbutsharepoint.com/sites/eusp/Pages/Use-SPServices-to-Get-Recurring-Events-as-Distinct-Items.aspx)
+          @param {String} [options.calendarOptions.range="Month"] By default we have all the events in the reference month (based on the referenceDate), but we can restrict it to a week with "Week" (from Monday to Sunday) (see https://blog.kodono.info/wordpress/2018/07/09/sharepoint-daterangesoverlap-value/)
       @return {Promise} resolve(data returned by the server), reject(error from $SP().ajax())
 
       @example
@@ -1151,6 +1151,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         return $SP().list("My List").get({fields:"ID",orderby:"ID DESC",rowlimit:10,paging:true,page:1,listItemCollectionPositionNext:data.NextPage})
       }).then(function(data) {
         // here "data" is the 2nd block of data
+        // If you want to access to the previous page, you can use:
+        // listItemCollectionPositionNext:"Paged=TRUE&PagedPrev=True&p_ID="+ID
+        // with ID the first/smallest ID of the current set.
+        // reference: https://social.technet.microsoft.com/wiki/contents/articles/18606.sharepoint-2013-paging-with-sharepoint-client-object-model.aspx
       })
 
       // We can also find the files from a Document Shared Library
@@ -1341,11 +1345,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
         if (_this.needQueue) { return _this._addInQueue(arguments) }
-        if (!_this.listID) throw "[SharepointPlus 'get']: the list ID/Name is required";
+        if (!_this.listID) return prom_reject("[SharepointPlus 'get']: the list ID/Name is required");
         // default values
         var setup={};
         SPExtend(true, setup, options);
-        if (!_this.url) throw "[SharepointPlus 'get']: not able to find the URL!"; // we cannot determine the url
+        if (!_this.url) return prom_reject("[SharepointPlus 'get']: not able to find the URL!"); // we cannot determine the url
         setup.fields    = setup.fields || "";
         setup.where     = setup.where || "";
         setup.whereFct  = setup.whereFct || function(w) { return w };
@@ -1411,11 +1415,15 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             setup.calendar=false;
             delete setup.view;
             _this.get(setup).then(function(res) { prom_resolve(res) }, function(rej) { prom_reject(rej) });
-          });
+          })
+          .catch(function(err) {
+            prom_reject(err);
+          })
           return;
         }
         // what about the fields ?
         var fields="", i, orderby="", fieldsDir, direction, splt, groupby="", gFields, tmpFields, body="", viewAttr, where="", whereDateRanges;
+
         if (setup.fields.length>0) {
           if (typeof setup.fields === "string") setup.fields = setup.fields.replace(/^\s+/,"").replace(/\s+$/,"").replace(/( )?,( )?/g,",").split(",");
           for (i=0; i<setup.fields.length; i++) fields += '<FieldRef Name="'+setup.fields[i]+'" />';
@@ -1513,6 +1521,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               + "</QueryOptions>"
               + "</queryOptions>";
         body = _this._buildBodyForSOAP("GetListItems", body);
+
         // do the request
         _this.ajax({
           url: _this.url + "/_vti_bin/Lists.asmx",
@@ -1815,7 +1824,6 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           return Promise.all(files.map(function(file) {
             return $SP().list("SharepointPlusLibrary").createFile({
               content:file.content,
-              encoded:true,
               filename:file.name,
               progress:function(perc) {
                 console.log("Progress => ",perc+"%")
@@ -1824,6 +1832,15 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           }))
         })
       }
+
+      // if you want to add some headers, for example for authentication method
+      $SP().list("SharepointPlusLibrary").createFile({
+        content:file.content,
+        filename:file.name,
+        getXHR:function(xhr) {
+          xhr.setRequestHeader('Authorization','Bearer XYZ')
+        }
+      })
 
       // NOTE: in some cases the files are automatically checked out, so you have to use $SP().checkin()
     */
@@ -2254,7 +2271,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         // do we have a Content Type Name or ID ?
         if (contentType.slice(0,2) !== "0x") {
           // it's a Name so get the related ID using $SP.list.getContentTypes
-          _this.getContentTypes(options).then(function(types) {
+          _this.getContentTypes(options)
+          .then(function(types) {
             var found=false;
             for (var i=types.length; i--;) {
               if (types[i]["Name"]===contentType) {
@@ -2264,7 +2282,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               }
             }
             if (!found) throw "[SharepointPlus 'getContentTypeInfo'] not able to find the Content Type called '"+contentType+"' at "+_this.url;
-          });
+          })
+          .catch(function(err) {
+            prom_reject(err)
+          })
           return;
         }
 
@@ -2438,13 +2459,13 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
         if (_this.needQueue) { return _this._addInQueue(arguments) }
-        if (!_this.listID) throw "[SharepointPlus 'view'] the list ID/Name is required.";
-        if (!viewID) throw "[SharepointPlus 'view'] the view ID/Name is required.";
+        if (!_this.listID) return prom_reject("[SharepointPlus 'view'] the list ID/Name is required.");
+        if (!viewID) return prom_reject("[SharepointPlus 'view'] the view ID/Name is required.");
         // default values
         var list = _this.listID, i, found=false;
         options=options||{};
         options.cache=(options.cache===false?false:true);
-        if (!_this.url) throw "[SharepointPlus 'view'] not able to find the URL!"; // we cannot determine the url
+        if (!_this.url) return prom_reject("[SharepointPlus 'view'] not able to find the URL!"); // we cannot determine the url
 
         // check if we didn't save this information before
         if (options.cache) {
@@ -2468,7 +2489,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                 break;
               }
             }
-            if (!found) throw "[SharepointPlus 'view'] not able to find the view called '"+viewID+"' for list '"+_this.listID+"' at "+_this.url;
+            if (!found) return prom_reject("[SharepointPlus 'view'] not able to find the view called '"+viewID+"' for list '"+_this.listID+"' at "+_this.url);
           });
           return;
         }
@@ -2492,7 +2513,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             arr = arr.getElementsByTagName('FieldRef');
             for (i=0; i<arr.length; i++) oReturn.OrderBy.push(arr[i].getAttribute("Name")+" "+(arr[i].getAttribute("Ascending")==undefined?"ASC":"DESC"));
             oReturn.OrderBy=oReturn.OrderBy.join(",");
-          }
+          } else oReturn.OrderBy="";
           // find where
           where=data.getElementsByTagName('Where');
           where = (where.length>0 ? where[0] : null);
@@ -2827,8 +2848,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
         if (_this.needQueue) { return _this._addInQueue(arguments) }
-        if (!_this.listID) throw "[SharepointPlus 'update'] the list ID/name is required.";
-        if (!_this.url) throw "[SharepointPlus 'update'] not able to find the URL!"; // we cannot determine the url
+        if (!_this.listID) return prom_reject("[SharepointPlus 'update'] the list ID/name is required.");
+        if (!_this.url) return prom_reject("[SharepointPlus 'update'] not able to find the URL!"); // we cannot determine the url
 
         // default values
         var setup={};
@@ -2892,7 +2913,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         var updates = '<Batch OnError="Continue" ListVersion="1"  ViewName="">';
         for (i=0; i < itemsLength; i++) {
           updates += '<Method ID="'+(i+1)+'" Cmd="Update">';
-          if (!items[i].ID) throw "[SharepointPlus 'update'] you have to provide the item ID called 'ID'";
+          if (!items[i].ID) return prom_reject("[SharepointPlus 'update'] you have to provide the item ID called 'ID'");
           for (it in items[i]) {
             if (items[i].hasOwnProperty(it)) {
               itemKey = it;
@@ -4140,15 +4161,15 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     */
     addressbook:function(username, setup) {
       var _this=this;
-      return _this._promise(function(prom_resolve, prom_reject) {
-        switch(arguments.length) {
-          case 0: username=""; setup={}; break;
-          case 1:{
-            if (typeof username==="string") setup={}
-            else { setup=username; username="" }
-            break;
-          }
+      switch(arguments.length) {
+        case 0: username=""; setup={}; break;
+        case 1:{
+          if (typeof username==="string") setup={}
+          else { setup=username; username="" }
+          break;
         }
+      }
+      return _this._promise(function(prom_resolve, prom_reject) {
         if (!setup.url) {
           _this.getURL()
           .then(function(url) { setup.url=url; return _this.addressbook(username, setup) })
@@ -4208,7 +4229,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     toDate:function(strDate, forceUTC) {
       if (!strDate) return ""
       // 2008-10-31(T)00:00:00(Z)
-      if (strDate instanceof Date) return strDate;
+      if (typeof strDate !== "string" && !isNaN(new Date(strDate))) return strDate; // check if it's a date, more robust than "d instanceof Date"
       if (strDate.slice(0,10)==="datetime;#") strDate=strDate.slice(10);
       if (strDate.length!=19 && strDate.length!=20) throw "[SharepointPlus toDate] '"+strDate+"' is invalid."
       var year  = strDate.substring(0,4);
@@ -4248,43 +4269,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return year+"-"+month+"-"+day+(includeTime?"T"+hours+":"+minutes+":"+seconds+"Z" : "");
     },
     /**
-      @name $SP().toCurrency
-      @function
-      @category utils
-      @description It will return a number with commas, currency sign and a specific number of decimals
-      @param {Number|String} number The number to format
-      @param {Number} [decimal=-1] The number of decimals (use -1 if you want to have 2 decimals when there are decimals, or no decimals if it's .00)
-      @param {String} [sign='$'] The currency sign to add
-
-      @return {String} The converted number
-      @example
-
-      $SP().toCurrency(1500000); // --> $1,500,000
-      $SP().toCurrency(1500000,2,''); // --> 1,500,000.00
-     */
-    toCurrency:function(n,dec,sign) {
-      n=Number(n);
-      if (dec === undefined) dec=-1;
-      if (sign === undefined) sign='$';
-      var m="";
-      if (n<0) { m="-"; n*=-1; }
-      var s = n;
-      if (dec===-1) s = s.toFixed(2).replace('.00', '');
-      else s = s.toFixed(dec);
-      var digits = (Math.floor(n) + '').length;
-      for (var i=0, j=0, mod=digits%3; i<digits; i++) {
-        if (i==0 || i%3!=mod) continue;
-        s = s.substr(0, i+j) + ',' + s.substr(i+j);
-        j++;
-      }
-      return (sign!=''?sign:'')+m+s+(sign!=''?'':' '+sign);
-    },
-    /**
       @name $SP().getLookup
       @function
       @category utils
       @description Split the ID and Value
-      @param {String} text The string to retrieve data
+      @param {String} str The string to split
       @return {Object} .id returns the ID (or an array of IDs), and .value returns the value (or an array of values)
       @example
       $SP().getLookup("328;#Foo"); // --> {id:"328", value:"Foo"}
@@ -4299,6 +4288,53 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         // we have several lookups
         return {id:str.replace(/([0-9]+;#)([^;]+)/g,"$1").replace(/;#;#/g,",").slice(0,-2).split(","), value:str.replace(/([0-9]+;#)([^;]+)/g,"$2").split(";#")}
       }
+    },
+    /**
+      @name $SP().getPeopleLookup
+      @function
+      @category utils
+      @description When returning a people field from a list using 'expandUserField' to true, then this utility function will split into more friendly pieces
+      @param {String} str The string to split
+      @return {Object|Array} An object (or array of objects) with 'id', 'name', 'username', 'email'
+      @example
+      $SP().getPeopleLookup("42;#Doe,, John,#i:0#.w|domain\John_Doe,#John_Doe@Domain.com,#John_Doe@Domain.com,#Doe,, John"); // --> {id:"42", name:"Doe, John", username:'i:0#.w|domain\John_Doe', email:'John_Doe@Domain.com'}
+      $SP().getPeopleLookup("42;#Doe,, John,#i:0#.w|domain\John_Doe,#John_Doe@Domain.com,#John_Doe@Domain.com,#Doe,, John;#1981;#Doe,, Jane,#i:0#.w|domain\Jane_Doe,#Jane_Doe@Domain.com,#Jane_Doe@Domain.com,#Doe,, Jane"); // --> [ {id:"42", name:"Doe, John", username:'i:0#.w|domain\John_Doe', email:'John_Doe@Domain.com'}, {id:"1981", name:"Doe, Jane", username:'i:0#.w|domain\Jane_Doe', email:'Jane_Doe@Domain.com'} ]
+    */
+    getPeopleLookup:function(str) {
+      if (!str) return {id:'', name:'', username:'', email:''};
+      // check if we have several people
+      var splt = str.split(";#");
+      var res = [];
+      for (var i=0; i<splt.length; i+=2) {
+        res.push(splt[i]+";#"+splt[i+1]);
+      }
+      res = res.map(function(str) {
+        var ret = {id:'', name:'', username:'', email:''};
+        str.split(',#').forEach(function(s, i) {
+          switch (i) {
+            case 0:{
+              var idu = s.split(";#");
+              ret.id = idu[0];
+              ret.name = idu[1].replace(/,,/g,",");
+              break;
+            };
+            case 1:{
+              ret.username = s;
+              break;
+            };
+            case 2:{
+              ret.email = s;
+              break;
+            };
+            case 4:{
+              ret.name = s.replace(/,,/g,",");
+              break;
+            }
+          }
+        });
+        return ret;
+      })
+      return (res.length === 1 ? res[0] : res);
     },
     /**
       @name $SP().toXSLString
@@ -5000,4 +5036,4 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
   }
 
   return SharepointPlus;
-})(this,(typeof document!=="undefined"?document:null));
+})(typeof window!=="undefined"?window:this,(typeof document!=="undefined"?document:null));

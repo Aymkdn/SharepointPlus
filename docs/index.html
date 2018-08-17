@@ -172,6 +172,17 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
 // e.g.: sp.list("Hello", "http://my.sharepoint.site/").get(...);
 </pre>
 
+<h2>Webpack</h2>
+<p>For Webpack, you need to ignore <a href="https://github.com/s-KaiNet/sp-request">sp-request</a> with <a href="https://webpack.js.org/plugins/ignore-plugin/">IgnorePlugin</a> for builds to succeed:</p>
+
+<pre class="prettyprint lang-js">
+// webpack.config.js
+
+plugins: [
+  new webpack.IgnorePlugin(/^sp-request$/)
+]
+</pre>
+
 <h1>Old Versions</h1>
 <p>The previous versions of SharepointPlus are available in the <a href="https://github.com/Aymkdn/SharepointPlus/releases">releases folder</a></p>
 <p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.com/">https://sharepointplus4.netlify.com/</a>

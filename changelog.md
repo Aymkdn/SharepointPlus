@@ -6,8 +6,14 @@
   - Fix url issue when SharepointPlus is called from the root (see https://github.com/Aymkdn/SharepointPlus/issues/86)
   - Fix `parse()` (see https://github.com/Aymkdn/SharepointPlus/issues/89)
   - Fix `getRequestDigest()` when using it with NodeJS on a sub site collection
+  - Fix `addressbook()` (incorrect checks of arguments)
+  - Fix `$SP().cleanResult()` when the string was like "-1;#something"
+  - Remove `$SP().toCurrency()` (use [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat](Inlt with NumberFormat instead) ... e.g. `new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})`)
   - Use method `GET` by default when calling `ajax()` with NodeJS
+  - Change the default value returned by `$SP().view()` for `OrderBy` (from `[]` to `""` when no orderby defined for the view)
+  - Add new utility function called `$SP().getPeopleLookup()`
   - Improve support for NodeJS
+  - Improve some errors handling
 
 **Change Log v5.0 (November 21, 2017)**
 
