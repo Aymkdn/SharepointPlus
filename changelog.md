@@ -1,6 +1,6 @@
 # Changelog
 
-**Change Log v5.1 ()**
+**Change Log v5.1 (August 21, 2018)**
 
   - Fix url issue in `$SP().getWorkflowID()`
   - Fix url issue when SharepointPlus is called from the root (see https://github.com/Aymkdn/SharepointPlus/issues/86)
