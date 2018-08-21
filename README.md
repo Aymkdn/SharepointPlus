@@ -20,6 +20,10 @@ Browse [online documentation here](http://aymkdn.github.com/SharepointPlus/).
 
 If you plan to use IE11, you need to add the [Promise polyfill](https://github.com/taylorhakes/promise-polyfill).
 
+### Supported Browsers
+
+IE11 and all modern browsers (Chrome, Firefox, Edge, ...).
+
 ### Webpage
 
 ```html
@@ -61,3 +65,7 @@ $SP().list('ListName').get({
   $('#list').append(html+'</ul>');
 });
 ```
+
+## More information
+
+Please visit the [online documentation](http://aymkdn.github.com/SharepointPlus/) to know more.
