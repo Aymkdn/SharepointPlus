@@ -20,50 +20,21 @@ Browse [online documentation here](http://aymkdn.github.com/SharepointPlus/).
 
 If you plan to use IE11, you need to add the [Promise polyfill](https://github.com/taylorhakes/promise-polyfill).
 
-### CDN / Standalone
+### Supported Browsers
+
+IE11 and all modern browsers (Chrome, Firefox, Edge, ...).
+
+### Webpage
 
 ```html
-  <script type="text/javascript" src="sharepointplus-5.0.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/sharepointplus"></script>
 ```
-
-You may also want to use a CDN: [SharepointPlus on JSDelivr](http://www.jsdelivr.com/#!sharepointplus)
 
 ### Node.js
 
-Install
-
 ```sh
 npm install sharepointplus # npm
-yarn add --dev sharepointplus # yarn
-```
-
-Usage:
-
-```javascript
-// the credentials depend of your authentication system
-// see: https://github.com/s-KaiNet/node-sp-auth
-const credentials = {
-  username:'my_username',
-  password:'mypassword',
-  domain:'mydomain'
-};
-// you can also define a proxy
-const proxyweb = "http://" + credentials.domain + "%5C" + credentials.username + ":" + credentials.password + "@proxy:80";
-
-const $SP = require('sharepointplus');
-const sp = $SP().proxy(proxyweb).auth(credentials);
-```
-
-#### Webpack
-
-For Webpack, you need to ignore `sp-request` with `IgnorePlugin` for builds to succeed:
-
-```javascript
-// webpack.config.js
-
-plugins: [
-  new webpack.IgnorePlugin(/^sp-request$/)
-]
+yarn add sharepointplus # yarn
 ```
 
 ## Usage / Examples
@@ -94,3 +65,7 @@ $SP().list('ListName').get({
   $('#list').append(html+'</ul>');
 });
 ```
+
+## More information
+
+Please visit the [online documentation](http://aymkdn.github.com/SharepointPlus/) to know more.

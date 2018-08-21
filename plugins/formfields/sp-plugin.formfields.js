@@ -44,7 +44,7 @@ $SP().registerPlugin('formfields', function(options) {
   SharepointPlusFormFields.prototype.formfields=function(fields, settings) {
     'use strict';
     this.reset();
-    if (arguments.length == 1 && typeof fields === "object" && typeof fields.length === "undefined") { settings=fields; fields=undefined; }
+    if ((arguments.length === 1 || (arguments.length === 2 && !settings)) && typeof fields !== "string" && !Array.isArray(fields)) { settings=fields; fields=undefined; }
     // default values
     settings = settings || {};
     fields   = fields   || [];
@@ -233,7 +233,7 @@ $SP().registerPlugin('formfields', function(options) {
 
       // the field must be included
       if (includeThisField) {
-        fieldName = infoFromComments.Name;
+        fieldName = infoFromComments.Name.replace(/&#39;/g,"'");
         obj       = {
           _name: fieldName,
           _internalname: infoFromComments.InternalName,
