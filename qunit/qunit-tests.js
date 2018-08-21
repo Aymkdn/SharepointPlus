@@ -1519,16 +1519,16 @@ function loadSPtests() {
         });
 
         test('other stuff', function(assert) {
-          assert.expect(12);
+          assert.expect(13);
 
           var doneRegionalDateFormat = assert.async();
-          assert.ok(($SP().toCurrency(1500000) === '$1,500,000'), 'toCurrency()');
+          /*assert.ok(($SP().toCurrency(1500000) === '$1,500,000'), 'toCurrency()');*/
           assert.ok(($SP().toDate("2012-10-31T00:00:00").getFullYear() === 2012), 'toDate()');
           assert.ok(($SP().toSPDate(new Date(2012,9,31), true) === "2012-10-31T00:00:00Z"), 'toSPDate()');
           assert.ok(($SP().toXSLString("Big Title") === "Big_x0020_Title"), 'toXSLString()');
           assert.ok(($SP().workflowStatusToText(2) === "In Progress"), 'workflowStatusToText()');
           assert.ok($SP().cleanResult("69;#Aymeric") === "Aymeric", 'cleanResult()');
-          assert.ok(Array.isArray([]), "Array.isArray()");
+          /*assert.ok(Array.isArray([]), "Array.isArray()");*/
           $SP().regionalDateFormat().then(function(dateFormat) {
             assert.ok(dateFormat.indexOf("YY")>-1, "$SP().regionalDateFormat()");
             doneRegionalDateFormat();
@@ -1538,10 +1538,17 @@ function loadSPtests() {
           assert.ok(ext.a==="a" && ext.fct() === "b" && ext.c === 2 && ext.d[1] === "second" && ext.e==="original" && ext.f.g==="h", "SPExtend()");
           var gl=$SP().getLookup("69;#Aymeric");
           assert.ok(gl.id==69 && gl.value==="Aymeric", "$SP().getLookup() simple");
-          gl=$SP().getLookup("69;#Aymeric;#70;#Martin");
-          assert.ok(gl.id[0]==="69" && gl.value[0]==="Aymeric" && gl.id[1]==70 && gl.value[1]==="Martin", "$SP().getLookup() complex");
+          gl=$SP().getLookup("69;#Aymeric;#70;#Kodono");
+          assert.ok(gl.id[0]==="69" && gl.value[0]==="Aymeric" && gl.id[1]==70 && gl.value[1]==="Kodono", "$SP().getLookup() complex");
           gl=$SP().getLookup("69");
           assert.ok(gl.id==69 && gl.value==="69", "$SP().getLookup() unvalid");
+
+          var gpl=$SP().getPeopleLookup("42;#Doe,, John,#i:0#.w|domain\\John_Doe,#John_Doe@Domain.com,#John_Doe@Domain.com,#Doe,, John");
+          assert.ok(gpl.id==42 && gpl.name==="Doe, John" && gpl.username==="i:0#.w|domain\\John_Doe" && gpl.email==="John_Doe@Domain.com", "$SP().getPeopleLookup()");
+          gpl = $SP().getPeopleLookup("42;#Doe,, John,#i:0#.w|domain\\John_Doe,#John_Doe@Domain.com,#John_Doe@Domain.com,#Doe,, John;#1981;#Doe,, Jane,#i:0#.w|domain\\Jane_Doe,#Jane_Doe@Domain.com,#Jane_Doe@Domain.com,#Doe,, Jane");
+          assert.ok(Array.isArray(gpl) && gpl.length === 2 && gpl[0].id==42 && gpl[0].name==="Doe, John" && gpl[0].username==="i:0#.w|domain\\John_Doe" && gpl[0].email==="John_Doe@Domain.com" && gpl[1].id==1981 && gpl[1].name==="Doe, Jane" && gpl[1].username==="i:0#.w|domain\\Jane_Doe" && gpl[1].email==="Jane_Doe@Domain.com", "$SP().getPeopleLookup() multi-users");
+          gpl=$SP().getPeopleLookup("42;#Doe,, John");
+          assert.ok(gpl.id==42 && gpl.name==="Doe, John" && gpl.username==="" && gpl.email==="", "$SP().getPeopleLookup() non extended");
         })
 
         test('modals', function(assert) {
