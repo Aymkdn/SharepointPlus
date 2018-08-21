@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "jsdoc": "^3.5.5",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.5",
     "xmldom": "^0.1.27"
   },
   "repository": {
