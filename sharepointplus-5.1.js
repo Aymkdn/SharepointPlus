@@ -3986,7 +3986,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @return {Promise}} resolve(people), reject(error)
 
       @example
-      $SP().whoami({url:"http://my.si.te/subdir/"}, function(people) {
+      $SP().whoami({url:"http://my.si.te/subdir/"}).then(function(people) {
         for (var i=0; i &lt; people.length; i++) console.log(people[i]+" = "+people[people[i]]);
       });
     */

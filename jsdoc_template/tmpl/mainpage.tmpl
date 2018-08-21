@@ -9,7 +9,7 @@ var self = this;
         <div class="alert alert-danger">Important changes introduced with SharepointPlus v5.0. Make sure to <a href="https://github.com/Aymkdn/SharepointPlus/wiki/SharepointPlus-5.0-Announcement">read the announcement</a> and to read the <a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md">changelog</a>.</div>
         <a href="https://twitter.com/sp_js" class="twitter-follow-button" data-show-count="false" data-lang="en" data-dnt="true">Follow @sp_js</a>
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        <a href="https://sibbell.com/" class="sibbill" title="with sibbill.com"><img src="img/sibbell.png" width="12" height="12" /> Be notified on new release</a>
+        <a href="https://coderelease.io/" class="sibbill" title="with coderelease.io"><img src="img/sibbell.png" width="12" height="12" /> Be notified on new release</a> <a href="https://www.jsdelivr.com/package/npm/sharepointplus"><img src="https://data.jsdelivr.com/v1/package/npm/sharepointplus/badge" alt="badge JSDelivr"></a>
         <h2>Description</h2>
         <p><a href="https://github.com/Aymkdn/SharepointPlus" title="Github Repository">SharepointPlus ($SP)</a> is a <strong>JavaScript API for Sharepoint</strong>. This library offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
         <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
@@ -18,7 +18,7 @@ var self = this;
         Starting SharepointPlus v3.0.5 it should be fully compatible with <b>Sharepoint 2010</b>.</div>
         <h2>Sharepoint Support</h2>
         <p>
-          <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release that I have tested with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility<br>
+          <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/releases">SharepointPlus v3.0.4</a> is the last release that I have tested with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility<br>
           <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.4<br>
           <b>Sharepoint 2013</b> : Compatible since SharepointPlus v3.13<br>
           <b>Sharepoint 2016/Online</b> : Compatible since SharepointPlus v3.13 (not tested yet, but based on <a href="https://github.com/Aymkdn/SharepointPlus/issues/53#issuecomment-301227608">testimony</a>)
@@ -34,7 +34,7 @@ var self = this;
         <p>Just add one line to call SharepointPlus:</p>
 <pre class="prettyprint lang-js">
   &lt;script type="text/javascript" src="sharepointplus-<?js= this.SPversion ?>.min.js">&lt;/script></pre>
-        <p>You may also want to use a CDN: <a href="http://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a></p>
+        <p>You may also want to use a CDN: <a href="https://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a> or <a href="https://unpkg.com/sharepointplus">SharepointPlus on unpkg</a></p>
         <h4>Lists</h4>
         <p>SharepointPlus is mainly based on the different <a href="http://sympmarc.github.io/SPServices/core/web-services.html" title="Link to Sympraxis website with some documentation regarding the Sharepoint Web Services">Web Services</a> provided by Sharepoint.</p>
         <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
@@ -95,12 +95,29 @@ $SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate
 </pre>
 <p>Find more examples on <a href="https://aymkdn.github.io/SharepointPlus/utils.html">the dedicated page</a>.</p>
 
+<h1>Try it out</h1>
+<p>You can test it right now. Just open your browser "Developer Tools" window on your SharePoint site somewhere, then run the following code snippet which will load the SharepointPlus script dynamically:</p>
+<pre class="prettyprint lang-js">
+// 1: Load SharepointPlus
+var script = document.createElement('script');
+script.src = "//unpkg.com/sharepointplus";
+document.getElementsByTagName('head')[0].appendChild(script);
+// if you receive the error: "Refused to load the script 'https://unpkg.com/sharepointplus' because it violates the following Content Security Policy directive" then you'll have to copy/paste the code from https://unpkg.com/sharepointplus in the console
+
+// 2: Try some library methods
+$SP().list('List In the Current Site').get({fields:"ID", where:"ID > 0"}).then(function(data) { data.forEach(function(d) { console.log(d.getAttribute("ID")) }) });
+$SP().whoami().then(function(people) { for (var i=0; i < people.length; i++) console.log(people[i]+" = "+people[people[i]]) })
+</pre>
+
+<b>Example:</b>
+<img src="img/console_example.png" alt="Example into the web developer console">
+
 <h1>NodeJS</h1>
-<p>Since SharepointPlus 4.0 you can use it as a node module for your server side applications.</p>
+<p>Since SharepointPlus 4.0 you can use it as a node module for your node's applications.</p>
 <pre class="prettyprint lang-bash">
 npm install sharepointplus
 </pre>
-<p>Find below some examples:</p>
+<p>Find below an example on how to use it for <strong>server side application</strong>:</p>
 <pre class="prettyprint lang-js">
 // the credentials depend of your authentication system
 // see: https://github.com/s-KaiNet/node-sp-auth
@@ -117,6 +134,14 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
 
 // you can then use SharepointPlus normally
 // e.g.: sp.list("Hello", "http://my.sharepoint.site/").get(...);
+</pre>
+
+<p>For <strong>client side application</strong> built with <strong>Webpack</strong> you may need to ignore the <strong>sp-request</strong> module with the <a href="https://webpack.js.org/plugins/ignore-plugin/">ignorePlugin</a> from Webpack:</p>
+<pre class="prettyprint lang-js">
+// webpack.config.js
+plugins: [
+  new webpack.IgnorePlugin(/^sp-request$/)
+]
 </pre>
 
 <h1>Old Versions</h1>
