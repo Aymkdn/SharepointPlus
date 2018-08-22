@@ -136,11 +136,12 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
 // e.g.: sp.list("Hello", "http://my.sharepoint.site/").get(...);
 </pre>
 
-<p>For <strong>client side application</strong> built with <strong>Webpack</strong> you may need to ignore the <strong>sp-request</strong> module with the <a href="https://webpack.js.org/plugins/ignore-plugin/">ignorePlugin</a> from Webpack:</p>
+<p>For <strong>client side application</strong> built with <strong>Webpack</strong> you may need to ignore the <strong>sp-request</strong> and <strong>xmldom</strong> modules with the <a href="https://webpack.js.org/plugins/ignore-plugin/">ignorePlugin</a> from Webpack:</p>
 <pre class="prettyprint lang-js">
 // webpack.config.js
 plugins: [
-  new webpack.IgnorePlugin(/^sp-request$/)
+  new webpack.IgnorePlugin(/^sp-request$/),
+  new webpack.IgnorePlugin(/^xmldom$/);
 ]
 </pre>
 
