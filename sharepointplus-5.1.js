@@ -1,5 +1,5 @@
 ﻿/*!
- * SharepointPlus v5.2
+ * SharepointPlus v5.1
  * Copyright 2018, Aymeric (@aymkdn)
  * Contact: http://kodono.info
  * Documentation: http://aymkdn.github.com/SharepointPlus/
@@ -157,7 +157,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
 
       @return {String} The current SharepointPlus version
     */
-    getVersion:function() { return "5.2" },
+    getVersion:function() { return "5.1" },
     /**
      * @ignore
      * @name $SP()._promise

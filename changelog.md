@@ -1,7 +1,5 @@
 # Changelog
 
-**Change Log v5.2 ()**
-
 **Change Log v5.1 (August 21, 2018)**
 
   - Fix url issue in `$SP().getWorkflowID()`
