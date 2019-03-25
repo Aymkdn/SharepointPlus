@@ -5,7 +5,7 @@ if (typeof $SP === "undefined") throw 'Error sp-peopleahead: SharepointPlus must
   @name $SP().plugin('peopleahead')
   @function
   @description Change an input field into a field that will search for a name into the Sharepoint Address Book
-      
+
   @param {Object} [setup] Options (see below)
     @param {String} [setup.selector=".peopleahead"] The INPUT element where the typeahead will be applied
     @param {Number} [setup.limit=20] The maximum of results returned by $SP().addressbook()
@@ -13,7 +13,7 @@ if (typeof $SP === "undefined") throw 'Error sp-peopleahead: SharepointPlus must
     @param {String} [setup.noresult="No result: Please use 'firstname', or 'lastname', or 'lastname, firstname'"] The message to show when no one is found
     @param {String} [setup.enable=true] You can disable the plugin on a field with "enable:false" and you can re-enable it later
     @param {Function} [setup.onselect] When selecting someone in the list
-  
+
   @example
   $SP().plugin('peopleahead', {
     selector:"#my-people",
@@ -25,7 +25,7 @@ if (typeof $SP === "undefined") throw 'Error sp-peopleahead: SharepointPlus must
       alert('You have selected '+$(this).data('name')+' and the related email is '+$(this).data('email'));
     }
   })
-  
+
   // disable the plugin
   $SP().plugin('peopleahead', {
     selector:"#my-people",
@@ -45,8 +45,8 @@ $SP().registerPlugin('peopleahead', function(options) {
       $(options.selector).on('keyup.peopleahead', spPeopleAheadKeyUp)
     else
       $(options.selector).off('keyup.peopleahead').closest('.sp-peopleahead').find('img,ul').hide();
-    
-    return 
+
+    return
   }
   options.limit = options.limit || 20;
   var centerIMG = (options.loading === undefined ? 'margin-top:8px' : '');
@@ -59,7 +59,7 @@ $SP().registerPlugin('peopleahead', function(options) {
     $(this).attr('autocomplete','off');
     $(this).replaceWith('<div class="sp-peopleahead" data-mouseintheplace="true"><img src="'+options.loading+'" alt="loading" style="'+centerIMG+'">'+this.outerHTML+'<ul></ul></div>')
   });
-      
+
   $(options.selector).data("peopleahead-options",options).on('keyup.peopleahead', spPeopleAheadKeyUp).on('blur.peopleahead', function() {
     var $this=$(this);
     var $parent = $this.closest('.sp-peopleahead');
@@ -93,7 +93,7 @@ function spPeopleAheadKeyUp() {
   waitForSearch = setTimeout(function searchPeople() {
     $this.data("login","");
     $this[0].className="";
-    $SP().addressbook($this.val(),{limit:options.limit},function(data) {
+    $SP().addressbook($this.val(),{limit:options.limit}).then(function(data) {
       var html='';
       for (var p=0; p<data.length; p++) {
         if (data[p]["UserInfoID"] != -1) {
