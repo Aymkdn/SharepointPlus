@@ -358,7 +358,8 @@ $SP().registerPlugin('formfields', function(options) {
 
                 // val()
                 obj.val = function(v) {
-                  var e=this.elem();
+                  var e=this.elem(false);
+                  if (!Array.isArray(e)) e=[e];
                   var type=this.type();
                   if (e[0].tagName.toLowerCase()==="iframe") { // "text multiple" on IE
                     var ifrm = (e.length===1 ? e[0]: e[1]);

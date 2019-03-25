@@ -48,11 +48,15 @@ function createListSharepointPlus(list) {
 
   $('#testEnv').text("Test Environment Setup : creating list '"+list+"'...");
 
+  var templateID = "100";
+  if (list.indexOf("Library") > -1) templateID = "101";
+  if (list.indexOf("Calendar") > -1) templateID = "106";
+
   $().SPServices({
     operation: "AddList",
     listName: list,
     description:"List used for SharepointPlus tests",
-    templateID:(list.indexOf("Library") > -1?"101":"100"),
+    templateID:templateID,
     completefunc: function(xData, Status) {
       if (Status === "error") {
         deferred.reject($(xData.responseXML).find('errorstring').text());
@@ -296,6 +300,18 @@ function deleteTestEnvironment() {
       var deferred = $q.Deferred();
       $q().SPServices({
         operation:"DeleteList",
+        listName: "SharepointPlus Calendar",
+        completefunc:function() {
+          deferred.resolve();
+        }
+      })
+      return deferred;
+    }()),
+
+    (function() {
+      var deferred = $q.Deferred();
+      $q().SPServices({
+        operation:"DeleteList",
         listName: "SharepointPlusLookup",
         completefunc:function() {
           deferred.resolve();
@@ -347,12 +363,35 @@ function initTestEnvironment() {
           $.when( getListSharepointPlus("SharepointPlus") ).then(
             function yes() {
 
-              // check if SharepointPlus group exists
-              $.when( checkGroupSharepointPlus() ).done(function() {
-                $('#testEnv').text("Test environnement OK");
-                initSPtests()
-              });
+              // check if "SharepointPlus Calendar" list exists
+              $.when( getListSharepointPlus("SharepointPlus Calendar") ).then(
+                function yes() {
 
+                  // check if SharepointPlus group exists
+                  $.when( checkGroupSharepointPlus() ).done(function() {
+                    $('#testEnv').text("Test environnement OK");
+                    initSPtests()
+                  });
+
+                },
+                function fail(error) {
+                  // if library doesn't exist, then create it
+                  if (error === "List does not exist") {
+
+                    $.when( createListSharepointPlus("SharepointPlus Calendar") ).then(
+                      function done() {
+                        initTestEnvironment();
+                      },
+                      function fail(error) {
+                        alert("Error with AddList: " + error);
+                      }
+                    );
+
+                  } else {
+                    alert("Error with GetList: " + error);
+                  }
+                }
+              )
             },
             function fail(error) {
               // if list doesn't exist, then create it
@@ -1131,7 +1170,7 @@ function loadSPtests() {
 
               return $SP().list("SharepointPlus").addAttachment({
                 ID:itemID,
-                filename:"helloworld.txt",
+                filename:".   helloworld < with special characters & too long.... really too long but this is* required for testing purposes~ at 100% a little bit more and we're good for testing....txt  ",
                 attachment:str2ab('Hello World')
               })
             } else {
@@ -1141,7 +1180,7 @@ function loadSPtests() {
             }
           })
           .then(function(fileURL) {
-            var passed=fileURL.indexOf("/Lists/SharepointPlus/Attachments/"+itemID+"/helloworld.txt")>-1;
+            var passed=fileURL.indexOf("/Lists/SharepointPlus/Attachments/"+itemID+"/helloworld with special characters too long. really too long but this is required for testing purposes at 100 a lit__ting.txt")>-1;
             testDone("lists", ".addAttachment()");
             assert.ok(passed, ".addAttachment()");
             doneAddAttachment();
@@ -1152,7 +1191,7 @@ function loadSPtests() {
           })
           .then(function(attachments) {
             testDone("lists", ".getAttachment()");
-            assert.ok(attachments.length===1 && attachments[0].indexOf("Lists/SharepointPlus/Attachments/"+itemID+"/helloworld.txt") > -1, ".getAttachment()");
+            assert.ok(attachments.length===1 && attachments[0].indexOf("Lists/SharepointPlus/Attachments/"+itemID+"/helloworld with special characters too long. really too long but this is required for testing purposes at 100 a lit__ting.txt") > -1, ".getAttachment()");
             doneGetAttachment();
           })
           // get history
@@ -1349,15 +1388,197 @@ function loadSPtests() {
           })
         })
 
+        test('calendar related stuff', function(assert) {
+          assert.expect(15);
+
+          var doneAdd = assert.async();
+          var doneUpdate = assert.async();
+          var doneRemove = assert.async();
+          var doneRemove2 = assert.async();
+          var doneGet = assert.async();
+          var doneGet2 = assert.async();
+
+          testsToCheck.calendar = [
+            {done:doneAdd, comment:".add()"},
+            {done:doneGet, comment:".get()"},
+            {done:doneGet2, comment:".get() 2"},
+            {done:doneUpdate, comment:".update()"},
+            {done:doneRemove, comment:".remove()"},
+            {done:doneRemove, comment:".remove() 2"}
+          ];
+
+          // parseRecurrence
+          // from RecurrenceData XML to object
+          var rec = $SP().parseRecurrence('<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><monthlyByDay weekday="TRUE" weekdayOfMonth="last" monthFrequency="1" /></repeat><windowEnd>2019-01-19T16:00:00Z</windowEnd></rule></recurrence>');
+          assert.ok(rec.type==="monthlyByDay" && rec.firstDayOfWeek==="monday"&&rec.on.weekday==="last"&&rec.frequency===1&&rec.endDate.toISOString()==="2019-01-19T16:00:00.000Z", ".parseRecurrence() from from RecurrenceData XML to object");
+
+          assert.ok($SP().parseRecurrence({"type":"weekly","frequency":1,"on":{"monday":true,"tuesday":true,"wednesday":true},"endDate":new Date("2007-05-31T22:00:00.000Z")}) === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><weekly mo="TRUE" tu="TRUE" we="TRUE" weekFrequency="1" /></repeat><windowEnd>2007-05-31T22:00:00Z</windowEnd></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (1)');
+
+          // Every weekday
+          assert.ok($SP().parseRecurrence({"type":"daily", "firstDayOfWeek":"monday", "on":{ "weekday":true }}) === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><daily weekday="TRUE" /></repeat><repeatForever>FALSE</repeatForever></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (1)');
+
+          // Every X days
+          assert.ok($SP().parseRecurrence({"type":"daily", "frequency":2}) === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><daily dayFrequency="2" /></repeat><repeatForever>FALSE</repeatForever></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (2)');
+
+          // Every week on Monday and Wednesday
+          assert.ok($SP().parseRecurrence({"type":"weekly", "firstDayOfWeek":"sunday", "on":{"monday":true, "wednesday":true},frequency:1}) === '<recurrence><rule><firstDayOfWeek>su</firstDayOfWeek><repeat><weekly mo="TRUE" we="TRUE" weekFrequency="1" /></repeat><repeatForever>FALSE</repeatForever></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (2)');
+
+          // Every day 10 of every 2 months
+          assert.ok($SP().parseRecurrence({"type":"monthly","on":{"day":10},"frequency":2}) === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><monthly monthFrequency="2" day="10" /></repeat><repeatForever>FALSE</repeatForever></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (3)');
+
+          // Every second tuesday of every 6 months
+          assert.ok($SP().parseRecurrence({"type":"monthlyByDay", "firstDayOfWeek":"monday","on":{ "tuesday":"second"}, "frequency":6}) === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><monthlyByDay tu="TRUE" weekdayOfMonth="second" monthFrequency="6" /></repeat><repeatForever>FALSE</repeatForever></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (4)');
+
+          // Every December 25
+          assert.ok($SP().parseRecurrence({"type":"yearly","firstDayOfWeek":"monday","on":{"month":12,"day":25},"frequency":1}) === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><yearly yearFrequency="1" month="12" day="25" /></repeat><repeatForever>FALSE</repeatForever></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (5)');
+
+          // The third weekday of September
+          assert.ok($SP().parseRecurrence({ "type":"yearlyByDay","on":{"month":9, "weekday":"third"},"frequency":1}) === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><yearlyByDay weekday="TRUE" weekDayOfMonth="third"  month="9"yearFrequency="1" /></repeat><repeatForever>FALSE</repeatForever></rule></recurrence>', '.parseRecurrence() from object to RecurrenceData XML (6)');
+
+          // test .list().add()
+          var itemID;
+          var title = new Date().getTime();
+          $SP().list("SharepointPlus Calendar").add({
+            Title:title,
+            EventDate:"2018-12-20 10:00:00",
+            EndDate:"2019-12-31 11:00:00",
+            RecurrenceData: {
+              "type":"weekly",
+              "frequency":1,
+              "on":{
+                "monday":true,
+                "friday":true
+              },
+              "endDate":new Date(2019,11,31,11,0,0)
+            }
+          })
+          .then(function(items) {
+            testDone("calendar", ".add()");
+            if (items.failed.length > 0) {
+              assert.ok(false, ".add()");
+              doneAdd();
+              return Promise.reject("add() failed")
+            } else {
+              assert.ok(true, ".add()");
+              doneAdd();
+
+              // test .list().get()
+              return $SP().list("SharepointPlus Calendar").get({
+                        fields:"Title",
+                        calendar:true,
+                        calendarOptions:{
+                          referenceDate:new Date(2019,2,25), // Monday, March 25, 2019
+                          range: "Week"
+                        }
+                      })
+            }
+          })
+          // test .list().update()
+          .then(function(data) {
+            testDone("calendar", ".get()");
+            if (data.length === 2 &&
+                data[0].getAttribute("Title") == title &&
+                data[1].getAttribute("Title") == title &&
+                data[0].getAttribute("EventDate") === "2019-03-25 10:00:00" &&
+                data[0].getAttribute("EndDate") === "2019-03-25 11:00:00" &&
+                data[1].getAttribute("EventDate") === "2019-03-29 10:00:00" &&
+                data[1].getAttribute("EndDate") === "2019-03-29 11:00:00" &&
+                data[0].getAttribute("fRecurrence") == 1 &&
+                data[1].getAttribute("fRecurrence") == 1 &&
+                data[0].getAttribute("RecurrenceData") === '<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><weekly mo="TRUE" fr="TRUE" weekFrequency="1" /></repeat><windowEnd>2019-12-31T10:00:00Z</windowEnd></rule></recurrence>'
+            ) {
+              assert.ok(true, ".get()");
+              doneGet();
+              var itemID = data[0].getAttribute("ID").split('.')[0];
+
+              return $SP().list("SharepointPlus Calendar").update({
+                Title:'Special',
+                EventDate:$SP().toSPDate(new Date(2019,2,25,14,0,0), true), // the new start date for the meeting (2pm)
+                EndDate:$SP().toSPDate(new Date(2019,2,25,15,0,0), true) // the new end date for the meeting (3pm)
+              }, {
+                where:'ID = '+itemID, // the criteria that permits to identify your master recurrent event -- IT IS REQUIRED
+                event:new Date(2019,2,25) // date of the event that needs to be changed... if the event ID is "5274.0.2019-01-07T15:00:00Z", then you can use "2019-01-07T15:00:00Z"
+              })
+            } else {
+              assert.ok(false, ".get()");
+              doneGet();
+              return Promise.reject("get() failed")
+            }
+          })
+          .then(function(items) {
+            testDone("calendar", ".update()");
+            if (items.failed.length > 0) {
+              assert.ok(false, ".update()");
+              doneUpdate();
+              return Promise.reject("update() failed")
+            } else {
+              var item = items.passed[0];
+              assert.ok(item.EndDate==="2019-03-25T15:00:00Z" && item.EventDate==="2019-03-25T14:00:00Z" && item.EventType===4 && item.RecurrenceID === "2019-03-25 10:00:00" && item.Title === "Special", ".update()");
+              doneUpdate();
+
+              // if you want to delete one occurrence of a recurrent event you must use option "event"
+              // e.g. you have an event #1589 that occurs every weekday, from 9am to 10am, but you want to delete the one on December 17, 2018
+              return $SP().list("SharepointPlus Calendar").remove({
+                where:'ID = '+item.MasterSeriesItemID, // the criteria that permits to identify your master recurrent event -- IT IS REQUIRED
+                event:"2019-03-29 10:00:00" // date of the event that needs to be deleted, it can be the "RecurrenceID"
+              })
+            }
+          })
+          .then(function(items) {
+            testDone("calendar", ".remove()");
+            assert.ok(items.passed.length>0, ".remove()");
+            doneRemove();
+
+            return $SP().list("SharepointPlus Calendar").get({
+                      fields:"Title",
+                      calendar:true,
+                      calendarOptions:{
+                        referenceDate:new Date(2019,2,25), // Monday, March 25, 2019
+                        range: "Week"
+                      }
+                    })
+          })
+          .then(function(data) {
+            testDone("calendar", ".get() 2");
+            if (data.length === 1 &&
+                data[0].getAttribute("Title") === "Special" &&
+                data[0].getAttribute("EventDate") === "2019-03-25 14:00:00" &&
+                data[0].getAttribute("EndDate") === "2019-03-25 15:00:00"
+            ) {
+              assert.ok(true, ".get() 2");
+              doneGet2();
+            } else {
+              assert.ok(false, ".get() 2");
+              doneGet2();
+              return Promise.reject("get() 2 failed")
+            }
+
+            // delete all
+            return $SP().list('SharepointPlus Calendar').remove({ID:data[0].getAttribute("MasterSeriesItemID")})
+          })
+          .then(function(items) {
+            testDone("calendar", ".remove() 2");
+            assert.ok(items.passed.length>0, ".remove() 2");
+            doneRemove2();
+          })
+          .catch(function(error) {
+            console.log("error => ",error)
+            testsToCheck.lists.forEach(function(t) {
+              console.log(t.comment +" failed")
+              assert.ok(false, t.comment);
+              t.done();
+            })
+          })
+        })
+
         test('document/file related stuff', function(assert) {
-          assert.expect(6);
+          assert.expect(5);
 
           var doneCreateFileSuccess = assert.async();
           var doneCreateFileError = assert.async();
           var doneCheckOut = assert.async();
           var doneCheckIn = assert.async();
           var doneCreateFolder = assert.async();
-          var doneCreateFolderError = assert.async();
 
           // test createFile()
           var filename = new Date().getTime() + ".txt";
@@ -1425,26 +1646,17 @@ function loadSPtests() {
             assert.ok(true, 'createFile() Phase 2');
             doneCreateFileError();
           });
-          console.log('createFolder() phase 1');
-          var folderName = "folder_"+new Date().getTime();
+          console.log('createFolder()');
+          var folderName = "folder_"+Date.now();
           $SP().list(library).createFolder(folderName)
           .then(function(folder) {
-            assert.ok(folder.BaseName == folderName, 'createFolder() phase 1')
+            assert.ok(folder.BaseName == folderName, 'createFolder()')
             doneCreateFolder();
           })
           .catch(function(err) {
-            assert.ok(false, 'createFolder() phase 1')
+            assert.ok(false, 'createFolder()')
             doneCreateFolder();
           });
-          console.log('createFolder() phase 2');
-          $SP().list(library).createFolder(folderName).then(function(folder) {
-            assert.ok(folder.errorMessage==="Folder '"+folderName+"' already exists.", 'createFolder() phase 2')
-            doneCreateFolderError();
-          })
-          .catch(function() {
-            assert.ok(true, 'createFolder() phase 2')
-            doneCreateFolderError();
-          })
         });
 
         test('people and group stuff', function(assert) {
@@ -1465,7 +1677,7 @@ function loadSPtests() {
               doneWhoami();
 
               // test isMember()
-              $SP().isMember({user:spusername, group:"SharepointPlus"}).then(function(isMember) {
+              $SP().isMember({user:username, group:"SharepointPlus"}).then(function(isMember) {
                 assert.ok(isMember, 'isMember()');
                 doneIsMember();
               });
@@ -1474,7 +1686,7 @@ function loadSPtests() {
               $SP().groupMembers("SharepointPlus").then(function(members) {
                 var passed=false;
                 for (var i=members.length; i--;) {
-                  if (members[i]["LoginName"].toLowerCase() === spusername) {
+                  if (spusername.indexOf(members[i]["LoginName"].toLowerCase()) !== -1) {
                     passed=true;
                     break;
                   }

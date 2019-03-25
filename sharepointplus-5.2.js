@@ -92,6 +92,7 @@ var _SP_CACHE_REGIONALSETTINGS=void 0;
 var _SP_CACHE_DATEFORMAT=void 0;
 var _SP_CACHE_HASREST={};
 var _SP_CACHE_REQUESTDIGEST={};
+var _SP_CACHE_TIMEZONEINFO={};
 var _SP_ADD_PROGRESSVAR={};
 var _SP_UPDATE_PROGRESSVAR={};
 var _SP_MODERATE_PROGRESSVAR={};
@@ -138,7 +139,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
     @class This is the object uses for all SharepointPlus related actions
    */
   function SharepointPlus() {
-    if (!(this instanceof arguments.callee)) return new arguments.callee();
+    if (!(this instanceof SharepointPlus)) return new SharepointPlus();
   }
 
   SharepointPlus.prototype = {
@@ -269,13 +270,13 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
      * @name $SP().ajax
      * @function
      * @category utils
-     * @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax for Browsers, and https://github.com/s-KaiNet/sp-request for NodeKS
+     * @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax for Browsers, and https://github.com/s-KaiNet/sp-request for NodeKJ
      * @param {Object} settings (See options below)
      *   @param {String} settings.url The url to call
      *   @param {String} [settings.method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)
      *   @param {Object} [settings.headers] the headers
      *   @param {String} [settings.body] The data to send to the server
-     *   @param {Function} [settings.onprogress=function(event){}] The "upload.onprogress" object for XHR (within browser only)
+     *   @param {Function} [settings.onprogress=function(event){}] Show the download/upload progress (within browser only)
      *   @param {Function} [settings.getXHR=function(xhr){}] Pass the XMLHttpRequest object as a parameter (within browser only)
      * @return {Promise} resolve(responseText||responseXML), reject({response, statusCode, responseText})
      *
@@ -283,12 +284,28 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
      * // for a regular request
      * $SP().ajax({url:'https://my.web.site'}).then(function(data) { console.log(data) })
      *
+     * // if the URL contains /_api/ and if "Accept", "Content-Type" or "X-RequestDigest", then they are auto-defined
+     *
      * // (in browser) manipulate xhr for specific needs, like reading a remote file (based on https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data)
      * $SP().ajax({url:'https://url.com/file.png', getXHR:function(xhr){ xhr.responseType = 'arraybuffer' }}).then(function(data) {
      *   // ArrayBuffer result
      *   var blob = new Blob([data], {type: "image/png"});
      *   fileReader.readAsArrayBuffer(blob);
      * })
+     *
+     * // (in browser) show progress on download, and cancel the download after 5 seconds
+     * var _xhr;
+     * $SP().ajax({
+     *   url:'https://server/files/video.mp4',
+     *   getXHR:function(xhr) {
+     *     _xhr = xhr;
+     *     xhr.responseType = 'arraybuffer'
+     *   },
+     *   onprogress:function(event) {
+     *     console.log(event.loaded+" / "+event.total)
+     *   }
+     * });
+     * setTimeout(function() { _xhr.abort() }, 5000); // abort after 5 seconds
      *
      * // (in Node) to get the Buffer from a remote file we could use `encoding:null` from https://github.com/request/request
      * sp.ajax({url:'https://my.web.site/lib/file.pdf', encoding:null}).then(data => {
@@ -303,7 +320,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       settings.headers=settings.headers||{};
       // https://github.com/yanatan16/nanoajax — not the original version (include upload.onprogress and getXHR)
       // eslint-disable-next-line
-      !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}var r=["responseType","withCredentials","timeout"];e.ajax=function(e,a){function s(e,t){return function(){p||(a(void 0===c.status?e:c.status,0===c.status?"Error":c.response||c.responseText||t,c),p=!0)}}var u=e.headers||{},i=e.body,d=e.method||(i?"POST":"GET"),p=!1,c=n(e.cors);c.open(d,e.url,!0);var l=c.onload=s(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=s(null,"Error"),c.ontimeout=s(null,"Timeout"),c.onabort=s(null,"Abort"),i&&(t.FormData&&i instanceof t.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var f,v=0,g=r.length;g>v;v++)f=r[v],void 0!==e[f]&&(c[f]=e[f]);for(var f in u)u[f]!==!1&&c.setRequestHeader(f,u[f]);return e.onprogress&&c.upload.addEventListener("progress",e.onprogress,!1),e.getXHR&&e.getXHR(c),c.send(i),c},t.nanoajax=e}({},function(){return this}());
+      !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}var r=["responseType","withCredentials","timeout"];e.ajax=function(e,a){function s(e,t){return function(){p||(a(void 0===c.status?e:c.status,0===c.status?"Error":c.response||c.responseText||t,c),p=!0)}}var u=e.headers||{},i=e.body,d=e.method||(i?"POST":"GET"),p=!1,c=n(e.cors);c.open(d,e.url,!0);var l=c.onload=s(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=s(null,"Error"),c.ontimeout=s(null,"Timeout"),c.onabort=s(null,"Abort"),i&&(t.FormData&&i instanceof t.FormData||o(u,"Content-Type","application/x-www-form-urlencoded"));for(var f,v=0,g=r.length;g>v;v++)f=r[v],void 0!==e[f]&&(c[f]=e[f]);for(var f in u)u[f]!==!1&&c.setRequestHeader(f,u[f]);return e.onprogress&&(d.toUpperCase()==='GET'?c.addEventListener("progress",e.onprogress,!1):c.upload.addEventListener("progress",e.onprogress,!1)),e.getXHR&&e.getXHR(c),c.send(i),c},t.nanoajax=e}({},window);
+
       return _this._promise(function(prom_resolve, prom_reject) {
         var addRequestDigest=false;
         // add "Accept": "application/json;odata=verbose" for headers if there is "_api/" in URL, except for "_api/web/Url"
@@ -331,6 +349,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }
         // use XML as the default content type
         if (typeof settings.headers["Content-Type"]==="undefined") settings.headers["Content-Type"]="text/xml; charset=utf-8";
+
         // check if it's NodeJS
         if (_SP_ISBROWSER) {
           // IE will return an "400 Bad Request" if it's a POST with no body
@@ -354,7 +373,9 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                 .then(function(res) { prom_resolve(res) })
                 .catch(function(rej) { prom_reject(rej) });
 
-              } else prom_reject({statusCode:code, responseText:responseText, request:request});
+              } else {
+                prom_reject({statusCode:code, responseText:responseText, request:request});
+              }
             }
           })
         } else {
@@ -365,6 +386,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             }
             _this.module_sprequest = require('sp-request').create(_this.credentialOptions);
           }
+
           if (settings.headers['Content-Type'] && settings.headers['Content-Type'].indexOf('xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
           if (!settings.method) settings.method=(typeof settings.body !== "undefined"?"POST":"GET");
           if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body);
@@ -385,6 +407,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           for (var stg in settings) {
             if (settings.hasOwnProperty(stg) && !opts[stg]) opts[stg] = settings[stg];
           }
+
           _this.module_sprequest(settings.url, opts)
           .then(function(response) {
             if (response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout") {
@@ -498,16 +521,16 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             prom_resolve(_SP_BASEURL)
           } else {
             // try to build it
-            if (typeof L_Menu_BaseUrl!=="undefined") {
-              if (setURL) _this.url=_SP_BASEURL=L_Menu_BaseUrl; // eslint-disable-line
+            if (typeof window.L_Menu_BaseUrl!=="undefined") {
+              if (setURL) _this.url=_SP_BASEURL=window.L_Menu_BaseUrl; // eslint-disable-line
               if (_this.url==="" || _this.url==="/") _this.url=window.location.protocol+"//"+window.location.host+"/";
-              prom_resolve(L_Menu_BaseUrl) // eslint-disable-line
+              prom_resolve(window.L_Menu_BaseUrl) // eslint-disable-line
             } else {
               // eslint-disable-next-line
-              if (typeof _spPageContextInfo !== "undefined" && typeof _spPageContextInfo.webServerRelativeUrl !== "undefined") {
-                if (setURL) _this.url=_SP_BASEURL=_spPageContextInfo.webServerRelativeUrl; // eslint-disable-line
+              if (typeof window._spPageContextInfo !== "undefined" && typeof window._spPageContextInfo.webServerRelativeUrl !== "undefined") {
+                if (setURL) _this.url=_SP_BASEURL=window._spPageContextInfo.webServerRelativeUrl; // eslint-disable-line
                 if (_this.url==="" || _this.url==="/") _this.url=window.location.protocol+"//"+window.location.host+"/";
-                prom_resolve(_spPageContextInfo.webServerRelativeUrl) // eslint-disable-line
+                prom_resolve(window._spPageContextInfo.webServerRelativeUrl) // eslint-disable-line
               } else {
                 // we'll use the Webs.asmx service to find the base URL
                 _this.needQueue=true;
@@ -645,11 +668,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @function
       @description (internal use only) Add a function in the queue
     */
-    _addInQueue:function(args) {
-      var _this=this;
-      _this.listQueue.push(args);
-      if (_this.listQueue.length===1) _this._testQueue();
-      return _this
+    _addInQueue:function() {
+      this.listQueue.push(arguments);
+      if (this.listQueue.length===1) this._testQueue();
+      return this
     },
     /**
       @ignore
@@ -664,7 +686,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       } else {
         if (_this.listQueue.length > 0) {
           var todo = _this.listQueue.shift();
-          todo.callee.apply(_this, Array.prototype.slice.call(todo));
+          _this[todo[0]].apply(_this, todo[1]);
         }
         _this.needQueue=(_this.listQueue.length>0);
         if (_this.needQueue) {
@@ -711,10 +733,19 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       $SP().parse("Bar = '"+bar+"' AND Foo = '"+foo+"'"); // don't put the simple and double quotes this way because it'll cause an issue with O'Conney
     */
     parse:function(q, escapeChar) {
+      // schema: https://docs.microsoft.com/en-us/sharepoint/dev/schema/query-schema
       var queryString = q.replace(/(\s+)?(=|~=|<=|>=|<>|<|>| LIKE | IN )(\s+)?/g,"$2").replace(/""|''/g,"Null").replace(/==/g,"="); // remove unnecessary white space & replace '
+      // the Null doesn't work with IN, so we need to move it outside
+      if (/\w+ IN \[([^[]+,)?Null,?/.test(queryString)) {
+        // eslint-disable-next-line
+        queryString = queryString.replace(/(\w+) IN \[([^\[]+,)?Null(,[^\]]+)?\]/g,"($1 = Null OR $&)") // eslint-disable-next-line
+                                 .replace(/\[([^\[]+,)?Null(,[^\]]+)?\]/g,"[$1$2]")
+                                 .replace(/(\[),|(,),|,(\])/g,"$1$2$3");
+      }
+
       var factory = [];
       escapeChar = (escapeChar===false ? false : true)
-      var limitMax = q.length;
+      var limitMax = queryString.length;
       var closeOperator="", closeTag = "", ignoreNextChar=false;
       var lastField = "";
       var parenthesis = {open:0};
@@ -966,6 +997,258 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return factory;
     },
     /**
+      @name $SP().parseRecurrence
+      @function
+      @category lists
+      @description Transform a RecurrenceData XML string to a recurrence object, and transform a recurrence object to a RecurrenceData XML string (for calendar events)
+      @param  {String|Object} data The RecurrenceData XML or a recurrence object
+      @return {String|Object}
+
+      @example
+      // from RecurrenceData XML to object
+      $SP().parseRecurrence('&lt;recurrence>&lt;rule>&lt;firstDayOfWeek>mo&lt;/firstDayOfWeek>&lt;repeat>&lt;monthlyByDay weekday="TRUE" weekdayOfMonth="last" monthFrequency="1" />&lt;/repeat>&lt;windowEnd>2019-01-19T16:00:00Z&lt;/windowEnd>&lt;/rule>&lt;/recurrence>');
+      // it will return the below object
+      {
+        "type":"monthlyByDay",
+        "firstDayOfWeek":"monday",
+        "on":{
+          "weekday":"last"
+        },
+        "frequency":1,
+        "endDate":"2019-01-19T16:00:00.000Z"
+      }
+
+      // from recurrence object to RecurrenceData XML string
+      $SP().parseRecurrence({"type":"weekly","frequency":1,"on":{"monday":true,"tuesday":true,"wednesday":true},"endDate":new Date("2007-05-31T22:00:00.000Z")}); // -> &lt;recurrence>&lt;rule>&lt;firstDayOfWeek>mo&lt;/firstDayOfWeek>&lt;repeat>&lt;weekly mo="TRUE" tu="TRUE" we="TRUE" weekFrequency="1" />&lt;/repeat>&lt;windowEnd>2007-05-31T22:00:00Z&lt;/windowEnd>&lt;/rule>&lt;/recurrence>
+
+      // recurrence object examples:
+      // Every weekday
+      {
+        "type":"daily",
+        "firstDayOfWeek":"monday",
+        "on":{
+          "weekday":true
+        }
+      }
+
+      // Every X days
+      {
+        "type":"daily",
+        "firstDayOfWeek":"monday",
+        "frequency":X
+      }
+
+      // Every week on Monday and Wednesday
+      {
+        "type":"weekly",
+        "firstDayOfWeek":"monday",
+        "on":{
+          "monday":true,
+          "wednesday":true
+        },
+        "frequency":1
+      }
+
+      // Every day 10 of every 2 months
+      {
+        "type":"monthly",
+        "firstDayOfWeek":"monday",
+        "on":{
+          "day":10
+        },
+        "frequency":2
+      }
+
+      // Every second tuesday of every 6 months
+      {
+        "type":"monthlyByDay",
+        "firstDayOfWeek":"monday",
+        "on":{
+          "tuesday":"second"
+        },
+        "frequency":6
+      }
+
+      // Every December 25
+      {
+        "type":"yearly",
+        "firstDayOfWeek":"monday",
+        "on":{
+          "month":12,
+          "day":25
+        },
+        "frequency":1
+      }
+
+      // The third weekday of September
+      {
+        "type":"yearlyByDay",
+        "firstDayOfWeek":"monday",
+        "on":{
+          "month":9,
+          "weekday":"third"
+        },
+        "frequency":1
+      }
+    */
+    parseRecurrence:function(data) {
+      // check if it's XML
+      var days = [ "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" ];
+      var ret=null;
+      // e.g. <recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><daily weekday="TRUE" /></repeat><windowEnd>2019-01-19T16:00:00Z</windowEnd></rule></recurrence>
+      if (typeof data === "string" && data.charAt(0)==='<') {
+        ret = {};
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(data, "text/xml");
+        var XMLS = new XMLSerializer(); // for IE
+        var getText = function(elem) {
+            // IE doesn't provide innerHTML, so we serialize and use regexp
+          return (elem.innerHTML ? elem.innerHTML : XMLS.serializeToString(elem).replace(/^<[^>]+>([^<]+)<\/[^>]+>$/m,"$1"))
+        }
+
+        // references:
+        // - http://thehightechheels.blogspot.com/2012/12/sharepoint-evenet-recurrencedata-xml.html
+        // - https://fatalfrenchy.wordpress.com/2010/07/16/sharepoint-recurrence-data-schema/
+        var tags = ['firstDayOfWeek', 'daily', 'weekly', 'monthly', 'monthlyByDay', 'yearly', 'yearlyByDay', 'windowEnd', 'repeatInstances'];
+        tags.forEach(function(tag) {
+          var xmlField = xmlDoc.getElementsByTagName(tag);
+          if (xmlField.length===1) {
+            var elem = xmlField[0];
+            if (/y$/.test(tag)) ret.type = tag;
+            switch(tag) {
+              case "firstDayOfWeek": {
+                var firstDayOfWeek = getText(elem)
+                for (var i=0; i<days.length; i++) {
+                  if (days[i].slice(0,2) === firstDayOfWeek) {
+                    ret.firstDayOfWeek=days[i];
+                    break;
+                  }
+                }
+                break;
+              }
+              case "daily": {
+                // is it a weekday thing ?
+                if (elem.getAttribute("weekday") === "TRUE") ret.on = {"weekday":true};
+                else ret.frequency=elem.getAttribute("dayFrequency")*1;
+                break;
+              }
+              case "weekly": {
+                ret.frequency=elem.getAttribute("weekFrequency")*1;
+                ret.on = {};
+                days.forEach(function(day) {
+                  if (elem.getAttribute(day.slice(0,2)) === "TRUE") ret.on[day]=true;
+                });
+                break;
+              }
+              case "monthly": {
+                ret.frequency=elem.getAttribute("monthFrequency")*1;
+                ret.on = {day:elem.getAttribute("day")*1};
+                break;
+              }
+              case "yearlyByDay":
+              case "monthlyByDay": {
+                var weekdayOfMonth = elem.getAttribute("weekdayOfMonth") || elem.getAttribute("weekDayOfMonth"); // first, second, third, forth, last
+                ret.on = {};
+                days.forEach(function(day) {
+                  if (elem.getAttribute(day.slice(0,2)) === "TRUE") ret.on[day]=weekdayOfMonth;
+                });
+                if (elem.getAttribute("day") === "TRUE") ret.on.day=weekdayOfMonth;
+                if (elem.getAttribute("weekday") === "TRUE") ret.on.weekday=weekdayOfMonth;
+                if (elem.getAttribute("weekend_day") === "TRUE") ret.on.weekend=weekdayOfMonth;
+
+                if (tag === "monthlyByDay") ret.frequency=elem.getAttribute("monthFrequency")*1;
+                else {
+                  ret.frequency=elem.getAttribute("yearFrequency")*1;
+                  ret.on.month = elem.getAttribute("month")*1;
+                }
+                break;
+              }
+              case "yearly": {
+                ret.frequency=elem.getAttribute("yearFrequency")*1;
+                ret.on = {
+                  "month":elem.getAttribute("month")*1,
+                  "day":elem.getAttribute("day")*1,
+                }
+                break;
+              }
+              case "windowEnd": {
+                ret.endDate = new Date(getText(elem))
+                break;
+              }
+              case "repeatInstances": {
+                ret.endAfter = getText(elem)*1;
+                break;
+              }
+            }
+          }
+        })
+
+        return ret;
+      } else if (data && typeof data === "object" && data.type) {
+        // transform an object to a XML string
+        data.firstDayOfWeek = data.firstDayOfWeek || "mo";
+        ret = '<recurrence><rule><firstDayOfWeek>'+(data.firstDayOfWeek.toLowerCase().slice(0,2)||'mo')+'</firstDayOfWeek><repeat><'+data.type+' ';
+        switch (data.type) {
+          case "daily": {
+            ret += (data.frequency ? 'dayFrequency="'+data.frequency+'"' : 'weekday="TRUE"') + ' />';
+            break;
+          }
+          case "weekly": {
+            days.forEach(function(day) {
+              if (data.on[day]) ret += day.slice(0,2) + '="TRUE" ';
+            });
+            ret += 'weekFrequency="' + data.frequency + '" />';
+            break;
+          }
+          case "monthly": {
+            ret += 'monthFrequency="' + data.frequency + '" day="' + data.on.day + '" />';
+            break;
+          }
+          case "yearlyByDay":
+          case "monthlyByDay": {
+            ['day', 'weekday', 'weekend'].concat(days).forEach(function(day, idx) {
+              if (data.on[day]) {
+                if (idx < 3) {
+                  ret += day + (day==='weekend'?'_day':'');
+                } else {
+                  ret += day.slice(0,2)
+                }
+                // monthlyByDay has "weekdayOfMonth" with "day" in lowercase, when yearlyByDay has "weekDayOfMonth"
+                ret += '="TRUE" ';
+                // avoid repeating "weekDayOfMonth"
+                if (ret.indexOf('ayOfMonth') === -1) {
+                  ret += 'week' + (data.type==="monthlyByDay" ? 'd' : 'D') + 'ayOfMonth="' + data.on[day] + '" ';
+                }
+                day = data.on[day];
+              }
+            });
+
+            if (data.on.month) ret += ' month="' + data.on.month + '"';
+            ret += (data.type==="monthlyByDay" ? 'month' : 'year') + 'Frequency="' + data.frequency + '" />';
+            break;
+          }
+          case "yearly": {
+            ret += 'yearFrequency="' + data.frequency + '" month="' + data.on.month + '" day="' + data.on.day + '" />';
+            break;
+          }
+        }
+        ret += '</repeat>';
+        if (data.endDate) {
+          ret += '<windowEnd>' + new Date(data.endDate).toISOString().replace(/.000Z/,"Z") + '</windowEnd>';
+        } else if (data.endAfter) {
+          ret += '<repeatInstances>' + data.endAfter + '</repeatInstances>';
+        } else {
+          ret += '<repeatForever>FALSE</repeatForever>';
+        }
+
+        ret += '</rule></recurrence>';
+
+        return ret;
+      }
+
+      return null;
+    },
+    /**
       @ignore
       @name $SP()._cleanString
       @function
@@ -1030,6 +1313,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           @param {String} [options.join.on] Permits to establish the link between two lists (only between the direct parent list and its child, not with the grand parent) (see the example below)
           @param {String} [options.join.onLookup] Permits to establish the link between two lists based on a lookup field... it's more optimized than the simple `join.on` (see the example below)
           @param {Boolean} [options.join.outer=false] If you want to do an outer join (you can also directly use "outerjoin" instead of "join")
+        @param {Array} [merge] Permits to merge several lists together and return only one dataset; obviously it makes more sense to use this option when you have tables in different locations, but with the same columns. It must be an array of the same settings as $SP().list().get(). Each row of the dataset will have an extra `Source` parameter to know from where the data is coming from (see an example below)
         @param {Boolean} [options.calendar=false] If you want to get the events from a Calendar List
         @param {Object} [options.calendarOptions] Options that will be used when "calendar:true" (see the example to know how to use it)
           @param {Boolean} [options.calendarOptions.splitRecurrence=true] By default we split the events with a recurrence (so 1 item = 1 day of the recurrence)
@@ -1268,7 +1552,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       // For example if John Doe is recorded as "328;#Doe, John" then you'll have to use the special operator "~="
       $SP().list("Sessions").get({
         fields:"Title",
-        where:'User ~= 328"
+        where:"User ~= 328"
       }).then(function(data) {
         console.log(data.length);
       });
@@ -1291,14 +1575,14 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       });
 
       // How to retrieve the events from a Calendar List
-      // NOTE -- when "calendar:true" we automatically get some fields: "Title", "EventDate" -- the Start Date --, "EndDate", "RecurrenceData", Duration", fAllDayEvent", "fRecurrence", "ID"
+      // NOTE -- when "calendar:true" we automatically get some fields: "Title", "EventDate" -- the Start Date --, "EndDate", "RecurrenceData", "Duration", "fAllDayEvent", "fRecurrence", "ID", "EventType", "UID" and "MasterSeriesItemID"
       $SP().list("My Calendar").get({
         fields:"Description",
         calendar:true,
         calendarOptions:{
           referenceDate:new Date(2012,4,4),
           range: "Week"
-        }
+        },
         where:"Category = 'Yellow'"
       }).then(function(data) {
         var events=[];
@@ -1319,6 +1603,20 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           // e.g. for a daily recurrence you can find the end date of the serie with: data[i].getAttribute("RecurrenceData").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1")
           // --> it will return a SP Date
         }
+      })
+
+      // if we want to merge two tables
+      $SP().list("Requests").get({
+        fields:"ID",
+        where:"User_x0020_Name ~= 16358",
+        merge:[{
+          list:"Requests Archive",
+          fields:"ID",
+          where:"User_x0020_Name ~= 16358"
+        }]
+      })
+      .then(function(data) {
+        data.forEach(function(d) { console.log(d.Source.list, d.Source.url, d.getAttribute("ID")) })
       })
 
       // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
@@ -1344,12 +1642,14 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this = this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('get',arguments) }
         if (!_this.listID) return prom_reject("[SharepointPlus 'get']: the list ID/Name is required");
+
         // default values
         var setup={};
         SPExtend(true, setup, options);
         if (!_this.url) return prom_reject("[SharepointPlus 'get']: not able to find the URL!"); // we cannot determine the url
+
         setup.fields    = setup.fields || "";
         setup.where     = setup.where || "";
         setup.whereFct  = setup.whereFct || function(w) { return w };
@@ -1450,9 +1750,14 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           for (i=0; i<gFields.length; i++) groupby += '<FieldRef Name="'+gFields[i]+'" />';
         }
 
+        // if we merge several similar lists
+        if (Array.isArray(setup.merge)) {
+          setup.mergeData = setup.mergeData || [];
+        }
+
         // when it's a calendar we want to retrieve some fields by default
         if (setup.calendar===true || setup.calendarViaView===true) {
-          tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID"];
+          tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID", "MasterSeriesItemID", "UID", "RecurrenceID"];
           for (i=0; i<tmpFields.length; i++) fields += '<FieldRef Name="'+tmpFields[i]+'" />';
         }
 
@@ -1529,7 +1834,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         }).then(function(data) {
           var rows, i, j, stop, collection, on, aResult, prevIndex, index, listIndexFound, nextPage,
               joinDataLen, tmp, attributes, attributesReturn, attr, attributesJoinData, joinIndexLen, idx, sp,
-              joinData, joinIndex, joinWhereLookup, wh, aReturn;
+              joinData, joinIndex, joinWhereLookup, wh, aReturn, mergeSetup, mergeSource;
           // we want to use myElem to change the getAttribute function
           rows=data.getElementsByTagName('z:row');
           if (rows.length===0) rows=data.getElementsByTagName('row'); // for Chrome 'bug'
@@ -1625,7 +1930,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
 
             // if there is a WHERE clause then we want to force to an innerjoin
             // except where setup.where equals to setup.onLookupWhere
-            if (setup.where && setup.where!==setup.onLookupWhere && setup.outer) setup.outer=false;
+            if (setup.where && setup.onLookupWhere && setup.outer) {
+              var whereParsed = (setup.where.startsWith('<') ? setup.where : _this.parse(setup.where));
+              var onLookupWhereParsed = (setup.onLookupWhere.startsWith('<') ? setup.onLookupWhere : _this.parse(setup.onLookupWhere));
+              if (whereParsed!==onLookupWhereParsed) setup.outer=false;
+            }
 
             // if we want to do an outerjoin we link the missing data
             if (setup.outer) {
@@ -1725,6 +2034,31 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             setup.join.joinIndex=joinIndex;
             sp.get(setup.join).then(function(res) { prom_resolve(res) }, function(rej) { prom_reject(rej) });
             return;
+          }
+
+          // if we want to merge other lists
+          if (setup.merge) {
+            mergeSource = {
+              list:setup.list || _this.listID,
+              url:setup.url || _this.url
+            }
+            if (setup.merge.length>0) {
+              mergeSetup = setup.merge.shift();
+              mergeSetup.merge = setup.merge.slice(0);
+              sp=_this.list(mergeSetup.list,mergeSetup.url||_this.url);
+              // we need to identify the Source of each set
+              mergeSetup.mergeData=setup.mergeData.concat(aReturn.map(function(ret) {
+                ret.Source = mergeSource;
+                return ret;
+              }));
+              sp.get(mergeSetup).then(function(res) { prom_resolve(res) }, function(rej) { prom_reject(rej) });
+              return;
+            } else {
+              aReturn = setup.mergeData.concat(aReturn.map(function(ret) {
+                ret.Source = mergeSource;
+                return ret;
+              }));
+            }
           }
 
           aReturn["NextPage"]=nextPage;
@@ -1848,7 +2182,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('createFile',arguments) }
         // default values
         setup = setup || {};
         if (setup.content === undefined) throw "[SharepointPlus 'createFile']: the file content is required.";
@@ -1918,17 +2252,28 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               var folder = setup.filename.split("/");
               var filename = setup.filename;
               if (folder.length > 1) {
-                filename=folder.slice(-1);
+                filename=folder.slice(-1)[0];
                 folder="/"+folder.slice(0,-1).join("/");
               }
               else folder="";
               folder = rootFolder+folder;
+
+              // to avoid invalid characters
+              // see http://www.simplyaprogrammer.com/2008/05/importing-files-into-sharepoint.html
+              // eslint-disable-next-line
+              var _filename = filename.replace(/[\*\?\|:"'<>#{}%~&]/g,"").replace(/^[\. ]+|[\. ]+$/g,"").replace(/ {2,}/g," ").replace(/\.{2,}/g,".");
+              if (_filename.length>=128) {
+                _filename = _filename.slice(0,115)+'__'+_filename.slice(-8);
+              }
+
+              var urlCall = _this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(_filename)+"',overwrite=true)";
+              // the URL must not be longer than 20 characters
               // The browsers could crash if we try to use send() with a large ArrayBuffer (https://stackoverflow.com/questions/46297625/large-arraybuffer-crashes-with-xmlhttprequest-send)
               // so I convert ArrayBuffer into a Blob
               // note: we cannot use startUpload/continueUpload/finishUpload because it's only available for Sharepoint Online
               if (typeof Blob !== "undefined") setup.content = new Blob([setup.content]);
               return _this.ajax({
-                url: _this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(filename)+"',overwrite=true)",
+                url: urlCall,
                 body: setup.content,
                 onprogress:function(evt) {
                   if (evt.lengthComputable) {
@@ -1985,11 +2330,12 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @example
       // create a folder called "first" at the root of the Shared Documents library
       // the result should be "http://mysite/Shared Documents/first/"
+      // if the folder already exists, it returns a resolved Promise but with an errorMessage included
       $SP().list("Shared Documents").createFolder("first").then(function(folder) { alert("Folder created!"); })
 
       // create a folder called "second" under "first"
       // the result should be "http://mysite/Shared Documents/first/second/"
-      // if "first" doesn't exist then it will return an error
+      // if "first" doesn't exist then it's automatically created
       $SP().list("Documents").createFolder("first/second").then(function(folder) { alert("Folder created!"); }
 
       // Note: To delete a folder you can use $SP().list().remove() with ID and FileRef parameters
@@ -1999,10 +2345,11 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('createFolder',arguments) }
         if (folderPath === undefined) throw "[SharepointPlus 'createFolder']: the folder path is required.";
         // split the path based on '/'
-        var path=folderPath, toAdd=[], tmpPath="", i;
+        // eslint-disable-next-line
+        var path=folderPath.replace(/[\*\?\|:"'<>#{}%~&]/g,"").replace(/^[\. ]+|[\. ]+$/g,"").replace(/ {2,}/g," ").replace(/\.{2,}/g,"."), toAdd=[], tmpPath="", i;
         // trim "/" at the beginning and end
         if (path.charAt(0)==="/") path=path.slice(1);
         if (path.slice(-1)==="/") path=path.slice(0,-1);
@@ -2117,25 +2464,33 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('addAttachment',arguments) }
         if (arguments.length===0) throw "[SharepointPlus 'addAttachment'] the arguments are mandatory.";
         if (!_this.listID) throw "[SharepointPlus 'addAttachment'] the list ID/Name is required.";
         if (!_this.url) throw "[SharepointPlus 'addAttachment'] not able to find the URL!"; // we cannot determine the url
         if (!setup.ID) throw "[SharepointPlus 'addAttachment'] the item ID is required.";
         if (!setup.filename) throw "[SharepointPlus 'addAttachment'] the filename is required.";
         if (!setup.attachment) throw "[SharepointPlus 'addAttachment'] the ArrayBuffer of the attachment's content is required.";
+        // avoid invalid characters
+        // eslint-disable-next-line
+        var filename = setup.filename.replace(/[\*\?\|\\/:"'<>#{}%~&]/g,"").replace(/^[\. ]+|[\. ]+$/g,"").replace(/ {2,}/g," ").replace(/\.{2,}/g,".");
+        if (filename.length>=128) {
+          filename = filename.slice(0,115)+'__'+filename.slice(-8);
+        }
         _this.ajax({
           url: _this.url + "/_vti_bin/Lists.asmx",
-          body: _this._buildBodyForSOAP("AddAttachment", "<listName>"+_this.listID+"</listName><listItemID>"+setup.ID+"</listItemID><fileName>"+setup.filename+"</fileName><attachment>"+SPArrayBufferToBase64(setup.attachment)+"</attachment>"),
+          body: _this._buildBodyForSOAP("AddAttachment", "<listName>"+_this.listID+"</listName><listItemID>"+setup.ID+"</listItemID><fileName>"+filename+"</fileName><attachment>"+SPArrayBufferToBase64(setup.attachment)+"</attachment>"),
           headers:{'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/AddAttachment' }
-        }).then(function(data) {
+        })
+        .then(function(data) {
           var res = data.getElementsByTagName('AddAttachmentResult');
           res = (res.length>0 ? res[0] : null);
           var fileURL = "";
           if (res) fileURL = _this.url + "/" + res.firstChild.nodeValue;
           if (!fileURL) prom_reject(res);
           else prom_resolve(fileURL);
-        }, function(error) { prom_reject(error) });
+        })
+        .catch(function(error) { prom_reject(error) });
       })
     },
     /**
@@ -2157,7 +2512,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('getAttachment',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'getAttachment']: the list ID/Name is required";
         if (!_this.url) throw "[SharepointPlus 'getAttachment']: not able to find the URL!"; // we cannot determine the url
         // do the request
@@ -2190,7 +2545,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('getContentTypes',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'getContentTypes'] the list ID/name is required.";
         // default values
         if (!_this.url) throw "[SharepointPlus 'getContentTypes'] not able to find the URL!"; // we cannot determine the url
@@ -2252,7 +2607,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('getContentTypeInfo',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'getContentTypeInfo'] the list ID/Name is required.";
         if (arguments.length >= 1 && typeof contentType !== "string") throw "[SharepointPlus 'getContentTypeInfo'] the Content Type Name/ID is required.";
         // default values
@@ -2361,7 +2716,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('info',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'info'] the list ID/Name is required.";
         if (!_this.url) throw "[SharepointPlus 'info'] not able to find the URL!"; // we cannot determine the url
 
@@ -2458,7 +2813,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('view',arguments) }
         if (!_this.listID) return prom_reject("[SharepointPlus 'view'] the list ID/Name is required.");
         if (!viewID) return prom_reject("[SharepointPlus 'view'] the view ID/Name is required.");
         // default values
@@ -2557,7 +2912,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('views',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'views'] the list ID/Name is required.";
         options = options||{};
         options.cache = (options.cache === false ? false : true);
@@ -2654,7 +3009,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           url:setup.url + "/_vti_bin/lists.asmx",
           body:_this._buildBodyForSOAP("GetListCollection", ""),
           headers:{'SOAPAction':'http://schemas.microsoft.com/sharepoint/soap/GetListCollection'}
-        }).then(function(data) {
+        })
+        .then(function(data) {
           var aReturn = [], arr = data.getElementsByTagName('List'), i, j, attributes;
           for (i=0; i < arr.length; i++) {
             aReturn[i]={};
@@ -2673,7 +3029,8 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
           }
           if (!found) _SP_CACHE_SAVEDLISTS.push({url:setup.url,data:aReturn});
           prom_resolve(aReturn);
-        }).then(function(error) { prom_reject(error) })
+        })
+        .catch(function(error) { prom_reject(error) })
       })
     },
     /**
@@ -2681,10 +3038,10 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       @function
       @description Add items into a Sharepoint List
                    note: A Date must be provided as "YYYY-MM-DD" (only date comparison) or "YYYY-MM-DD hh:mm:ss" (date AND time comparison), or you can use $SP().toSPDate(new Date())
-                   note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID
+                   note: A person must be provided as "-1;#email" (e.g. "-1;#foo@bar.com") OR NT login with double \ (eg "-1;#europe\\foo_bar") OR the user ID as a number
                    note SP2013: If "-1;#" doesn't work on Sharepoint 2013, then try with "i:0#.w|" (e.g. "i:0#.w|europe\\foo_bar") ("i:0#.w|" may vary based on your authentification system -- see https://social.technet.microsoft.com/wiki/contents/articles/13921.sharepoint-20102013-claims-encoding.aspx)
                    note: A lookup value must be provided as "X;#value", with X the ID of the value from the lookup list.
-                         --> it should also be possible to not pass the value but only the ID, e.g.: "X;#"
+                         --> it should also be possible to not pass the value but only the ID, e.g.: "X;#" or the ID as a number without anything else
                    note: A URL field must be provided as "http://www.website.com, Name"
                    note: A multiple selection must be provided as ";#choice 1;#choice 2;#", or just pass an array as the value and it will do the trick
                    note: A multiple selection of Lookup must be provided as ";#X;#Choice 1;#Y;#Choice 2;#" (with X the ID for "Choice 1", and "Y" for "Choice 2")
@@ -2719,13 +3076,34 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       $SP().list("List Name").add({Title:"John is the Tom's Manager",Manager:"-1;#john@compagny.com",Report:"-1;#tom@compagny.com"}); // if you don't know the ID
       $SP().list("My List").add({Title:"John is the Tom's Manager",Manager:"157",Report:"874"}); // if you know the Lookup ID
 
+      // Calendar events:
+      //   - you must define "EventDate" and "EndDate"
+      //   - for a full day event you have to define "fAllDayEvent" to "1"
+      //   - for recurrent events you have to define "RecurrenceData" and you can either provide an already formatted XML string or the recurrence object that will then be converted with $SP().parseRecurrence()
+      // EXAMPLE: event occurs every week on monday and friday, until December 31, 2019, between 10am and 11am, starting from December 20, 2018
+      // EventDate is the StartTime and must be the same as EndDate (except for the Time)
+      $SP().list("My Calendar").add({
+        Title:"Team Meeting",
+        EventDate:"2018-12-20 10:00:00", // the Date part is when the recurrent event starts, and the Time part will be used for each event
+        EndDate:"2019-12-31 11:00:00", // it must be the last Date/Time for the meeting, then the Time is used as an end time for each event
+        RecurrenceData: {
+          "type":"weekly",
+          "frequency":1,
+          "on":{
+            "monday":true,
+            "friday":true
+          },
+          "endDate":new Date(2019,11,31,11,0,0) // December 31, 2019, at 11am
+        }
+      })
+
       // for Discussion Board, please refer to https://github.com/Aymkdn/SharepointPlus/wiki/Sharepoint-Discussion-Board
     */
     add:function(items, options) {
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('add',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'add'] the list ID/Name is required.";
         if (!_this.url) throw "[SharepointPlus 'add'] not able to find the URL!"; // we cannot determine the url
 
@@ -2774,8 +3152,55 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                 if (itemValue.length === 0) itemValue='';
                 else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
               }
-              if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
-              updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
+
+              switch (itemKey) {
+                case "RecurrenceData": {
+                  // if we have RecurrenceData, and if it's an object, then we convert it
+                  if (typeof itemValue === 'object') itemValue = _this.parseRecurrence(itemValue);
+                  // add additional fields
+                  // see https://fatalfrenchy.wordpress.com/2010/07/16/sharepoint-recurrence-data-schema/
+                  // and https://stackoverflow.com/a/44487221/1134119
+                  if (typeof items[i]['fRecurrence'] === 'undefined') updates += "<Field Name='fRecurrence'>1</Field>";
+                  if (typeof items[i]['EventType'] === 'undefined') updates += "<Field Name='EventType'>1</Field>";
+                  if (typeof items[i]['UID'] === 'undefined') updates += "<Field Name='UID'>{"+_this.newGuid()+"}</Field>";
+                  if (typeof items[i]['fAllDayEvent'] === 'undefined') updates += "<Field Name='fAllDayEvent'>0</Field>";
+                  if (typeof items[i]['TimeZone'] === 'undefined') {
+                    // to avoid any issues, the TimeZone is required
+                    if (_SP_CACHE_TIMEZONEINFO[_this.url]) updates += "<Field Name='TimeZone'>"+_SP_CACHE_TIMEZONEINFO[_this.url].ID+"</Field>";
+                    else {
+                      return _this.getTimeZoneInfo({url:_this.url})
+                      .then(function(info) {
+                        _SP_CACHE_TIMEZONEINFO[_this.url]=info;
+                        return _this.add(items, options)
+                      })
+                      .then(function(res) {
+                        prom_resolve(res)
+                      })
+                      .catch(function(err) {
+                        prom_reject(err)
+                      })
+                    }
+                  }
+                  //if (typeof items[i]['XMLTZone'] === 'undefined') updates += "<Field Name='XMLTZone'><![CDATA[<timeZoneRule><standardBias></standardBias><additionalDaylightBias>0</additionalDaylightBias></timeZoneRule>]]></Field>";
+                  //if (typeof items[i]['WorkspaceLink'] === 'undefined') updates += "<Field Name='WorkspaceLink'>0</Field>";
+                  // we also define the duration
+                  /*if (!items[i]['Duration']) {
+                    var startTime = items[i]['EventDate'].match(/[ T]([0-9]+):([0-9]+):[0-9]+/);
+                    var endTime = items[i]['EndDate'].match(/[ T]([0-9]+):([0-9]+):[0-9]+/);
+                    if (startTime && endTime && startTime.length===3 && endTime.length===3) {
+                      var duration = (new Date(1981,0,19,endTime[1],endTime[2]) - new Date(1981,0,19,startTime[1],startTime[2])) / 1000;
+                      if (duration>0) updates += "<Field Name='Duration'>"+duration+"</Field>";
+                    }
+                  }*/
+                  updates += "<Field Name='"+itemKey+"'><![CDATA["+itemValue+"]]></Field>";
+                  break;
+                }
+                default:{
+                  if (typeof itemValue === 'boolean') itemValue = (itemValue ? '1' : '0');
+                  if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
+                  updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
+                }
+              }
             }
           }
           updates += '</Method>';
@@ -2828,6 +3253,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Number} [options.packetsize=15] If you have too many items to update, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
         @param {Function} [options.progress] Two parameters: 'current' and 'max' -- if you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
         @param {Boolean} [options.escapeChar=true] Determines if we want to escape the special chars that will cause an error (for example '&' will be automatically converted to '&amp;amp;')
+        @param {String|Date} [options.event] If you want to create an exception occurrence for a recurrent event you must define the "event" option using the date of the occurence to change (see the below example)
       @return {Promise} resolve({passed, failed}), reject(error)
 
       @example
@@ -2842,12 +3268,25 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         var len=items.passed.length;
         console.log(len+(len>1?" items have been successfully added":" item has been successfully added"))
       });
+
+      // For recurrent calendar events, you can edit one of the occurrence using the `event` option; it will procure a new separate event
+      // e.g. you have an event #1589 that occurs every weekday, from 9am to 10am, but you want to update the one on December 17, 2018 to be from 2pm to 3pm
+      $SP().list("Calendar").update({
+        Title:'Special Team Meeting', // if you want to change the event's title
+        EventDate:$SP().toSPDate(new Date(2018,11,17,14,0,0), true), // the new start date for the meeting (2pm)
+        EndDate:$SP().toSPDate(new Date(2018,11,17,15,0,0), true) // the new end date for the meeting (3pm)
+      }, {
+        where:'ID = 1589', // the criteria that permits to identify your master recurrent event -- IT IS REQUIRED
+        event:new Date(2018,11,17) // date of the event that needs to be changed... if the event ID is "5274.0.2019-01-07T15:00:00Z", then you can use "2019-01-07T15:00:00Z"
+      })
+
+      // Note: if you update a complete serie for a recurrent event, then all the exception occurrences will be automatically deleted and replace with the full serie of events
     */
     update:function(items, options) {
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('update',arguments) }
         if (!_this.listID) return prom_reject("[SharepointPlus 'update'] the list ID/name is required.");
         if (!_this.url) return prom_reject("[SharepointPlus 'update'] not able to find the URL!"); // we cannot determine the url
 
@@ -2866,7 +3305,44 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (itemsLength === 1 && setup.where) {
           // call GET first
           delete items[0].ID;
-          _this.get({fields:"ID",where:setup.where})
+          var getFields = [];
+          var getParams = function() {
+            return new Promise(function(pr, pj) {
+              var params = {fields:["ID"],where:setup.where};
+              if (!setup.event) pr(params);
+              // if we want to update an event
+              else {
+                params.calendar=true;
+                params.calendarOptions={referenceDate:setup.event}
+                // we also need all the columns for the event
+                _this.get({fields:'ContentType', where:setup.where})
+                .then(function(data) {
+                  if (data.length===0) return Promise.reject("[SharepointPlus 'update'] Unable to find an event with `"+setup.where+"`");
+                  return _this.getContentTypeInfo(data[0].getAttribute('ContentType') || 'Event');
+                })
+                .then(function(fields) {
+                  fields.forEach(function(field) {
+                    var fieldID = field.Name||field.StaticName;
+                    if (fieldID === "TimeZone" || (field.Group !== '_Hidden' && field.ReadOnly !== 'TRUE' && field.Hidden !== 'TRUE' && typeof items[0][fieldID] === 'undefined')) {
+                      params.fields.push(fieldID);
+                    }
+                  });
+
+                  pr(params);
+                })
+                .catch(function(err) {
+                  pj(err)
+                })
+              }
+
+            })
+          }
+
+          getParams()
+          .then(function(params) {
+            getFields = params.fields.slice(0);
+            return _this.get(params)
+          })
           .then(function(data) {
             // we need a function to clone the items
             var clone = function(obj){
@@ -2875,14 +3351,41 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               return newObj;
             };
             var aItems=[], i=data.length, it;
-            while (i--) {
+            if (!setup.event) {
+              while (i--) {
+                it=clone(items[0]);
+                it.ID=data[i].getAttribute("ID");
+                aItems.push(it);
+              }
+              delete setup.where;
+              // now call again the UPDATE
+              return _this.update(aItems,setup)
+            } else {
+              // the treatment is different for `event`
+              var eventDate = (typeof setup.event !== 'string' ? _this.toSPDate(setup.event) : setup.event.slice(0,10));
+              var event = data.filter(function(d) {
+                return d.getAttribute("ID").indexOf("."+eventDate+"T") !== -1;
+              });
+              if (event.length===0) return Promise.reject("[SharepointPlus 'update'] No event found on "+eventDate);
+              event = event[0];
+
+              // see https://fatalfrenchy.wordpress.com/2010/07/16/sharepoint-recurrence-data-schema/
               it=clone(items[0]);
-              it.ID=data[i].getAttribute("ID");
-              aItems.push(it);
+              getFields.forEach(function(field) {
+                if (field!=='ID' && typeof it[field] === 'undefined') {
+                  var val = event.getAttribute(field);
+                  if (val !== undefined && val !== null) it[field] = val;
+                }
+              });
+              it.MasterSeriesItemID = event.getAttribute("ID").split('.')[0];
+              it.UID = event.getAttribute("UID");
+              it.EventType = 4;
+              it.fRecurrence = 1;
+              it.RecurrenceData = "No Recurrence";
+              it.RecurrenceID = event.getAttribute("RecurrenceID"); // the occurrence event date
+              it.TimeZone = event.getAttribute("TimeZone");
+              return _this.add(it, setup);
             }
-            delete setup.where;
-            // now call again the UPDATE
-            return _this.update(aItems,setup)
           })
           .then(function(res) { prom_resolve(res) })
           .catch(function(rej) { prom_reject(rej) })
@@ -2922,8 +3425,23 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
                 if (itemValue.length===0) itemValue='';
                 else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
               }
-              if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
-              updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
+
+              // if we have RecurrenceData, and if it's an object, then we convert it
+              if (itemKey === 'RecurrenceData') {
+                if (typeof itemValue === 'object') itemValue = _this.parseRecurrence(itemValue);
+                // add additional fields
+                if (!items[i]['RecurrenceID']) {
+                  if (typeof items[i]['fRecurrence'] === 'undefined') updates += "<Field Name='fRecurrence'>1</Field>";
+                  if (typeof items[i]['EventType'] === 'undefined') updates += "<Field Name='EventType'>1</Field>";
+                  if (typeof items[i]['UID'] === 'undefined') updates += "<Field Name='UID'>{"+_this.newGuid()+"}</Field>";
+                  if (typeof items[i]['fAllDayEvent'] === 'undefined') updates += "<Field Name='fAllDayEvent'>0</Field>";
+                }
+                updates += "<Field Name='"+itemKey+"'><![CDATA["+itemValue+"]]></Field>";
+              } else {
+                if (typeof itemValue === 'boolean') itemValue = (itemValue ? '1' : '0');
+                if (setup.escapeChar && typeof itemValue === "string") itemValue = _this._cleanString(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
+                updates += "<Field Name='"+itemKey+"'>"+itemValue+"</Field>";
+              }
             }
           }
           updates += '</Method>';
@@ -2988,7 +3506,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('history',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'history'] the list ID/Name is required.";
         params=params||{};
         if (!params.ID || !params.Name) throw "[SharepointPlus 'history'] you must provide the item ID and field Name.";
@@ -3027,7 +3545,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('moderate',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'moderate'] the list ID/Name is required.";
 
         // default values
@@ -3132,6 +3650,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {String} [options.where] If you don't specify the itemsID (first param) then you have to use a `where` clause - it will search for the list of items ID based on the `where` and it will then delete all of them
         @param {Number} [options.packetsize=15] If you have too many items to delete, then we use `packetsize` to cut them into several requests (because Sharepoint cannot handle too many items at once)
         @param {Function} [options.progress] Two parameters: 'current' and 'max' -- If you provide more than 'packetsize' ID then they will be treated by packets and you can use "progress" to know more about the steps
+        @param {String|Date} [options.event] If you want to delete an occurrence of a recurrent event from a calendar (see the below example)
       @return {Promise} resolve({passed, failed}), reject(error)
 
       @example
@@ -3149,13 +3668,22 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       });
 
       // example for deleting a file
-      $SP().list("My Shared Documents").remove({ID:4,FileRef:"my/directory/My Shared Documents/something.xls"});
+      $SP().list("My Shared Documents").remove({ID:4,FileRef:"site/subsite/My Shared Documents/something.xls"});
+      // or use {where}
+      $SP().list("My Shared Documents").remove({where:"ID = 4"});
+
+      // if you want to delete one occurrence of a recurrent event you must use option "event"
+      // e.g. you have an event #1589 that occurs every weekday, from 9am to 10am, but you want to delete the one on December 17, 2018
+      $SP().list("Calendar").remove({
+        where:'ID = 1589', // the criteria that permits to identify your master recurrent event -- IT IS REQUIRED
+        event:new Date(2018,11,17) // date of the event that needs to be deleted, it can be the "RecurrenceID"
+      })
     */
     remove:function(items, options) {
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('remove',arguments) }
         if (!_this.url) throw "[SharepointPlus 'remove'] not able to find the URL!"; // we cannot determine the url
         // default values
         if (!options && items.where) { options=items; items=[]; } // the case when we use the "where"
@@ -3171,25 +3699,58 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         if (setup.where) {
           // call GET first
           if (itemsLength===1) delete items[0].ID;
-          _this.get({fields:"ID,FileRef",where:setup.where}).then(function(data) {
+          var getParams = {fields:["ID","FileRef"],where:setup.where};
+          // if we want to delete an event
+          if (setup.event) {
+            getParams.fields.push("Title");
+            getParams.calendar=true;
+            getParams.calendarOptions={referenceDate:setup.event}
+          }
+          _this.get(getParams)
+          .then(function(data) {
             // we need a function to clone the items
             var clone = function(obj){
               var newObj = {};
               for (var k in obj) newObj[k]=obj[k];
               return newObj;
             };
-            var aItems=[],fileRef,i=data.length,it;
-            while (i--) {
-              it=clone(items[0]);
-              it.ID=data[i].getAttribute("ID");
-              fileRef=data[i].getAttribute("FileRef");
-              if (fileRef) it.FileRef=_this.cleanResult(fileRef);
-              aItems.push(it);
+            var aItems=[],fileRef,i=data.length,it={};
+            if (!setup.event) {
+              while (i--) {
+                it=clone(items[0]);
+                it.ID=data[i].getAttribute("ID");
+                fileRef=data[i].getAttribute("FileRef");
+                if (fileRef) it.FileRef=_this.cleanResult(fileRef);
+                aItems.push(it);
+              }
+              delete setup.where;
+              // now call again the REMOVE
+              return _this.remove(aItems,setup);
+            } else {
+              // the treatment is different for `event`
+              var eventDate = (typeof setup.event !== 'string' ? _this.toSPDate(setup.event) : setup.event.slice(0,10));
+              var event = data.filter(function(d) {
+                return d.getAttribute("ID").indexOf("."+eventDate+"T") !== -1 || (d.getAttribute("RecurrenceID")||"").startsWith(eventDate);
+              });
+              if (event.length===0) return Promise.reject("[SharepointPlus 'remove'] No event found on "+eventDate);
+              event = event[0];
+
+              // see https://fatalfrenchy.wordpress.com/2010/07/16/sharepoint-recurrence-data-schema/
+              it.MasterSeriesItemID = event.getAttribute("ID").split('.')[0];
+              it.UID = event.getAttribute("UID");
+              it.EventType = 3;
+              it.fRecurrence = 1;
+              it.fAllDayEvent = event.getAttribute("fAllDayEvent")||"0";
+              it.RecurrenceData = "No Recurrence";
+              it.RecurrenceID = event.getAttribute("RecurrenceID"); // the occurrence event date
+              it.Title = "Deleted: " + event.getAttribute("Title")||"";
+              it.EventDate = event.getAttribute("EventDate");
+              it.EndDate = event.getAttribute("EndDate");
+              return _this.add(it, setup);
             }
-            delete setup.where;
-            // now call again the REMOVE
-            _this.remove(aItems,setup).then(function(res) { prom_resolve(res) }, function(rej) { prom_reject(rej) });
-          });
+          })
+          .then(function(res) { prom_resolve(res) })
+          .catch(function(rej) { prom_reject(rej) })
           return;
         } else if (itemsLength === 0) {
           // nothing to delete
@@ -3372,7 +3933,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('getWorkflowID',arguments) }
         if (!_this.listID) throw "[SharepointPlus 'getWorkflowID'] the list ID/Name is required.";
         if (!_this.url) throw "[SharepointPlus 'getWorkflowID'] not able to find the URL!"; // we cannot determine the url
         setup = setup || {};
@@ -3517,7 +4078,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('startWorkflow',arguments) }
         if (!_this.url) throw "[SharepointPlus 'startWorkflow'] not able to find the URL!";
 
         // if no listID then it's a Site Workflow so we use startWorkflow2013
@@ -3584,7 +4145,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       var _this=this;
       return _this._promise(function(prom_resolve, prom_reject) {
         // check if we need to queue it
-        if (_this.needQueue) { return _this._addInQueue(arguments) }
+        if (_this.needQueue) { return _this._addInQueue('startWorkflow2013',arguments) }
         if (!_this.url) throw "[SharepointPlus 'startWorkflow2013'] not able to find the URL!";
 
         setup = setup || {};
@@ -3656,6 +4217,50 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
             });
           });
         })
+      })
+    },
+    /**
+     * @name $SP().list.stopWorkflow
+     * @function
+     * @description Stop/Terminate a Workflow 2010 instance (this is only for Workflow 2010) -- this technique uses an iframe to load the workflow page and trigger the "End the workflow" link, so make sure the user has correct permissions, uses a browser and is on the same website
+     *
+     * @param {Object} setup
+     *   @param {Number} setup.ID The item ID that is tied to the workflow
+     *   @param {String} setup.workflowName The name of the workflow
+     * @return {Promise} resolve(), reject(error)
+     *
+     * @example
+     * $SP().list("List Name").stopWorkflow({ID:42, workflowName:"My workflow"});
+     */
+    stopWorkflow:function(setup) {
+      var _this=this;
+      return _this._promise(function(prom_res, prom_rej) {
+        // check if we need to queue it
+        if (_this.needQueue) { return _this._addInQueue('startWorkflow',arguments) }
+        if (!_this.url) throw "[SharepointPlus 'stopWorkflow'] not able to find the URL!";
+        setup = setup || {};
+        if (!setup.workflowName && !setup.workflowID) throw "[SharepointPlus 'stopWorkflow'] Please provide the workflow name"
+        if (!setup.ID) throw "[SharepointPlus 'stopWorkflow'] Please provide the item ID"
+
+        // retrieve the workflow instances
+        _this.getWorkflowID({ID:setup.ID, workflowName:setup.workflowName})
+        .then(function(params) {
+          var lenInstances = params.instances.length;
+          if (lenInstances===0) return prom_rej("[SharepointPlus 'stopWorkflow'] No instances found for this workflow");
+          var lastIntance = params.instances[lenInstances-1];
+          var idx = Date.now();
+          // we use an iframe
+          document.body.insertAdjacentHTML('beforeend', '<iframe id="iframe_'+idx+'" />');
+          var fr = document.getElementById('iframe_'+idx);
+          fr.onload=function() {
+            fr.contentWindow.__doPostBack('ctl00$PlaceHolderMain$HtmlAnchorEnd','');
+            setTimeout(function() {
+              document.body.removeChild(fr);
+              prom_res();
+            }, 1000);
+          }
+          fr.src=lastIntance.StatusPageUrl;
+        });
       })
     },
     /**
@@ -4317,15 +4922,15 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
               ret.id = idu[0];
               ret.name = idu[1].replace(/,,/g,",");
               break;
-            };
+            }
             case 1:{
               ret.username = s;
               break;
-            };
+            }
             case 2:{
               ret.email = s;
               break;
-            };
+            }
             case 4:{
               ret.name = s.replace(/,,/g,",");
               break;
@@ -4606,6 +5211,34 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       return {vw:vw, doc:doc};
     },
     /**
+      @name $SP().newGuid
+      @function
+      @category utils
+      @description Create an unique GUID (based on Sharepoint function called SP.Guid.newGuid())
+     */
+    newGuid:function() {
+      for (var a = "", c = 0; c < 32; c++) {
+        var b = Math.floor(Math.random() * 16);
+        switch (c) {
+          case 8:
+            a += "-";
+            break;
+          case 12:
+            b = 4;
+            a += "-";
+            break;
+          case 16:
+            b = b & 3 | 8;
+            a += "-";
+            break;
+          case 20:
+            a += "-"
+        }
+        a += b.toString(16);
+      }
+      return a;
+    },
+    /**
       @name $SP().showModalDialog
       @function
       @category modals
@@ -4630,14 +5263,25 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
         @param {Boolean} [options.showMaximized] A Boolean value that specifies whether the dialog opens in a maximized state. true the dialog opens maximized. Otherwise, the dialog is opened at the requested sized if specified; otherwise, the default size, if specified; otherwise, the autosized size.
         @param {Boolean} [options.showClose=true] A Boolean value that specifies whether the Close button appears on the dialog.
         @param {Boolean} [options.autoSize] A Boolean value that specifies whether the dialog platform handles dialog sizing.
+      @return {Promise} If will return an object with two parameters: dialogResult, returnValue
 
       @example
+      // using a callback
       $SP().showModalDialog({
         title:"Dialog",
         html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModalDialog(\'here\')">Close&lt;/button>&lt;/p>',
         callback:function(dialogResult, returnValue) {
           alert("Result="+dialogResult); // -> "here"
         }
+      })
+
+      // using as a Promise
+      $SP().showModalDialog({
+        title:"Dialog",
+        html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModalDialog(\'here\')">Close&lt;/button>&lt;/p>'
+      })
+      .then(function(res) {
+        alert("Result="+res.dialogResult); // -> "here"
       })
 
       // show a waiting message
@@ -4653,136 +5297,140 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
      */
     showModalDialog:function(options) {
       var _this=this;
-      // in some weird cases the script is not loaded correctly, so we need to ensure it
-      if (!_SP_MODALDIALOG_LOADED) {
-        _SP_MODALDIALOG_LOADED=(typeof SP === "object" && typeof SP.UI === "object" && typeof SP.UI.ModalDialog === "function" && typeof SP.UI.ModalDialog.showModalDialog === "function"); // eslint-disable-line
+      return this._promise(function(prom_res) {
+        // in some weird cases the script is not loaded correctly, so we need to ensure it
         if (!_SP_MODALDIALOG_LOADED) {
-          LoadSodByKey("sp.ui.dialog.js", function() { // eslint-disable-line
-            _SP_MODALDIALOG_LOADED=true;
-            _this.showModalDialog(options);
-          });
-          return _this;
-        }
-      }
-      var size, ohtml;
-      // source: http://stackoverflow.com/a/24603642/1134119
-      function iFrameReady(a,b){function e(){d||(d=!0,clearTimeout(c),b.call(this))}function f(){"complete"===this.readyState&&e.call(this)}function g(a,b,c){return a.addEventListener?a.addEventListener(b,c):a.attachEvent("on"+b,function(){return c.call(a,window.event)})}function h(){var b=a.contentDocument||a.contentWindow.document;0!==b.URL.indexOf("about:")?"complete"===b.readyState?e.call(b):(g(b,"DOMContentLoaded",e),g(b,"readystatechange",f)):c=setTimeout(h,1)}var c,d=!1;g(a,"load",function(){var b=a.contentDocument;b||(b=a.contentWindow,b&&(b=b.document)),b&&e.call(b)}),h()} // eslint-disable-line
-
-      options.id = (options.id || "").replace(/\W+/g,"");
-      options.id = options.id || new Date().getTime();
-      var modal_id = "sp_frame_"+options.id;
-      if (options.html && typeof options.html === "string") {
-        ohtml = document.createElement('div');
-        ohtml.style.padding="10px";
-        ohtml.style.display="inline-block";
-        ohtml.className = "sp-showModalDialog";
-        ohtml.id = 'content_'+modal_id;
-        ohtml.innerHTML = options.html;
-        options.html = ohtml;
-      }
-      // if width and height are set to "calculated" then we'll use the viewport size to define them
-      if (options.width === "calculated" || options.height === "calculated") {
-        size = _this.getPageSize();
-        if (options.width === "calculated") {
-          options.width = size.vw.width;
-          if (options.width > 768) {
-            // we want to adjust to use 2/3
-            options.width = 2*options.width/3
+          _SP_MODALDIALOG_LOADED=(typeof SP === "object" && typeof SP.UI === "object" && typeof SP.UI.ModalDialog === "function" && typeof SP.UI.ModalDialog.showModalDialog === "function"); // eslint-disable-line
+          if (!_SP_MODALDIALOG_LOADED) {
+            LoadSodByKey("sp.ui.dialog.js", function() { // eslint-disable-line
+              _SP_MODALDIALOG_LOADED=true;
+              _this.showModalDialog(options)
+              .then(function(res) { prom_res(res) })
+            });
+            return _this;
           }
         }
-        if (options.height === "calculated") {
-          options.height = size.vw.height;
-          if (options.height > 576) {
-            // we want to adjust to use 90%
-            options.height = 90*options.height/100
+        var size, ohtml;
+        // source: http://stackoverflow.com/a/24603642/1134119
+        function iFrameReady(a,b){function e(){d||(d=!0,clearTimeout(c),b.call(this))}function f(){"complete"===this.readyState&&e.call(this)}function g(a,b,c){return a.addEventListener?a.addEventListener(b,c):a.attachEvent("on"+b,function(){return c.call(a,window.event)})}function h(){var b=a.contentDocument||a.contentWindow.document;0!==b.URL.indexOf("about:")?"complete"===b.readyState?e.call(b):(g(b,"DOMContentLoaded",e),g(b,"readystatechange",f)):c=setTimeout(h,1)}var c,d=!1;g(a,"load",function(){var b=a.contentDocument;b||(b=a.contentWindow,b&&(b=b.document)),b&&e.call(b)}),h()} // eslint-disable-line
+
+        options.id = (options.id || "").replace(/\W+/g,"");
+        options.id = options.id || new Date().getTime();
+        var modal_id = "sp_frame_"+options.id;
+        if (options.html && typeof options.html === "string") {
+          ohtml = document.createElement('div');
+          ohtml.style.padding="10px";
+          ohtml.style.display="inline-block";
+          ohtml.className = "sp-showModalDialog";
+          ohtml.id = 'content_'+modal_id;
+          ohtml.innerHTML = options.html;
+          options.html = ohtml;
+        }
+        // if width and height are set to "calculated" then we'll use the viewport size to define them
+        if (options.width === "calculated" || options.height === "calculated") {
+          size = _this.getPageSize();
+          if (options.width === "calculated") {
+            options.width = size.vw.width;
+            if (options.width > 768) {
+              // we want to adjust to use 2/3
+              options.width = 2*options.width/3
+            }
           }
-        }
-      }
-      if (options.width === "full" || options.height === "full") {
-        size = _this.getPageSize();
-        if (options.width === "full") options.width = size.vw.width;
-        if (options.height === "full") options.height = size.vw.height;
-      }
-      options.wait = (options.wait === true ? true : false);
-      options.closePrevious = (options.closePrevious === true ? true : false);
-      if (options.previousClose === true) options.closePrevious=true;
-      if (options.closePrevious) _this.closeModalDialog();
-
-      // if showClose=false and callback is used, then showClose=false and hideClose=true
-      // the reason is callback won't be triggered if showclose is false
-      if (options.showClose === false && (options.dialogReturnValueCallback || options.callback)) {
-        options.showClose = true;
-        options.hideClose = true;
-      }
-
-      // define our own callback function to properly delete the Modal when it's closed
-      var callback = options.dialogReturnValueCallback || options.callback || function() {};
-      options.dialogReturnValueCallback = function(dialogResult, returnValue) {
-        // if we use .close() then we have only one argument
-        var id, dialog;
-        if (typeof dialogResult === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "closeModalDialog") {
-          var args = dialogResult;
-          dialogResult = args.dialogResult;
-          returnValue = args.returnValue;
-          id = args.id;
-        }
-
-        // make sure we remove the correct modal, so if "id" is provided, we look for it
-        if (id) {
-          for (var i=0; i<window.top._SP_MODALDIALOG.length; i++) {
-            if (window.top._SP_MODALDIALOG[i].id === id) {
-              dialog = window.top._SP_MODALDIALOG.splice(i, 1);
-              dialog = dialog[0];
-              break;
+          if (options.height === "calculated") {
+            options.height = size.vw.height;
+            if (options.height > 576) {
+              // we want to adjust to use 90%
+              options.height = 90*options.height/100
             }
           }
         }
-        if (!dialog) dialog = window.top._SP_MODALDIALOG.pop();
+        if (options.width === "full" || options.height === "full") {
+          size = _this.getPageSize();
+          if (options.width === "full") options.width = size.vw.width;
+          if (options.height === "full") options.height = size.vw.height;
+        }
+        options.wait = (options.wait === true ? true : false);
+        options.closePrevious = (options.closePrevious === true ? true : false);
+        if (options.previousClose === true) options.closePrevious=true;
+        if (options.closePrevious) _this.closeModalDialog();
 
-        // remove <style> for overlay
-        window.top.document.body.removeChild(window.top.document.getElementById("style_"+dialog.id));
-        callback.call(this, dialogResult, returnValue);
-      };
-
-      var fct = function() {
-        var modal = (options.wait ? SP.UI.ModalDialog.showWaitScreenWithNoClose(options.title, options.message, options.height, options.width) : SP.UI.ModalDialog.showModalDialog(options)); // eslint-disable-line
-
-        // search for the lastest iframe + ms-dlgContent in the top frame body
-        var wt = window.top;
-        var id = modal_id;
-        var frames = wt.document.querySelectorAll('body > iframe');
-        var frame = frames[frames.length-1];
-        var biggestZ = 0;
-        // we define an attribute to find them later
-        frame.setAttribute("id", id);
-        // record it into a special object
-        if (typeof wt._SP_MODALDIALOG === "undefined") wt._SP_MODALDIALOG=[];
-
-        wt._SP_MODALDIALOG.push({id:id, modal:modal, zIndex:frame.style.zIndex, options:options, type:"modalDialog"});
-        // check the z-index for .ms-dlgOverlay
-        wt._SP_MODALDIALOG.forEach(function(val) {
-          if (val.zIndex > biggestZ) biggestZ = val.zIndex;
-        });
-        biggestZ--;
-        wt.document.body.insertAdjacentHTML('beforeend', '<style id="style_'+id+'">.ms-dlgOverlay { z-index:'+biggestZ+' !important; display:block !important }</style>');
-        // if showClose=true and callback is used, then showClose=false and hideClose=true
+        // if showClose=false and callback is used, then showClose=false and hideClose=true
         // the reason is callback won't be triggered if showclose is false
-        if (options.hideClose === true) {
-          var cross = frame.nextSibling.querySelector('.ms-dlgCloseBtn');
-          cross.parentNode.removeChild(cross);
+        if (options.showClose === false && (options.dialogReturnValueCallback || options.callback)) {
+          options.showClose = true;
+          options.hideClose = true;
         }
-        if (typeof options.onload==="function") options.onload();
-        if (options.url && options.onurlload && typeof options.onurlload === "function") {
-          // find the iframe
-          var frameURL = wt.document.getElementById(id);
-          if (frameURL) frameURL = frameURL.nextSibling;
-          if (frameURL) frameURL = frameURL.querySelector('iframe');
-          if (frameURL) {
-            iFrameReady(frameURL, options.onurlload)
+
+        // define our own callback function to properly delete the Modal when it's closed
+        var callback = options.dialogReturnValueCallback || options.callback || function() {};
+        options.dialogReturnValueCallback = function(dialogResult, returnValue) {
+          // if we use .close() then we have only one argument
+          var id, dialog;
+          if (typeof dialogResult === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "closeModalDialog") {
+            var args = dialogResult;
+            dialogResult = args.dialogResult;
+            returnValue = args.returnValue;
+            id = args.id;
           }
-        }
-      };
-      SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js'); // eslint-disable-line
+
+          // make sure we remove the correct modal, so if "id" is provided, we look for it
+          if (id) {
+            for (var i=0; i<window.top._SP_MODALDIALOG.length; i++) {
+              if (window.top._SP_MODALDIALOG[i].id === id) {
+                dialog = window.top._SP_MODALDIALOG.splice(i, 1);
+                dialog = dialog[0];
+                break;
+              }
+            }
+          }
+          if (!dialog) dialog = window.top._SP_MODALDIALOG.pop();
+
+          // remove <style> for overlay
+          window.top.document.body.removeChild(window.top.document.getElementById("style_"+dialog.id));
+          callback.call(this, dialogResult, returnValue);
+          prom_res({dialogResult:dialogResult, returnValue:returnValue});
+        };
+
+        var fct = function() {
+          var modal = (options.wait ? SP.UI.ModalDialog.showWaitScreenWithNoClose(options.title, options.message, options.height, options.width) : SP.UI.ModalDialog.showModalDialog(options)); // eslint-disable-line
+
+          // search for the lastest iframe + ms-dlgContent in the top frame body
+          var wt = window.top;
+          var id = modal_id;
+          var frames = wt.document.querySelectorAll('body > iframe');
+          var frame = frames[frames.length-1];
+          var biggestZ = 0;
+          // we define an attribute to find them later
+          frame.setAttribute("id", id);
+          // record it into a special object
+          if (typeof wt._SP_MODALDIALOG === "undefined") wt._SP_MODALDIALOG=[];
+
+          wt._SP_MODALDIALOG.push({id:id, modal:modal, zIndex:frame.style.zIndex, options:options, type:"modalDialog"});
+          // check the z-index for .ms-dlgOverlay
+          wt._SP_MODALDIALOG.forEach(function(val) {
+            if (val.zIndex > biggestZ) biggestZ = val.zIndex;
+          });
+          biggestZ--;
+          wt.document.body.insertAdjacentHTML('beforeend', '<style id="style_'+id+'">.ms-dlgOverlay { z-index:'+biggestZ+' !important; display:block !important }</style>');
+          // if showClose=true and callback is used, then showClose=false and hideClose=true
+          // the reason is callback won't be triggered if showclose is false
+          if (options.hideClose === true) {
+            var cross = frame.nextSibling.querySelector('.ms-dlgCloseBtn');
+            cross.parentNode.removeChild(cross);
+          }
+          if (typeof options.onload==="function") options.onload();
+          if (options.url && options.onurlload && typeof options.onurlload === "function") {
+            // find the iframe
+            var frameURL = wt.document.getElementById(id);
+            if (frameURL) frameURL = frameURL.nextSibling;
+            if (frameURL) frameURL = frameURL.querySelector('iframe');
+            if (frameURL) {
+              iFrameReady(frameURL, options.onurlload)
+            }
+          }
+        };
+        SP.SOD.executeOrDelayUntilScriptLoaded(fct, 'sp.ui.dialog.js'); // eslint-disable-line
+      })
     },
     /**
       @name $SP().closeModalDialog
@@ -4964,6 +5612,50 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       dlg.style.left=(pageSize.vw.width / 2 - pxToNum(dlg.style.width) / 2 ) + "px";
     },
     /**
+     * @name $SP().getTimeZoneInfo
+     * @function
+     * @category utils
+     * @description Permits to retrieve the TimeZone informations (ID, Description, XMLTZone) based on the server's timezone
+     *
+     * @param {Object} [settings]
+     *   @param {String} [settings.url="current website"]
+     * @return {Object} resolve({ID, Description, XMLTZone}), reject(error)
+     */
+    getTimeZoneInfo:function(settings) {
+      // https://docs.microsoft.com/en-us/previous-versions/office/sharepoint-server/ms453853(v%3Doffice.15)
+      var _this=this;
+      return this._promise(function(prom_resolve, prom_reject) {
+        settings = settings || {};
+        if (!settings.url) {
+          return _this._getURL()
+          .then(function(url) {
+            return _this.getTimeZoneInfo({url:url})
+          })
+          .then(function(res) {
+            prom_resolve(res);
+          })
+          .catch(function(rej) {
+            prom_reject(rej)
+          })
+        }
+
+        _this.ajax({url:settings.url+'/_api/web/RegionalSettings/TimeZone'})
+        .then(function(data) {
+          prom_resolve({
+            ID:data.d.Id,
+            Description:data.d.Description,
+            Bias:data.d.Information.Bias,
+            StandardBias:data.d.Information.StandardBias,
+            DaylightBias:data.d.Information.DaylightBias,
+            XMLTZone:"<timeZoneRule><standardBias>"+(data.d.Information.Bias*1+data.d.Information.StandardBias*1)+"</standardBias><additionalDaylightBias>"+data.d.Information.DaylightBias+"</additionalDaylightBias></timeZoneRule>"
+          })
+        })
+        .catch(function(rej) {
+          prom_reject(rej)
+        })
+      })
+    },
+    /**
       @name $SP().registerPlugin
       @function
       @category core
@@ -5030,6 +5722,7 @@ var _SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nomet
       exports = module.exports = SharepointPlus;
     }
     exports.SharepointPlus = SharepointPlus;
+
   }
   else {
     window.$SP = window.SharepointPlus = SharepointPlus;

@@ -1,6 +1,22 @@
 # Changelog
 
-**Change Log v5.2 ()**
+**Change Log v5.2 (March 25, 2019)**
+
+  - Remove `argument.callee` because it's deprecated and returns error with strict mode
+  - Add option `merge` for `$SP().list.get()` that permits to merge several lists in the same dataset
+  - Add support for `RecurrenceData`  when adding a recurrent event with `$SP().list().add()`
+  - Add option `event` and examples to update one occurrence of a recurrent event with `$SP().list().update()`
+  - Add option `event` and examples to remove one occurrence of a recurrent event with `$SP().list().remove()`
+  - Add function `$SP().parseRecurrence` that converts a RecurrenceData XML string to an object, and vice-versa
+  - Add function `$SP().getTimeZoneInfo` that returns the TimeZoneID, and other information used when setting recurrent event
+  - Add support for download `onprogress` for `$SP().ajax()`
+  - Add `$SP().list().stopWorkflow()` to stop/terminate workflows 2010
+  - Add unit tests for calendar events and `$SP().parseRecurrence()`
+  - Change `$SP().showModalDialog()` that now returns a Promise (we can use either the callback function or the promise)
+  - Change `PeopleAhead` plugin to be compatible with SharepointPlus 5.1+
+  - Fix `outerjoin` when using `onLookup` for `$SP().list.get()`
+  - Fix incorrect characters in filenames for `addAttachment` and `createFile`
+  - Fix missing catch for `$SP().lists()` (see https://github.com/Aymkdn/SharepointPlus/issues/116)
 
 **Change Log v5.1 (August 21, 2018)**
 
