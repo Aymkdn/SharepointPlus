@@ -1,7 +1,41 @@
-body { font-family:"Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif }
-h1 { padding:10px 0 }
-h2 { padding-bottom:10px }
-h3 { color:#999 }
+body,p { font-family:"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif; font-size:14px; }
+#main h1 {
+  margin:10px 0 25px 0;
+  font-size:38px;
+}
+#main h2::before {
+  content: '\2605';
+  margin-right: 5px;
+}
+#main h2 {
+  padding-top:15px;
+  padding-bottom:10px;
+  font-size:28px;
+}
+#main h3 {
+  padding-bottom:10px;
+  padding-left:10px;
+  color:#a78b04;
+  font-size:23px;
+}
+#main h4, #main h3 + .content {
+  padding-left: 20px;
+}
+#main h4 {
+  font-size:18px;
+  color:#a78b04;
+  font-weight:normal;
+  padding-bottom:10px;
+  padding-top:5px;
+}
+#main h4 + .content {
+  padding-left: 30px;
+}
+#main h5 {
+  font-size:14px;
+  padding-bottom: 10px;
+  padding-top: 5px;
+}
 hr  { border-color:#000 }
 .logo {
   display:block;
@@ -11,7 +45,7 @@ hr  { border-color:#000 }
 }
 .logo:hover { text-decoration:none }
 .method { font-weight:bold }
-.description { white-space:pre }
+.description { white-space:pre-wrap }
 div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:before,div.name > b[data-param^="settings."]:before {
   content:"\21AA ";
   display: inline-block;
@@ -38,7 +72,6 @@ div.name > b[data-param^="setup."]:before,div.name > b[data-param^="options."]:b
 .name { white-space:nowrap }
 pre { font-size:13px }
 .member h2 { display:inline-block }
-#main h4 { font-size:16px; color:#999; font-weight:normal; }
 .sibbill {
   background-color: #40263B;
   color: #FFF;
@@ -60,3 +93,31 @@ pre { font-size:13px }
   vertical-align: -2px;
 }
 .navbar .nav > li > a { color:#AEAEAE }
+/* alert with border like the vuetify one */
+.alert-bordered {
+  background-color:#FFF;
+  border-width:1px 5px 1px 5px;
+  display:inline-block;
+}
+.alert-danger.alert-bordered {
+  border-color:red;
+}
+.alert-info.alert-bordered {
+  border-color:blue;
+}
+/* shadow from last Bootstrap */
+.shadow {
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+/* for the comparative table */
+#main table {
+  margin-bottom:10px;
+}
+#main caption {
+  font-size: 12px;
+  text-align: left;
+}
+#main td {
+  border: 1px solid #CCC;
+  padding: 3px;
+}

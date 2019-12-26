@@ -6,38 +6,172 @@ var self = this;
 
       <div class="span10" id="main"> <!-- content -->
         <h1>SharepointPlus <?js= this.SPversion ?></h1>
-        <div class="alert alert-danger">Important changes introduced with SharepointPlus v5.0. Make sure to <a href="https://github.com/Aymkdn/SharepointPlus/wiki/SharepointPlus-5.0-Announcement">read the announcement</a> and to read the <a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md">changelog</a>.</div>
-        <a href="https://twitter.com/sp_js" class="twitter-follow-button" data-show-count="false" data-lang="en" data-dnt="true">Follow @sp_js</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        <a href="https://gitpunch.com/" class="sibbill" title="with gitpunch.com"><img src="img/sibbell.png" width="12" height="12" /> Be notified on new release</a> <a href="https://www.jsdelivr.com/package/npm/sharepointplus"><img src="https://data.jsdelivr.com/v1/package/npm/sharepointplus/badge" alt="badge JSDelivr"></a>
+        <div class="alert alert-danger alert-bordered">Important changes introduced with <b>SharepointPlus v6.0</b>. Make sure to <a href="https://github.com/Aymkdn/SharepointPlus/wiki/SharepointPlus-v6.0-Announcement">read the announcement</a> and to read the <a href="https://github.com/Aymkdn/SharepointPlus/blob/master/changelog.md">changelog</a>.</div>
+        <div>
+          <a href="https://twitter.com/sp_js" class="twitter-follow-button" data-show-count="false" data-lang="en" data-dnt="true">Follow @sp_js</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+          <!-- <a href="https://gitpunch.com/" class="sibbill" title="with gitpunch.com"><img src="img/sibbell.png" width="12" height="12" /> Be notified on new release</a> --> <a href="https://www.jsdelivr.com/package/npm/sharepointplus"><img src="https://data.jsdelivr.com/v1/package/npm/sharepointplus/badge" alt="badge JSDelivr"></a>
+        </div>
         <h2>Description</h2>
-        <p><a href="https://github.com/Aymkdn/SharepointPlus" title="Github Repository">SharepointPlus ($SP)</a> is a <strong>JavaScript API for Sharepoint</strong>. This library offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with the Sharepoint Web Services and will help you to deal with the List Forms.</p>
-        <p>Other JavaScript library like this one are often complex, with few or no example. With SharepointPlus it's easy (<em>like the SQL syntax</em>) and you'll find examples for each method.</p>
-        <p>I've developed this API for my needs during my job at <a href="http://www.dell.com">Dell</a> and we thought it could be useful for the community too, so here it is !</p>
-        <div class="alert alert-error" style="display:none" aria-hidden="true"><a href="https://github.com/Aymkdn/SharepointPlus/tree/master/old_versions">SharepointPlus v3.0.4</a> is the last release 100% compatible with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility (even if everything should be OK anyway).<br>
-        Starting SharepointPlus v3.0.5 it should be fully compatible with <b>Sharepoint 2010</b>.</div>
+        <div class="content">
+          <p><a href="https://github.com/Aymkdn/SharepointPlus" title="Github Repository">SharepointPlus ($SP)</a> is a <strong>JavaScript API for Sharepoint</strong>. This library offers some extended features for SharePoint entirely on client side (requires no server install). $SP will simplify your interactions with Sharepoint.</p>
+        </div>
+
         <h2>Sharepoint Support</h2>
-        <p>
-          <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/releases">SharepointPlus v3.0.4</a> is the last release that I have tested with <b>Sharepoint 2007</b> -- after this version I cannot assure the retro-compatibility<br>
-          <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.4<br>
-          <b>Sharepoint 2013</b> : Compatible since SharepointPlus v3.13<br>
-          <b>Sharepoint 2016/Online</b> : Compatible since SharepointPlus v3.13 (not tested yet, but based on <a href="https://github.com/Aymkdn/SharepointPlus/issues/53#issuecomment-301227608">testimony</a>)
-        </p>
-        <h2>Browser Support</h2>
-        <p>
-          <b>IE11, and all modern browsers (Firefox, Chrome, Edge, ...)</b> (support for older browsers stopped from v5.0).
-        </p>
-        <h2>Quick Start</h2>
-        <h3>Requirements</h3>
-        <p>If you plan to use IE11, you need to add the <a href="https://github.com/taylorhakes/promise-polyfill">Promise polyfill</a>.</p>
-        <h3>The basics</h3>
-        <p>Just add one line to call SharepointPlus:</p>
+        <div class="content">
+          <p>
+            <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/releases/tag/v3.0.5">SharepointPlus v3.0.5</a> is the last release that I have tested with Sharepoint 2007 -- <i>after this version I cannot assure the retro-compatibility</i><br>
+            <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.5 -- <i>SP2010 is not tested anymore with last versions but it should work OK</i><br>
+            <b>Sharepoint 2013/2016/2019/Online</b> : Compatible since SharepointPlus v3.13 -- <strong style="color:green">&#10003; fully tested, 100% compatible!</strong>
+          </p>
+        </div>
+
+        <h2>Installation</h2>
+        <h3>Node environment</h3>
+        <div class="content">
+          <p>If you develop with Node, you can install the module with:</p>
+<pre class="prettyprint lang-bash">
+npm install sharepointplus
+</pre>
+        <p>Then, just import it:</p>
 <pre class="prettyprint lang-js">
-  &lt;script type="text/javascript" src="sharepointplus-<?js= this.SPversion ?>.min.js">&lt;/script></pre>
-        <p>You may also want to use a CDN: <a href="https://www.jsdelivr.com/#!sharepointplus">SharepointPlus on JSDelivr</a> or <a href="https://unpkg.com/sharepointplus">SharepointPlus on unpkg</a></p>
-        <h4>Lists</h4>
-        <p>SharepointPlus is mainly based on the different <a href="http://sympmarc.github.io/SPServices/core/web-services.html" title="Link to Sympraxis website with some documentation regarding the Sharepoint Web Services">Web Services</a> provided by Sharepoint.</p>
-        <p>Let's see some examples of what you can do with SharepointPlus regarding the Lists interaction:</p>
+import $SP from 'sharepointplus'
+</pre>
+
+        <p>To make <code>$SP</code> available from the browser's web console, you can add:</p>
+<pre class="prettyprint lang-js">
+global.$SP=$SP;
+</pre>
+        </div>
+        <h4>Tree Shaking</h4>
+        <div class="content">
+          <p>Because SharepointPlus is split in small modules, you can only import the pieces you need, reducing the size of your bundles. To do so, you have two options.</p>
+
+          <h5>1) Without Webpack</h5>
+          <p>If you don't use Webpack, then you need to manually import the different modules based on your needs.</p>
+<pre class="prettyprint lang-js">
+// By using the below line, you'll import all the 70+ functions in your bundle
+// import $SP from 'sharepointplus'
+// By replacing the above line with only the necessary functions, you'll cut down the bundle size:
+
+// let's suppose you only need $SP().list().get() and $SP().getPeopleLookup() in your file
+import spInit from 'sharepointplus/es5/init.js'
+import list from 'sharepointplus/es5/lists/list.js'
+import get from 'sharepointplus/es5/lists/get.js'
+import getPeopleLookup from 'sharepointplus/es5/utils/getPeopleLookup.js'
+const $SP = spInit({'list':list, 'get':get, 'getPeopleLookup':getPeopleLookup });
+</pre>
+          <p>Find the path to each function <a href="https://github.com/Aymkdn/sharepointplus-loader/blob/master/path.json">into this file</a>.</p>
+          <h5>2) With Webpack / SPFx project</h5>
+          <p>If you use Webpack for your application, you can leverage the <a href="https://github.com/Aymkdn/sharepointplus-loader"><code>sharepointplus-loader</code> plugin</a> that will automatically replace <code>import $SP from 'sharepointplus'</code> in your code with the functions used in the file.</p>
+<pre class="prettyprint lang-js">
+// ----- file 'component.js' BEFORE being compiled with Webpack
+import $SP from 'sharepointplus'
+</pre>
+<pre class="prettyprint lang-js">
+// ----- file 'component.js' AFTER being compiled with Webpack using the `sharepointplus-loader` plugin
+// let's suppose you only use $SP().list().get() and $SP().getPeopleLookup() in the file
+// then the `sharepointplus-loader` plugin will automatically convert `import $SP from 'sharepointplus'` to the below code:
+import spInit from 'sharepointplus/es5/init.js'
+import list from 'sharepointplus/es5/lists/list.js'
+import get from 'sharepointplus/es5/lists/get.js'
+import getPeopleLookup from 'sharepointplus/es5/utils/getPeopleLookup.js'
+const $SP = spInit({'list':list, 'get':get, 'getPeopleLookup':getPeopleLookup });
+</pre>
+          <p>To use <a href="https://github.com/Aymkdn/sharepointplus-loader"><code>sharepointplus-loader</code> plugin</a>, add it to your Webpack configuration file, in the plugins section.</p>
+
+          <p>For <strong>regular Webpack config</strong>:</p>
+<pre class="prettyprint lang-js">
+// ----- file 'webpack.conf.js'
+const webpack = require('webpack');
+const SharepointPlusLoaderPlugin = require('sharepointplus-loader/plugin'); // load the plugin
+module.exports = {
+  [ ... your configuration ... ],
+  plugins:[
+    new SharepointPlusLoaderPlugin() // add the plugin here
+  ]
+};
+</pre>
+
+          <p>Or if you work <strong>with SPFx</strong> you have to edit your <code>gulpfile.js</code> file:</p>
+<pre class="prettyprint lang-js">
+// ----- file 'gulpfile.js'
+const gulp = require('gulp');
+const build = require('@microsoft/sp-build-web');
+[ ... your configuration ... ]
+
+// add the plugin with the below block of code:
+const webpack = require('webpack');
+const SharepointPlusLoaderPlugin = require('sharepointplus-loader/plugin'); // load the plugin
+build.configureWebpack.mergeConfig({
+  additionalConfiguration: (generatedConfig) => {
+    if (!Array.isArray(generatedConfig.plugins)) generatedConfig.plugins=[];
+    generatedConfig.plugins.push(new SharepointPlusLoaderPlugin()); // add the plugin here
+    // return modified config => SPFx build pipeline
+    return generatedConfig;
+  }
+});
+
+build.initialize(gulp);
+</pre>
+
+        </div>
+        <h3>Browser only</h3>
+        <div class="content">
+          <p>You can also just <a href="https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js">drop one file</a> in your HTML document which will contain all the 70+ functions and all the polyfills to support the <a href="https://browserl.ist/?q=defaults">different browsers</a>:</p>
+<pre class="prettyprint lang-html">
+  &lt;script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js">&lt;/script>
+</pre>
+          <div class="alert alert-info alert-bordered">Because this file contains all the functions as well as all the polyfills, it might be quite big (~62KB gzipped).</div>
+        </div>
+        <h4>Browser Support</h4>
+        <div class="content">
+          <p>
+            IE11, and all modern browsers (Firefox, Chrome, Edge, ...) (<a href="https://browserl.ist/?q=defaults">see coverage</a>) are supported with the bundle for browsers.
+          </p>
+        </div>
+
+        <h2>How it works</h2>
+        <p>SharepointPlus uses the different <a href="http://sympmarc.github.io/SPServices/core/web-services.html" title="Link to Sympmarc website with some documentation regarding the Sharepoint Web Services">Sharepoint Web Services</a> to deal with the Sharepoint server.</p>
+        <p>Below is a comparative between Web Services (used by SharepointPlus) and REST API (used by some other libraries):</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Web Services (XML)</th>
+              <th>REST API (JSON)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:green">&#10003;</span> Large compatibility (since Sharepoint 2007)</td>
+              <td><span style="color:red">&#10007;</span> Partial support (since Sharepoint 2013 only)</td>
+            </tr>
+            <tr>
+              <td><span style="color:green">&#10003;</span> Consistent availability of features across versions</td>
+              <td><span style="color:red">&#10007;</span> New features only applied to Sharepoint Online</td>
+            </tr>
+            <tr>
+              <td><span style="color:green">&#10003;</span> Large coverage of features</td>
+              <td><span style="color:red">&#10007;</span> More restreint features</td>
+            </tr>
+            <tr>
+              <td><span style="color:green">&#10003;</span> Simple authentication</td>
+              <td><span style="color:red">&#10007;</span> Authentication with a token</td>
+            </tr>
+            <tr>
+              <td><span style="color:green">&#10003;</span> Native XML, but JSON supported by SharepointPlus</td>
+              <td><span style="color:green">&#10003;</span> Native JSON support</td>
+            </tr>
+            <tr>
+              <td><span style="color:red">&#10007;</span> Bigger amount of bytes returned</td>
+              <td><span style="color:green">&#10003;</span> Less amount of bytes returned</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Because of the large compatibility and of the available features, using the Web Services it's still the right call for SharepointPlus.</p>
+
+        <h2>Examples</h2>
+        <p>Let's see some examples of what you can do with SharepointPlus:</p>
 <pre class="prettyprint lang-js">
 // Update all items with an "Amount" value bigger than 1000
 $SP().list('My List Name').update({
@@ -49,6 +183,7 @@ $SP().list('My List Name').update({
 });
 
 // Get all items with "Requestor" as the current user and with "Default Color" is "pink"
+// Ordered by Size from bigger to smaller
 $SP().list('ListName').get({
   fields:"Title,Size",
   where:"Requestor = '[Me]' AND Default_x0020_Color = 'pink'",
@@ -59,50 +194,52 @@ $SP().list('ListName').get({
     html += "&lt;li>Model '"+data[i].getAttribute("Title")+"' (size: "+data[i].getAttribute("Default_x0020_Color")+")&lt;li>";
   $('#list').append(html+'&lt;/ul>');
 });
-</pre>
-<p>Find more examples on <a href="https://aymkdn.github.io/SharepointPlus/lists.html">the dedicated page</a>.</p>
-        <h4>Forms</h4>
-        <p>The <a href="https://github.com/Aymkdn/SharepointPlus/tree/master/plugins/formfields">plugin <em>formfields</em></a> of SharepointPlus provides few functions to interact with <em>NewForm.aspx</em> and <em>EditForm.aspx</em> of a list:</p>
-<pre class="prettyprint lang-js">
-// make sure to call the plugin: &lt;script type="text/javascript" src="sp-plugin.formfields.js">&lt;/script>
 
-// hide the &lt;TR> for the field "Title", and add a red background for the &lt;TR> for the field "Next Action"
-var rows=$SP().formfields("Title,Next Action").row(); // row() returns a HTMLNodeElement (or a jQuery object if jQuery is available) that represents the &lt;TR> element
-rows[0].style.display="none";
-rows[1].style.backgroundColor="red";
-
-// check if all mandatory fields have a value, and also "Title"
-$SP().formfields("Title",{mandatory:true}).each(function() {
-  if (this.val() == "") {
-    alert(this.name+" is empty!");
-  }
-});
-</pre>
-<p>Find more examples on <a href="https://aymkdn.github.io/SharepointPlus/forms.html">the dedicated page</a>.</p>
-        <h4>Utilities</h4>
-        <p>SharepointPlus has also some useful functions:</p>
-<pre class="prettyprint lang-js">
-// take a number and return it as a currency amount
-$SP().toCurrency(1500000,2,'$'); // --> $1,500,000.00
-
-// when you have to deal with a date from a .get() ...
-$SP().list('My Calendar List').get({fields:"Meeting_x0020_Date"}).then(function(data) {
+// when you have to deal with a date from a .get() you can use `$SP().toDate()`...
+$SP().list('My Calendar List').get({
+  fields:"Meeting_x0020_Date"
+})
+.then(function(data) {
   for (var i=data.length; i--;) console.log($SP().toDate(data[i].getAttribute("Meeting_x0020_Date")).getFullYear());
 });
-// ... or to a .add()/.update()
+// ... or `$SP().toSPDate()` to send it back to Sharepoint
 var nextMeeting = new Date("5/May/2015");
-$SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP.toSPDate(nextMeeting)});
-</pre>
-<p>Find more examples on <a href="https://aymkdn.github.io/SharepointPlus/utils.html">the dedicated page</a>.</p>
+$SP().list('ListName').add({Title:"Next Meeting",Meeting_x0020_Date:$SP().toSPDate(nextMeeting)});
 
-<h1>Try it out</h1>
+// You can parse an extended person field coming from a list
+// e.g. get the authors' emails of items created during the last 10 days
+// Note: here we use `json:true` to get a JSON
+$SP().list("My List").get({
+  fields:"Author", // we need the "Author" column
+  where:"Created > [Today-10]", // all items created during the last 10 days
+  expandUserField:true, // we want to get all details for the user, like their id, name, username, email
+  json:true // we want the result to be returned as a JSON
+})
+.then(function(data) {
+  data.forEach(function(d) {
+    console.log($SP().getPeopleLookup(d.Author).email);
+  })
+})
+
+// Create a file with "Hello World" as a content, and put it in a folder called "Demo"
+$SP().list("Documents").createFile({
+  content:"Hello World",
+  filename:"Demo/HelloWorld.txt"
+})
+.then(function(file) {
+  console.log(file.Url+" has been created")
+})
+</pre>
+<p>Each function is documented with examples.</p>
+
+<h2>Try it out</h2>
 <p>You can test it right now. Just open your browser "Developer Tools" window on your SharePoint site somewhere, then run the following code snippet which will load the SharepointPlus script dynamically:</p>
 <pre class="prettyprint lang-js">
 // 1: Load SharepointPlus
 var script = document.createElement('script');
-script.src = "//unpkg.com/sharepointplus";
+script.src = "//cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js";
 document.getElementsByTagName('head')[0].appendChild(script);
-// if you receive the error: "Refused to load the script 'https://unpkg.com/sharepointplus' because it violates the following Content Security Policy directive" then you'll have to copy/paste the code from https://unpkg.com/sharepointplus in the console
+// if you receive the error: "Refused to load the script 'https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js' because it violates the following Content Security Policy directive" then you'll have to directly copy/paste the code from https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js in the console
 
 // 2: Try some library methods
 $SP().list('List In the Current Site').get({fields:"ID", where:"ID > 0"}).then(function(data) { data.forEach(function(d) { console.log(d.getAttribute("ID")) }) });
@@ -110,14 +247,10 @@ $SP().whoami().then(function(people) { for (var i=0; i < people.length; i++) con
 </pre>
 
 <b>Example:</b>
-<img src="img/console_example.png" alt="Example into the web developer console">
+<img src="img/console_example.png" alt="Example into the web developer console" class="shadow">
 
-<h1>NodeJS</h1>
-<p>Since SharepointPlus 4.0 you can use it as a node module for your node's applications.</p>
-<pre class="prettyprint lang-bash">
-npm install sharepointplus
-</pre>
-<p>Find below an example on how to use it for <strong>server side application</strong>:</p>
+<h2>Node Server Side Application</h2>
+<p>If you plan to run SharepointPlus on the server side using Node, you will need to <strong>provide your Sharepoint credentials</strong> (see this <a href="https://github.com/s-KaiNet/node-sp-auth/wiki">wiki to find the different authentication systems</a>).</p>
 <pre class="prettyprint lang-js">
 // the credentials depend of your authentication system
 // see: https://github.com/s-KaiNet/node-sp-auth
@@ -136,18 +269,11 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
 // e.g.: sp.list("Hello", "http://my.sharepoint.site/").get(...);
 </pre>
 
-<p>For <strong>client side application</strong> built with <strong>Webpack</strong> you may need to ignore the <strong>sp-request</strong> and <strong>xmldom</strong> modules with the <a href="https://webpack.js.org/plugins/ignore-plugin/">ignorePlugin</a> from Webpack:</p>
-<pre class="prettyprint lang-js">
-// webpack.config.js
-plugins: [
-  new webpack.IgnorePlugin(/^sp-request$/),
-  new webpack.IgnorePlugin(/^xmldom$/)
-]
-</pre>
-
-<h1>Old Versions</h1>
+<h2>Older Versions</h2>
 <p>The previous versions of SharepointPlus are available in the <a href="https://github.com/Aymkdn/SharepointPlus/releases">releases folder</a></p>
-<p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.com/">https://sharepointplus4.netlify.com/</a>
+<p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.com/">https://sharepointplus4.netlify.com/</a><br>
+  <p>The documentation for SharepointPlus v5.2 is available at <a href="https://sharepointplus5.netlify.com/docs/">https://sharepointplus5.netlify.com/docs/</a>
+</p>
 
       </div>
 
