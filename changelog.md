@@ -1,6 +1,6 @@
 # Changelog
 
-**Change Log v6.0 ()**
+**Change Log v6.0 (December 26, 2019)**
 
   - Added function `$SP().getManager()` to get details about an user's manager
   - Added function `$SP().toPeopleString()` to convert {id, name, username, email} to a "people string"
