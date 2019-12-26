@@ -1,5 +1,28 @@
 # Changelog
 
+**Change Log v6.0 ()**
+
+  - Added function `$SP().getManager()` to get details about an user's manager
+  - Added function `$SP().toPeopleString()` to convert {id, name, username, email} to a "people string"
+  - Added function `$SP().setReadOnly()` to change a READONLY column (like 'Created'/'Author'/'Modified'/'Editor') to an EDITABLE column
+  - Added option `showListInAttribute` for `$SP().list().get()`
+  - Added option `alias` for `$SP().list().get()`
+  - Added option `json` for `$SP().list().get()` that returns an array of JSON
+  - Added support for `~<>` in `$SP().parse()`
+  - Added parameter `folderOptions.rootFolder` for `$SP.list().get()` for when it's a document library with a different name
+  - Added option `type` for `$SP().checkin()` ('MinorCheckIn' (incremented as a minor version), 'MajorCheckIn' (incremented as a major version), or 'OverwriteCheckIn' (overwrite the file))
+  - Added option `breakOnFailure` for `$SP().list().add()`, `$SP().list().remove()` and `$SP().list().update()`
+  - Added more unit tests
+  - Changed the way `$SP().notify()` calls `sp.js` and `core.js`
+  - Changed the default `packetsize` from 15 to 30 for `$SP().list().add()`, `$SP().list().remove()` and `$SP().list().update()`
+  - Changed the call for `$SP().list().get()` with `where` as an array from a succession of calls to calls in parallel
+  - Changed changelog to auto-ignore modules that are meant for server-side use (see #https://github.com/Aymkdn/SharepointPlus/issues/123) (based on https://github.com/defunctzombie/package-browser-field-spec)
+  - Fixed `view` utilized with `where` as an array in `$SP().list().get()`
+  - Renamed `$SP().SPArrayBufferToBase64()` to `$SP().arrayBuffer()`
+  - Renamed `$SP().SPExtend()` to `$SP().cloneObject()`
+  - Renamed `$SP().SPArrayChunk()` to `$SP().arrayChunk()`
+  - Updated the documentation
+
 **Change Log v5.2 (March 25, 2019)**
 
   - Remove `argument.callee` because it's deprecated and returns error with strict mode

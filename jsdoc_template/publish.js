@@ -2,16 +2,12 @@
 
 var fs = require('jsdoc/fs');
 var SPversion = '';
-// retrieve the SP version from the filename
+// retrieve the SP version 'from src/main.js'
 !function() {
-  // list files in directory
-  var files = fs.readdirSync(__dirname+"/../");
-  for (var filename of files) {
-    var mtch = filename.match(/sharepointplus-(\d\.\d)\.js/);
-    if (mtch) {
-      SPversion = mtch[1];
-      break;
-    }
+  var content = require('fs').readFileSync(__dirname+"/../src/main.js", "utf8");
+  var mtch = content.match(/getVersion \(\) { return "(\d\.\d)" }/);
+  if (mtch) {
+    SPversion = mtch[1];
   }
 }();
 var doop = require('jsdoc/util/doop');
