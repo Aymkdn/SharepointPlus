@@ -58,7 +58,7 @@ $SP().list('ListName').get({
 })
 .then(function(data) {
   data.forEach(function(d) {
-    console.log("Model = "+d.Title+" (color: "+d.Default_x0020_Color+")";
+    console.log("Model = "+d.Title+" (size: "+d.size+")";
   })
 });
 ```
