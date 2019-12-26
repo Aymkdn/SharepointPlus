@@ -9,3 +9,60 @@ SharepointPlus ($SP) is a JavaScript library which offers some extended features
 ## Documentation
 
 Browse the [online documentation here](http://aymkdn.github.com/SharepointPlus/).
+
+## Quick Start
+
+### Node Environment
+
+```sh
+npm install sharepointplus
+```
+
+Then:
+```javascript
+import $SP from 'sharepointplus'
+```
+
+Please, make sure to read [the documentation](http://aymkdn.github.com/SharepointPlus/) to optimize your bundle size.
+
+### Browser Only
+
+To directly use it in a browser:
+```html
+  <script type="text/javascript" src="//cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js"></script>
+```
+
+## Usage / Examples
+
+Update all items with an "Amount" value bigger than 1000:
+
+```javascript
+$SP().list('My List Name').update({
+  Title:"Too expensive"
+}, {
+  where:"Amount > 1000"
+})
+.then(function(res) {
+  alert(res.passed.length+" items successfully updated!");
+});
+```
+
+Get all items with "Requestor" as the current user and with "Default Color" is "pink":
+
+```javascript
+$SP().list('ListName').get({
+  fields:"Title,Size",
+  where:"Requestor = '[Me]' AND Default_x0020_Color = 'pink'",
+  orderby:"Size DESC",
+  json:true
+})
+.then(function(data) {
+  data.forEach(function(d) {
+    console.log("Model = "+d.Title+" (color: "+d.Default_x0020_Color+")";
+  })
+});
+```
+
+## More information
+
+Please visit the [online documentation](http://aymkdn.github.com/SharepointPlus/) to know more.
