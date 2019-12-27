@@ -1,5 +1,10 @@
 # Changelog
 
+**Change Log v6.0.2 (December 27, 2019)**
+
+  - Additional fixed to follow up v6.0.1 release
+  - Various tweaks and cleanup
+
 **Change Log v6.0.1 (December 27, 2019)**
 
   - Fixed object creation that shared data with other instances

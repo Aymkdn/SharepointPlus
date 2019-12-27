@@ -57,7 +57,7 @@ function () {
   _createClass(SharepointPlus, [{
     key: "getVersion",
     value: function getVersion() {
-      return "6.0";
+      return "6.0.2";
     }
     /**
       @name $SP().auth
@@ -214,9 +214,5 @@ function () {
 
   return SharepointPlus;
 }();
-/*export default function () {
-  return new SharepointPlus()
-}*/
-
 
 export { SharepointPlus as default };
