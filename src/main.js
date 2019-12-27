@@ -24,7 +24,7 @@ global._SP_MAXWHERE_ONLOOKUP=30;
 global._SP_ISBROWSER=(new Function("try {return this===window;}catch(e){ return false;}"))();
 global._SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nometadata"
 
-export class SharepointPlus {
+export default class SharepointPlus {
   constructor() {
     this.queue = []; // array of {fct:"function to execute", args:"Related arguments for this function"}
     this.data=[];
@@ -149,6 +149,6 @@ export class SharepointPlus {
 
 }
 
-export default function () {
+/*export default function () {
   return new SharepointPlus()
-}
+}*/

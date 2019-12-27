@@ -91,7 +91,7 @@ function _webService() {
             }
 
             _context.next = 10;
-            return getURL();
+            return getURL.call(this);
 
           case 10:
             url = _context.sent;

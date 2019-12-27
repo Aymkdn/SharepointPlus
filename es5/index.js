@@ -63,9 +63,9 @@ import webService from './utils/webService.js';
 import workflowStatusToText from './utils/workflowStatusToText.js';
 
 function spInit(params) {
-  var sp = new $SP();
-  sp.init(params);
   return function () {
+    var sp = new $SP();
+    sp.init(params);
     return sp;
   };
 }

@@ -56,7 +56,7 @@ export default async function webService(options) {
     options.webURL = options.webURL || this.url;
     // if we didn't define the url in the parameters, then we need to find it
     if (!options.webURL) {
-      let url = await getURL();
+      let url = await getURL.call(this);
       options.webURL=url;
       return webService.call(this, options);
     }

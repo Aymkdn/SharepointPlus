@@ -15,6 +15,7 @@ import getURL from '../utils/getURL.js'
 */
 export default async function list(list, url) {
   this.listID = list.replace(/&/g,"&amp;");
+
   if (url) {
     // make sure we don't have a '/' at the end
     this.url=(url.slice(-1)==='/'?url.slice(0,-1):url);

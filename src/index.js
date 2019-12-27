@@ -63,9 +63,11 @@ import webService from './utils/webService.js'
 import workflowStatusToText from './utils/workflowStatusToText.js'
 
 function spInit (params) {
-  let sp = new $SP();
-  sp.init(params);
-  return () => sp;
+  return () => {
+    let sp = new $SP;
+    sp.init(params);
+    return sp;
+  }
 }
 
 export default spInit({

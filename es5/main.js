@@ -29,7 +29,7 @@ global._SP_MAXWHERE_ONLOOKUP = 30;
 global._SP_ISBROWSER = new Function("try {return this===window;}catch(e){ return false;}")();
 global._SP_JSON_ACCEPT = "verbose"; // other options are "minimalmetadata" and "nometadata"
 
-export var SharepointPlus =
+var SharepointPlus =
 /*#__PURE__*/
 function () {
   function SharepointPlus() {
@@ -214,6 +214,9 @@ function () {
 
   return SharepointPlus;
 }();
-export default function () {
-  return new SharepointPlus();
-}
+/*export default function () {
+  return new SharepointPlus()
+}*/
+
+
+export { SharepointPlus as default };

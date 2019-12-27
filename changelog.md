@@ -1,5 +1,9 @@
 # Changelog
 
+**Change Log v6.0.1 (December 27, 2019)**
+
+  - Fixed object creation that shared data with other instances
+
 **Change Log v6.0 (December 26, 2019)**
 
   - Added function `$SP().getManager()` to get details about an user's manager
