@@ -32,7 +32,7 @@ import removeNotify from './modals/removeNotify.js';
 import resizeModalDialog from './modals/resizeModalDialog.js';
 import showModalDialog from './modals/showModalDialog.js';
 import waitModalDialog from './modals/waitModalDialog.js';
-import adressbook from './people/adressbook.js';
+import addressbook from './people/addressbook.js';
 import distributionLists from './people/distributionLists.js';
 import getManager from './people/getManager.js';
 import getUserInfo from './people/getUserInfo.js';
@@ -104,7 +104,7 @@ export default spInit({
   resizeModalDialog: resizeModalDialog,
   showModalDialog: showModalDialog,
   waitModalDialog: waitModalDialog,
-  adressbook: adressbook,
+  addressbook: addressbook,
   distributionLists: distributionLists,
   getManager: getManager,
   getUserInfo: getUserInfo,

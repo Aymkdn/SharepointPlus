@@ -1,5 +1,10 @@
 # Changelog
 
+**Change Log v6.0.3 (December 30, 2019)**
+
+  - Fixed `$SP().getRequestDigest()` when using on Node server
+  - `$SP().addressbook()` was incorrectly named `$SP().adressbook()`
+
 **Change Log v6.0.2 (December 27, 2019)**
 
   - Additional fix to follow up v6.0.1 release

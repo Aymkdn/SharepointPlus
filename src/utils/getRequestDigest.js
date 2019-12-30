@@ -47,7 +47,7 @@ export default async function getRequestDigest(settings) {
     digest=data.d.GetContextWebInformation.FormDigestValue;
     // cache
     global._SP_CACHE_REQUESTDIGEST[url]=digest;
-    if (document) {
+    if (global._SP_ISBROWSER && document) {
       e=document.querySelector("#__REQUESTDIGEST");
       if (e) e.value=digest;
     }
