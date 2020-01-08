@@ -170,6 +170,18 @@ build.initialize(gulp);
 </pre>
 
         </div>
+        <h4>`require` only</h4>
+        <div class="content">
+          <p>If your project doesn't support <code>import</code> symbol, but only <code>require</code>, then you can still load SharepointPlus using <a href="https://www.npmjs.com/package/esm">esm</a>:</p>
+<pre class="prettyprint lang-bash">
+npm install esm
+</pre>
+        <p>Then, to require SharepointPlus:</p>
+<pre class="prettyprint lang-js">
+const $SP = require("esm")(module)("sharepointplus").default;
+</pre>
+        </div>
+
         <h3>Browser only</h3>
         <div class="content">
           <p>You can also just <a href="https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js">drop one file</a> in your HTML document which will contain all the 70+ functions and all the polyfills to support the <a href="https://browserl.ist/?q=defaults">different browsers</a>:</p>
@@ -225,7 +237,8 @@ build.initialize(gulp);
         <p>Because of the large compatibility and of the available features, using the Web Services it's still the right call for SharepointPlus.</p>
 
         <h2>Examples</h2>
-        <p>Let's see some examples of what you can do with SharepointPlus:</p>
+        <div class="content">
+          <p>Let's see some examples of what you can do with SharepointPlus:</p>
 <pre class="prettyprint lang-js">
 // Update all items with an "Amount" value bigger than 1000
 $SP().list('My List Name').update({
@@ -284,10 +297,12 @@ $SP().list("Documents").createFile({
   console.log(file.Url+" has been created")
 })
 </pre>
-<p>Each function is documented with examples.</p>
+    <p>Each function is documented with examples.</p>
+  </div>
 
-<h2>Try it out</h2>
-<p>You can test it right now. Just open your browser "Developer Tools" window on your SharePoint site somewhere, then run the following code snippet which will load the SharepointPlus script dynamically:</p>
+  <h2>Try it out</h2>
+  <div class="content">
+    <p>You can test it right now. Just open your browser "Developer Tools" window on your SharePoint site somewhere, then run the following code snippet which will load the SharepointPlus script dynamically:</p>
 <pre class="prettyprint lang-js">
 // 1: Load SharepointPlus
 var script = document.createElement('script');
@@ -300,11 +315,18 @@ $SP().list('List In the Current Site').get({fields:"ID", where:"ID > 0"}).then(f
 $SP().whoami().then(function(people) { for (var i=0; i < people.length; i++) console.log(people[i]+" = "+people[people[i]]) })
 </pre>
 
-<b>Example:</b>
-<img src="img/console_example.png" alt="Example into the web developer console" class="shadow">
+    <b>Example:</b>
+    <img src="img/console_example.png" alt="Example into the web developer console" class="shadow">
+  </div>
 
-<h2>Node Server Side Application</h2>
-<p>If you plan to run SharepointPlus on the server side using Node, you will need to <strong>provide your Sharepoint credentials</strong> (see this <a href="https://github.com/s-KaiNet/node-sp-auth/wiki">wiki to find the different authentication systems</a>).</p>
+  <h2>Node Server Side Application</h2>
+  <div class="content">
+    <p>If you plan to run SharepointPlus on the server side using Node, you will need to install two additional modules:</p>
+<pre class="prettyprint lang-bash">
+npm install xmldom sp-request
+</pre>
+
+    <p>You will also have to <strong>provide your Sharepoint credentials</strong> (see this <a href="https://github.com/s-KaiNet/node-sp-auth/wiki">wiki to find the different authentication systems</a>).</p>
 <pre class="prettyprint lang-js">
 // the credentials depend of your authentication system
 // see: https://github.com/s-KaiNet/node-sp-auth
@@ -322,14 +344,17 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
 // you can then use SharepointPlus normally
 // e.g.: sp.list("Hello", "http://my.sharepoint.site/").get(...);
 </pre>
+</div>
 
-<h2>Older Versions</h2>
-<p>The previous versions of SharepointPlus are available in the <a href="https://github.com/Aymkdn/SharepointPlus/releases">releases folder</a></p>
-<p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.com/">https://sharepointplus4.netlify.com/</a><br>
-  <p>The documentation for SharepointPlus v5.2 is available at <a href="https://sharepointplus5.netlify.com/docs/">https://sharepointplus5.netlify.com/docs/</a>
-</p>
-
-      </div>
+    <h2>Older Versions</h2>
+    <div class="content">
+      <p>The previous versions of SharepointPlus are available in the <a href="https://github.com/Aymkdn/SharepointPlus/releases">releases folder</a></p>
+      <p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.com/">https://sharepointplus4.netlify.com/</a><br>
+        <p>The documentation for SharepointPlus v5.2 is available at <a href="https://sharepointplus5.netlify.com/docs/">https://sharepointplus5.netlify.com/docs/</a>
+      </p>
+    </p>
+  </div>
+</div>
 
 
 
@@ -345,7 +370,7 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="https://jsdoc.app/">JSDoc</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc on Mon, 30 Dec 2019 09:53:34 GMT</div>
+  <div>Automatically generated with JSDoc on Wed, 08 Jan 2020 09:13:47 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 </body>
