@@ -696,10 +696,9 @@ export default async function get (options) {
               ret[fieldName]=attrs[i].nodeValue;
             }
           } else {
-            for (let i=0; i<lenFields; i++) {
-              let fieldName = setup.fields[i];
+            setup.fields.forEach(function(fieldName) {
               ret[fieldName]=rows[i].getAttribute('ows_'+fieldName);
-            }
+            });
           }
 
           aReturn.push(ret);

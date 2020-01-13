@@ -44,7 +44,7 @@ export default class SharepointPlus {
 
     @return {String} The current SharepointPlus version
   */
-  getVersion () { return "6.0.3" }
+  getVersion () { return "6.0.4" }
 
   /**
     @name $SP().auth

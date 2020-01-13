@@ -1,5 +1,9 @@
 # Changelog
 
+**Change Log v6.0.4 (January 13, 2020)**
+
+  - Fixed `$SP().list().get()` when using `json:true`
+
 **Change Log v6.0.3 (December 30, 2019)**
 
   - Fixed `$SP().getRequestDigest()` when using on Node server

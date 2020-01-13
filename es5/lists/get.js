@@ -1,3 +1,4 @@
+import _typeof from "@babel/runtime-corejs3/helpers/esm/typeof";
 import _regeneratorRuntime from "@babel/runtime-corejs3/regenerator";
 import _startsWithInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/starts-with";
 import _trimInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/trim";
@@ -468,695 +469,751 @@ export default function get(_x) {
 function _get() {
   _get = _asyncToGenerator(
   /*#__PURE__*/
-  _regeneratorRuntime.mark(function _callee(options) {
+  _regeneratorRuntime.mark(function _callee2(options) {
     var _this = this;
 
-    var setup, _view, _context, _where, mtchDateRanges, _context2, totalWhere, cntWhere, fields, i, orderby, fieldsDir, direction, splt, groupby, gFields, tmpFields, body, viewAttr, where, whereDateRanges, _context3, infos, data, rows, j, stop, collection, on, aResult, prevIndex, index, listIndexFound, nextPage, joinDataLen, tmp, attributes, attributesReturn, attr, attributesJoinData, joinIndexLen, idx, joinData, joinIndex, joinWhereLookup, wh, aReturn, mergeSetup, mergeSource, doJSON, _i, len, _attributes, _tmp, _j, _context4, _len, lenFields, _i2, ret, attrs, attrsLen, _i3, _context5, fieldName, _i4, _fieldName, _i5, _len2, _context6, _context7, _context8, _context9, whereParsed, onLookupWhereParsed, _context10, _context11, _context12, _context13, _context14, _ret, _i6, _len3;
+    var mtchDateRanges, _ret;
 
-    return _regeneratorRuntime.wrap(function _callee$(_context15) {
+    return _regeneratorRuntime.wrap(function _callee2$(_context17) {
       while (1) {
-        switch (_context15.prev = _context15.next) {
+        switch (_context17.prev = _context17.next) {
           case 0:
-            _context15.prev = 0;
+            _context17.prev = 0;
+            return _context17.delegateYield(
+            /*#__PURE__*/
+            _regeneratorRuntime.mark(function _callee() {
+              var setup, _view, _context, _where, _context2, totalWhere, cntWhere, fields, i, orderby, fieldsDir, direction, splt, groupby, gFields, tmpFields, body, viewAttr, where, whereDateRanges, _context3, infos, data, rows, j, stop, collection, on, aResult, prevIndex, index, listIndexFound, nextPage, joinDataLen, tmp, attributes, attributesReturn, attr, attributesJoinData, joinIndexLen, idx, joinData, joinIndex, joinWhereLookup, wh, aReturn, mergeSetup, mergeSource, doJSON, _i, len, _attributes, _tmp, _j, _context4, _len, lenFields, _loop, _i2, _i4, _len2, _context7, _context8, _context9, _context10, whereParsed, onLookupWhereParsed, _context11, _context12, _context13, _context14, _context15, ret, _i5, _len3;
 
-            if (this.listID) {
-              _context15.next = 3;
+              return _regeneratorRuntime.wrap(function _callee$(_context16) {
+                while (1) {
+                  switch (_context16.prev = _context16.next) {
+                    case 0:
+                      if (_this.listID) {
+                        _context16.next = 2;
+                        break;
+                      }
+
+                      return _context16.abrupt("return", {
+                        v: _Promise.reject("[SharepointPlus 'get']: the list ID/Name is required")
+                      });
+
+                    case 2:
+                      // default values
+                      setup = {};
+                      cloneObject(true, setup, options);
+
+                      if (_this.url) {
+                        _context16.next = 6;
+                        break;
+                      }
+
+                      return _context16.abrupt("return", {
+                        v: _Promise.reject("[SharepointPlus 'get']: not able to find the URL!")
+                      });
+
+                    case 6:
+                      // we cannot determine the url
+                      setup.fields = setup.fields || "";
+                      setup.where = setup.where || "";
+
+                      setup.whereFct = setup.whereFct || function (w) {
+                        return w;
+                      };
+
+                      setup.orderby = setup.orderby || "";
+                      setup.useIndexForOrderBy = setup.useIndexForOrderBy === true ? true : false;
+                      setup.groupby = setup.groupby || "";
+                      setup.rowlimit = setup.rowlimit || 0;
+                      setup.whereEscapeChar = setup.whereEscapeChar === false ? false : true;
+                      setup.paging = setup.paging === true ? true : false;
+                      setup.page = setup.paging === false || isNaN(setup.page) ? 5000 : setup.page;
+                      if (setup.paging && setup.rowlimit === 0) setup.rowlimit = 5000; // if rowlimit is not defined, we set it to 5000 by default
+
+                      setup.expandUserField = setup.expandUserField === true || setup.expandUserField === "True" ? "True" : "False";
+                      setup.dateInUTC = setup.dateInUTC === true ? "True" : "False";
+                      setup.folderOptions = setup.folderOptions || null;
+                      setup.view = setup.view || "";
+                      setup.alias = setup.alias || _this.listID;
+                      setup.calendar = setup.calendar === true ? true : false;
+
+                      if (setup.calendar === true) {
+                        setup.calendarOptions = setup.calendarOptions || {};
+                        setup.calendarOptions.referenceDate = setup.calendarOptions.referenceDate || new Date();
+                        if (typeof setup.calendarOptions.referenceDate !== "string") setup.calendarOptions.referenceDate = toSPDate(setup.calendarOptions.referenceDate);
+                        setup.calendarOptions.splitRecurrence = setup.calendarOptions.splitRecurrence === false ? "FALSE" : "TRUE";
+                        setup.calendarOptions.range = setup.calendarOptions.range || "Month";
+                      } // if we want to force the ListName in the attribute name, but don't do it when there is a join
+
+
+                      if (setup.showListInAttribute && (setup.join || setup.innerjoin || setup.outerjoin)) {
+                        setup.showListInAttribute = false;
+                      } // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
+
+
+                      setup.results = setup.results || []; // internal use when there is a paging
+
+                      setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
+                      // protect & into ListItemCollectionPositionNext
+
+                      if (setup.listItemCollectionPositionNext) setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext.replace(/&/g, "&amp;").replace(/&amp;amp;/g, "&amp;"); // if view is defined, then we need to find the view ID
+
+                      if (!(setup.view !== "")) {
+                        _context16.next = 38;
+                        break;
+                      }
+
+                      _context16.next = 31;
+                      return view.call(_this, setup.view);
+
+                    case 31:
+                      _view = _context16.sent;
+                      setup.view = _view.ID; // the view will return a WHERE clause in CAML format
+
+                      if (_view.WhereCAML) {
+                        if (!_Array$isArray(setup.where)) _where = [setup.where];else _where = _sliceInstanceProperty(_context = setup.where).call(_context, 0);
+                        _where = _mapInstanceProperty(_where).call(_where, function (w) {
+                          // is our original Where in the setup is already converted in CAML ?
+                          // If not, we convert it in order to merge with the one from the View
+                          return setup.whereCAML ? w : parse(w);
+                        }); // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
+
+                        mtchDateRanges = _view.WhereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
+                        if (mtchDateRanges && mtchDateRanges.length === 3) _view.WhereCAML = '<And>' + mtchDateRanges[2] + mtchDateRanges[1] + '</And>';
+                        _where = _mapInstanceProperty(_where).call(_where, function (w) {
+                          return "<And>" + w + _view.WhereCAML + "</And>";
+                        });
+                        setup.where = _where;
+                        setup.whereCAML = true;
+                      }
+
+                      setup.fields += (setup.fields === "" ? "" : ",") + _view.Fields.join(",");
+                      setup.orderby += (setup.orderby === "" ? "" : ",") + _view.OrderBy; // disable the calendar option
+
+                      setup.calendarViaView = setup.calendar;
+                      setup.calendar = false;
+
+                    case 38:
+                      if (!_Array$isArray(setup.where)) {
+                        _context16.next = 44;
+                        break;
+                      }
+
+                      /*setup.where = setup.where.slice(0); // clone the original array
+                      if (!setup.originalWhere) setup.originalWhere = setup.where.slice(0);
+                      setup.nextWhere = setup.where.slice(1);
+                      setup.where = setup.where.shift();*/
+                      totalWhere = setup.where.length;
+                      cntWhere = 0;
+                      return _context16.abrupt("return", {
+                        v: _Promise.all(_mapInstanceProperty(_context2 = setup.where).call(_context2, function (w) {
+                          var params = {};
+
+                          for (var k in setup) {
+                            params[k] = setup[k];
+                          }
+
+                          params.where = w;
+                          return get.call(_this, params).then(function (data) {
+                            if (typeof params.progress === "function") params.progress(++cntWhere, totalWhere);
+                            return data;
+                          });
+                        })).then(function (allData) {
+                          var data = [];
+
+                          _forEachInstanceProperty(allData).call(allData, function (d) {
+                            return data = _concatInstanceProperty(data).call(data, d);
+                          });
+
+                          return data;
+                        })
+                      });
+
+                    case 44:
+                      setup.originalWhere = setup.where;
+                      setup.nextWhere = [];
+
+                    case 46:
+                      // we use the progress only when WHERE is an array
+                      setup.progress = setup.progress || function () {}; // what about the fields ?
+
+
+                      fields = "", orderby = "", groupby = "", body = "", where = "";
+
+                      if (setup.fields.length > 0) {
+                        if (typeof setup.fields === "string") setup.fields = setup.fields.replace(/^\s+/, "").replace(/\s+$/, "").replace(/( )?,( )?/g, ",").split(",");
+
+                        for (i = 0; i < setup.fields.length; i++) {
+                          fields += '<FieldRef Name="' + setup.fields[i] + '" />';
+                        }
+                      } // what about sorting ?
+
+
+                      if (setup.orderby !== "") {
+                        fieldsDir = setup.orderby.split(",");
+
+                        for (i = 0; i < fieldsDir.length; i++) {
+                          direction = "ASC";
+                          splt = _trimInstanceProperty(_context3 = fieldsDir[i]).call(_context3).split(" ");
+
+                          if (splt.length > 0) {
+                            if (splt.length == 2) direction = splt[1].toUpperCase();
+                            orderby += '<FieldRef Name="' + splt[0] + '" Ascending="' + (direction == "ASC") + '" />';
+                          }
+                        }
+                      } // if calendar:true and no orderby, then we order by the EventDate
+
+
+                      if ((setup.calendar === true || setup.calendarViaView === true) && orderby === "") orderby = '<FieldRef Name="EventDate" Ascending="ASC" />'; // what about groupby ?
+
+                      if (setup.groupby !== "") {
+                        gFields = setup.groupby.split(",");
+
+                        for (i = 0; i < gFields.length; i++) {
+                          groupby += '<FieldRef Name="' + gFields[i] + '" />';
+                        }
+                      } // if we merge several similar lists
+
+
+                      if (_Array$isArray(setup.merge)) {
+                        setup.mergeData = setup.mergeData || [];
+                      } // when it's a calendar we want to retrieve some fields by default
+
+
+                      if (setup.calendar === true || setup.calendarViaView === true) {
+                        tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID", "MasterSeriesItemID", "UID", "RecurrenceID"];
+
+                        for (i = 0; i < tmpFields.length; i++) {
+                          fields += '<FieldRef Name="' + tmpFields[i] + '" />';
+                        }
+                      } // forge the parameters
+
+
+                      if (!(setup.folderOptions && !setup.folderOptions.rootFolder)) {
+                        _context16.next = 59;
+                        break;
+                      }
+
+                      _context16.next = 57;
+                      return info.call(_this);
+
+                    case 57:
+                      infos = _context16.sent;
+                      setup.folderOptions.rootFolder = infos._List.RootFolder;
+
+                    case 59:
+                      if (!(setup.queryOptions === undefined)) {
+                        _context16.next = 79;
+                        break;
+                      }
+
+                      setup._queryOptions = "<DateInUtc>" + setup.dateInUTC + "</DateInUtc>" + "<Paging ListItemCollectionPositionNext=\"" + setup.listItemCollectionPositionNext + "\"></Paging>" + "<IncludeAttachmentUrls>True</IncludeAttachmentUrls>" + (fields === "" ? "" : "<IncludeMandatoryColumns>False</IncludeMandatoryColumns>") + "<ExpandUserField>" + setup.expandUserField + "</ExpandUserField>"; // check if we want something related to the folders
+
+                      if (!setup.folderOptions) {
+                        _context16.next = 76;
+                        break;
+                      }
+
+                      _context16.t0 = setup.folderOptions.show;
+                      _context16.next = _context16.t0 === "FilesAndFolders_Recursive" ? 65 : _context16.t0 === "FilesOnly_InFolder" ? 67 : _context16.t0 === "FilesAndFolders_InFolder" ? 69 : _context16.t0 === "FilesOnly_Recursive" ? 71 : 71;
+                      break;
+
+                    case 65:
+                      viewAttr = "RecursiveAll";
+                      return _context16.abrupt("break", 72);
+
+                    case 67:
+                      viewAttr = "FilesOnly";
+                      return _context16.abrupt("break", 72);
+
+                    case 69:
+                      viewAttr = "";
+                      return _context16.abrupt("break", 72);
+
+                    case 71:
+                      viewAttr = "Recursive";
+
+                    case 72:
+                      setup._queryOptions += "<ViewAttributes Scope=\"" + viewAttr + "\"></ViewAttributes>";
+                      if (setup.folderOptions.path) setup._queryOptions += "<Folder>" + setup.folderOptions.rootFolder + '/' + setup.folderOptions.path + "</Folder>";
+                      _context16.next = 77;
+                      break;
+
+                    case 76:
+                      setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>";
+
+                    case 77:
+                      _context16.next = 80;
+                      break;
+
+                    case 79:
+                      setup._queryOptions = setup.queryOptions;
+
+                    case 80:
+                      if (setup.calendarOptions) {
+                        setup._queryOptions += "<CalendarDate>" + setup.calendarOptions.referenceDate + "</CalendarDate>" + "<RecurrencePatternXMLVersion>v3</RecurrencePatternXMLVersion>" + "<ExpandRecurrence>" + setup.calendarOptions.splitRecurrence + "</ExpandRecurrence>";
+                      } // what about the Where ?
+
+
+                      if (setup.where !== "") {
+                        if (setup.whereCAML) where = setup.where;else where = parse(setup.where);
+                      }
+
+                      if (setup.calendar === true) {
+                        whereDateRanges = "<DateRangesOverlap>" + "<FieldRef Name='EventDate' />" + "<FieldRef Name='EndDate' />" + "<FieldRef Name='RecurrenceID' />" + "<Value Type='DateTime'><" + setup.calendarOptions.range + " /></Value>"
+                        /* there is a property called IncludeTimeValue="TRUE" */
+                        + "</DateRangesOverlap>";
+                        if (where !== "") where = "<And>" + where + whereDateRanges + "</And>";else where = whereDateRanges;
+                      }
+
+                      where = setup.whereFct(where);
+                      body = "<listName>" + _this.listID + "</listName>" + "<viewName>" + (setup.viewID || "") + "</viewName>" + "<query>" + "<Query>" + (where != "" ? "<Where>" + where + "</Where>" : "") + (groupby != "" ? "<GroupBy>" + groupby + "</GroupBy>" : "") + (orderby != "" ? "<OrderBy" + (setup.useIndexForOrderBy ? " UseIndexForOrderBy='TRUE' Override='TRUE'" : "") + ">" + orderby + "</OrderBy>" : "") + "</Query>" + "</query>" + "<viewFields>" + "<ViewFields Properties='True'>" + fields + "</ViewFields>" + "</viewFields>" + "<rowLimit>" + setup.rowlimit + "</rowLimit>" + "<queryOptions>" + "<QueryOptions>" + setup._queryOptions + "</QueryOptions>" + "</queryOptions>";
+                      body = _buildBodyForSOAP("GetListItems", body); // do the request
+
+                      _context16.next = 88;
+                      return ajax.call(_this, {
+                        url: _this.url + "/_vti_bin/Lists.asmx",
+                        body: body
+                      });
+
+                    case 88:
+                      data = _context16.sent;
+                      aReturn = []; // we want to use myElem to change the getAttribute function
+
+                      rows = data.getElementsByTagName('z:row');
+                      if (rows.length === 0) rows = data.getElementsByTagName('row'); // for Chrome 'bug'
+                      // convert immediatly to JSON if there is no JOIN
+
+                      doJSON = setup.json && !setup.join && !setup.innerjoin && !setup.outerjoin && !setup.joinIndex; // do we want to force the ListName in the attribute name ?
+
+                      if (setup.showListInAttribute) {
+                        for (_i = 0, len = rows.length; _i < len; _i++) {
+                          _attributes = rows[_i].attributes;
+                          _tmp = {};
+
+                          for (_j = _attributes.length; _j--;) {
+                            _tmp[setup.alias + "." + _sliceInstanceProperty(_context4 = _attributes[_j].nodeName).call(_context4, 4)] = _attributes[_j].nodeValue;
+                          }
+
+                          if (doJSON) aReturn.push(_tmp);else aReturn.push(new extendMyObject(_tmp));
+                        }
+                      } else {
+                        // if we want the result as an array of JSON
+                        if (doJSON) {
+                          _len = rows.length;
+                          lenFields = setup.fields.length;
+
+                          _loop = function _loop(_i2) {
+                            var ret = {}; // if we don't have any fields defined
+                            // then we need to search for them
+
+                            if (lenFields === 0) {
+                              var attrs = rows[_i2].attributes;
+
+                              for (var attrsLen = attrs.length, _i3 = 0; _i3 < attrsLen; _i3++) {
+                                var _context5;
+
+                                var fieldName = _sliceInstanceProperty(_context5 = attrs[_i3].nodeName).call(_context5, 4);
+
+                                ret[fieldName] = attrs[_i3].nodeValue;
+                              }
+                            } else {
+                              var _context6;
+
+                              _forEachInstanceProperty(_context6 = setup.fields).call(_context6, function (fieldName) {
+                                ret[fieldName] = rows[_i2].getAttribute('ows_' + fieldName);
+                              });
+                            }
+
+                            aReturn.push(ret);
+                          };
+
+                          for (_i2 = 0; _i2 < _len; _i2++) {
+                            _loop(_i2);
+                          }
+                        } else {
+                          for (_i4 = 0, _len2 = rows.length; _i4 < _len2; _i4++) {
+                            aReturn.push(new myElem(rows[_i4]));
+                          }
+                        }
+                      } // if setup.results length is bigger than 0 then it means we need to add the current data
+
+
+                      if (setup.results.length > 0) for (i = 0, stop = aReturn.length; i < stop; i++) {
+                        setup.results.push(aReturn[i]);
+                      } // depending of the setup.nextWhere length we update the progress
+
+                      if (typeof setup.originalWhere !== "string") setup.progress(setup.originalWhere.length - setup.nextWhere.length, setup.originalWhere.length); // if paging we want to return ListItemCollectionPositionNext
+
+                      if (setup.paging) {
+                        collection = data.getElementsByTagName("rs:data")[0];
+
+                        if (typeof collection === "undefined" || collection.length == 0) {
+                          collection = data.getElementsByTagName("data")[0]; // for Chrome
+                        }
+
+                        if (collection) nextPage = collection.getAttribute("ListItemCollectionPositionNext");
+                      } // if we have a paging then we need to do the request again
+
+
+                      if (!(setup.paging && --setup.page > 0)) {
+                        _context16.next = 108;
+                        break;
+                      }
+
+                      // check if we need to go to another request
+                      if (setup.results.length === 0) setup.results = aReturn; // notify that we keep loading
+
+                      setup.progress(setup.results.length);
+
+                      if (!nextPage) {
+                        _context16.next = 105;
+                        break;
+                      }
+
+                      // we need more calls
+                      setup.listItemCollectionPositionNext = _cleanString(nextPage);
+                      return _context16.abrupt("return", {
+                        v: get.call(_this, setup)
+                      });
+
+                    case 105:
+                      aReturn = setup.results; // it means we're done, no more call
+
+                    case 106:
+                      _context16.next = 116;
+                      break;
+
+                    case 108:
+                      if (!(setup.nextWhere.length > 0)) {
+                        _context16.next = 114;
+                        break;
+                      }
+
+                      // if we need to so some more request
+                      if (setup.results.length === 0) setup.results = aReturn;
+                      setup.where = _sliceInstanceProperty(_context7 = setup.nextWhere).call(_context7, 0);
+                      return _context16.abrupt("return", {
+                        v: get.call(_this, setup)
+                      });
+
+                    case 114:
+                      // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
+                      setup.where = setup.originalWhere;
+                      aReturn = setup.results.length > 0 ? setup.results : aReturn;
+
+                    case 116:
+                      if (!setup.joinData) {
+                        _context16.next = 138;
+                        break;
+                      }
+
+                      on = setup.joinData["noindex"];
+                      aResult = [];
+                      prevIndex = "";
+                      listIndexFound = {
+                        length: 0
+                      };
+                      if (!on.length) alert("$SP.get() -- Error 'get': you must define the ON clause when JOIN is used."); // we have a linked list so do some stuff here to tie the two lists together
+
+                      for (i = 0, stop = aReturn.length; i < stop; i++) {
+                        index = "";
+
+                        for (j = 0; j < on.length; j++) {
+                          index += "_" + getLookup(aReturn[i].getAttribute(on[j][setup.alias])).id;
+                        } // check if the index exists in the previous set of data
+
+
+                        if (setup.joinData[index]) {
+                          if (prevIndex !== index) {
+                            if (!listIndexFound[setup.joinIndex[index]]) listIndexFound.length++;
+                            listIndexFound[setup.joinIndex[index]] = true;
+                            prevIndex = index;
+                          } // we merge the joinData and the aReturn
+
+
+                          for (j = 0, joinDataLen = setup.joinData[index].length; j < joinDataLen; j++) {
+                            tmp = []; // find the attributes for the current list
+
+                            attributesReturn = aReturn[i].getAttributes();
+
+                            for (attr = attributesReturn.length; attr--;) {
+                              tmp[setup.alias + "." + _sliceInstanceProperty(_context8 = attributesReturn[attr].nodeName).call(_context8, 4)] = attributesReturn[attr].nodeValue;
+                            } // now find the attributes for the joinData
+
+
+                            attributesJoinData = setup.joinData[index][j].getAttributes();
+
+                            for (attr in attributesJoinData) {
+                              tmp[attr] = setup.joinData[index][j].getAttribute(attr);
+                            }
+
+                            aResult.push(new extendMyObject(tmp));
+                          }
+                        } // for the default options
+
+
+                        if (setup.innerjoin) setup.join = setup.innerjoin;
+
+                        if (setup.outerjoin) {
+                          setup.join = setup.outerjoin;
+                          setup.join.outer = true;
+                        }
+                      }
+
+                      aReturn = aResult; // if there is a WHERE clause then we want to force to an innerjoin
+                      // except where setup.where equals to setup.onLookupWhere
+
+                      if (setup.where && setup.onLookupWhere && setup.outer) {
+                        whereParsed = _startsWithInstanceProperty(_context9 = setup.where).call(_context9, '<') ? setup.where : parse(setup.where);
+                        onLookupWhereParsed = _startsWithInstanceProperty(_context10 = setup.onLookupWhere).call(_context10, '<') ? setup.onLookupWhere : parse(setup.onLookupWhere);
+                        if (whereParsed !== onLookupWhereParsed) setup.outer = false;
+                      } // if we want to do an outerjoin we link the missing data
+
+
+                      if (!setup.outer) {
+                        _context16.next = 138;
+                        break;
+                      }
+
+                      joinIndexLen = setup.joinIndex.length;
+
+                      if (!(listIndexFound.length < joinIndexLen)) {
+                        _context16.next = 138;
+                        break;
+                      }
+
+                      i = 0;
+
+                    case 129:
+                      if (!(i < joinIndexLen)) {
+                        _context16.next = 138;
+                        break;
+                      }
+
+                      if (!(listIndexFound[i] !== true)) {
+                        _context16.next = 135;
+                        break;
+                      }
+
+                      idx = setup.joinIndex[i];
+
+                      if (!(idx === undefined || setup.joinData[idx] === undefined)) {
+                        _context16.next = 134;
+                        break;
+                      }
+
+                      return _context16.abrupt("continue", 135);
+
+                    case 134:
+                      for (j = 0, joinDataLen = setup.joinData[idx].length; j < joinDataLen; j++) {
+                        tmp = [];
+                        attributesJoinData = setup.joinData[idx][j].getAttributes();
+
+                        for (attr in attributesJoinData) {
+                          tmp[attr] = setup.joinData[idx][j].getAttribute(attr);
+                        }
+
+                        aResult.push(new extendMyObject(tmp));
+                      }
+
+                    case 135:
+                      i++;
+                      _context16.next = 129;
+                      break;
+
+                    case 138:
+                      if (setup.outerjoin) {
+                        setup.join = setup.outerjoin;
+                        setup.join.outer = true;
+                      } else if (setup.innerjoin) setup.join = setup.innerjoin; // if we join it with another list
+
+
+                      if (!setup.join) {
+                        _context16.next = 155;
+                        break;
+                      }
+
+                      joinData = [];
+                      joinIndex = [];
+                      joinWhereLookup = []; // retrieve the ON clauses
+
+                      if (setup.join.onLookup) setup.join.on = "'" + (setup.join.alias || setup.join.list) + "'." + setup.join.onLookup + " = '" + setup.alias + "'.ID";
+                      on = _parseOn(setup.join.on);
+                      joinData["noindex"] = on; // keep a copy of it for the next treatment in the tied list
+
+                      for (i = 0, stop = aReturn.length; i < stop; i++) {
+                        // create an index that will be used in the next list to filter it
+                        index = "", tmp = [];
+
+                        for (j = 0; j < on.length; j++) {
+                          index += "_" + getLookup(aReturn[i].getAttribute(on[j][setup.alias]) || aReturn[i].getAttribute(setup.alias + "." + on[j][setup.alias])).id;
+                        }
+
+                        if (!joinData[index]) {
+                          joinIndex[index] = joinIndex.length;
+                          joinIndex.push(index);
+                          joinData[index] = []; // if onLookup then we will store the current ID with the ~ to use it in a where clause with IN operator
+
+                          if (setup.join.onLookup && index !== "_") joinWhereLookup.push("~" + _sliceInstanceProperty(index).call(index, 1));
+                        } // if we are coming from some other join
+
+
+                        if (setup.joinData) {
+                          joinData[index].push(aReturn[i]);
+                        } else {
+                          attributes = aReturn[i].getAttributes();
+
+                          for (j = attributes.length; j--;) {
+                            tmp[setup.alias + "." + _sliceInstanceProperty(_context11 = attributes[j].nodeName).call(_context11, 4)] = attributes[j].nodeValue;
+                          }
+
+                          joinData[index].push(new extendMyObject(tmp));
+                        }
+                      }
+
+                      setup.joinData = undefined; // call the joined list to grab data and process them
+                      // if onLookup then we create a WHERE clause with IN operator
+
+                      if (setup.join.onLookup) {
+                        if (joinWhereLookup.length > 0) {
+                          // SP2013 limits to 60 items per IN
+                          wh = arrayChunk(joinWhereLookup, 60);
+
+                          for (j = 0; j < wh.length; j++) {
+                            wh[j] = setup.join.onLookup + ' IN ["' + wh[j].join('","') + '"]';
+                          } // if the WHERE is too big then the server could run out of memory
+
+
+                          if (wh.length <= global._SP_MAXWHERE_ONLOOKUP) {
+                            wh = "(" + wh.join(" OR ") + ")"; // now we add this WHERE into the existing where
+
+                            if (setup.join.where) {
+                              if (_Array$isArray(setup.join.where)) {
+                                _forEachInstanceProperty(_context12 = setup.join.where).call(_context12, function (e, i) {
+                                  setup.join.where[i] = wh + " AND (" + e + ")";
+                                });
+                              } else {
+                                setup.join.where = wh + " AND (" + setup.join.where + ")";
+                              }
+                            } else setup.join.where = wh;
+
+                            setup.join.onLookupWhere = wh;
+                          } else {
+                            // in that case we'll use paging
+                            setup.join.paging = true;
+                          }
+                        } // make sure the lookup fields is in the fields list
+
+
+                        if (!setup.join.fields) setup.join.fields = [];
+
+                        if (!_Array$isArray(setup.join.fields)) {
+                          tmp = setup.join.fields.split(",");
+                          tmp.push(setup.join.onLookup);
+                          setup.join.fields = tmp.join(",");
+                        } else setup.join.fields.push(setup.join.onLookup);
+                      }
+
+                      _this.listID = setup.join.list;
+                      _this.url = setup.join.url || _this.url;
+                      setup.join.json = setup.json;
+                      setup.join.joinData = joinData;
+                      setup.join.joinIndex = joinIndex;
+                      return _context16.abrupt("return", {
+                        v: get.call(_this, setup.join)
+                      });
+
+                    case 155:
+                      if (!setup.merge) {
+                        _context16.next = 167;
+                        break;
+                      }
+
+                      mergeSource = {
+                        list: setup.list || _this.listID,
+                        url: setup.url || _this.url
+                      };
+
+                      if (!(setup.merge.length > 0)) {
+                        _context16.next = 166;
+                        break;
+                      }
+
+                      mergeSetup = setup.merge.shift();
+                      mergeSetup.merge = _sliceInstanceProperty(_context13 = setup.merge).call(_context13, 0);
+                      _this.listID = mergeSetup.list;
+                      _this.url = mergeSetup.url || _this.url; // we need to identify the Source of each set
+
+                      mergeSetup.mergeData = _concatInstanceProperty(_context14 = setup.mergeData).call(_context14, _mapInstanceProperty(aReturn).call(aReturn, function (ret) {
+                        ret.Source = mergeSource;
+                        return ret;
+                      }));
+                      return _context16.abrupt("return", {
+                        v: get.call(_this, mergeSetup)
+                      });
+
+                    case 166:
+                      aReturn = _concatInstanceProperty(_context15 = setup.mergeData).call(_context15, _mapInstanceProperty(aReturn).call(aReturn, function (ret) {
+                        ret.Source = mergeSource;
+                        return ret;
+                      }));
+
+                    case 167:
+                      aReturn["NextPage"] = nextPage; // convert to JSON if required
+
+                      if (!(setup.json && !doJSON)) {
+                        _context16.next = 172;
+                        break;
+                      }
+
+                      ret = [];
+
+                      for (_i5 = 0, _len3 = aReturn.length; _i5 < _len3; _i5++) {
+                        ret.push(aReturn[_i5].getAttributes());
+                      }
+
+                      return _context16.abrupt("return", {
+                        v: _Promise.resolve(ret)
+                      });
+
+                    case 172:
+                      return _context16.abrupt("return", {
+                        v: _Promise.resolve(aReturn)
+                      });
+
+                    case 173:
+                    case "end":
+                      return _context16.stop();
+                  }
+                }
+              }, _callee);
+            })(), "t0", 2);
+
+          case 2:
+            _ret = _context17.t0;
+
+            if (!(_typeof(_ret) === "object")) {
+              _context17.next = 5;
               break;
             }
 
-            return _context15.abrupt("return", _Promise.reject("[SharepointPlus 'get']: the list ID/Name is required"));
+            return _context17.abrupt("return", _ret.v);
 
-          case 3:
-            // default values
-            setup = {};
-            cloneObject(true, setup, options);
-
-            if (this.url) {
-              _context15.next = 7;
-              break;
-            }
-
-            return _context15.abrupt("return", _Promise.reject("[SharepointPlus 'get']: not able to find the URL!"));
+          case 5:
+            _context17.next = 10;
+            break;
 
           case 7:
-            // we cannot determine the url
-            setup.fields = setup.fields || "";
-            setup.where = setup.where || "";
-
-            setup.whereFct = setup.whereFct || function (w) {
-              return w;
-            };
-
-            setup.orderby = setup.orderby || "";
-            setup.useIndexForOrderBy = setup.useIndexForOrderBy === true ? true : false;
-            setup.groupby = setup.groupby || "";
-            setup.rowlimit = setup.rowlimit || 0;
-            setup.whereEscapeChar = setup.whereEscapeChar === false ? false : true;
-            setup.paging = setup.paging === true ? true : false;
-            setup.page = setup.paging === false || isNaN(setup.page) ? 5000 : setup.page;
-            if (setup.paging && setup.rowlimit === 0) setup.rowlimit = 5000; // if rowlimit is not defined, we set it to 5000 by default
-
-            setup.expandUserField = setup.expandUserField === true || setup.expandUserField === "True" ? "True" : "False";
-            setup.dateInUTC = setup.dateInUTC === true ? "True" : "False";
-            setup.folderOptions = setup.folderOptions || null;
-            setup.view = setup.view || "";
-            setup.alias = setup.alias || this.listID;
-            setup.calendar = setup.calendar === true ? true : false;
-
-            if (setup.calendar === true) {
-              setup.calendarOptions = setup.calendarOptions || {};
-              setup.calendarOptions.referenceDate = setup.calendarOptions.referenceDate || new Date();
-              if (typeof setup.calendarOptions.referenceDate !== "string") setup.calendarOptions.referenceDate = toSPDate(setup.calendarOptions.referenceDate);
-              setup.calendarOptions.splitRecurrence = setup.calendarOptions.splitRecurrence === false ? "FALSE" : "TRUE";
-              setup.calendarOptions.range = setup.calendarOptions.range || "Month";
-            } // if we want to force the ListName in the attribute name, but don't do it when there is a join
-
-
-            if (setup.showListInAttribute && (setup.join || setup.innerjoin || setup.outerjoin)) {
-              setup.showListInAttribute = false;
-            } // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
-
-
-            setup.results = setup.results || []; // internal use when there is a paging
-
-            setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
-            // protect & into ListItemCollectionPositionNext
-
-            if (setup.listItemCollectionPositionNext) setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext.replace(/&/g, "&amp;").replace(/&amp;amp;/g, "&amp;"); // if view is defined, then we need to find the view ID
-
-            if (!(setup.view !== "")) {
-              _context15.next = 39;
-              break;
-            }
-
-            _context15.next = 32;
-            return view.call(this, setup.view);
-
-          case 32:
-            _view = _context15.sent;
-            setup.view = _view.ID; // the view will return a WHERE clause in CAML format
-
-            if (_view.WhereCAML) {
-              if (!_Array$isArray(setup.where)) _where = [setup.where];else _where = _sliceInstanceProperty(_context = setup.where).call(_context, 0);
-              _where = _mapInstanceProperty(_where).call(_where, function (w) {
-                // is our original Where in the setup is already converted in CAML ?
-                // If not, we convert it in order to merge with the one from the View
-                return setup.whereCAML ? w : parse(w);
-              }); // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
-
-              mtchDateRanges = _view.WhereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
-              if (mtchDateRanges && mtchDateRanges.length === 3) _view.WhereCAML = '<And>' + mtchDateRanges[2] + mtchDateRanges[1] + '</And>';
-              _where = _mapInstanceProperty(_where).call(_where, function (w) {
-                return "<And>" + w + _view.WhereCAML + "</And>";
-              });
-              setup.where = _where;
-              setup.whereCAML = true;
-            }
-
-            setup.fields += (setup.fields === "" ? "" : ",") + _view.Fields.join(",");
-            setup.orderby += (setup.orderby === "" ? "" : ",") + _view.OrderBy; // disable the calendar option
-
-            setup.calendarViaView = setup.calendar;
-            setup.calendar = false;
-
-          case 39:
-            if (!_Array$isArray(setup.where)) {
-              _context15.next = 45;
-              break;
-            }
-
-            /*setup.where = setup.where.slice(0); // clone the original array
-            if (!setup.originalWhere) setup.originalWhere = setup.where.slice(0);
-            setup.nextWhere = setup.where.slice(1);
-            setup.where = setup.where.shift();*/
-            totalWhere = setup.where.length;
-            cntWhere = 0;
-            return _context15.abrupt("return", _Promise.all(_mapInstanceProperty(_context2 = setup.where).call(_context2, function (w) {
-              var params = {};
-
-              for (var k in setup) {
-                params[k] = setup[k];
-              }
-
-              params.where = w;
-              return get.call(_this, params).then(function (data) {
-                if (typeof params.progress === "function") params.progress(++cntWhere, totalWhere);
-                return data;
-              });
-            })).then(function (allData) {
-              var data = [];
-
-              _forEachInstanceProperty(allData).call(allData, function (d) {
-                return data = _concatInstanceProperty(data).call(data, d);
-              });
-
-              return data;
-            }));
-
-          case 45:
-            setup.originalWhere = setup.where;
-            setup.nextWhere = [];
-
-          case 47:
-            // we use the progress only when WHERE is an array
-            setup.progress = setup.progress || function () {}; // what about the fields ?
-
-
-            fields = "", orderby = "", groupby = "", body = "", where = "";
-
-            if (setup.fields.length > 0) {
-              if (typeof setup.fields === "string") setup.fields = setup.fields.replace(/^\s+/, "").replace(/\s+$/, "").replace(/( )?,( )?/g, ",").split(",");
-
-              for (i = 0; i < setup.fields.length; i++) {
-                fields += '<FieldRef Name="' + setup.fields[i] + '" />';
-              }
-            } // what about sorting ?
-
-
-            if (setup.orderby !== "") {
-              fieldsDir = setup.orderby.split(",");
-
-              for (i = 0; i < fieldsDir.length; i++) {
-                direction = "ASC";
-                splt = _trimInstanceProperty(_context3 = fieldsDir[i]).call(_context3).split(" ");
-
-                if (splt.length > 0) {
-                  if (splt.length == 2) direction = splt[1].toUpperCase();
-                  orderby += '<FieldRef Name="' + splt[0] + '" Ascending="' + (direction == "ASC") + '" />';
-                }
-              }
-            } // if calendar:true and no orderby, then we order by the EventDate
-
-
-            if ((setup.calendar === true || setup.calendarViaView === true) && orderby === "") orderby = '<FieldRef Name="EventDate" Ascending="ASC" />'; // what about groupby ?
-
-            if (setup.groupby !== "") {
-              gFields = setup.groupby.split(",");
-
-              for (i = 0; i < gFields.length; i++) {
-                groupby += '<FieldRef Name="' + gFields[i] + '" />';
-              }
-            } // if we merge several similar lists
-
-
-            if (_Array$isArray(setup.merge)) {
-              setup.mergeData = setup.mergeData || [];
-            } // when it's a calendar we want to retrieve some fields by default
-
-
-            if (setup.calendar === true || setup.calendarViaView === true) {
-              tmpFields = ["Title", "EventDate", "EndDate", "Duration", "fAllDayEvent", "fRecurrence", "RecurrenceData", "ID", "MasterSeriesItemID", "UID", "RecurrenceID"];
-
-              for (i = 0; i < tmpFields.length; i++) {
-                fields += '<FieldRef Name="' + tmpFields[i] + '" />';
-              }
-            } // forge the parameters
-
-
-            if (!(setup.folderOptions && !setup.folderOptions.rootFolder)) {
-              _context15.next = 60;
-              break;
-            }
-
-            _context15.next = 58;
-            return info.call(this);
-
-          case 58:
-            infos = _context15.sent;
-            setup.folderOptions.rootFolder = infos._List.RootFolder;
-
-          case 60:
-            if (!(setup.queryOptions === undefined)) {
-              _context15.next = 80;
-              break;
-            }
-
-            setup._queryOptions = "<DateInUtc>" + setup.dateInUTC + "</DateInUtc>" + "<Paging ListItemCollectionPositionNext=\"" + setup.listItemCollectionPositionNext + "\"></Paging>" + "<IncludeAttachmentUrls>True</IncludeAttachmentUrls>" + (fields === "" ? "" : "<IncludeMandatoryColumns>False</IncludeMandatoryColumns>") + "<ExpandUserField>" + setup.expandUserField + "</ExpandUserField>"; // check if we want something related to the folders
-
-            if (!setup.folderOptions) {
-              _context15.next = 77;
-              break;
-            }
-
-            _context15.t0 = setup.folderOptions.show;
-            _context15.next = _context15.t0 === "FilesAndFolders_Recursive" ? 66 : _context15.t0 === "FilesOnly_InFolder" ? 68 : _context15.t0 === "FilesAndFolders_InFolder" ? 70 : _context15.t0 === "FilesOnly_Recursive" ? 72 : 72;
-            break;
-
-          case 66:
-            viewAttr = "RecursiveAll";
-            return _context15.abrupt("break", 73);
-
-          case 68:
-            viewAttr = "FilesOnly";
-            return _context15.abrupt("break", 73);
-
-          case 70:
-            viewAttr = "";
-            return _context15.abrupt("break", 73);
-
-          case 72:
-            viewAttr = "Recursive";
-
-          case 73:
-            setup._queryOptions += "<ViewAttributes Scope=\"" + viewAttr + "\"></ViewAttributes>";
-            if (setup.folderOptions.path) setup._queryOptions += "<Folder>" + setup.folderOptions.rootFolder + '/' + setup.folderOptions.path + "</Folder>";
-            _context15.next = 78;
-            break;
-
-          case 77:
-            setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>";
-
-          case 78:
-            _context15.next = 81;
-            break;
-
-          case 80:
-            setup._queryOptions = setup.queryOptions;
-
-          case 81:
-            if (setup.calendarOptions) {
-              setup._queryOptions += "<CalendarDate>" + setup.calendarOptions.referenceDate + "</CalendarDate>" + "<RecurrencePatternXMLVersion>v3</RecurrencePatternXMLVersion>" + "<ExpandRecurrence>" + setup.calendarOptions.splitRecurrence + "</ExpandRecurrence>";
-            } // what about the Where ?
-
-
-            if (setup.where !== "") {
-              if (setup.whereCAML) where = setup.where;else where = parse(setup.where);
-            }
-
-            if (setup.calendar === true) {
-              whereDateRanges = "<DateRangesOverlap>" + "<FieldRef Name='EventDate' />" + "<FieldRef Name='EndDate' />" + "<FieldRef Name='RecurrenceID' />" + "<Value Type='DateTime'><" + setup.calendarOptions.range + " /></Value>"
-              /* there is a property called IncludeTimeValue="TRUE" */
-              + "</DateRangesOverlap>";
-              if (where !== "") where = "<And>" + where + whereDateRanges + "</And>";else where = whereDateRanges;
-            }
-
-            where = setup.whereFct(where);
-            body = "<listName>" + this.listID + "</listName>" + "<viewName>" + (setup.viewID || "") + "</viewName>" + "<query>" + "<Query>" + (where != "" ? "<Where>" + where + "</Where>" : "") + (groupby != "" ? "<GroupBy>" + groupby + "</GroupBy>" : "") + (orderby != "" ? "<OrderBy" + (setup.useIndexForOrderBy ? " UseIndexForOrderBy='TRUE' Override='TRUE'" : "") + ">" + orderby + "</OrderBy>" : "") + "</Query>" + "</query>" + "<viewFields>" + "<ViewFields Properties='True'>" + fields + "</ViewFields>" + "</viewFields>" + "<rowLimit>" + setup.rowlimit + "</rowLimit>" + "<queryOptions>" + "<QueryOptions>" + setup._queryOptions + "</QueryOptions>" + "</queryOptions>";
-            body = _buildBodyForSOAP("GetListItems", body); // do the request
-
-            _context15.next = 89;
-            return ajax.call(this, {
-              url: this.url + "/_vti_bin/Lists.asmx",
-              body: body
-            });
-
-          case 89:
-            data = _context15.sent;
-            aReturn = []; // we want to use myElem to change the getAttribute function
-
-            rows = data.getElementsByTagName('z:row');
-            if (rows.length === 0) rows = data.getElementsByTagName('row'); // for Chrome 'bug'
-            // convert immediatly to JSON if there is no JOIN
-
-            doJSON = setup.json && !setup.join && !setup.innerjoin && !setup.outerjoin && !setup.joinIndex; // do we want to force the ListName in the attribute name ?
-
-            if (setup.showListInAttribute) {
-              for (_i = 0, len = rows.length; _i < len; _i++) {
-                _attributes = rows[_i].attributes;
-                _tmp = {};
-
-                for (_j = _attributes.length; _j--;) {
-                  _tmp[setup.alias + "." + _sliceInstanceProperty(_context4 = _attributes[_j].nodeName).call(_context4, 4)] = _attributes[_j].nodeValue;
-                }
-
-                if (doJSON) aReturn.push(_tmp);else aReturn.push(new extendMyObject(_tmp));
-              }
-            } else {
-              // if we want the result as an array of JSON
-              if (doJSON) {
-                _len = rows.length;
-                lenFields = setup.fields.length;
-
-                for (_i2 = 0; _i2 < _len; _i2++) {
-                  ret = {}; // if we don't have any fields defined
-                  // then we need to search for them
-
-                  if (lenFields === 0) {
-                    attrs = rows[_i2].attributes;
-
-                    for (attrsLen = attrs.length, _i3 = 0; _i3 < attrsLen; _i3++) {
-                      fieldName = _sliceInstanceProperty(_context5 = attrs[_i3].nodeName).call(_context5, 4);
-                      ret[fieldName] = attrs[_i3].nodeValue;
-                    }
-                  } else {
-                    for (_i4 = 0; _i4 < lenFields; _i4++) {
-                      _fieldName = setup.fields[_i4];
-                      ret[_fieldName] = rows[_i4].getAttribute('ows_' + _fieldName);
-                    }
-                  }
-
-                  aReturn.push(ret);
-                }
-              } else {
-                for (_i5 = 0, _len2 = rows.length; _i5 < _len2; _i5++) {
-                  aReturn.push(new myElem(rows[_i5]));
-                }
-              }
-            } // if setup.results length is bigger than 0 then it means we need to add the current data
-
-
-            if (setup.results.length > 0) for (i = 0, stop = aReturn.length; i < stop; i++) {
-              setup.results.push(aReturn[i]);
-            } // depending of the setup.nextWhere length we update the progress
-
-            if (typeof setup.originalWhere !== "string") setup.progress(setup.originalWhere.length - setup.nextWhere.length, setup.originalWhere.length); // if paging we want to return ListItemCollectionPositionNext
-
-            if (setup.paging) {
-              collection = data.getElementsByTagName("rs:data")[0];
-
-              if (typeof collection === "undefined" || collection.length == 0) {
-                collection = data.getElementsByTagName("data")[0]; // for Chrome
-              }
-
-              if (collection) nextPage = collection.getAttribute("ListItemCollectionPositionNext");
-            } // if we have a paging then we need to do the request again
-
-
-            if (!(setup.paging && --setup.page > 0)) {
-              _context15.next = 109;
-              break;
-            }
-
-            // check if we need to go to another request
-            if (setup.results.length === 0) setup.results = aReturn; // notify that we keep loading
-
-            setup.progress(setup.results.length);
-
-            if (!nextPage) {
-              _context15.next = 106;
-              break;
-            }
-
-            // we need more calls
-            setup.listItemCollectionPositionNext = _cleanString(nextPage);
-            return _context15.abrupt("return", get.call(this, setup));
-
-          case 106:
-            aReturn = setup.results; // it means we're done, no more call
-
-          case 107:
-            _context15.next = 117;
-            break;
-
-          case 109:
-            if (!(setup.nextWhere.length > 0)) {
-              _context15.next = 115;
-              break;
-            }
-
-            // if we need to so some more request
-            if (setup.results.length === 0) setup.results = aReturn;
-            setup.where = _sliceInstanceProperty(_context6 = setup.nextWhere).call(_context6, 0);
-            return _context15.abrupt("return", get.call(this, setup));
-
-          case 115:
-            // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
-            setup.where = setup.originalWhere;
-            aReturn = setup.results.length > 0 ? setup.results : aReturn;
-
-          case 117:
-            if (!setup.joinData) {
-              _context15.next = 139;
-              break;
-            }
-
-            on = setup.joinData["noindex"];
-            aResult = [];
-            prevIndex = "";
-            listIndexFound = {
-              length: 0
-            };
-            if (!on.length) alert("$SP.get() -- Error 'get': you must define the ON clause when JOIN is used."); // we have a linked list so do some stuff here to tie the two lists together
-
-            for (i = 0, stop = aReturn.length; i < stop; i++) {
-              index = "";
-
-              for (j = 0; j < on.length; j++) {
-                index += "_" + getLookup(aReturn[i].getAttribute(on[j][setup.alias])).id;
-              } // check if the index exists in the previous set of data
-
-
-              if (setup.joinData[index]) {
-                if (prevIndex !== index) {
-                  if (!listIndexFound[setup.joinIndex[index]]) listIndexFound.length++;
-                  listIndexFound[setup.joinIndex[index]] = true;
-                  prevIndex = index;
-                } // we merge the joinData and the aReturn
-
-
-                for (j = 0, joinDataLen = setup.joinData[index].length; j < joinDataLen; j++) {
-                  tmp = []; // find the attributes for the current list
-
-                  attributesReturn = aReturn[i].getAttributes();
-
-                  for (attr = attributesReturn.length; attr--;) {
-                    tmp[setup.alias + "." + _sliceInstanceProperty(_context7 = attributesReturn[attr].nodeName).call(_context7, 4)] = attributesReturn[attr].nodeValue;
-                  } // now find the attributes for the joinData
-
-
-                  attributesJoinData = setup.joinData[index][j].getAttributes();
-
-                  for (attr in attributesJoinData) {
-                    tmp[attr] = setup.joinData[index][j].getAttribute(attr);
-                  }
-
-                  aResult.push(new extendMyObject(tmp));
-                }
-              } // for the default options
-
-
-              if (setup.innerjoin) setup.join = setup.innerjoin;
-
-              if (setup.outerjoin) {
-                setup.join = setup.outerjoin;
-                setup.join.outer = true;
-              }
-            }
-
-            aReturn = aResult; // if there is a WHERE clause then we want to force to an innerjoin
-            // except where setup.where equals to setup.onLookupWhere
-
-            if (setup.where && setup.onLookupWhere && setup.outer) {
-              whereParsed = _startsWithInstanceProperty(_context8 = setup.where).call(_context8, '<') ? setup.where : parse(setup.where);
-              onLookupWhereParsed = _startsWithInstanceProperty(_context9 = setup.onLookupWhere).call(_context9, '<') ? setup.onLookupWhere : parse(setup.onLookupWhere);
-              if (whereParsed !== onLookupWhereParsed) setup.outer = false;
-            } // if we want to do an outerjoin we link the missing data
-
-
-            if (!setup.outer) {
-              _context15.next = 139;
-              break;
-            }
-
-            joinIndexLen = setup.joinIndex.length;
-
-            if (!(listIndexFound.length < joinIndexLen)) {
-              _context15.next = 139;
-              break;
-            }
-
-            i = 0;
-
-          case 130:
-            if (!(i < joinIndexLen)) {
-              _context15.next = 139;
-              break;
-            }
-
-            if (!(listIndexFound[i] !== true)) {
-              _context15.next = 136;
-              break;
-            }
-
-            idx = setup.joinIndex[i];
-
-            if (!(idx === undefined || setup.joinData[idx] === undefined)) {
-              _context15.next = 135;
-              break;
-            }
-
-            return _context15.abrupt("continue", 136);
-
-          case 135:
-            for (j = 0, joinDataLen = setup.joinData[idx].length; j < joinDataLen; j++) {
-              tmp = [];
-              attributesJoinData = setup.joinData[idx][j].getAttributes();
-
-              for (attr in attributesJoinData) {
-                tmp[attr] = setup.joinData[idx][j].getAttribute(attr);
-              }
-
-              aResult.push(new extendMyObject(tmp));
-            }
-
-          case 136:
-            i++;
-            _context15.next = 130;
-            break;
-
-          case 139:
-            if (setup.outerjoin) {
-              setup.join = setup.outerjoin;
-              setup.join.outer = true;
-            } else if (setup.innerjoin) setup.join = setup.innerjoin; // if we join it with another list
-
-
-            if (!setup.join) {
-              _context15.next = 156;
-              break;
-            }
-
-            joinData = [];
-            joinIndex = [];
-            joinWhereLookup = []; // retrieve the ON clauses
-
-            if (setup.join.onLookup) setup.join.on = "'" + (setup.join.alias || setup.join.list) + "'." + setup.join.onLookup + " = '" + setup.alias + "'.ID";
-            on = _parseOn(setup.join.on);
-            joinData["noindex"] = on; // keep a copy of it for the next treatment in the tied list
-
-            for (i = 0, stop = aReturn.length; i < stop; i++) {
-              // create an index that will be used in the next list to filter it
-              index = "", tmp = [];
-
-              for (j = 0; j < on.length; j++) {
-                index += "_" + getLookup(aReturn[i].getAttribute(on[j][setup.alias]) || aReturn[i].getAttribute(setup.alias + "." + on[j][setup.alias])).id;
-              }
-
-              if (!joinData[index]) {
-                joinIndex[index] = joinIndex.length;
-                joinIndex.push(index);
-                joinData[index] = []; // if onLookup then we will store the current ID with the ~ to use it in a where clause with IN operator
-
-                if (setup.join.onLookup && index !== "_") joinWhereLookup.push("~" + _sliceInstanceProperty(index).call(index, 1));
-              } // if we are coming from some other join
-
-
-              if (setup.joinData) {
-                joinData[index].push(aReturn[i]);
-              } else {
-                attributes = aReturn[i].getAttributes();
-
-                for (j = attributes.length; j--;) {
-                  tmp[setup.alias + "." + _sliceInstanceProperty(_context10 = attributes[j].nodeName).call(_context10, 4)] = attributes[j].nodeValue;
-                }
-
-                joinData[index].push(new extendMyObject(tmp));
-              }
-            }
-
-            setup.joinData = undefined; // call the joined list to grab data and process them
-            // if onLookup then we create a WHERE clause with IN operator
-
-            if (setup.join.onLookup) {
-              if (joinWhereLookup.length > 0) {
-                // SP2013 limits to 60 items per IN
-                wh = arrayChunk(joinWhereLookup, 60);
-
-                for (j = 0; j < wh.length; j++) {
-                  wh[j] = setup.join.onLookup + ' IN ["' + wh[j].join('","') + '"]';
-                } // if the WHERE is too big then the server could run out of memory
-
-
-                if (wh.length <= global._SP_MAXWHERE_ONLOOKUP) {
-                  wh = "(" + wh.join(" OR ") + ")"; // now we add this WHERE into the existing where
-
-                  if (setup.join.where) {
-                    if (_Array$isArray(setup.join.where)) {
-                      _forEachInstanceProperty(_context11 = setup.join.where).call(_context11, function (e, i) {
-                        setup.join.where[i] = wh + " AND (" + e + ")";
-                      });
-                    } else {
-                      setup.join.where = wh + " AND (" + setup.join.where + ")";
-                    }
-                  } else setup.join.where = wh;
-
-                  setup.join.onLookupWhere = wh;
-                } else {
-                  // in that case we'll use paging
-                  setup.join.paging = true;
-                }
-              } // make sure the lookup fields is in the fields list
-
-
-              if (!setup.join.fields) setup.join.fields = [];
-
-              if (!_Array$isArray(setup.join.fields)) {
-                tmp = setup.join.fields.split(",");
-                tmp.push(setup.join.onLookup);
-                setup.join.fields = tmp.join(",");
-              } else setup.join.fields.push(setup.join.onLookup);
-            }
-
-            this.listID = setup.join.list;
-            this.url = setup.join.url || this.url;
-            setup.join.json = setup.json;
-            setup.join.joinData = joinData;
-            setup.join.joinIndex = joinIndex;
-            return _context15.abrupt("return", get.call(this, setup.join));
-
-          case 156:
-            if (!setup.merge) {
-              _context15.next = 168;
-              break;
-            }
-
-            mergeSource = {
-              list: setup.list || this.listID,
-              url: setup.url || this.url
-            };
-
-            if (!(setup.merge.length > 0)) {
-              _context15.next = 167;
-              break;
-            }
-
-            mergeSetup = setup.merge.shift();
-            mergeSetup.merge = _sliceInstanceProperty(_context12 = setup.merge).call(_context12, 0);
-            this.listID = mergeSetup.list;
-            this.url = mergeSetup.url || this.url; // we need to identify the Source of each set
-
-            mergeSetup.mergeData = _concatInstanceProperty(_context13 = setup.mergeData).call(_context13, _mapInstanceProperty(aReturn).call(aReturn, function (ret) {
-              ret.Source = mergeSource;
-              return ret;
-            }));
-            return _context15.abrupt("return", get.call(this, mergeSetup));
-
-          case 167:
-            aReturn = _concatInstanceProperty(_context14 = setup.mergeData).call(_context14, _mapInstanceProperty(aReturn).call(aReturn, function (ret) {
-              ret.Source = mergeSource;
-              return ret;
-            }));
-
-          case 168:
-            aReturn["NextPage"] = nextPage; // convert to JSON if required
-
-            if (!(setup.json && !doJSON)) {
-              _context15.next = 173;
-              break;
-            }
-
-            _ret = [];
-
-            for (_i6 = 0, _len3 = aReturn.length; _i6 < _len3; _i6++) {
-              _ret.push(aReturn[_i6].getAttributes());
-            }
-
-            return _context15.abrupt("return", _Promise.resolve(_ret));
-
-          case 173:
-            return _context15.abrupt("return", _Promise.resolve(aReturn));
-
-          case 176:
-            _context15.prev = 176;
-            _context15.t1 = _context15["catch"](0);
-            return _context15.abrupt("return", _Promise.reject(_context15.t1));
-
-          case 179:
+            _context17.prev = 7;
+            _context17.t1 = _context17["catch"](0);
+            return _context17.abrupt("return", _Promise.reject(_context17.t1));
+
+          case 10:
           case "end":
-            return _context15.stop();
+            return _context17.stop();
         }
       }
-    }, _callee, this, [[0, 176]]);
+    }, _callee2, null, [[0, 7]]);
   }));
   return _get.apply(this, arguments);
 }
