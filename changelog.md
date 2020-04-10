@@ -6,6 +6,7 @@
   - Added `$SP().list().hasPermission()` to check the permissions of the current user with a list/library
   - Added support for configuration without transpiling (`const $SP = require('sharepointplus/dist/');`)
   - Added option `viewCache`  to `$SP().list().get()`
+  - Added option to get FedAuth cookie using `$SP().auth()` (see https://github.com/Aymkdn/SharepointPlus/wiki/Using-the-FedAuth-Cookie)
   - Changed behavior for `$SP().getRequestDigest()` and lifetime from 24h to 1800secs
   - Fixed a bug in `$SP().parse()` when too many embedded brackets
   - Fixed a bug in `$SP().ajax()` when the request digest was incorrect
