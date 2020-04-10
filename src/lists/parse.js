@@ -64,13 +64,15 @@ export default function parse(q, escapeChar) {
         var start = i;
         var openedApos=false;
         while (queryString.charAt(i) == "(" && i < limitMax) { i++; parenthesis.open++; }
+
         // find the corresponding )
         while (parenthesis.open>0 && i < limitMax) {
           i++;
           // if there is a ' opened then ignore the ) until the next '
           var charAtI = queryString.charAt(i);
-          if (charAtI=="\\") ignoreNextChar=true; // when we have a backslash \then ignore the next char
+          if (charAtI=="\\") ignoreNextChar=true; // when we have a backslash \ then ignore the next char
           else if (!ignoreNextChar && (charAtI=="'" || charAtI=='"')) openedApos=!openedApos;
+          else if (!ignoreNextChar && charAtI=="(" && !openedApos) parenthesis.open++;
           else if (!ignoreNextChar && charAtI==")" && !openedApos) parenthesis.open--;
           else ignoreNextChar=false;
         }
@@ -83,7 +85,9 @@ export default function parse(q, escapeChar) {
           factory[0] += parse(queryString.substring(start+1, i));
           if (closeOperator != "") factory[0] += "</"+closeOperator+">";
           closeOperator = "";
-        } else factory[0] = parse(queryString.substring(start+1, i));
+        } else {
+          factory[0] = parse(queryString.substring(start+1, i));
+        }
         break;
       case "[": // for operator IN
         var start = i; // eslint-disable-line

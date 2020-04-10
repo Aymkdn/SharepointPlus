@@ -85,6 +85,7 @@ function _parseOn(q) {
   @param {Object} [options] Options (see below)
     @param {String}  [options.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
     @param {String}  [options.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
+    @param {String}  [options.viewCache=true] If several calls are done using option 'view', then the view's details are put in cache by default
     @param {Boolean} [options.json=false] When TRUE then the data returned will be an array of JSON
     @param {String|Array}  [options.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
     @param {Boolean} [options.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
@@ -533,6 +534,7 @@ function _get() {
                       setup.dateInUTC = setup.dateInUTC === true ? "True" : "False";
                       setup.folderOptions = setup.folderOptions || null;
                       setup.view = setup.view || "";
+                      setup.viewCache = setup.viewCache === false ? false : true;
                       setup.alias = setup.alias || _this.listID;
                       setup.calendar = setup.calendar === true ? true : false;
 
@@ -547,8 +549,7 @@ function _get() {
 
                       if (setup.showListInAttribute && (setup.join || setup.innerjoin || setup.outerjoin)) {
                         setup.showListInAttribute = false;
-                      } // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
-
+                      }
 
                       setup.results = setup.results || []; // internal use when there is a paging
 
@@ -558,14 +559,16 @@ function _get() {
                       if (setup.listItemCollectionPositionNext) setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext.replace(/&/g, "&amp;").replace(/&amp;amp;/g, "&amp;"); // if view is defined, then we need to find the view ID
 
                       if (!(setup.view !== "")) {
-                        _context16.next = 38;
+                        _context16.next = 39;
                         break;
                       }
 
-                      _context16.next = 31;
-                      return view.call(_this, setup.view);
+                      _context16.next = 32;
+                      return view.call(_this, setup.view, {
+                        cache: setup.viewCache
+                      });
 
-                    case 31:
+                    case 32:
                       _view = _context16.sent;
                       setup.view = _view.ID; // the view will return a WHERE clause in CAML format
 
@@ -592,9 +595,9 @@ function _get() {
                       setup.calendarViaView = setup.calendar;
                       setup.calendar = false;
 
-                    case 38:
+                    case 39:
                       if (!_Array$isArray(setup.where)) {
-                        _context16.next = 44;
+                        _context16.next = 45;
                         break;
                       }
 
@@ -628,11 +631,11 @@ function _get() {
                         })
                       });
 
-                    case 44:
+                    case 45:
                       setup.originalWhere = setup.where;
                       setup.nextWhere = [];
 
-                    case 46:
+                    case 47:
                       // we use the progress only when WHERE is an array
                       setup.progress = setup.progress || function () {}; // what about the fields ?
 
@@ -689,66 +692,66 @@ function _get() {
 
 
                       if (!(setup.folderOptions && !setup.folderOptions.rootFolder)) {
-                        _context16.next = 59;
+                        _context16.next = 60;
                         break;
                       }
 
-                      _context16.next = 57;
+                      _context16.next = 58;
                       return info.call(_this);
 
-                    case 57:
+                    case 58:
                       infos = _context16.sent;
                       setup.folderOptions.rootFolder = infos._List.RootFolder;
 
-                    case 59:
+                    case 60:
                       if (!(setup.queryOptions === undefined)) {
-                        _context16.next = 79;
+                        _context16.next = 80;
                         break;
                       }
 
                       setup._queryOptions = "<DateInUtc>" + setup.dateInUTC + "</DateInUtc>" + "<Paging ListItemCollectionPositionNext=\"" + setup.listItemCollectionPositionNext + "\"></Paging>" + "<IncludeAttachmentUrls>True</IncludeAttachmentUrls>" + (fields === "" ? "" : "<IncludeMandatoryColumns>False</IncludeMandatoryColumns>") + "<ExpandUserField>" + setup.expandUserField + "</ExpandUserField>"; // check if we want something related to the folders
 
                       if (!setup.folderOptions) {
-                        _context16.next = 76;
+                        _context16.next = 77;
                         break;
                       }
 
                       _context16.t0 = setup.folderOptions.show;
-                      _context16.next = _context16.t0 === "FilesAndFolders_Recursive" ? 65 : _context16.t0 === "FilesOnly_InFolder" ? 67 : _context16.t0 === "FilesAndFolders_InFolder" ? 69 : _context16.t0 === "FilesOnly_Recursive" ? 71 : 71;
+                      _context16.next = _context16.t0 === "FilesAndFolders_Recursive" ? 66 : _context16.t0 === "FilesOnly_InFolder" ? 68 : _context16.t0 === "FilesAndFolders_InFolder" ? 70 : _context16.t0 === "FilesOnly_Recursive" ? 72 : 72;
                       break;
 
-                    case 65:
+                    case 66:
                       viewAttr = "RecursiveAll";
-                      return _context16.abrupt("break", 72);
+                      return _context16.abrupt("break", 73);
 
-                    case 67:
+                    case 68:
                       viewAttr = "FilesOnly";
-                      return _context16.abrupt("break", 72);
+                      return _context16.abrupt("break", 73);
 
-                    case 69:
+                    case 70:
                       viewAttr = "";
-                      return _context16.abrupt("break", 72);
-
-                    case 71:
-                      viewAttr = "Recursive";
+                      return _context16.abrupt("break", 73);
 
                     case 72:
+                      viewAttr = "Recursive";
+
+                    case 73:
                       setup._queryOptions += "<ViewAttributes Scope=\"" + viewAttr + "\"></ViewAttributes>";
                       if (setup.folderOptions.path) setup._queryOptions += "<Folder>" + setup.folderOptions.rootFolder + '/' + setup.folderOptions.path + "</Folder>";
-                      _context16.next = 77;
+                      _context16.next = 78;
                       break;
-
-                    case 76:
-                      setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>";
 
                     case 77:
-                      _context16.next = 80;
+                      setup._queryOptions += "<ViewAttributes Scope=\"Recursive\"></ViewAttributes>";
+
+                    case 78:
+                      _context16.next = 81;
                       break;
 
-                    case 79:
+                    case 80:
                       setup._queryOptions = setup.queryOptions;
 
-                    case 80:
+                    case 81:
                       if (setup.calendarOptions) {
                         setup._queryOptions += "<CalendarDate>" + setup.calendarOptions.referenceDate + "</CalendarDate>" + "<RecurrencePatternXMLVersion>v3</RecurrencePatternXMLVersion>" + "<ExpandRecurrence>" + setup.calendarOptions.splitRecurrence + "</ExpandRecurrence>";
                       } // what about the Where ?
@@ -769,13 +772,13 @@ function _get() {
                       body = "<listName>" + _this.listID + "</listName>" + "<viewName>" + (setup.viewID || "") + "</viewName>" + "<query>" + "<Query>" + (where != "" ? "<Where>" + where + "</Where>" : "") + (groupby != "" ? "<GroupBy>" + groupby + "</GroupBy>" : "") + (orderby != "" ? "<OrderBy" + (setup.useIndexForOrderBy ? " UseIndexForOrderBy='TRUE' Override='TRUE'" : "") + ">" + orderby + "</OrderBy>" : "") + "</Query>" + "</query>" + "<viewFields>" + "<ViewFields Properties='True'>" + fields + "</ViewFields>" + "</viewFields>" + "<rowLimit>" + setup.rowlimit + "</rowLimit>" + "<queryOptions>" + "<QueryOptions>" + setup._queryOptions + "</QueryOptions>" + "</queryOptions>";
                       body = _buildBodyForSOAP("GetListItems", body); // do the request
 
-                      _context16.next = 88;
+                      _context16.next = 89;
                       return ajax.call(_this, {
                         url: _this.url + "/_vti_bin/Lists.asmx",
                         body: body
                       });
 
-                    case 88:
+                    case 89:
                       data = _context16.sent;
                       aReturn = []; // we want to use myElem to change the getAttribute function
 
@@ -856,7 +859,7 @@ function _get() {
 
 
                       if (!(setup.paging && --setup.page > 0)) {
-                        _context16.next = 108;
+                        _context16.next = 109;
                         break;
                       }
 
@@ -866,7 +869,7 @@ function _get() {
                       setup.progress(setup.results.length);
 
                       if (!nextPage) {
-                        _context16.next = 105;
+                        _context16.next = 106;
                         break;
                       }
 
@@ -876,16 +879,16 @@ function _get() {
                         v: get.call(_this, setup)
                       });
 
-                    case 105:
+                    case 106:
                       aReturn = setup.results; // it means we're done, no more call
 
-                    case 106:
-                      _context16.next = 116;
+                    case 107:
+                      _context16.next = 117;
                       break;
 
-                    case 108:
+                    case 109:
                       if (!(setup.nextWhere.length > 0)) {
-                        _context16.next = 114;
+                        _context16.next = 115;
                         break;
                       }
 
@@ -896,14 +899,14 @@ function _get() {
                         v: get.call(_this, setup)
                       });
 
-                    case 114:
+                    case 115:
                       // rechange setup.where with the original one just in case it was an array to make sure we didn't override the original array
                       setup.where = setup.originalWhere;
                       aReturn = setup.results.length > 0 ? setup.results : aReturn;
 
-                    case 116:
+                    case 117:
                       if (!setup.joinData) {
-                        _context16.next = 138;
+                        _context16.next = 139;
                         break;
                       }
 
@@ -971,40 +974,40 @@ function _get() {
 
 
                       if (!setup.outer) {
-                        _context16.next = 138;
+                        _context16.next = 139;
                         break;
                       }
 
                       joinIndexLen = setup.joinIndex.length;
 
                       if (!(listIndexFound.length < joinIndexLen)) {
-                        _context16.next = 138;
+                        _context16.next = 139;
                         break;
                       }
 
                       i = 0;
 
-                    case 129:
+                    case 130:
                       if (!(i < joinIndexLen)) {
-                        _context16.next = 138;
+                        _context16.next = 139;
                         break;
                       }
 
                       if (!(listIndexFound[i] !== true)) {
-                        _context16.next = 135;
+                        _context16.next = 136;
                         break;
                       }
 
                       idx = setup.joinIndex[i];
 
                       if (!(idx === undefined || setup.joinData[idx] === undefined)) {
-                        _context16.next = 134;
+                        _context16.next = 135;
                         break;
                       }
 
-                      return _context16.abrupt("continue", 135);
+                      return _context16.abrupt("continue", 136);
 
-                    case 134:
+                    case 135:
                       for (j = 0, joinDataLen = setup.joinData[idx].length; j < joinDataLen; j++) {
                         tmp = [];
                         attributesJoinData = setup.joinData[idx][j].getAttributes();
@@ -1016,12 +1019,12 @@ function _get() {
                         aResult.push(new extendMyObject(tmp));
                       }
 
-                    case 135:
+                    case 136:
                       i++;
-                      _context16.next = 129;
+                      _context16.next = 130;
                       break;
 
-                    case 138:
+                    case 139:
                       if (setup.outerjoin) {
                         setup.join = setup.outerjoin;
                         setup.join.outer = true;
@@ -1029,7 +1032,7 @@ function _get() {
 
 
                       if (!setup.join) {
-                        _context16.next = 155;
+                        _context16.next = 156;
                         break;
                       }
 
@@ -1123,9 +1126,9 @@ function _get() {
                         v: get.call(_this, setup.join)
                       });
 
-                    case 155:
+                    case 156:
                       if (!setup.merge) {
-                        _context16.next = 167;
+                        _context16.next = 168;
                         break;
                       }
 
@@ -1135,7 +1138,7 @@ function _get() {
                       };
 
                       if (!(setup.merge.length > 0)) {
-                        _context16.next = 166;
+                        _context16.next = 167;
                         break;
                       }
 
@@ -1152,17 +1155,17 @@ function _get() {
                         v: get.call(_this, mergeSetup)
                       });
 
-                    case 166:
+                    case 167:
                       aReturn = _concatInstanceProperty(_context15 = setup.mergeData).call(_context15, _mapInstanceProperty(aReturn).call(aReturn, function (ret) {
                         ret.Source = mergeSource;
                         return ret;
                       }));
 
-                    case 167:
+                    case 168:
                       aReturn["NextPage"] = nextPage; // convert to JSON if required
 
                       if (!(setup.json && !doJSON)) {
-                        _context16.next = 172;
+                        _context16.next = 173;
                         break;
                       }
 
@@ -1176,12 +1179,12 @@ function _get() {
                         v: _Promise.resolve(ret)
                       });
 
-                    case 172:
+                    case 173:
                       return _context16.abrupt("return", {
                         v: _Promise.resolve(aReturn)
                       });
 
-                    case 173:
+                    case 174:
                     case "end":
                       return _context16.stop();
                   }

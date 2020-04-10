@@ -15,6 +15,20 @@ module.exports = {
           useESModules:true
         } ]
       ]
+    },
+    "dist": {
+      "presets": [
+        [
+          "@babel/preset-env"
+        ]
+      ],
+      "plugins": [
+        [ "@babel/plugin-transform-runtime", {
+          corejs:3,
+          useESModules:false
+        } ],
+        "add-module-exports"
+      ]
     }
   }
 }

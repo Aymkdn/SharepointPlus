@@ -1,5 +1,6 @@
 import _regeneratorRuntime from "@babel/runtime-corejs3/regenerator";
 import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/slice";
+import _includesInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/includes";
 import _Promise from "@babel/runtime-corejs3/core-js-stable/promise";
 import _indexOfInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/index-of";
 import _asyncToGenerator from "@babel/runtime-corejs3/helpers/esm/asyncToGenerator";
@@ -65,7 +66,7 @@ function _ajax() {
   _ajax = _asyncToGenerator(
   /*#__PURE__*/
   _regeneratorRuntime.mark(function _callee(settings) {
-    var _context, _context2, _context4, addRequestDigest, _context3, requestDigest, ret, code, responseText, request, _context5, body, _requestDigest, _context6, opts, stg, response, _context7, _context8, DOMParser, result, _context9;
+    var _context, _context2, _context4, addRequestDigest, _context3, requestDigest, ret, code, responseText, request, _context5, body, _requestDigest, _context6, cookie, opts, stg, response, _context7, _context8, DOMParser, result, _context9;
 
     return _regeneratorRuntime.wrap(function _callee$(_context10) {
       while (1) {
@@ -142,7 +143,7 @@ function _ajax() {
             return _context10.abrupt("return", _Promise.resolve(body));
 
           case 24:
-            if (!(code == 403 && _indexOfInstanceProperty(responseText).call(responseText, "The security validation for this page is invalid and might be corrupted. Please use your web browser's Back button to try your operation again.") > -1)) {
+            if (!(code == 403 && _includesInstanceProperty(responseText).call(responseText, "security validation for this page is invalid"))) {
               _context10.next = 33;
               break;
             }
@@ -150,7 +151,7 @@ function _ajax() {
             // then we retry
             delete settings.headers["X-RequestDigest"];
             _context10.next = 28;
-            return getRequestDigest({
+            return getRequestDigest.call(this, {
               cache: false
             });
 
@@ -167,37 +168,58 @@ function _ajax() {
             }));
 
           case 34:
-            _context10.next = 64;
+            _context10.next = 80;
             break;
 
           case 36:
             if (!(this.module_sprequest === null)) {
-              _context10.next = 40;
+              _context10.next = 51;
               break;
             }
 
-            if (!(this.credentialOptions === null)) {
-              _context10.next = 39;
+            if (!(this.credentialOptions !== null)) {
+              _context10.next = 41;
               break;
             }
 
-            throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your credentials first";
-
-          case 39:
             this.module_sprequest = require('sp-request').create(this.credentialOptions);
+            _context10.next = 51;
+            break;
 
-          case 40:
+          case 41:
+            if (!(typeof this.authMethod.cookie === 'function')) {
+              _context10.next = 50;
+              break;
+            }
+
+            _context10.next = 44;
+            return this.authMethod.cookie();
+
+          case 44:
+            cookie = _context10.sent;
+            cookie = cookie.split(';')[0];
+            this.module_sprequest = require('request-promise');
+            settings.headers.cookie = cookie;
+            _context10.next = 51;
+            break;
+
+          case 50:
+            throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your authentication method first";
+
+          case 51:
             if (settings.headers['Content-Type'] && _indexOfInstanceProperty(_context6 = settings.headers['Content-Type']).call(_context6, 'xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
             if (!settings.method) settings.method = typeof settings.body !== "undefined" ? "POST" : "GET";
             if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body); // add User Agent
 
-            settings.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
+            settings.headers['User-Agent'] = 'SharepointPlus'; //'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
+
             opts = {
               json: false,
               method: settings.method,
               strictSSL: false,
               headers: settings.headers,
-              jar: true
+              jar: true,
+              resolveWithFullResponse: true
             };
             if (settings.body) opts.body = settings.body;
             if (this.proxyweb) opts.proxy = this.proxyweb; // looks like the Content-Length creates some issues
@@ -208,19 +230,19 @@ function _ajax() {
               if (Object.prototype.hasOwnProperty.call(settings, stg) && !opts[stg]) opts[stg] = settings[stg];
             }
 
-            _context10.next = 51;
+            _context10.next = 62;
             return this.module_sprequest(settings.url, opts);
 
-          case 51:
+          case 62:
             response = _context10.sent;
 
             if (!(response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout")) {
-              _context10.next = 63;
+              _context10.next = 74;
               break;
             }
 
             if (!(_indexOfInstanceProperty(_context7 = response.headers['content-type'] || "").call(_context7, 'xml') > -1 && _sliceInstanceProperty(_context8 = response.body).call(_context8, 0, 5) === '<?xml')) {
-              _context10.next = 59;
+              _context10.next = 70;
               break;
             }
 
@@ -228,27 +250,37 @@ function _ajax() {
             result = new DOMParser().parseFromString(response.body);
             return _context10.abrupt("return", _Promise.resolve(result));
 
-          case 59:
+          case 70:
             if (_indexOfInstanceProperty(_context9 = response.headers['content-type'] || "").call(_context9, 'json') > -1 && typeof response.body === "string") response.body = JSON.parse(response.body);
             return _context10.abrupt("return", _Promise.resolve(response.body));
 
-          case 61:
-            _context10.next = 64;
+          case 72:
+            _context10.next = 80;
             break;
 
-          case 63:
+          case 74:
+            if (!(response.statusCode === 403)) {
+              _context10.next = 79;
+              break;
+            }
+
+            // we need to reauthenticate
+            this.module_sprequest === null;
+            return _context10.abrupt("return", ajax.call(this, settings));
+
+          case 79:
             return _context10.abrupt("return", _Promise.reject({
               response: response,
               statusCode: response.statusCode,
               responseText: response.body
             }));
 
-          case 64:
-            _context10.next = 69;
+          case 80:
+            _context10.next = 85;
             break;
 
-          case 66:
-            _context10.prev = 66;
+          case 82:
+            _context10.prev = 82;
             _context10.t0 = _context10["catch"](1);
             return _context10.abrupt("return", _Promise.reject({
               error: _context10.t0,
@@ -257,12 +289,12 @@ function _ajax() {
               responseText: _context10.t0.response ? _context10.t0.response.body : ''
             }));
 
-          case 69:
+          case 85:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee, this, [[1, 66]]);
+    }, _callee, this, [[1, 82]]);
   }));
   return _ajax.apply(this, arguments);
 }

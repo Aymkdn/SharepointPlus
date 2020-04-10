@@ -56,6 +56,7 @@ function _parseOn(q) {
   @param {Object} [options] Options (see below)
     @param {String}  [options.fields=""] The fields you want to grab (be sure to add "Attachments" as a field if you want to know the direct link to an attachment)
     @param {String}  [options.view=""] If you specify a viewID or a viewName that exists for that list, then the fields/where/order settings for this view will be used in addition to the FIELDS/WHERE/ORDERBY you have defined (the user settings will be used first)
+    @param {String}  [options.viewCache=true] If several calls are done using option 'view', then the view's details are put in cache by default
     @param {Boolean} [options.json=false] When TRUE then the data returned will be an array of JSON
     @param {String|Array}  [options.where=""] The query string (like SQL syntax) (you'll need to use double \\ before the inside ' -- see example below); you can use an array that will make the sequential requests but it will return all the data into one array (useful for the Sharepoint 2010 throttling limit)
     @param {Boolean} [options.whereCAML=false] If you want to pass a WHERE clause that is with CAML Syntax only instead of SQL-like syntax -- see $SP().parse() for more info
@@ -455,6 +456,7 @@ export default async function get (options) {
     setup.dateInUTC                    = (setup.dateInUTC===true?"True":"False");
     setup.folderOptions                = setup.folderOptions || null;
     setup.view                         = setup.view || "";
+    setup.viewCache                    = (setup.viewCache === false ? false : true);
     setup.alias                        = setup.alias || this.listID;
     setup.calendar                     = (setup.calendar===true ? true : false);
     if (setup.calendar===true) {
@@ -470,7 +472,6 @@ export default async function get (options) {
       setup.showListInAttribute=false;
     }
 
-    // if (setup.whereCAML!==true) setup.whereCAML = (setup.view!="");
     setup.results = setup.results || []; // internal use when there is a paging
     setup.listItemCollectionPositionNext = setup.listItemCollectionPositionNext || ""; // for paging
     // protect & into ListItemCollectionPositionNext
@@ -480,7 +481,7 @@ export default async function get (options) {
     if (setup.view !== "") {
       // retrieve the View ID based on its name
       // and find the view details
-      let _view = await view.call(this, setup.view);
+      let _view = await view.call(this, setup.view, {cache:setup.viewCache});
       setup.view=_view.ID;
       // the view will return a WHERE clause in CAML format
       if (_view.WhereCAML) {

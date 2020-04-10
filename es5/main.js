@@ -43,6 +43,9 @@ function () {
     this.url = void 0;
     this.module_sprequest = null;
     this.credentialOptions = null;
+    this.authMethod = {
+      cookie: null
+    };
     this.proxyweb = null;
   }
   /**
@@ -57,7 +60,7 @@ function () {
   _createClass(SharepointPlus, [{
     key: "getVersion",
     value: function getVersion() {
-      return "6.0.4";
+      return "6.1.0";
     }
     /**
       @name $SP().auth
@@ -65,6 +68,7 @@ function () {
       @category node
       @description Permits to use credentials when doing requests (for Node module only)
         @param {Object} credentialOptions Options from https://github.com/s-KaiNet/node-sp-auth
+          @params {String} [method] If we cannot use an authentication from 'node-sp-auth', then we need to define the method here (only 'cookie' is supported for now)
       @return {Object} the current SharepointPlus object
         @example
       var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
@@ -75,12 +79,23 @@ function () {
       var sp = $SP().auth(user1);
       sp.list("My List", "https://web.si.te").get({...});
       sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
+        // let's say we want to use our own function to set the FedAuth cookie
+      var sp = $SP().auth({method:'cookie', function() {
+        // we need to return the content of our cookie
+        // e.g. if it's a FedAuth we'll return 'FedAuth=YAHeZNEZdfnZEfzfzeKnfze…';
+        return myFunctionToGetFedAuth();
+      });
     */
 
   }, {
     key: "auth",
-    value: function auth(credentialOptions) {
-      this.credentialOptions = credentialOptions;
+    value: function auth(credentialOptions, fct) {
+      if (credentialOptions.method === 'cookie' && typeof fct === "function") {
+        this.authMethod.cookie = fct;
+      } else {
+        this.credentialOptions = credentialOptions;
+      }
+
       return this;
     }
     /**
@@ -140,6 +155,7 @@ function () {
               case "getContentTypeInfo":
               case "getContentTypes":
               case "getWorkflowID":
+              case "hasPermission":
               case "history":
               case "moderate":
               case "remove":

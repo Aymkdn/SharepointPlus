@@ -10,6 +10,7 @@ import getAttachment from './lists/getAttachment.js'
 import getContentTypeInfo from './lists/getContentTypeInfo.js'
 import getContentTypes from './lists/getContentTypes.js'
 import getWorkflowID from './lists/getWorkflowID.js'
+import hasPermission from './lists/hasPermission.js'
 import history from './lists/history.js'
 import info from './lists/info.js'
 import list from './lists/list.js'
@@ -82,6 +83,7 @@ export default spInit({
   getContentTypeInfo:getContentTypeInfo,
   getContentTypes:getContentTypes,
   getWorkflowID:getWorkflowID,
+  hasPermission:hasPermission,
   history:history,
   info:info,
   list:list,

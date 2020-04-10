@@ -1,5 +1,15 @@
 # Changelog
 
+**Change Log v6.1.0 (April 10, 2020)**
+
+  - Added support for short date format ("YYYY-MM-DD") for `$SP().toDate()`
+  - Added `$SP().list().hasPermission()` to check the permissions of the current user with a list/library
+  - Added support for configuration without transpiling (`const $SP = require('sharepointplus/dist/');`)
+  - Added option `viewCache`  to `$SP().list().get()`
+  - Changed behavior for `$SP().getRequestDigest()` and lifetime from 24h to 1800secs
+  - Fixed a bug in `$SP().parse()` when too many embedded brackets
+  - Fixed a bug in `$SP().ajax()` when the request digest was incorrect
+
 **Change Log v6.0.4 (January 13, 2020)**
 
   - Fixed `$SP().list().get()` when using `json:true`

@@ -103,10 +103,10 @@ export default async function ajax(settings) {
         return Promise.resolve(body);
       } else {
         // check if it's an issue with validation code
-        if (code == 403 && responseText.indexOf("The security validation for this page is invalid and might be corrupted. Please use your web browser's Back button to try your operation again.") > -1) {
+        if (code == 403 && responseText.includes("security validation for this page is invalid")) {
           // then we retry
           delete settings.headers["X-RequestDigest"];
-          let requestDigest = await getRequestDigest({
+          let requestDigest = await getRequestDigest.call(this, {
             cache: false
           })
           settings.headers["X-RequestDigest"] = requestDigest;
@@ -120,25 +120,36 @@ export default async function ajax(settings) {
         }
       }
     } else {
+      /* develblock:start */
+      // for Node we need an authentication system:
+      //   - either one that is supported with 'sp-request'
+      //   - or a custom method (e.g. FedAuth in Cookies), and in that case we use 'request-promise'
       // we use the module 'sp-request' from https://github.com/s-KaiNet/sp-request
       if (this.module_sprequest === null) {
-        if (this.credentialOptions === null) {
-          throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your credentials first";
+        if (this.credentialOptions !== null) {
+          this.module_sprequest = require('sp-request').create(this.credentialOptions);
+        } else if (typeof this.authMethod.cookie === 'function') {
+          let cookie = await this.authMethod.cookie();
+          cookie = cookie.split(';')[0];
+          this.module_sprequest = require('request-promise');
+          settings.headers.cookie = cookie;
+        } else {
+          throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your authentication method first";
         }
-        this.module_sprequest = require('sp-request').create(this.credentialOptions);
       }
 
       if (settings.headers['Content-Type'] && settings.headers['Content-Type'].indexOf('xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
       if (!settings.method) settings.method = (typeof settings.body !== "undefined" ? "POST" : "GET");
       if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body);
       // add User Agent
-      settings.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
+      settings.headers['User-Agent'] = 'SharepointPlus'; //'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
       var opts = {
         json: false,
         method: settings.method,
         strictSSL: false,
         headers: settings.headers,
-        jar: true
+        jar: true,
+        resolveWithFullResponse: true
       };
       if (settings.body) opts.body = settings.body;
       if (this.proxyweb) opts.proxy = this.proxyweb;
@@ -160,6 +171,10 @@ export default async function ajax(settings) {
           if ((response.headers['content-type'] || "").indexOf('json') > -1 && typeof response.body === "string") response.body = JSON.parse(response.body)
           return Promise.resolve(response.body);
         }
+      } else if (response.statusCode === 403) {
+        // we need to reauthenticate
+        this.module_sprequest === null;
+        return ajax.call(this, settings);
       } else {
         return Promise.reject({
           response: response,
@@ -167,7 +182,7 @@ export default async function ajax(settings) {
           responseText: response.body
         });
       }
-
+      /* develblock:end */
     }
 
   } catch (err) {

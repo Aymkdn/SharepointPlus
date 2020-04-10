@@ -118,14 +118,11 @@ build.initialize(gulp);
         </div>
         <h4>`require` only</h4>
         <div class="content">
-          <p>If your project doesn't support <code>import</code> symbol, but only <code>require</code>, then you can still load SharepointPlus using <a href="https://www.npmjs.com/package/esm">esm</a>:</p>
-<pre class="prettyprint lang-bash">
-npm install esm
-</pre>
-        <p>Then, to require SharepointPlus:</p>
+          <p>If your project doesn't support <code>import</code> symbol, but only <code>require</code>, then you can still load SharepointPlus using the below syntax:</p>
 <pre class="prettyprint lang-js">
-const $SP = require("esm")(module)("sharepointplus").default;
+const $SP = require("sharepointplus/dist");
 </pre>
+          <p>In that case you won't benefit from the tree-shaking optimization.
         </div>
 
         <h3>Browser only</h3>
@@ -134,7 +131,7 @@ const $SP = require("esm")(module)("sharepointplus").default;
 <pre class="prettyprint lang-html">
   &lt;script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js">&lt;/script>
 </pre>
-          <div class="alert alert-info alert-bordered">Because this file contains all the functions as well as all the polyfills, it might be quite big (~62KB gzipped).</div>
+          <div class="alert alert-info alert-bordered">Because this file contains all the functions as well as all the polyfills, it might be quite big (~55KB gzipped).</div>
         </div>
         <h4>Browser Support</h4>
         <div class="content">
@@ -180,7 +177,7 @@ const $SP = require("esm")(module)("sharepointplus").default;
             </tr>
           </tbody>
         </table>
-        <p>Because of the large compatibility and of the available features, using the Web Services it's still the right call for SharepointPlus.</p>
+        <p>Because of the large compatibility and the available features, using the Web Services it's still the right call for SharepointPlus.</p>
 
         <h2>Examples</h2>
         <div class="content">
@@ -295,8 +292,8 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
     <h2>Older Versions</h2>
     <div class="content">
       <p>The previous versions of SharepointPlus are available in the <a href="https://github.com/Aymkdn/SharepointPlus/releases">releases folder</a></p>
-      <p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.com/">https://sharepointplus4.netlify.com/</a><br>
-        <p>The documentation for SharepointPlus v5.2 is available at <a href="https://sharepointplus5.netlify.com/docs/">https://sharepointplus5.netlify.com/docs/</a>
+      <p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.app/">https://sharepointplus4.netlify.app/</a><br>
+        <p>The documentation for SharepointPlus v5.2 is available at <a href="https://sharepointplus5.netlify.app/docs/">https://sharepointplus5.netlify.app/docs/</a>
       </p>
     </p>
   </div>

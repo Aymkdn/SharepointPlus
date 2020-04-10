@@ -1,6 +1,7 @@
 // not used
 var path = require('path');
 var webpack = require('webpack');
+//var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   target:'web',
@@ -14,6 +15,14 @@ module.exports = {
     libraryTarget: 'window',
     futureEmitAssets: true
   },
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  },
+  /*plugins: [
+    new BundleAnalyzerPlugin()
+  ],*/
   module: {
     rules: [
       {
@@ -33,6 +42,16 @@ module.exports = {
             ]
           }
         }
+      },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        exclude: /(node_modules|bower_components|\.spec\.js)/,
+        use: [
+          {
+            loader: 'webpack-strip-block'
+          }
+        ]
       }
     ]
   },

@@ -1,9 +1,9 @@
 import _regeneratorRuntime from "@babel/runtime-corejs3/regenerator";
 import _Promise from "@babel/runtime-corejs3/core-js-stable/promise";
-import _indexOfInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/index-of";
-import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/slice";
+import _startsWithInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/starts-with";
 import _asyncToGenerator from "@babel/runtime-corejs3/helpers/esm/asyncToGenerator";
 import ajax from './ajax.js';
+import getURL from './getURL.js';
 /**
  * @name $SP().getRequestDigest
  * @function
@@ -26,61 +26,72 @@ function _getRequestDigest() {
   _getRequestDigest = _asyncToGenerator(
   /*#__PURE__*/
   _regeneratorRuntime.mark(function _callee(settings) {
-    var _context, e, digest, url, data;
-
-    return _regeneratorRuntime.wrap(function _callee$(_context2) {
+    var e, digest, url, data;
+    return _regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context.prev = _context.next) {
           case 0:
-            _context2.prev = 0;
+            _context.prev = 0;
             settings = settings || {};
             settings.cache = settings.cache === false ? false : true;
             url = settings.url || this.url;
-            if (!url) url = _sliceInstanceProperty(_context = window.location.href.split("/")).call(_context, 0, 3).join("/");
-            url = url.toLowerCase();
-            if (_indexOfInstanceProperty(url).call(url, "_api") !== -1) url = url.split("_api")[0];else if (_indexOfInstanceProperty(url).call(url, "_vti_bin/client.svc/processquery") !== -1) url = url.split("_vti_bin/client.svc/processquery")[0]; // check cache
+
+            if (!(!url || !_startsWithInstanceProperty(url).call(url, 'http'))) {
+              _context.next = 8;
+              break;
+            }
+
+            _context.next = 7;
+            return getURL.call(this);
+
+          case 7:
+            url = _context.sent;
+
+          case 8:
+            // remove the last '/' in the URL
+            url = url.replace(/\/$/, ''); // check cache
 
             if (settings.cache) digest = global._SP_CACHE_REQUESTDIGEST[url];
 
             if (!digest) {
-              _context2.next = 11;
+              _context.next = 13;
               break;
             }
 
-            if (!(new Date().getTime() - new Date(digest.split(",")[1]).getTime() < 86400000)) {
-              _context2.next = 11;
+            if (!(new Date().getTime() - new Date(digest.split(",")[1]).getTime() < 1800)) {
+              _context.next = 13;
               break;
             }
 
-            return _context2.abrupt("return", _Promise.resolve(digest));
+            return _context.abrupt("return", _Promise.resolve(digest));
 
-          case 11:
+          case 13:
             if (!(global._SP_ISBROWSER && document && settings.cache)) {
-              _context2.next = 17;
+              _context.next = 19;
               break;
             }
 
             e = document.querySelector("#__REQUESTDIGEST");
 
             if (!e) {
-              _context2.next = 17;
+              _context.next = 19;
               break;
             }
 
             digest = e.value; // cache
 
             global._SP_CACHE_REQUESTDIGEST[url] = digest;
-            return _context2.abrupt("return", _Promise.resolve(digest));
+            return _context.abrupt("return", _Promise.resolve(digest));
 
-          case 17:
-            _context2.next = 19;
+          case 19:
+            _context.next = 21;
             return ajax.call(this, {
               url: url + "/_api/contextinfo",
               method: "POST"
             });
 
-          case 19:
-            data = _context2.sent;
+          case 21:
+            data = _context.sent;
             digest = data.d.GetContextWebInformation.FormDigestValue; // cache
 
             global._SP_CACHE_REQUESTDIGEST[url] = digest;
@@ -90,19 +101,19 @@ function _getRequestDigest() {
               if (e) e.value = digest;
             }
 
-            return _context2.abrupt("return", _Promise.resolve(digest));
+            return _context.abrupt("return", _Promise.resolve(digest));
 
-          case 26:
-            _context2.prev = 26;
-            _context2.t0 = _context2["catch"](0);
-            return _context2.abrupt("return", _Promise.reject(_context2.t0));
+          case 28:
+            _context.prev = 28;
+            _context.t0 = _context["catch"](0);
+            return _context.abrupt("return", _Promise.reject(_context.t0));
 
-          case 29:
+          case 31:
           case "end":
-            return _context2.stop();
+            return _context.stop();
         }
       }
-    }, _callee, this, [[0, 26]]);
+    }, _callee, this, [[0, 28]]);
   }));
   return _getRequestDigest.apply(this, arguments);
 }

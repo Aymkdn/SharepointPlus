@@ -121,3 +121,7 @@ pre { font-size:13px }
   border: 1px solid #CCC;
   padding: 3px;
 }
+/* code should use "Source Code Pro" */
+code, pre {
+  font-family: "Source Code Pro",Menlo,Monaco,"Courier New",monospace;
+}

@@ -4,11 +4,14 @@ var fs = require('jsdoc/fs');
 var SPversion = '';
 // retrieve the SP version 'from src/main.js'
 !function() {
-  var content = require('fs').readFileSync(__dirname+"/../src/main.js", "utf8");
-  var mtch = content.match(/getVersion \(\) { return "(\d\.\d)" }/);
+  /*var content = require('fs').readFileSync(__dirname+"/../src/main.js", "utf8");
+  console.log(content)
+  var mtch = content.match(/getVersion \(\) { return "(\d\.\d.\d)" }/);
   if (mtch) {
     SPversion = mtch[1];
-  }
+  }*/
+  var content = require('../package.json');
+  SPversion = content.version;
 }();
 var doop = require('jsdoc/util/doop');
 var env = require('jsdoc/env');

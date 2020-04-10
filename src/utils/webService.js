@@ -50,7 +50,7 @@ import _buildBodyForSOAP from '../lists/_buildBodyForSOAP.js'
  */
 export default async function webService(options) {
   try {
-    var bodyContent="", prop, params;
+    let bodyContent="", prop, params;
     if (!options.service) throw "Error 'webService': the option 'service' is required";
     if (!options.operation) throw "Error 'webService': the option 'operation' is required";
     options.webURL = options.webURL || this.url;

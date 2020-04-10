@@ -1,4 +1,5 @@
 import ajax from './ajax.js'
+import getURL from './getURL.js'
 
 /**
  * @name $SP().getRequestDigest
@@ -18,15 +19,18 @@ export default async function getRequestDigest(settings) {
     settings=settings||{};
     settings.cache=(settings.cache===false?false:true);
     let e, digest, url=(settings.url||this.url);
-    if (!url) url=window.location.href.split("/").slice(0,3).join("/");
-    url=url.toLowerCase();
-    if (url.indexOf("_api") !== -1) url=url.split("_api")[0];
-    else if (url.indexOf("_vti_bin/client.svc/processquery") !== -1) url=url.split("_vti_bin/client.svc/processquery")[0];
+    if (!url || !url.startsWith('http')) {
+      url = await getURL.call(this);
+    }
+    // remove the last '/' in the URL
+    url = url.replace(/\/$/,'');
+
     // check cache
     if (settings.cache) digest=global._SP_CACHE_REQUESTDIGEST[url];
+
     if (digest) {
-      // check date to be less than 24h
-      if (new Date().getTime() - new Date(digest.split(",")[1]).getTime() < 86400000) {
+      // check date to be less than 1800s
+      if (new Date().getTime() - new Date(digest.split(",")[1]).getTime() < 1800) {
         return Promise.resolve(digest);
       }
     }
@@ -45,6 +49,7 @@ export default async function getRequestDigest(settings) {
       method:"POST"
     })
     digest=data.d.GetContextWebInformation.FormDigestValue;
+
     // cache
     global._SP_CACHE_REQUESTDIGEST[url]=digest;
     if (global._SP_ISBROWSER && document) {

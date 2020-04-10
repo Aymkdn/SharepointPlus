@@ -488,6 +488,22 @@ describe('Lists', function() {
       assert(items.failed.length===0);
     })
   });
+
+  it('$SP().list().hasPermission("deleteListItems")', function() {
+    // check permissions
+    return $SP().list('SharepointPlus').hasPermission('deleteListItems')
+    .then(function(res) {
+      assert(res===true);
+    })
+  });
+
+  it('$SP().list().hasPermission(["addListItems","editListItems"])', function() {
+    // check permissions
+    return $SP().list('SharepointPlus').hasPermission(['addListItems','editListItems'])
+    .then(function(res) {
+      assert(res.addListItems===true && res.editListItems);
+    })
+  });
 })
 
 describe('Calendar', function() {
@@ -823,9 +839,24 @@ describe('People', function() {
 describe('Utils', function() {
   this.timeout(5000);
 
-  it('$SP().toDate()', function() {
+  it('$SP().toDate() (only "T")', function() {
     var date = $SP().toDate("2012-10-31T00:00:00");
     assert(date.getFullYear() === 2012 && date.getMonth() === 9 && date.getDate() === 31);
+  });
+
+  it('$SP().toDate() ("T" and "Z")', function() {
+    var date = $SP().toDate("2012-10-31T00:00:00Z");
+    assert(date.getFullYear() === 2012 && date.getMonth() === 9 && date.getDate() === 31);
+  });
+
+  it('$SP().toDate() (with "T" or "Z")', function() {
+    var date = $SP().toDate("2012-10-31 00:00:00");
+    assert(date.getFullYear() === 2012 && date.getMonth() === 9 && date.getDate() === 31);
+  });
+
+  it('$SP().toDate() (short format)', function() {
+    var date = $SP().toDate("2020-01-19");
+    assert(date.getFullYear() === 2020 && date.getMonth() === 0 && date.getDate() === 19);
   });
 
   it('$SP().toSPDate()', function() {
