@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = distributionLists;
+exports.default = distributionLists;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -46,12 +46,12 @@ function distributionLists(_x, _x2) {
 }
 
 function _distributionLists() {
-  _distributionLists = (0, _asyncToGenerator2["default"])(
+  _distributionLists = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(username, setup) {
+  _regenerator.default.mark(function _callee(username, setup) {
     var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, c, data, aResult, i, len, found, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, _c;
 
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -74,7 +74,7 @@ function _distributionLists() {
             }
 
             _context.next = 7;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 7:
             setup.url = _context.sent;
@@ -94,7 +94,7 @@ function _distributionLists() {
             _didIteratorError = false;
             _iteratorError = undefined;
             _context.prev = 15;
-            _iterator = (0, _getIterator2["default"])(global._SP_CACHE_DISTRIBUTIONLISTS);
+            _iterator = (0, _getIterator2.default)(global._SP_CACHE_DISTRIBUTIONLISTS);
 
           case 17:
             if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
@@ -109,7 +109,7 @@ function _distributionLists() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(c.data));
+            return _context.abrupt("return", _promise.default.resolve(c.data));
 
           case 21:
             _iteratorNormalCompletion = true;
@@ -130,8 +130,8 @@ function _distributionLists() {
             _context.prev = 30;
             _context.prev = 31;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 33:
@@ -152,9 +152,9 @@ function _distributionLists() {
 
           case 38:
             _context.next = 40;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: setup.url + "/_vti_bin/UserProfileService.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetCommonMemberships", "<accountName>" + username + "</accountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService"),
+              body: (0, _buildBodyForSOAP2.default)("GetCommonMemberships", "<accountName>" + username + "</accountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService"),
               headers: {
                 'SOAPAction': 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserMemberships'
               }
@@ -183,7 +183,7 @@ function _distributionLists() {
             _didIteratorError2 = false;
             _iteratorError2 = undefined;
             _context.prev = 48;
-            _iterator2 = (0, _getIterator2["default"])(global._SP_CACHE_DISTRIBUTIONLISTS);
+            _iterator2 = (0, _getIterator2.default)(global._SP_CACHE_DISTRIBUTIONLISTS);
 
           case 50:
             if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
@@ -221,8 +221,8 @@ function _distributionLists() {
             _context.prev = 65;
             _context.prev = 66;
 
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
             }
 
           case 68:
@@ -247,12 +247,12 @@ function _distributionLists() {
               url: setup.url,
               data: aResult
             });
-            return _context.abrupt("return", _promise["default"].resolve(aResult));
+            return _context.abrupt("return", _promise.default.resolve(aResult));
 
           case 77:
             _context.prev = 77;
             _context.t2 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t2));
+            return _context.abrupt("return", _promise.default.reject(_context.t2));
 
           case 80:
           case "end":

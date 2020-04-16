@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = closeModalDialog;
+exports.default = closeModalDialog;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
 
@@ -41,7 +41,7 @@ function closeModalDialog(dialogResult, returnValue) {
   var fct = function fct() {
     var md;
 
-    if ((0, _typeof2["default"])(dialogResult) === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "modalDialog") {
+    if ((0, _typeof2.default)(dialogResult) === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "modalDialog") {
       md = {
         id: dialogResult.id,
         dialogResult: returnValue,

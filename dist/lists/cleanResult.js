@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = cleanResult;
+exports.default = cleanResult;
 
 /**
   @name $SP().cleanResult

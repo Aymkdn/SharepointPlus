@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getLookup;
+exports.default = getLookup;
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
@@ -38,7 +38,7 @@ function getLookup(str) {
 
     // we have several lookups
     return {
-      id: (0, _slice["default"])(_context = str.replace(/([0-9]+;#)([^;]+)/g, "$1").replace(/;#;#/g, ",")).call(_context, 0, -2).split(","),
+      id: (0, _slice.default)(_context = str.replace(/([0-9]+;#)([^;]+)/g, "$1").replace(/;#;#/g, ",")).call(_context, 0, -2).split(","),
       value: str.replace(/([0-9]+;#)([^;]+)/g, "$2").split(";#")
     };
   }

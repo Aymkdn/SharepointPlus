@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = views;
+exports.default = views;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -45,14 +45,14 @@ function views(_x) {
 }
 
 function _views() {
-  _views = (0, _asyncToGenerator2["default"])(
+  _views = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(options) {
+  _regenerator.default.mark(function _callee(options) {
     var _this = this;
 
     var _context, found, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, c, data, aReturn, arr, i;
 
-    return _regenerator["default"].wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -90,7 +90,7 @@ function _views() {
             _didIteratorError = false;
             _iteratorError = undefined;
             _context2.prev = 12;
-            _iterator = (0, _getIterator2["default"])(global._SP_CACHE_SAVEDVIEWS);
+            _iterator = (0, _getIterator2.default)(global._SP_CACHE_SAVEDVIEWS);
 
           case 14:
             if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
@@ -106,7 +106,7 @@ function _views() {
             }
 
             found = true;
-            return _context2.abrupt("return", _promise["default"].resolve(c.data));
+            return _context2.abrupt("return", _promise.default.resolve(c.data));
 
           case 19:
             _iteratorNormalCompletion = true;
@@ -127,8 +127,8 @@ function _views() {
             _context2.prev = 28;
             _context2.prev = 29;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 31:
@@ -149,9 +149,9 @@ function _views() {
 
           case 36:
             _context2.next = 38;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/Views.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetViewCollection", '<listName>' + this.listID + '</listName>'),
+              body: (0, _buildBodyForSOAP2.default)("GetViewCollection", '<listName>' + this.listID + '</listName>'),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetViewCollection'
               }
@@ -173,7 +173,7 @@ function _views() {
             } // cache
 
 
-            (0, _forEach["default"])(_context = global._SP_CACHE_SAVEDVIEWS).call(_context, function (c) {
+            (0, _forEach.default)(_context = global._SP_CACHE_SAVEDVIEWS).call(_context, function (c) {
               if (c.url === _this.url && c.listID === _this.listID) {
                 c.data = aReturn;
                 found = true;
@@ -184,12 +184,12 @@ function _views() {
               listID: this.listID,
               data: aReturn
             });
-            return _context2.abrupt("return", _promise["default"].resolve(aReturn));
+            return _context2.abrupt("return", _promise.default.resolve(aReturn));
 
           case 46:
             _context2.prev = 46;
             _context2.t1 = _context2["catch"](0);
-            return _context2.abrupt("return", _promise["default"].reject(_context2.t1));
+            return _context2.abrupt("return", _promise.default.reject(_context2.t1));
 
           case 49:
           case "end":

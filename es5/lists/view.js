@@ -116,8 +116,8 @@ function _view() {
             _context2.prev = 30;
             _context2.prev = 31;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 33:
@@ -187,8 +187,8 @@ function _view() {
             _context2.prev = 60;
             _context2.prev = 61;
 
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
             }
 
           case 63:

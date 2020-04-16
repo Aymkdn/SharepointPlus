@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = notify;
+exports.default = notify;
 
 var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
 
@@ -100,10 +100,10 @@ function notify(message, options) {
     if (options.fake === true) return; // for the override options
 
     if (global._SP_NOTIFY.length > 0) {
-      if (options.overrideAll) _removeNotify["default"].call(this, {
+      if (options.overrideAll) _removeNotify.default.call(this, {
         all: true,
         includeSticky: options.overrideSticky
-      });else if (options.override) _removeNotify["default"].call(this, global._SP_NOTIFY[global._SP_NOTIFY.length - 1].name);
+      });else if (options.override) _removeNotify.default.call(this, global._SP_NOTIFY[global._SP_NOTIFY.length - 1].name);
     }
 
     global._SP_NOTIFY.push({
@@ -116,8 +116,8 @@ function notify(message, options) {
 
 
   if (!options.sticky) {
-    (0, _setTimeout2["default"])(function () {
-      _removeNotify["default"].call(this, options.name, {
+    (0, _setTimeout2.default)(function () {
+      _removeNotify.default.call(this, options.name, {
         timeout: true
       });
     }, options.timeout * 1000);

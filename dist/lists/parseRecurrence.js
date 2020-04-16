@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = parseRecurrence;
+exports.default = parseRecurrence;
 
 var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
 
@@ -135,7 +135,7 @@ function parseRecurrence(data) {
 
 
     var tags = ['firstDayOfWeek', 'daily', 'weekly', 'monthly', 'monthlyByDay', 'yearly', 'yearlyByDay', 'windowEnd', 'repeatInstances'];
-    (0, _forEach["default"])(tags).call(tags, function (tag) {
+    (0, _forEach.default)(tags).call(tags, function (tag) {
       var xmlField = xmlDoc.getElementsByTagName(tag);
 
       if (xmlField.length === 1) {
@@ -150,7 +150,7 @@ function parseRecurrence(data) {
               for (var i = 0; i < days.length; i++) {
                 var _context;
 
-                if ((0, _slice["default"])(_context = days[i]).call(_context, 0, 2) === firstDayOfWeek) {
+                if ((0, _slice.default)(_context = days[i]).call(_context, 0, 2) === firstDayOfWeek) {
                   ret.firstDayOfWeek = days[i];
                   break;
                 }
@@ -172,8 +172,8 @@ function parseRecurrence(data) {
             {
               ret.frequency = elem.getAttribute("weekFrequency") * 1;
               ret.on = {};
-              (0, _forEach["default"])(days).call(days, function (day) {
-                if (elem.getAttribute((0, _slice["default"])(day).call(day, 0, 2)) === "TRUE") ret.on[day] = true;
+              (0, _forEach.default)(days).call(days, function (day) {
+                if (elem.getAttribute((0, _slice.default)(day).call(day, 0, 2)) === "TRUE") ret.on[day] = true;
               });
               break;
             }
@@ -193,8 +193,8 @@ function parseRecurrence(data) {
               var weekdayOfMonth = elem.getAttribute("weekdayOfMonth") || elem.getAttribute("weekDayOfMonth"); // first, second, third, forth, last
 
               ret.on = {};
-              (0, _forEach["default"])(days).call(days, function (day) {
-                if (elem.getAttribute((0, _slice["default"])(day).call(day, 0, 2)) === "TRUE") ret.on[day] = weekdayOfMonth;
+              (0, _forEach.default)(days).call(days, function (day) {
+                if (elem.getAttribute((0, _slice.default)(day).call(day, 0, 2)) === "TRUE") ret.on[day] = weekdayOfMonth;
               });
               if (elem.getAttribute("day") === "TRUE") ret.on.day = weekdayOfMonth;
               if (elem.getAttribute("weekday") === "TRUE") ret.on.weekday = weekdayOfMonth;
@@ -231,12 +231,12 @@ function parseRecurrence(data) {
       }
     });
     return ret;
-  } else if (data && (0, _typeof2["default"])(data) === "object" && data.type) {
+  } else if (data && (0, _typeof2.default)(data) === "object" && data.type) {
     var _context2;
 
     // transform an object to a XML string
     data.firstDayOfWeek = data.firstDayOfWeek || "mo";
-    ret = '<recurrence><rule><firstDayOfWeek>' + ((0, _slice["default"])(_context2 = data.firstDayOfWeek.toLowerCase()).call(_context2, 0, 2) || 'mo') + '</firstDayOfWeek><repeat><' + data.type + ' ';
+    ret = '<recurrence><rule><firstDayOfWeek>' + ((0, _slice.default)(_context2 = data.firstDayOfWeek.toLowerCase()).call(_context2, 0, 2) || 'mo') + '</firstDayOfWeek><repeat><' + data.type + ' ';
 
     switch (data.type) {
       case "daily":
@@ -247,8 +247,8 @@ function parseRecurrence(data) {
 
       case "weekly":
         {
-          (0, _forEach["default"])(days).call(days, function (day) {
-            if (data.on[day]) ret += (0, _slice["default"])(day).call(day, 0, 2) + '="TRUE" ';
+          (0, _forEach.default)(days).call(days, function (day) {
+            if (data.on[day]) ret += (0, _slice.default)(day).call(day, 0, 2) + '="TRUE" ';
           });
           ret += 'weekFrequency="' + data.frequency + '" />';
           break;
@@ -265,18 +265,18 @@ function parseRecurrence(data) {
         {
           var _context3, _context4;
 
-          (0, _forEach["default"])(_context3 = (0, _concat["default"])(_context4 = ['day', 'weekday', 'weekend']).call(_context4, days)).call(_context3, function (day, idx) {
+          (0, _forEach.default)(_context3 = (0, _concat.default)(_context4 = ['day', 'weekday', 'weekend']).call(_context4, days)).call(_context3, function (day, idx) {
             if (data.on[day]) {
               if (idx < 3) {
                 ret += day + (day === 'weekend' ? '_day' : '');
               } else {
-                ret += (0, _slice["default"])(day).call(day, 0, 2);
+                ret += (0, _slice.default)(day).call(day, 0, 2);
               } // monthlyByDay has "weekdayOfMonth" with "day" in lowercase, when yearlyByDay has "weekDayOfMonth"
 
 
               ret += '="TRUE" '; // avoid repeating "weekDayOfMonth"
 
-              if ((0, _indexOf["default"])(ret).call(ret, 'ayOfMonth') === -1) {
+              if ((0, _indexOf.default)(ret).call(ret, 'ayOfMonth') === -1) {
                 ret += 'week' + (data.type === "monthlyByDay" ? 'd' : 'D') + 'ayOfMonth="' + data.on[day] + '" ';
               }
 

@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = regionalDateFormat;
+exports.default = regionalDateFormat;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -53,11 +53,11 @@ function regionalDateFormat(_x) {
 }
 
 function _regionalDateFormat() {
-  _regionalDateFormat = (0, _asyncToGenerator2["default"])(
+  _regionalDateFormat = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(url) {
+  _regenerator.default.mark(function _callee(url) {
     var lcid, data, div, x, r;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -68,7 +68,7 @@ function _regionalDateFormat() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(global._SP_CACHE_DATEFORMAT));
+            return _context.abrupt("return", _promise.default.resolve(global._SP_CACHE_DATEFORMAT));
 
           case 3:
             if (url) {
@@ -77,7 +77,7 @@ function _regionalDateFormat() {
             }
 
             _context.next = 6;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 6:
             url = _context.sent;
@@ -94,14 +94,14 @@ function _regionalDateFormat() {
             }
 
             _context.next = 12;
-            return _regionalSettings["default"].call(this, url);
+            return _regionalSettings.default.call(this, url);
 
           case 12:
             lcid = global._SP_CACHE_REGIONALSETTINGS.lcid;
 
           case 13:
             _context.next = 15;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: url + "/_layouts/iframe.aspx?cal=1&date=1/1/2000&lcid=" + lcid
             });
 
@@ -115,7 +115,7 @@ function _regionalDateFormat() {
 
             r = /\\u([\d\w]{4})/gi;
             x = x.replace(r, function (match, grp) {
-              return String.fromCharCode((0, _parseInt2["default"])(grp, 16));
+              return String.fromCharCode((0, _parseInt2.default)(grp, 16));
             });
             x = unescape(x); // eg: 3.1.2000
 
@@ -132,12 +132,12 @@ function _regionalDateFormat() {
             x = x.replace(/1/, "M"); // D.M.YYYY
 
             global._SP_CACHE_DATEFORMAT = x;
-            return _context.abrupt("return", _promise["default"].resolve(x));
+            return _context.abrupt("return", _promise.default.resolve(x));
 
           case 32:
             _context.prev = 32;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 35:
           case "end":

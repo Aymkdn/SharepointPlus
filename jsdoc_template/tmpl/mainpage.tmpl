@@ -19,11 +19,11 @@ var self = this;
 
         <h2>Sharepoint Support</h2>
         <div class="content">
-          <p>
-            <b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/releases/tag/v3.0.5">SharepointPlus v3.0.5</a> is the last release that I have tested with Sharepoint 2007 -- <i>after this version I cannot assure the retro-compatibility</i><br>
-            <b>Sharepoint 2010</b> : Compatible since SharepointPlus v3.0.5 -- <i>SP2010 is not tested anymore with last versions but it should work OK</i><br>
-            <b>Sharepoint 2013/2016/2019/Online</b> : Compatible since SharepointPlus v3.13 -- <strong style="color:green">&#10003; fully tested, 100% compatible!</strong>
-          </p>
+          <ul>
+            <li><b>Sharepoint 2007</b> : <a href="https://github.com/Aymkdn/SharepointPlus/releases/tag/v3.0.5">SharepointPlus v3.0.5</a> is the last release tested with Sharepoint 2007 – <i>after this version I cannot assure the retro-compatibility</i></li>
+            <li><b>Sharepoint 2010</b> : Compatible since <a href="https://github.com/Aymkdn/SharepointPlus/releases/tag/v3.14">SharepointPlus v3.14</a>, but, please <a href="#compatibility">read carefully this notice</a> – <i>SP2010 is not tested anymore</i></li>
+            <li><b>Sharepoint 2013/2016/2019/Online</b> : Compatible since SharepointPlus v3.13 – <strong style="color:green">&#10003; fully tested, 100% compatible!</strong></li>
+          </ul>
         </div>
 
         <h2>Installation</h2>
@@ -127,20 +127,32 @@ const $SP = require("sharepointplus/dist");
 
         <h3>Browser only</h3>
         <div class="content">
-          <p>You can also just <a href="https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js">drop one file</a> in your HTML document which will contain all the 70+ functions and all the polyfills to support the <a href="https://browserl.ist/?q=defaults">different browsers</a>:</p>
+          <p>You can also just <a href="https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js">drop one file</a> in your HTML document which will contain all the 70+ functions and all the polyfills to support the <a href="#compatibility">different browsers</a>:</p>
 <pre class="prettyprint lang-html">
   &lt;script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharepointplus/browser/sharepointplus.js">&lt;/script>
 </pre>
-          <div class="alert alert-info alert-bordered">Because this file contains all the functions as well as all the polyfills, it might be quite big (~55KB gzipped).</div>
+          <div><strong>Note</strong>: because this file contains all the functions as well as all the polyfills, it might be quite big (~55KB gzipped).</div>
         </div>
-        <h4>Browser Support</h4>
+        <h4 id="compatibility">Browser Support</h4>
         <div class="content">
           <p>
-            IE11, and all modern browsers (Firefox, Chrome, Edge, ...) (<a href="https://browserl.ist/?q=defaults">see coverage</a>) are supported with the bundle for browsers.
+            IE10+, and all modern browsers (Firefox, Chrome, Edge, ...) (<a href="https://browserl.ist/?q=defaults%2Cie+%3E%3D+10">see coverage</a>) are supported with the bundle for browsers.
           </p>
+          <div class="alert alert-info" style="margin-top:20px">
+            <p style="font-weight:bold">Internet Explorer and Sharepoint Environments</p>
+            <p>
+              It's important to note that Internet Explorer uses different engine versions depending of the webpage:
+              <ul>
+                <li><strong>Sharepoint 2010</strong>: by default, a Sharepoint 2010 webpage, opened in IE11, will render with <strong>IE7 Engine</strong>! In that case, only <a href="https://github.com/Aymkdn/SharepointPlus/releases/tag/v3.14">SharepointPlus v3.14</a> is compatible because this Internet Explorer 7 engine is too old for the newest versions of SharepointPlus.</li>
+                <li><strong>Sharepoint 2013</strong>: by default, a Sharepoint 2010 webpage, opened in IE11, will render with <strong>IE10 Engine</strong>. In that case, the current version of SharepointPlus works.</li>
+                <li><strong>Sharepoint 2019/Online</strong>: by default, the webpage, opened in IE11, will render with <strong>IE11 Engine</strong>. In that case, the current version of SharepointPlus works.</li>
+              </ul>
+            </p>
+            <p>You may need to add <code>&lt;meta http-equiv="X-UA-Compatible" content="IE=Edge" /&gt;</code> in your page's headers to make sure IE will support the latest engine.</p>
+          </div>
         </div>
 
-        <h2>How it works</h2>
+        <h2>How does SharepointPlus work?</h2>
         <p>SharepointPlus uses the different <a href="http://sympmarc.github.io/SPServices/core/web-services.html" title="Link to Sympmarc website with some documentation regarding the Sharepoint Web Services">Sharepoint Web Services</a> to deal with the Sharepoint server.</p>
         <p>Below is a comparative between Web Services (used by SharepointPlus) and REST API (used by some other libraries):</p>
         <table>
@@ -291,9 +303,11 @@ const sp = $SP().proxy(proxyweb).auth(credentials);
 
     <h2>Older Versions</h2>
     <div class="content">
-      <p>The previous versions of SharepointPlus are available in the <a href="https://github.com/Aymkdn/SharepointPlus/releases">releases folder</a></p>
-      <p>The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.app/">https://sharepointplus4.netlify.app/</a><br>
-        <p>The documentation for SharepointPlus v5.2 is available at <a href="https://sharepointplus5.netlify.app/docs/">https://sharepointplus5.netlify.app/docs/</a>
+      <p>
+        The previous versions of SharepointPlus are available in the <a href="https://github.com/Aymkdn/SharepointPlus/releases">releases folder</a><br>
+        The documentation for SharepointPlus v3.14 is available at <a href="https://sharepointplus3.netlify.app/">https://sharepointplus3.netlify.app/</a><br>
+        The documentation for SharepointPlus v4.0 is available at <a href="https://sharepointplus4.netlify.app/">https://sharepointplus4.netlify.app/</a><br>
+        The documentation for SharepointPlus v5.2 is available at <a href="https://sharepointplus5.netlify.app/docs/">https://sharepointplus5.netlify.app/docs/</a>
       </p>
     </p>
   </div>

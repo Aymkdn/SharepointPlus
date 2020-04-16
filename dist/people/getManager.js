@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getManager;
+exports.default = getManager;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -53,21 +53,21 @@ function getManager(_x, _x2) {
 }
 
 function _getManager() {
-  _getManager = (0, _asyncToGenerator2["default"])(
+  _getManager = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(username, setup) {
+  _regenerator.default.mark(function _callee(username, setup) {
     var pres,
         managerUserName,
         res,
         displayName,
         _args = arguments;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
 
-            if (_args.length === 1 && (0, _typeof2["default"])(username) === "object") {
+            if (_args.length === 1 && (0, _typeof2.default)(username) === "object") {
               setup = username;
               username = "";
             } // default values
@@ -82,32 +82,32 @@ function _getManager() {
             }
 
             _context.next = 7;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 7:
             setup.url = _context.sent;
 
           case 8:
             _context.next = 10;
-            return _people["default"].call(this, username, setup);
+            return _people.default.call(this, username, setup);
 
           case 10:
             pres = _context.sent;
             managerUserName = pres.Manager;
-            if (!(0, _startsWith["default"])(managerUserName).call(managerUserName, 'i:0')) managerUserName = "i:0#.w|" + managerUserName;
+            if (!(0, _startsWith.default)(managerUserName).call(managerUserName, 'i:0')) managerUserName = "i:0#.w|" + managerUserName;
             _context.next = 15;
-            return _getUserInfo["default"].call(this, managerUserName, setup);
+            return _getUserInfo.default.call(this, managerUserName, setup);
 
           case 15:
             res = _context.sent;
             // "42;#Doe,, John,#i:0#.w|domain\John_Doe,#John_Doe@Domain.com,#John_Doe@Domain.com,#Doe,, John
             displayName = res.Name.replace(/,/, ",,");
-            return _context.abrupt("return", _promise["default"].resolve(res.ID + ";#" + displayName + ",#" + managerUserName + ",#" + res.Email + ",#" + res.Email + ",#" + displayName));
+            return _context.abrupt("return", _promise.default.resolve(res.ID + ";#" + displayName + ",#" + managerUserName + ",#" + res.Email + ",#" + res.Email + ",#" + displayName));
 
           case 20:
             _context.prev = 20;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 23:
           case "end":

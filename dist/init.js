@@ -8,13 +8,13 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = spInit;
+exports.default = spInit;
 
 var _main = _interopRequireDefault(require("./main.js"));
 
 function spInit(params) {
   return function () {
-    var sp = new _main["default"]();
+    var sp = new _main.default();
     sp.init(params);
     return sp;
   };

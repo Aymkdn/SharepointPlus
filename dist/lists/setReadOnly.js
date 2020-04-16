@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = setReadOnly;
+exports.default = setReadOnly;
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
@@ -44,7 +44,7 @@ function setReadOnly(fieldID, readonly) {
   var updateSystemFields = "<Fields><Method ID='1'>";
   if (fieldID.charAt(0) === '<') updateSystemFields += fieldID; // get info
 
-  return _info["default"].call(this).then(function (infos) {
+  return _info.default.call(this).then(function (infos) {
     var props = ["ID", "Name", "SourceID", "StaticName", "ColName", "RowOrdinal", "Type", "DisplayName"];
     updateSystemFields += '<Field';
 
@@ -67,7 +67,7 @@ function setReadOnly(fieldID, readonly) {
             }
         }
 
-        (0, _forEach["default"])(props).call(props, function (prop) {
+        (0, _forEach.default)(props).call(props, function (prop) {
           if (infos[i][prop]) updateSystemFields += ' ' + prop + '="' + infos[i][prop] + '"';
         });
         updateSystemFields += ' ReadOnly="' + (readonly ? "TRUE" : "FALSE") + '" />';
@@ -82,7 +82,7 @@ function setReadOnly(fieldID, readonly) {
     }
 
     updateSystemFields += "</Method></Fields>";
-    return _webService["default"].call(_this, {
+    return _webService.default.call(_this, {
       webURL: _this.url,
       service: "Lists",
       operation: "UpdateList",
@@ -98,7 +98,7 @@ function setReadOnly(fieldID, readonly) {
   }).then(function (response) {
     if (response.getElementsByTagName('ErrorCode')[0].firstChild.nodeValue !== "0x00000000") {
       var errors = response.getElementsByTagName('ErrorText');
-      return _promise["default"].reject(errors.length > 0 ? errors[0].firstChild.nodeValue : "Unknown Error");
+      return _promise.default.reject(errors.length > 0 ? errors[0].firstChild.nodeValue : "Unknown Error");
     }
   });
 }

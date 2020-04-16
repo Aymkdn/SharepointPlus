@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getContentTypes;
+exports.default = getContentTypes;
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
@@ -45,15 +45,15 @@ function getContentTypes(options) {
   if (options.cache) {
     for (var i = 0; i < global._SP_CACHE_CONTENTTYPES.length; i++) {
       if (global._SP_CACHE_CONTENTTYPES[i].list === this.listID && global._SP_CACHE_CONTENTTYPES[i].url === this.url) {
-        return _promise["default"].resolve(global._SP_CACHE_CONTENTTYPES[i].contentTypes);
+        return _promise.default.resolve(global._SP_CACHE_CONTENTTYPES[i].contentTypes);
       }
     }
   } // do the request
 
 
-  return _ajax["default"].call(this, {
+  return _ajax.default.call(this, {
     url: this.url + "/_vti_bin/lists.asmx",
-    body: (0, _buildBodyForSOAP2["default"])("GetListContentTypes", '<listName>' + this.listID + '</listName>'),
+    body: (0, _buildBodyForSOAP2.default)("GetListContentTypes", '<listName>' + this.listID + '</listName>'),
     headers: {
       'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetListContentTypes'
     }

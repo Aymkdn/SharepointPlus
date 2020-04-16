@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = void 0;
+exports.default = void 0;
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
@@ -22,12 +22,12 @@ var _default =
 /*#__PURE__*/
 function () {
   function _default(elem) {
-    (0, _classCallCheck2["default"])(this, _default);
+    (0, _classCallCheck2.default)(this, _default);
     this.mynode = elem;
     this.singleList = true;
   }
 
-  (0, _createClass2["default"])(_default, [{
+  (0, _createClass2.default)(_default, [{
     key: "getAttribute",
     value: function getAttribute(id) {
       return this.mynode.getAttribute("ows_" + id.replace(/ /g, ""));
@@ -41,5 +41,5 @@ function () {
   return _default;
 }();
 
-exports["default"] = _default;
+exports.default = _default;
 module.exports = exports.default;

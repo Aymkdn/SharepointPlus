@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = removeNotify;
+exports.default = removeNotify;
 
 var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
 
@@ -51,11 +51,11 @@ function removeNotify(name, options) {
 
     case 2:
       {
-        if ((0, _typeof2["default"])(options) !== "object") throw "Error 'removeNotify': you must provide an object for 'options'.";
+        if ((0, _typeof2.default)(options) !== "object") throw "Error 'removeNotify': you must provide an object for 'options'.";
       }
   }
 
-  if (arguments.length === 1 && (0, _typeof2["default"])(name) === "object") {
+  if (arguments.length === 1 && (0, _typeof2.default)(name) === "object") {
     options = name;
     name = undefined;
   }
@@ -67,7 +67,7 @@ function removeNotify(name, options) {
   options.timeout = options.timeout === true ? true : false; // make sure we are ready
 
   if (global._SP_NOTIFY_READY === false && global._SP_NOTIFY_QUEUE.length > 0) {
-    (0, _setTimeout2["default"])(function () {
+    (0, _setTimeout2.default)(function () {
       return removeNotify.call(_this, name, options);
     }, 150);
     return this;
@@ -83,23 +83,23 @@ function removeNotify(name, options) {
       if (options.includeSticky === false && notif.options.sticky === true) a.push(notif);else {
         SP.UI.Notify.removeNotification(notif.id); // eslint-disable-line
 
-        (0, _setTimeout2["default"])(function () {
+        (0, _setTimeout2.default)(function () {
           return notif.options.after.call(_this, notif.name, false);
         }, 150);
       }
     }
 
-    global._SP_NOTIFY = (0, _slice["default"])(a).call(a, 0); // if we want to keep the sticky notifs
+    global._SP_NOTIFY = (0, _slice.default)(a).call(a, 0); // if we want to keep the sticky notifs
   } else if (name !== undefined) {
     // search for the notification
     for (var i = 0, len = global._SP_NOTIFY.length; i < len; i++) {
       if (global._SP_NOTIFY[i].name == name) {
         var _context;
 
-        notif = (0, _splice["default"])(_context = global._SP_NOTIFY).call(_context, i, 1)[0];
+        notif = (0, _splice.default)(_context = global._SP_NOTIFY).call(_context, i, 1)[0];
         SP.UI.Notify.removeNotification(notif.id); // eslint-disable-line
 
-        (0, _setTimeout2["default"])(function () {
+        (0, _setTimeout2.default)(function () {
           return notif.options.after.call(_this, notif.name, options.timeout);
         }, 150);
         return this;

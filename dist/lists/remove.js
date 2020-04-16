@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = remove;
+exports.default = remove;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -83,14 +83,14 @@ function remove(_x, _x2) {
 }
 
 function _remove() {
-  _remove = (0, _asyncToGenerator2["default"])(
+  _remove = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(items, options) {
+  _regenerator.default.mark(function _callee(items, options) {
     var _this = this;
 
     var _context4, setup, itemsLength, nextPacket, cutted, getParams, _data, clone, aItems, fileRef, it, _i, _context, eventDate, event, updates, _i2, data, result, len, passed, failed, i;
 
-    return _regenerator["default"].wrap(function _callee$(_context5) {
+    return _regenerator.default.wrap(function _callee$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
@@ -113,12 +113,12 @@ function _remove() {
 
 
             setup = {};
-            (0, _cloneObject["default"])(true, setup, options);
+            (0, _cloneObject.default)(true, setup, options);
 
             setup.progress = setup.progress || function () {};
 
             setup.packetsize = setup.packetsize || 30;
-            if (!(0, _isArray["default"])(items)) items = [items];
+            if (!(0, _isArray.default)(items)) items = [items];
             itemsLength = items.length; // if there is a WHERE clause
 
             if (!setup.where) {
@@ -142,7 +142,7 @@ function _remove() {
             }
 
             _context5.next = 16;
-            return _get["default"].call(this, getParams);
+            return _get.default.call(this, getParams);
 
           case 16:
             _data = _context5.sent;
@@ -181,11 +181,11 @@ function _remove() {
 
           case 26:
             // the treatment is different for `event`
-            eventDate = typeof setup.event !== 'string' ? this.toSPDate(setup.event) : (0, _slice["default"])(_context = setup.event).call(_context, 0, 10);
-            event = (0, _filter["default"])(_data).call(_data, function (d) {
+            eventDate = typeof setup.event !== 'string' ? this.toSPDate(setup.event) : (0, _slice.default)(_context = setup.event).call(_context, 0, 10);
+            event = (0, _filter.default)(_data).call(_data, function (d) {
               var _context2, _context3;
 
-              return (0, _indexOf["default"])(_context2 = d.getAttribute("ID")).call(_context2, "." + eventDate + "T") !== -1 || (0, _startsWith["default"])(_context3 = d.getAttribute("RecurrenceID") || "").call(_context3, eventDate);
+              return (0, _indexOf.default)(_context2 = d.getAttribute("ID")).call(_context2, "." + eventDate + "T") !== -1 || (0, _startsWith.default)(_context3 = d.getAttribute("RecurrenceID") || "").call(_context3, eventDate);
             });
 
             if (!(event.length === 0)) {
@@ -193,7 +193,7 @@ function _remove() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].reject("[SharepointPlus 'remove'] No event found on " + eventDate));
+            return _context5.abrupt("return", _promise.default.reject("[SharepointPlus 'remove'] No event found on " + eventDate));
 
           case 30:
             event = event[0]; // see https://fatalfrenchy.wordpress.com/2010/07/16/sharepoint-recurrence-data-schema/
@@ -209,7 +209,7 @@ function _remove() {
             it.Title = "Deleted: " + event.getAttribute("Title") || "";
             it.EventDate = event.getAttribute("EventDate");
             it.EndDate = event.getAttribute("EndDate");
-            return _context5.abrupt("return", _add["default"].call(this, it, setup));
+            return _context5.abrupt("return", _add.default.call(this, it, setup));
 
           case 42:
             _context5.next = 46;
@@ -221,7 +221,7 @@ function _remove() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].resolve({
+            return _context5.abrupt("return", _promise.default.resolve({
               passed: [],
               failed: []
             }));
@@ -233,13 +233,13 @@ function _remove() {
               max: itemsLength,
               passed: [],
               failed: [],
-              eventID: "spRemove" + (0, _slice["default"])(_context4 = "" + Math.random()).call(_context4, 2)
+              eventID: "spRemove" + (0, _slice.default)(_context4 = "" + Math.random()).call(_context4, 2)
             }; // we cannot add more than setup.packetsize items in the same time, so split by setup.packetsize elements
             // and also to avoid surcharging the server
 
             if (itemsLength > setup.packetsize) {
-              nextPacket = (0, _slice["default"])(items).call(items, 0);
-              cutted = (0, _splice["default"])(nextPacket).call(nextPacket, 0, setup.packetsize);
+              nextPacket = (0, _slice.default)(items).call(items, 0);
+              cutted = (0, _splice.default)(nextPacket).call(nextPacket, 0, setup.packetsize);
 
               global._SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID] = function (setup) {
                 return remove.call(_this, nextPacket, setup);
@@ -284,9 +284,9 @@ function _remove() {
             updates += '</Batch>'; // send the request
 
             _context5.next = 64;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/lists.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
+              body: (0, _buildBodyForSOAP2.default)("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'
               }
@@ -324,7 +324,7 @@ function _remove() {
             // clean memory
             global._SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID] = undefined; // and resolve by passing the items resolution
 
-            return _context5.abrupt("return", _promise["default"].resolve({
+            return _context5.abrupt("return", _promise.default.resolve({
               passed: passed,
               failed: failed
             }));
@@ -338,7 +338,7 @@ function _remove() {
 
           case 76:
             if (global._SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID]) global._SP_REMOVE_PROGRESSVAR[setup.progressVar.eventID] = undefined;
-            return _context5.abrupt("return", _promise["default"].resolve({
+            return _context5.abrupt("return", _promise.default.resolve({
               passed: passed,
               failed: failed
             }));
@@ -350,7 +350,7 @@ function _remove() {
           case 80:
             _context5.prev = 80;
             _context5.t0 = _context5["catch"](0);
-            return _context5.abrupt("return", _promise["default"].reject(_context5.t0));
+            return _context5.abrupt("return", _promise.default.reject(_context5.t0));
 
           case 83:
           case "end":

@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getUserInfo;
+exports.default = getUserInfo;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -45,11 +45,11 @@ function getUserInfo(_x, _x2) {
 }
 
 function _getUserInfo() {
-  _getUserInfo = (0, _asyncToGenerator2["default"])(
+  _getUserInfo = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(username, setup) {
+  _regenerator.default.mark(function _callee(username, setup) {
     var data;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -72,16 +72,16 @@ function _getUserInfo() {
             }
 
             _context.next = 7;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 7:
             setup.url = _context.sent;
 
           case 8:
             _context.next = 10;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: setup.url + "/_vti_bin/usergroup.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetUserInfo", '<userLoginName>' + username + '</userLoginName>', "http://schemas.microsoft.com/sharepoint/soap/directory/")
+              body: (0, _buildBodyForSOAP2.default)("GetUserInfo", '<userLoginName>' + username + '</userLoginName>', "http://schemas.microsoft.com/sharepoint/soap/directory/")
             });
 
           case 10:
@@ -94,10 +94,10 @@ function _getUserInfo() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].reject("[SharepointPlus 'getUserInfo'] nothing returned?!"));
+            return _context.abrupt("return", _promise.default.reject("[SharepointPlus 'getUserInfo'] nothing returned?!"));
 
           case 16:
-            return _context.abrupt("return", _promise["default"].resolve({
+            return _context.abrupt("return", _promise.default.resolve({
               ID: data[0].getAttribute("ID"),
               Sid: data[0].getAttribute("Sid"),
               Name: data[0].getAttribute("Name"),
@@ -116,7 +116,7 @@ function _getUserInfo() {
           case 19:
             _context.prev = 19;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 22:
           case "end":

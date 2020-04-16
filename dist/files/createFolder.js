@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = createFolder;
+exports.default = createFolder;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -49,12 +49,12 @@ function createFolder(_x) {
 }
 
 function _createFolder() {
-  _createFolder = (0, _asyncToGenerator2["default"])(
+  _createFolder = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(folderPath) {
+  _regenerator.default.mark(function _callee(folderPath) {
     var path, toAdd, tmpPath, i, rows, _i, _context;
 
-    return _regenerator["default"].wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -72,8 +72,8 @@ function _createFolder() {
             // eslint-disable-next-line
             path = folderPath.replace(/[\*\?\|:"'<>#{}%~&]/g, "").replace(/^[\. ]+|[\. ]+$/g, "").replace(/ {2,}/g, " ").replace(/\.{2,}/g, "."), toAdd = [], tmpPath = ""; // trim "/" at the beginning and end
 
-            if (path.charAt(0) === "/") path = (0, _slice["default"])(path).call(path, 1);
-            if ((0, _slice["default"])(path).call(path, -1) === "/") path = (0, _slice["default"])(path).call(path, 0, -1);
+            if (path.charAt(0) === "/") path = (0, _slice.default)(path).call(path, 1);
+            if ((0, _slice.default)(path).call(path, -1) === "/") path = (0, _slice.default)(path).call(path, 0, -1);
             path = path.split('/');
 
             for (i = 0; i < path.length; i++) {
@@ -85,13 +85,13 @@ function _createFolder() {
             }
 
             _context2.next = 10;
-            return _add["default"].call(this, toAdd);
+            return _add.default.call(this, toAdd);
 
           case 10:
             rows = _context2.sent;
             // remove first and last "/" for folderPath
-            if (folderPath.charAt(0) === "/") folderPath = (0, _slice["default"])(folderPath).call(folderPath, 1);
-            if ((0, _slice["default"])(folderPath).call(folderPath, -1) === "/") folderPath = (0, _slice["default"])(folderPath).call(folderPath, 0, -1); // check if our final folder has been correctly created
+            if (folderPath.charAt(0) === "/") folderPath = (0, _slice.default)(folderPath).call(folderPath, 1);
+            if ((0, _slice.default)(folderPath).call(folderPath, -1) === "/") folderPath = (0, _slice.default)(folderPath).call(folderPath, 0, -1); // check if our final folder has been correctly created
 
             _i = rows.passed.length;
 
@@ -106,7 +106,7 @@ function _createFolder() {
               break;
             }
 
-            return _context2.abrupt("return", _promise["default"].resolve(rows.passed[_i]));
+            return _context2.abrupt("return", _promise.default.resolve(rows.passed[_i]));
 
           case 17:
             _context2.next = 14;
@@ -126,29 +126,29 @@ function _createFolder() {
               break;
             }
 
-            if (!((0, _indexOf["default"])(_context = rows.failed[i].errorMessage).call(_context, '0x8107090d') > -1)) {
+            if (!((0, _indexOf.default)(_context = rows.failed[i].errorMessage).call(_context, '0x8107090d') > -1)) {
               _context2.next = 27;
               break;
             }
 
             // duplicate folder
             rows.failed[i].errorMessage = "Folder '" + rows.failed[i].BaseName + "' already exists.";
-            return _context2.abrupt("return", _promise["default"].reject(rows.failed[i]));
+            return _context2.abrupt("return", _promise.default.reject(rows.failed[i]));
 
           case 27:
-            return _context2.abrupt("return", _promise["default"].resolve(rows.failed[i].errorMessage));
+            return _context2.abrupt("return", _promise.default.resolve(rows.failed[i].errorMessage));
 
           case 28:
             _context2.next = 20;
             break;
 
           case 30:
-            return _context2.abrupt("return", _promise["default"].reject("Unknown error"));
+            return _context2.abrupt("return", _promise.default.reject("Unknown error"));
 
           case 33:
             _context2.prev = 33;
             _context2.t0 = _context2["catch"](0);
-            return _context2.abrupt("return", _promise["default"].reject(_context2.t0));
+            return _context2.abrupt("return", _promise.default.reject(_context2.t0));
 
           case 36:
           case "end":

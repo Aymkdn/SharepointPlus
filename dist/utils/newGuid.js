@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = newGuid;
+exports.default = newGuid;
 
 /**
   @name $SP().newGuid

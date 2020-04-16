@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = addAttachment;
+exports.default = addAttachment;
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
@@ -56,12 +56,12 @@ function addAttachment(setup) {
   var filename = setup.filename.replace(/[\*\?\|\\/:"'<>#{}%~&]/g, "").replace(/^[\. ]+|[\. ]+$/g, "").replace(/ {2,}/g, " ").replace(/\.{2,}/g, ".");
 
   if (filename.length >= 128) {
-    filename = (0, _slice["default"])(filename).call(filename, 0, 115) + '__' + (0, _slice["default"])(filename).call(filename, -8);
+    filename = (0, _slice.default)(filename).call(filename, 0, 115) + '__' + (0, _slice.default)(filename).call(filename, -8);
   }
 
-  return _ajax["default"].call(this, {
+  return _ajax.default.call(this, {
     url: this.url + "/_vti_bin/Lists.asmx",
-    body: (0, _buildBodyForSOAP2["default"])("AddAttachment", "<listName>" + this.listID + "</listName><listItemID>" + setup.ID + "</listItemID><fileName>" + filename + "</fileName><attachment>" + (0, _arrayBufferToBase["default"])(setup.attachment) + "</attachment>"),
+    body: (0, _buildBodyForSOAP2.default)("AddAttachment", "<listName>" + this.listID + "</listName><listItemID>" + setup.ID + "</listItemID><fileName>" + filename + "</fileName><attachment>" + (0, _arrayBufferToBase.default)(setup.attachment) + "</attachment>"),
     headers: {
       'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/AddAttachment'
     }
@@ -70,7 +70,7 @@ function addAttachment(setup) {
     res = res.length > 0 ? res[0] : null;
     var fileURL = "";
     if (res) fileURL = _this.url + "/" + res.firstChild.nodeValue;
-    if (!fileURL) return _promise["default"].reject(res);else return fileURL;
+    if (!fileURL) return _promise.default.reject(res);else return fileURL;
   });
 }
 

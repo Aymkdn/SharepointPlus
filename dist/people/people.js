@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = people;
+exports.default = people;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -47,9 +47,9 @@ function people(_x, _x2) {
 }
 
 function _people() {
-  _people = (0, _asyncToGenerator2["default"])(
+  _people = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(username, setup) {
+  _regenerator.default.mark(function _callee(username, setup) {
     var data,
         aResult,
         name,
@@ -57,13 +57,13 @@ function _people() {
         i,
         len,
         _args = arguments;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
 
-            if (_args.length === 1 && (0, _typeof2["default"])(username) === "object") {
+            if (_args.length === 1 && (0, _typeof2.default)(username) === "object") {
               setup = username;
               username = "";
             } // default values
@@ -78,16 +78,16 @@ function _people() {
             }
 
             _context.next = 7;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 7:
             setup.url = _context.sent;
 
           case 8:
             _context.next = 10;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: setup.url + "/_vti_bin/UserProfileService.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetUserProfileByName", "<AccountName>" + username + "</AccountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService"),
+              body: (0, _buildBodyForSOAP2.default)("GetUserProfileByName", "<AccountName>" + username + "</AccountName>", "http://microsoft.com/webservices/SharePointPortalServer/UserProfileService"),
               headers: {
                 'SOAPAction': 'http://microsoft.com/webservices/SharePointPortalServer/UserProfileService/GetUserProfileByName'
               }
@@ -108,12 +108,12 @@ function _people() {
               aResult[name] = value;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(aResult));
+            return _context.abrupt("return", _promise.default.resolve(aResult));
 
           case 17:
             _context.prev = 17;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 20:
           case "end":

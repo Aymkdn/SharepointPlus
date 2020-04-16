@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = regionalSettings;
+exports.default = regionalSettings;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -42,11 +42,11 @@ function regionalSettings(_x) {
 }
 
 function _regionalSettings() {
-  _regionalSettings = (0, _asyncToGenerator2["default"])(
+  _regionalSettings = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(url) {
+  _regenerator.default.mark(function _callee(url) {
     var data, result, div, tmp, i, getValue;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -57,7 +57,7 @@ function _regionalSettings() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(global._SP_CACHE_REGIONALSETTINGS));
+            return _context.abrupt("return", _promise.default.resolve(global._SP_CACHE_REGIONALSETTINGS));
 
           case 3:
             if (url) {
@@ -66,14 +66,14 @@ function _regionalSettings() {
             }
 
             _context.next = 6;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 6:
             url = _context.sent;
 
           case 7:
             _context.next = 9;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: url + "/_layouts/regionalsetng.aspx?Type=User"
             });
 
@@ -119,12 +119,12 @@ function _regionalSettings() {
             result.timeFormat = getValue("DdlTimeFormat"); // cache
 
             global._SP_CACHE_REGIONALSETTINGS = result;
-            return _context.abrupt("return", _promise["default"].resolve(result));
+            return _context.abrupt("return", _promise.default.resolve(result));
 
           case 31:
             _context.prev = 31;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 34:
           case "end":

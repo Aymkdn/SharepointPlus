@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = get;
+exports.default = get;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
 
@@ -62,11 +62,11 @@ var extendMyObject =
 /*#__PURE__*/
 function () {
   function extendMyObject(arr) {
-    (0, _classCallCheck2["default"])(this, extendMyObject);
+    (0, _classCallCheck2.default)(this, extendMyObject);
     this.attributes = arr;
   }
 
-  (0, _createClass2["default"])(extendMyObject, [{
+  (0, _createClass2.default)(extendMyObject, [{
     key: "getAttribute",
     value: function getAttribute(attr) {
       return this.attributes[attr];
@@ -501,24 +501,24 @@ function get(_x) {
 }
 
 function _get() {
-  _get = (0, _asyncToGenerator2["default"])(
+  _get = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee2(options) {
+  _regenerator.default.mark(function _callee2(options) {
     var _this = this;
 
     var mtchDateRanges, _ret;
 
-    return _regenerator["default"].wrap(function _callee2$(_context17) {
+    return _regenerator.default.wrap(function _callee2$(_context17) {
       while (1) {
         switch (_context17.prev = _context17.next) {
           case 0:
             _context17.prev = 0;
             return _context17.delegateYield(
             /*#__PURE__*/
-            _regenerator["default"].mark(function _callee() {
+            _regenerator.default.mark(function _callee() {
               var setup, _view, _context, _where, _context2, totalWhere, cntWhere, fields, i, orderby, fieldsDir, direction, splt, groupby, gFields, tmpFields, body, viewAttr, where, whereDateRanges, _context3, infos, data, rows, j, stop, collection, on, aResult, prevIndex, index, listIndexFound, nextPage, joinDataLen, tmp, attributes, attributesReturn, attr, attributesJoinData, joinIndexLen, idx, joinData, joinIndex, joinWhereLookup, wh, aReturn, mergeSetup, mergeSource, doJSON, _i, len, _attributes, _tmp, _j, _context4, _len, lenFields, _loop, _i2, _i4, _len2, _context7, _context8, _context9, _context10, whereParsed, onLookupWhereParsed, _context11, _context12, _context13, _context14, _context15, ret, _i5, _len3;
 
-              return _regenerator["default"].wrap(function _callee$(_context16) {
+              return _regenerator.default.wrap(function _callee$(_context16) {
                 while (1) {
                   switch (_context16.prev = _context16.next) {
                     case 0:
@@ -528,13 +528,13 @@ function _get() {
                       }
 
                       return _context16.abrupt("return", {
-                        v: _promise["default"].reject("[SharepointPlus 'get']: the list ID/Name is required")
+                        v: _promise.default.reject("[SharepointPlus 'get']: the list ID/Name is required")
                       });
 
                     case 2:
                       // default values
                       setup = {};
-                      (0, _cloneObject["default"])(true, setup, options);
+                      (0, _cloneObject.default)(true, setup, options);
 
                       if (_this.url) {
                         _context16.next = 6;
@@ -542,7 +542,7 @@ function _get() {
                       }
 
                       return _context16.abrupt("return", {
-                        v: _promise["default"].reject("[SharepointPlus 'get']: not able to find the URL!")
+                        v: _promise.default.reject("[SharepointPlus 'get']: not able to find the URL!")
                       });
 
                     case 6:
@@ -574,7 +574,7 @@ function _get() {
                       if (setup.calendar === true) {
                         setup.calendarOptions = setup.calendarOptions || {};
                         setup.calendarOptions.referenceDate = setup.calendarOptions.referenceDate || new Date();
-                        if (typeof setup.calendarOptions.referenceDate !== "string") setup.calendarOptions.referenceDate = (0, _toSPDate["default"])(setup.calendarOptions.referenceDate);
+                        if (typeof setup.calendarOptions.referenceDate !== "string") setup.calendarOptions.referenceDate = (0, _toSPDate.default)(setup.calendarOptions.referenceDate);
                         setup.calendarOptions.splitRecurrence = setup.calendarOptions.splitRecurrence === false ? "FALSE" : "TRUE";
                         setup.calendarOptions.range = setup.calendarOptions.range || "Month";
                       } // if we want to force the ListName in the attribute name, but don't do it when there is a join
@@ -597,7 +597,7 @@ function _get() {
                       }
 
                       _context16.next = 32;
-                      return _view2["default"].call(_this, setup.view, {
+                      return _view2.default.call(_this, setup.view, {
                         cache: setup.viewCache
                       });
 
@@ -606,16 +606,16 @@ function _get() {
                       setup.view = _view.ID; // the view will return a WHERE clause in CAML format
 
                       if (_view.WhereCAML) {
-                        if (!(0, _isArray["default"])(setup.where)) _where = [setup.where];else _where = (0, _slice["default"])(_context = setup.where).call(_context, 0);
-                        _where = (0, _map["default"])(_where).call(_where, function (w) {
+                        if (!(0, _isArray.default)(setup.where)) _where = [setup.where];else _where = (0, _slice.default)(_context = setup.where).call(_context, 0);
+                        _where = (0, _map.default)(_where).call(_where, function (w) {
                           // is our original Where in the setup is already converted in CAML ?
                           // If not, we convert it in order to merge with the one from the View
-                          return setup.whereCAML ? w : (0, _parse["default"])(w);
+                          return setup.whereCAML ? w : (0, _parse.default)(w);
                         }); // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
 
                         mtchDateRanges = _view.WhereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
                         if (mtchDateRanges && mtchDateRanges.length === 3) _view.WhereCAML = '<And>' + mtchDateRanges[2] + mtchDateRanges[1] + '</And>';
-                        _where = (0, _map["default"])(_where).call(_where, function (w) {
+                        _where = (0, _map.default)(_where).call(_where, function (w) {
                           return "<And>" + w + _view.WhereCAML + "</And>";
                         });
                         setup.where = _where;
@@ -629,7 +629,7 @@ function _get() {
                       setup.calendar = false;
 
                     case 39:
-                      if (!(0, _isArray["default"])(setup.where)) {
+                      if (!(0, _isArray.default)(setup.where)) {
                         _context16.next = 45;
                         break;
                       }
@@ -641,7 +641,7 @@ function _get() {
                       totalWhere = setup.where.length;
                       cntWhere = 0;
                       return _context16.abrupt("return", {
-                        v: _promise["default"].all((0, _map["default"])(_context2 = setup.where).call(_context2, function (w) {
+                        v: _promise.default.all((0, _map.default)(_context2 = setup.where).call(_context2, function (w) {
                           var params = {};
 
                           for (var k in setup) {
@@ -655,8 +655,8 @@ function _get() {
                           });
                         })).then(function (allData) {
                           var data = [];
-                          (0, _forEach["default"])(allData).call(allData, function (d) {
-                            return data = (0, _concat["default"])(data).call(data, d);
+                          (0, _forEach.default)(allData).call(allData, function (d) {
+                            return data = (0, _concat.default)(data).call(data, d);
                           });
                           return data;
                         })
@@ -687,7 +687,7 @@ function _get() {
 
                         for (i = 0; i < fieldsDir.length; i++) {
                           direction = "ASC";
-                          splt = (0, _trim["default"])(_context3 = fieldsDir[i]).call(_context3).split(" ");
+                          splt = (0, _trim.default)(_context3 = fieldsDir[i]).call(_context3).split(" ");
 
                           if (splt.length > 0) {
                             if (splt.length == 2) direction = splt[1].toUpperCase();
@@ -708,7 +708,7 @@ function _get() {
                       } // if we merge several similar lists
 
 
-                      if ((0, _isArray["default"])(setup.merge)) {
+                      if ((0, _isArray.default)(setup.merge)) {
                         setup.mergeData = setup.mergeData || [];
                       } // when it's a calendar we want to retrieve some fields by default
 
@@ -728,7 +728,7 @@ function _get() {
                       }
 
                       _context16.next = 58;
-                      return _info["default"].call(_this);
+                      return _info.default.call(_this);
 
                     case 58:
                       infos = _context16.sent;
@@ -789,7 +789,7 @@ function _get() {
 
 
                       if (setup.where !== "") {
-                        if (setup.whereCAML) where = setup.where;else where = (0, _parse["default"])(setup.where);
+                        if (setup.whereCAML) where = setup.where;else where = (0, _parse.default)(setup.where);
                       }
 
                       if (setup.calendar === true) {
@@ -801,10 +801,10 @@ function _get() {
 
                       where = setup.whereFct(where);
                       body = "<listName>" + _this.listID + "</listName>" + "<viewName>" + (setup.viewID || "") + "</viewName>" + "<query>" + "<Query>" + (where != "" ? "<Where>" + where + "</Where>" : "") + (groupby != "" ? "<GroupBy>" + groupby + "</GroupBy>" : "") + (orderby != "" ? "<OrderBy" + (setup.useIndexForOrderBy ? " UseIndexForOrderBy='TRUE' Override='TRUE'" : "") + ">" + orderby + "</OrderBy>" : "") + "</Query>" + "</query>" + "<viewFields>" + "<ViewFields Properties='True'>" + fields + "</ViewFields>" + "</viewFields>" + "<rowLimit>" + setup.rowlimit + "</rowLimit>" + "<queryOptions>" + "<QueryOptions>" + setup._queryOptions + "</QueryOptions>" + "</queryOptions>";
-                      body = (0, _buildBodyForSOAP2["default"])("GetListItems", body); // do the request
+                      body = (0, _buildBodyForSOAP2.default)("GetListItems", body); // do the request
 
                       _context16.next = 89;
-                      return _ajax["default"].call(_this, {
+                      return _ajax.default.call(_this, {
                         url: _this.url + "/_vti_bin/Lists.asmx",
                         body: body
                       });
@@ -825,7 +825,7 @@ function _get() {
                           _tmp = {};
 
                           for (_j = _attributes.length; _j--;) {
-                            _tmp[setup.alias + "." + (0, _slice["default"])(_context4 = _attributes[_j].nodeName).call(_context4, 4)] = _attributes[_j].nodeValue;
+                            _tmp[setup.alias + "." + (0, _slice.default)(_context4 = _attributes[_j].nodeName).call(_context4, 4)] = _attributes[_j].nodeValue;
                           }
 
                           if (doJSON) aReturn.push(_tmp);else aReturn.push(new extendMyObject(_tmp));
@@ -846,13 +846,13 @@ function _get() {
                               for (var attrsLen = attrs.length, _i3 = 0; _i3 < attrsLen; _i3++) {
                                 var _context5;
 
-                                var fieldName = (0, _slice["default"])(_context5 = attrs[_i3].nodeName).call(_context5, 4);
+                                var fieldName = (0, _slice.default)(_context5 = attrs[_i3].nodeName).call(_context5, 4);
                                 ret[fieldName] = attrs[_i3].nodeValue;
                               }
                             } else {
                               var _context6;
 
-                              (0, _forEach["default"])(_context6 = setup.fields).call(_context6, function (fieldName) {
+                              (0, _forEach.default)(_context6 = setup.fields).call(_context6, function (fieldName) {
                                 ret[fieldName] = rows[_i2].getAttribute('ows_' + fieldName);
                               });
                             }
@@ -865,7 +865,7 @@ function _get() {
                           }
                         } else {
                           for (_i4 = 0, _len2 = rows.length; _i4 < _len2; _i4++) {
-                            aReturn.push(new _myElem["default"](rows[_i4]));
+                            aReturn.push(new _myElem.default(rows[_i4]));
                           }
                         }
                       } // if setup.results length is bigger than 0 then it means we need to add the current data
@@ -904,7 +904,7 @@ function _get() {
                       }
 
                       // we need more calls
-                      setup.listItemCollectionPositionNext = (0, _cleanString2["default"])(nextPage);
+                      setup.listItemCollectionPositionNext = (0, _cleanString2.default)(nextPage);
                       return _context16.abrupt("return", {
                         v: get.call(_this, setup)
                       });
@@ -924,7 +924,7 @@ function _get() {
 
                       // if we need to so some more request
                       if (setup.results.length === 0) setup.results = aReturn;
-                      setup.where = (0, _slice["default"])(_context7 = setup.nextWhere).call(_context7, 0);
+                      setup.where = (0, _slice.default)(_context7 = setup.nextWhere).call(_context7, 0);
                       return _context16.abrupt("return", {
                         v: get.call(_this, setup)
                       });
@@ -952,7 +952,7 @@ function _get() {
                         index = "";
 
                         for (j = 0; j < on.length; j++) {
-                          index += "_" + (0, _getLookup["default"])(aReturn[i].getAttribute(on[j][setup.alias])).id;
+                          index += "_" + (0, _getLookup.default)(aReturn[i].getAttribute(on[j][setup.alias])).id;
                         } // check if the index exists in the previous set of data
 
 
@@ -970,7 +970,7 @@ function _get() {
                             attributesReturn = aReturn[i].getAttributes();
 
                             for (attr = attributesReturn.length; attr--;) {
-                              tmp[setup.alias + "." + (0, _slice["default"])(_context8 = attributesReturn[attr].nodeName).call(_context8, 4)] = attributesReturn[attr].nodeValue;
+                              tmp[setup.alias + "." + (0, _slice.default)(_context8 = attributesReturn[attr].nodeName).call(_context8, 4)] = attributesReturn[attr].nodeValue;
                             } // now find the attributes for the joinData
 
 
@@ -997,8 +997,8 @@ function _get() {
                       // except where setup.where equals to setup.onLookupWhere
 
                       if (setup.where && setup.onLookupWhere && setup.outer) {
-                        whereParsed = (0, _startsWith["default"])(_context9 = setup.where).call(_context9, '<') ? setup.where : (0, _parse["default"])(setup.where);
-                        onLookupWhereParsed = (0, _startsWith["default"])(_context10 = setup.onLookupWhere).call(_context10, '<') ? setup.onLookupWhere : (0, _parse["default"])(setup.onLookupWhere);
+                        whereParsed = (0, _startsWith.default)(_context9 = setup.where).call(_context9, '<') ? setup.where : (0, _parse.default)(setup.where);
+                        onLookupWhereParsed = (0, _startsWith.default)(_context10 = setup.onLookupWhere).call(_context10, '<') ? setup.onLookupWhere : (0, _parse.default)(setup.onLookupWhere);
                         if (whereParsed !== onLookupWhereParsed) setup.outer = false;
                       } // if we want to do an outerjoin we link the missing data
 
@@ -1079,7 +1079,7 @@ function _get() {
                         index = "", tmp = [];
 
                         for (j = 0; j < on.length; j++) {
-                          index += "_" + (0, _getLookup["default"])(aReturn[i].getAttribute(on[j][setup.alias]) || aReturn[i].getAttribute(setup.alias + "." + on[j][setup.alias])).id;
+                          index += "_" + (0, _getLookup.default)(aReturn[i].getAttribute(on[j][setup.alias]) || aReturn[i].getAttribute(setup.alias + "." + on[j][setup.alias])).id;
                         }
 
                         if (!joinData[index]) {
@@ -1087,7 +1087,7 @@ function _get() {
                           joinIndex.push(index);
                           joinData[index] = []; // if onLookup then we will store the current ID with the ~ to use it in a where clause with IN operator
 
-                          if (setup.join.onLookup && index !== "_") joinWhereLookup.push("~" + (0, _slice["default"])(index).call(index, 1));
+                          if (setup.join.onLookup && index !== "_") joinWhereLookup.push("~" + (0, _slice.default)(index).call(index, 1));
                         } // if we are coming from some other join
 
 
@@ -1097,7 +1097,7 @@ function _get() {
                           attributes = aReturn[i].getAttributes();
 
                           for (j = attributes.length; j--;) {
-                            tmp[setup.alias + "." + (0, _slice["default"])(_context11 = attributes[j].nodeName).call(_context11, 4)] = attributes[j].nodeValue;
+                            tmp[setup.alias + "." + (0, _slice.default)(_context11 = attributes[j].nodeName).call(_context11, 4)] = attributes[j].nodeValue;
                           }
 
                           joinData[index].push(new extendMyObject(tmp));
@@ -1110,7 +1110,7 @@ function _get() {
                       if (setup.join.onLookup) {
                         if (joinWhereLookup.length > 0) {
                           // SP2013 limits to 60 items per IN
-                          wh = (0, _arrayChunk["default"])(joinWhereLookup, 60);
+                          wh = (0, _arrayChunk.default)(joinWhereLookup, 60);
 
                           for (j = 0; j < wh.length; j++) {
                             wh[j] = setup.join.onLookup + ' IN ["' + wh[j].join('","') + '"]';
@@ -1121,8 +1121,8 @@ function _get() {
                             wh = "(" + wh.join(" OR ") + ")"; // now we add this WHERE into the existing where
 
                             if (setup.join.where) {
-                              if ((0, _isArray["default"])(setup.join.where)) {
-                                (0, _forEach["default"])(_context12 = setup.join.where).call(_context12, function (e, i) {
+                              if ((0, _isArray.default)(setup.join.where)) {
+                                (0, _forEach.default)(_context12 = setup.join.where).call(_context12, function (e, i) {
                                   setup.join.where[i] = wh + " AND (" + e + ")";
                                 });
                               } else {
@@ -1140,7 +1140,7 @@ function _get() {
 
                         if (!setup.join.fields) setup.join.fields = [];
 
-                        if (!(0, _isArray["default"])(setup.join.fields)) {
+                        if (!(0, _isArray.default)(setup.join.fields)) {
                           tmp = setup.join.fields.split(",");
                           tmp.push(setup.join.onLookup);
                           setup.join.fields = tmp.join(",");
@@ -1173,11 +1173,11 @@ function _get() {
                       }
 
                       mergeSetup = setup.merge.shift();
-                      mergeSetup.merge = (0, _slice["default"])(_context13 = setup.merge).call(_context13, 0);
+                      mergeSetup.merge = (0, _slice.default)(_context13 = setup.merge).call(_context13, 0);
                       _this.listID = mergeSetup.list;
                       _this.url = mergeSetup.url || _this.url; // we need to identify the Source of each set
 
-                      mergeSetup.mergeData = (0, _concat["default"])(_context14 = setup.mergeData).call(_context14, (0, _map["default"])(aReturn).call(aReturn, function (ret) {
+                      mergeSetup.mergeData = (0, _concat.default)(_context14 = setup.mergeData).call(_context14, (0, _map.default)(aReturn).call(aReturn, function (ret) {
                         ret.Source = mergeSource;
                         return ret;
                       }));
@@ -1186,7 +1186,7 @@ function _get() {
                       });
 
                     case 167:
-                      aReturn = (0, _concat["default"])(_context15 = setup.mergeData).call(_context15, (0, _map["default"])(aReturn).call(aReturn, function (ret) {
+                      aReturn = (0, _concat.default)(_context15 = setup.mergeData).call(_context15, (0, _map.default)(aReturn).call(aReturn, function (ret) {
                         ret.Source = mergeSource;
                         return ret;
                       }));
@@ -1206,12 +1206,12 @@ function _get() {
                       }
 
                       return _context16.abrupt("return", {
-                        v: _promise["default"].resolve(ret)
+                        v: _promise.default.resolve(ret)
                       });
 
                     case 173:
                       return _context16.abrupt("return", {
-                        v: _promise["default"].resolve(aReturn)
+                        v: _promise.default.resolve(aReturn)
                       });
 
                     case 174:
@@ -1225,7 +1225,7 @@ function _get() {
           case 2:
             _ret = _context17.t0;
 
-            if (!((0, _typeof2["default"])(_ret) === "object")) {
+            if (!((0, _typeof2.default)(_ret) === "object")) {
               _context17.next = 5;
               break;
             }
@@ -1239,7 +1239,7 @@ function _get() {
           case 7:
             _context17.prev = 7;
             _context17.t1 = _context17["catch"](0);
-            return _context17.abrupt("return", _promise["default"].reject(_context17.t1));
+            return _context17.abrupt("return", _promise.default.reject(_context17.t1));
 
           case 10:
           case "end":

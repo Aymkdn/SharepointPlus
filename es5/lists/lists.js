@@ -98,8 +98,8 @@ function _lists() {
             _context.prev = 26;
             _context.prev = 27;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 29:
@@ -193,8 +193,8 @@ function _lists() {
             _context.prev = 60;
             _context.prev = 61;
 
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
             }
 
           case 63:

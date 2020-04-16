@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getPeopleLookup;
+exports.default = getPeopleLookup;
 
 var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
 
@@ -40,7 +40,7 @@ function getPeopleLookup(str) {
     res.push(splt[i] + ";#" + splt[i + 1]);
   }
 
-  res = (0, _map["default"])(res).call(res, function (str) {
+  res = (0, _map.default)(res).call(res, function (str) {
     var _context;
 
     var ret = {
@@ -49,7 +49,7 @@ function getPeopleLookup(str) {
       username: '',
       email: ''
     };
-    (0, _forEach["default"])(_context = str.split(',#')).call(_context, function (s, i) {
+    (0, _forEach.default)(_context = str.split(',#')).call(_context, function (s, i) {
       switch (i) {
         case 0:
           {

@@ -36,14 +36,17 @@ module.exports = {
                 "@babel/preset-env",
                 {
                   "useBuiltIns":"usage",
-                  "corejs": 3
+                  "corejs": 3,
+                  "targets":{
+                    "browsers": "defaults,ie >= 10"
+                  }
                 }
               ]
             ]
           }
         }
       },
-      {
+      { // to remove codes in "develblock" – that is the code for Node when here we want to generate a file for the browser
         test: /\.js$/,
         enforce: 'pre',
         exclude: /(node_modules|bower_components|\.spec\.js)/,

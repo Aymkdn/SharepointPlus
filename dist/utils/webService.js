@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = webService;
+exports.default = webService;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -73,11 +73,11 @@ function webService(_x) {
 }
 
 function _webService() {
-  _webService = (0, _asyncToGenerator2["default"])(
+  _webService = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(options) {
+  _regenerator.default.mark(function _callee(options) {
     var bodyContent, prop, params, url;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -108,7 +108,7 @@ function _webService() {
             }
 
             _context.next = 10;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 10:
             url = _context.sent;
@@ -127,7 +127,7 @@ function _webService() {
             options.soapAction = options.soapAction === false ? false : true;
             options.soapURL = options.soapURL || 'http://schemas.microsoft.com/sharepoint/soap/';
             if (!options.soapAction) options.soapURL = options.soapURL.replace(/\/$/, "");
-            bodyContent = (0, _buildBodyForSOAP2["default"])(options.operation, bodyContent, options.soapURL);
+            bodyContent = (0, _buildBodyForSOAP2.default)(options.operation, bodyContent, options.soapURL);
             params = {
               url: options.webURL + "/_vti_bin/" + options.service + ".asmx",
               body: bodyContent
@@ -135,12 +135,12 @@ function _webService() {
             if (options.soapAction) params.headers = {
               'SOAPAction': options.soapURL + options.operation
             };
-            return _context.abrupt("return", _ajax["default"].call(this, params));
+            return _context.abrupt("return", _ajax.default.call(this, params));
 
           case 24:
             _context.prev = 24;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 27:
           case "end":

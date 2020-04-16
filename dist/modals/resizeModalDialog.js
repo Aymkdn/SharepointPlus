@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = resizeModalDialog;
+exports.default = resizeModalDialog;
 
 /**
  * @name $SP().resizeModalDialog

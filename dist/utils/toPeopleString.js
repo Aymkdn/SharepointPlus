@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = toPeopleString;
+exports.default = toPeopleString;
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
@@ -30,8 +30,8 @@ var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
   $SP().toPeopleString(person); // --> "42;#Doe,, John,#domain\\John_Doe,#John_Doe@Domain.com,#John_Doe@Domain.com,#Doe,, John"
 */
 function toPeopleString(lookup) {
-  if (!(0, _isArray["default"])(lookup)) lookup = [lookup];
-  return (0, _map["default"])(lookup).call(lookup, function (l) {
+  if (!(0, _isArray.default)(lookup)) lookup = [lookup];
+  return (0, _map.default)(lookup).call(lookup, function (l) {
     return l.username ? l.id + ";#" + l.name.replace(/,/, ",,") + ",#" + l.username + ",#" + l.email + ",#" + l.email + ",#" + l.name.replace(/,/, ",,") : l.id + ";#" + l.name;
   }).join(';#');
 }

@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = hasPermission;
+exports.default = hasPermission;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -43,12 +43,12 @@ function hasPermission(_x) {
 }
 
 function _hasPermission() {
-  _hasPermission = (0, _asyncToGenerator2["default"])(
+  _hasPermission = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(perm) {
+  _regenerator.default.mark(function _callee(perm) {
     var permMatch, permLen, i, data, serverPerm, ret, _i, a, b;
 
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -110,7 +110,7 @@ function _hasPermission() {
               enumeratePermissions: 63,
               fullMask: 65
             };
-            if (!(0, _isArray["default"])(perm)) perm = [perm];
+            if (!(0, _isArray.default)(perm)) perm = [perm];
             permLen = perm.length; // check all permissions exist
 
             i = 0;
@@ -135,7 +135,7 @@ function _hasPermission() {
 
           case 15:
             _context.next = 17;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_api/web/lists/getbytitle('" + this.listID + "')/EffectiveBasePermissions"
             });
 
@@ -165,7 +165,7 @@ function _hasPermission() {
           case 24:
             _context.prev = 24;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 27:
           case "end":

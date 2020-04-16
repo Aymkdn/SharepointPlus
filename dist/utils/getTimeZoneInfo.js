@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getTimeZoneInfo;
+exports.default = getTimeZoneInfo;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -35,11 +35,11 @@ function getTimeZoneInfo(_x) {
 }
 
 function _getTimeZoneInfo() {
-  _getTimeZoneInfo = (0, _asyncToGenerator2["default"])(
+  _getTimeZoneInfo = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(settings) {
+  _regenerator.default.mark(function _callee(settings) {
     var data;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -52,20 +52,20 @@ function _getTimeZoneInfo() {
             }
 
             _context.next = 5;
-            return (0, _getURL["default"])();
+            return (0, _getURL.default)();
 
           case 5:
             settings.url = _context.sent;
 
           case 6:
             _context.next = 8;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: settings.url + '/_api/web/RegionalSettings/TimeZone'
             });
 
           case 8:
             data = _context.sent;
-            return _context.abrupt("return", _promise["default"].resolve({
+            return _context.abrupt("return", _promise.default.resolve({
               ID: data.d.Id,
               Description: data.d.Description,
               Bias: data.d.Information.Bias,
@@ -77,7 +77,7 @@ function _getTimeZoneInfo() {
           case 12:
             _context.prev = 12;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 15:
           case "end":

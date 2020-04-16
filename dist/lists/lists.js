@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = lists;
+exports.default = lists;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -44,12 +44,12 @@ function lists(_x) {
 }
 
 function _lists() {
-  _lists = (0, _asyncToGenerator2["default"])(
+  _lists = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(setup) {
+  _regenerator.default.mark(function _callee(setup) {
     var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, c, data, aReturn, arr, i, j, attributes, found, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, _c;
 
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -63,7 +63,7 @@ function _lists() {
             }
 
             _context.next = 5;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 5:
             setup.url = _context.sent;
@@ -80,7 +80,7 @@ function _lists() {
             _didIteratorError = false;
             _iteratorError = undefined;
             _context.prev = 11;
-            _iterator = (0, _getIterator2["default"])(global._SP_CACHE_SAVEDLISTS);
+            _iterator = (0, _getIterator2.default)(global._SP_CACHE_SAVEDLISTS);
 
           case 13:
             if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
@@ -95,7 +95,7 @@ function _lists() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(c.data));
+            return _context.abrupt("return", _promise.default.resolve(c.data));
 
           case 17:
             _iteratorNormalCompletion = true;
@@ -116,8 +116,8 @@ function _lists() {
             _context.prev = 26;
             _context.prev = 27;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 29:
@@ -138,9 +138,9 @@ function _lists() {
 
           case 34:
             _context.next = 36;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: setup.url + "/_vti_bin/lists.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetListCollection", ""),
+              body: (0, _buildBodyForSOAP2.default)("GetListCollection", ""),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetListCollection'
               }
@@ -174,7 +174,7 @@ function _lists() {
             _didIteratorError2 = false;
             _iteratorError2 = undefined;
             _context.prev = 44;
-            _iterator2 = (0, _getIterator2["default"])(global._SP_CACHE_SAVEDLISTS);
+            _iterator2 = (0, _getIterator2.default)(global._SP_CACHE_SAVEDLISTS);
 
           case 46:
             if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
@@ -211,8 +211,8 @@ function _lists() {
             _context.prev = 60;
             _context.prev = 61;
 
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
             }
 
           case 63:
@@ -236,12 +236,12 @@ function _lists() {
               url: setup.url,
               data: aReturn
             });
-            return _context.abrupt("return", _promise["default"].resolve(aReturn));
+            return _context.abrupt("return", _promise.default.resolve(aReturn));
 
           case 72:
             _context.prev = 72;
             _context.t2 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t2));
+            return _context.abrupt("return", _promise.default.reject(_context.t2));
 
           case 75:
           case "end":

@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = moderate;
+exports.default = moderate;
 
 var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/keys"));
 
@@ -54,14 +54,14 @@ function moderate(_x, _x2) {
 }
 
 function _moderate() {
-  _moderate = (0, _asyncToGenerator2["default"])(
+  _moderate = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(items, setup) {
+  _regenerator.default.mark(function _callee(items, setup) {
     var _this = this;
 
     var _context, itemsLength, nextPacket, cutted, itemKey, itemValue, it, updates, i, data, result, len, passed, failed, rows, _i, item;
 
-    return _regenerator["default"].wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -89,7 +89,7 @@ function _moderate() {
             // we cannot determine the url
             setup.progress = setup.progress || function () {};
 
-            if (!(0, _isArray["default"])(items)) items = [items];
+            if (!(0, _isArray.default)(items)) items = [items];
             itemsLength = items.length; // define current and max for the progress
 
             setup.progressVar = setup.progressVar || {
@@ -97,7 +97,7 @@ function _moderate() {
               max: itemsLength,
               passed: [],
               failed: [],
-              eventID: "spModerate" + (0, _slice["default"])(_context = "" + Math.random()).call(_context, 2)
+              eventID: "spModerate" + (0, _slice.default)(_context = "" + Math.random()).call(_context, 2)
             }; // we cannot add more than 15 items in the same time, so split by 15 elements
             // and also to avoid surcharging the server
 
@@ -106,8 +106,8 @@ function _moderate() {
               break;
             }
 
-            nextPacket = (0, _slice["default"])(items).call(items, 0);
-            cutted = (0, _splice["default"])(nextPacket).call(nextPacket, 0, 15);
+            nextPacket = (0, _slice.default)(items).call(items, 0);
+            cutted = (0, _splice.default)(nextPacket).call(nextPacket, 0, 15);
 
             global._SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID] = function (setup) {
               return moderate.call(_this, nextPacket, setup);
@@ -121,7 +121,7 @@ function _moderate() {
               break;
             }
 
-            return _context2.abrupt("return", _promise["default"].resolve({
+            return _context2.abrupt("return", _promise.default.resolve({
               passed: [],
               failed: []
             }));
@@ -157,7 +157,7 @@ function _moderate() {
             throw "[SharepointPlus 'moderate'] you have to provide the approval status 'ApprovalStatus' (Approved, Rejected, Pending, Draft or Scheduled)";
 
           case 30:
-            _context2.t0 = (0, _keys["default"])(_regenerator["default"]).call(_regenerator["default"], items[i]);
+            _context2.t0 = (0, _keys.default)(_regenerator.default).call(_regenerator.default, items[i]);
 
           case 31:
             if ((_context2.t1 = _context2.t0()).done) {
@@ -226,9 +226,9 @@ function _moderate() {
             updates += '</Batch>'; // send the request
 
             _context2.next = 63;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/lists.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
+              body: (0, _buildBodyForSOAP2.default)("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'
               }
@@ -242,7 +242,7 @@ function _moderate() {
               rows = result[_i].getElementsByTagName('z:row');
               if (rows.length == 0) rows = data.getElementsByTagName('row'); // for Chrome
 
-              item = new _myElem["default"](rows[0]);
+              item = new _myElem.default(rows[0]);
               if (result[_i].getElementsByTagName('ErrorCode')[0].firstChild.nodeValue == "0x00000000") // success
                 passed.push(item);else {
                 items[_i].errorMessage = result[_i].getElementsByTagName('ErrorText')[0].firstChild.nodeValue;
@@ -270,7 +270,7 @@ function _moderate() {
 
           case 72:
             if (global._SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID]) delete global._SP_MODERATE_PROGRESSVAR[setup.progressVar.eventID];
-            return _context2.abrupt("return", _promise["default"].resolve({
+            return _context2.abrupt("return", _promise.default.resolve({
               passed: passed,
               failed: failed
             }));
@@ -282,7 +282,7 @@ function _moderate() {
           case 76:
             _context2.prev = 76;
             _context2.t3 = _context2["catch"](0);
-            return _context2.abrupt("return", _promise["default"].reject(_context2.t3));
+            return _context2.abrupt("return", _promise.default.reject(_context2.t3));
 
           case 79:
           case "end":

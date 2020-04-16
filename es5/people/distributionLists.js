@@ -112,8 +112,8 @@ function _distributionLists() {
             _context.prev = 30;
             _context.prev = 31;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 33:
@@ -203,8 +203,8 @@ function _distributionLists() {
             _context.prev = 65;
             _context.prev = 66;
 
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
             }
 
           case 68:

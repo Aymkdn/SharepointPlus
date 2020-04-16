@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = arrayBufferToBase64;
+exports.default = arrayBufferToBase64;
 
 /**
  * @name arrayBufferToBase64

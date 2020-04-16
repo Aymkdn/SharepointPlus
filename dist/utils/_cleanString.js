@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = _cleanString;
+exports.default = _cleanString;
 
 /**
  * @ignore

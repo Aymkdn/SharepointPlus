@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getContentTypeInfo;
+exports.default = getContentTypeInfo;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -48,9 +48,9 @@ function getContentTypeInfo(_x, _x2) {
 }
 
 function _getContentTypeInfo() {
-  _getContentTypeInfo = (0, _asyncToGenerator2["default"])(
+  _getContentTypeInfo = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(contentType, options) {
+  _regenerator.default.mark(function _callee(contentType, options) {
     var _i,
         types,
         _i2,
@@ -72,7 +72,7 @@ function _getContentTypeInfo() {
         nodeDefault,
         _args = arguments;
 
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -123,7 +123,7 @@ function _getContentTypeInfo() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(global._SP_CACHE_CONTENTTYPE[_i].info));
+            return _context.abrupt("return", _promise.default.resolve(global._SP_CACHE_CONTENTTYPE[_i].info));
 
           case 12:
             _i++;
@@ -131,13 +131,13 @@ function _getContentTypeInfo() {
             break;
 
           case 15:
-            if (!((0, _slice["default"])(contentType).call(contentType, 0, 2) !== "0x")) {
+            if (!((0, _slice.default)(contentType).call(contentType, 0, 2) !== "0x")) {
               _context.next = 26;
               break;
             }
 
             _context.next = 18;
-            return _getContentTypes["default"].call(this, options);
+            return _getContentTypes.default.call(this, options);
 
           case 18:
             types = _context.sent;
@@ -165,9 +165,9 @@ function _getContentTypeInfo() {
 
           case 26:
             _context.next = 28;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/lists.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetListContentType", '<listName>' + this.listID + '</listName><contentTypeId>' + contentType + '</contentTypeId>'),
+              body: (0, _buildBodyForSOAP2.default)("GetListContentType", '<listName>' + this.listID + '</listName><contentTypeId>' + contentType + '</contentTypeId>'),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetListContentType'
               }
@@ -272,7 +272,7 @@ function _getContentTypeInfo() {
               "info": aReturn
             });
 
-            return _context.abrupt("return", _promise["default"].resolve(aReturn));
+            return _context.abrupt("return", _promise.default.resolve(aReturn));
 
           case 64:
           case "end":

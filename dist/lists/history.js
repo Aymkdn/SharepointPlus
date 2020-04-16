@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = history;
+exports.default = history;
 
 var _ajax = _interopRequireDefault(require("../utils/ajax.js"));
 
@@ -38,9 +38,9 @@ function history(params) {
   params = params || {};
   if (!params.ID || !params.Name) throw "[SharepointPlus 'history'] you must provide the item ID and field Name."; // send the request
 
-  return _ajax["default"].call(this, {
+  return _ajax.default.call(this, {
     url: this.url + "/_vti_bin/lists.asmx",
-    body: (0, _buildBodyForSOAP2["default"])("GetVersionCollection", "<strlistID>" + this.listID + "</strlistID><strlistItemID>" + params.ID + "</strlistItemID><strFieldName>" + params.Name + "</strFieldName>"),
+    body: (0, _buildBodyForSOAP2.default)("GetVersionCollection", "<strlistID>" + this.listID + "</strlistID><strlistItemID>" + params.ID + "</strlistItemID><strFieldName>" + params.Name + "</strFieldName>"),
     headers: {
       'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetVersionCollection'
     }

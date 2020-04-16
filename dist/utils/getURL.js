@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getURL;
+exports.default = getURL;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -33,11 +33,11 @@ function getURL() {
 
 
 function _getURL() {
-  _getURL = (0, _asyncToGenerator2["default"])(
+  _getURL = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee() {
+  _regenerator.default.mark(function _callee() {
     var data, result;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -51,7 +51,7 @@ function _getURL() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(checkURL(window.L_Menu_BaseUrl)));
+            return _context.abrupt("return", _promise.default.resolve(checkURL(window.L_Menu_BaseUrl)));
 
           case 5:
             if (!(typeof window._spPageContextInfo !== "undefined" && typeof window._spPageContextInfo.webServerRelativeUrl !== "undefined")) {
@@ -59,14 +59,14 @@ function _getURL() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(checkURL(window._spPageContextInfo.webServerRelativeUrl)));
+            return _context.abrupt("return", _promise.default.resolve(checkURL(window._spPageContextInfo.webServerRelativeUrl)));
 
           case 9:
             _context.prev = 9;
             _context.next = 12;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: "/_vti_bin/Webs.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("WebUrlFromPageUrl", "<pageUrl>" + window.location.href.replace(/&/g, "&amp;") + "</pageUrl>")
+              body: (0, _buildBodyForSOAP2.default)("WebUrlFromPageUrl", "<pageUrl>" + window.location.href.replace(/&/g, "&amp;") + "</pageUrl>")
             });
 
           case 12:
@@ -78,10 +78,10 @@ function _getURL() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(checkURL(result[0].firstChild.nodeValue.toLowerCase())));
+            return _context.abrupt("return", _promise.default.resolve(checkURL(result[0].firstChild.nodeValue.toLowerCase())));
 
           case 18:
-            return _context.abrupt("return", _promise["default"].reject("[SharepointPlus 'getURL'] Unable to retrieve the URL"));
+            return _context.abrupt("return", _promise.default.reject("[SharepointPlus 'getURL'] Unable to retrieve the URL"));
 
           case 19:
             _context.next = 24;
@@ -90,14 +90,14 @@ function _getURL() {
           case 21:
             _context.prev = 21;
             _context.t0 = _context["catch"](9);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 24:
             _context.next = 27;
             break;
 
           case 26:
-            return _context.abrupt("return", _promise["default"].resolve(checkURL(this.url)));
+            return _context.abrupt("return", _promise.default.resolve(checkURL(this.url)));
 
           case 27:
           case "end":

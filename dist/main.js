@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = void 0;
+exports.default = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -50,7 +50,7 @@ var SharepointPlus =
 /*#__PURE__*/
 function () {
   function SharepointPlus() {
-    (0, _classCallCheck2["default"])(this, SharepointPlus);
+    (0, _classCallCheck2.default)(this, SharepointPlus);
     this.queue = []; // array of {fct:"function to execute", args:"Related arguments for this function"}
 
     this.data = [];
@@ -73,7 +73,7 @@ function () {
   */
 
 
-  (0, _createClass2["default"])(SharepointPlus, [{
+  (0, _createClass2.default)(SharepointPlus, [{
     key: "getVersion",
     value: function getVersion() {
       return "6.1.0";
@@ -144,7 +144,7 @@ function () {
     value: function init(params) {
       var _this = this;
 
-      if ((0, _typeof2["default"])(params) === "object") {
+      if ((0, _typeof2.default)(params) === "object") {
         var _loop = function _loop(key) {
           if (key === "list") {
             _this[key] = function () {
@@ -206,16 +206,16 @@ function () {
 
       return (
         /*#__PURE__*/
-        (0, _asyncToGenerator2["default"])(
+        (0, _asyncToGenerator2.default)(
         /*#__PURE__*/
-        _regenerator["default"].mark(function _callee() {
+        _regenerator.default.mark(function _callee() {
           var _len2,
               args,
               _key2,
               item,
               _args = arguments;
 
-          return _regenerator["default"].wrap(function _callee$(_context) {
+          return _regenerator.default.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
@@ -246,5 +246,5 @@ function () {
   return SharepointPlus;
 }();
 
-exports["default"] = SharepointPlus;
+exports.default = SharepointPlus;
 module.exports = exports.default;

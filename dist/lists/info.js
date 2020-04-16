@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = info;
+exports.default = info;
 
 var _ajax = _interopRequireDefault(require("../utils/ajax.js"));
 
@@ -35,9 +35,9 @@ function info() {
   if (!this.url) throw "[SharepointPlus 'info'] not able to find the URL!"; // we cannot determine the url
   // do the request
 
-  return _ajax["default"].call(this, {
+  return _ajax.default.call(this, {
     url: this.url + "/_vti_bin/lists.asmx",
-    body: (0, _buildBodyForSOAP2["default"])("GetList", '<listName>' + this.listID + '</listName>'),
+    body: (0, _buildBodyForSOAP2.default)("GetList", '<listName>' + this.listID + '</listName>'),
     headers: {
       'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetList'
     }

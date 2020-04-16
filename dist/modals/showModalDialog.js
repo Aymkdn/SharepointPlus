@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = showModalDialog;
+exports.default = showModalDialog;
 
 var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
 
@@ -86,10 +86,10 @@ var _closeModalDialog = _interopRequireDefault(require("./closeModalDialog.js"))
 function showModalDialog(options) {
   var _this = this;
 
-  return new _promise["default"](function (prom_res) {
+  return new _promise.default(function (prom_res) {
     // in some weird cases the script is not loaded correctly, so we need to ensure it
     if (!global._SP_MODALDIALOG_LOADED) {
-      global._SP_MODALDIALOG_LOADED = (typeof SP === "undefined" ? "undefined" : (0, _typeof2["default"])(SP)) === "object" && (0, _typeof2["default"])(SP.UI) === "object" && typeof SP.UI.ModalDialog === "function" && typeof SP.UI.ModalDialog.showModalDialog === "function"; // eslint-disable-line
+      global._SP_MODALDIALOG_LOADED = (typeof SP === "undefined" ? "undefined" : (0, _typeof2.default)(SP)) === "object" && (0, _typeof2.default)(SP.UI) === "object" && typeof SP.UI.ModalDialog === "function" && typeof SP.UI.ModalDialog.showModalDialog === "function"; // eslint-disable-line
 
       if (!global._SP_MODALDIALOG_LOADED) {
         LoadSodByKey("sp.ui.dialog.js", function () {
@@ -124,7 +124,7 @@ function showModalDialog(options) {
         var _context;
 
         var b = a.contentDocument || a.contentWindow.document;
-        0 !== (0, _indexOf["default"])(_context = b.URL).call(_context, "about:") ? "complete" === b.readyState ? e.call(b) : (g(b, "DOMContentLoaded", e), g(b, "readystatechange", f)) : c = (0, _setTimeout2["default"])(h, 1);
+        0 !== (0, _indexOf.default)(_context = b.URL).call(_context, "about:") ? "complete" === b.readyState ? e.call(b) : (g(b, "DOMContentLoaded", e), g(b, "readystatechange", f)) : c = (0, _setTimeout2.default)(h, 1);
       }
 
       var c,
@@ -152,7 +152,7 @@ function showModalDialog(options) {
 
 
     if (options.width === "calculated" || options.height === "calculated") {
-      size = (0, _getPageSize["default"])();
+      size = (0, _getPageSize.default)();
 
       if (options.width === "calculated") {
         options.width = size.vw.width;
@@ -174,7 +174,7 @@ function showModalDialog(options) {
     }
 
     if (options.width === "full" || options.height === "full") {
-      size = (0, _getPageSize["default"])();
+      size = (0, _getPageSize.default)();
       if (options.width === "full") options.width = size.vw.width;
       if (options.height === "full") options.height = size.vw.height;
     }
@@ -182,7 +182,7 @@ function showModalDialog(options) {
     options.wait = options.wait === true ? true : false;
     options.closePrevious = options.closePrevious === true ? true : false;
     if (options.previousClose === true) options.closePrevious = true;
-    if (options.closePrevious) _closeModalDialog["default"].call(_this); // if showClose=false and callback is used, then showClose=false and hideClose=true
+    if (options.closePrevious) _closeModalDialog.default.call(_this); // if showClose=false and callback is used, then showClose=false and hideClose=true
     // the reason is callback won't be triggered if showclose is false
 
     if (options.showClose === false && (options.dialogReturnValueCallback || options.callback)) {
@@ -197,7 +197,7 @@ function showModalDialog(options) {
       // if we use .close() then we have only one argument
       var id, dialog;
 
-      if ((0, _typeof2["default"])(dialogResult) === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "closeModalDialog") {
+      if ((0, _typeof2.default)(dialogResult) === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "closeModalDialog") {
         var args = dialogResult;
         dialogResult = args.dialogResult;
         returnValue = args.returnValue;
@@ -210,7 +210,7 @@ function showModalDialog(options) {
           if (window.top._SP_MODALDIALOG[i].id === id) {
             var _context2;
 
-            dialog = (0, _splice["default"])(_context2 = window.top._SP_MODALDIALOG).call(_context2, i, 1);
+            dialog = (0, _splice.default)(_context2 = window.top._SP_MODALDIALOG).call(_context2, i, 1);
             dialog = dialog[0];
             break;
           }
@@ -252,7 +252,7 @@ function showModalDialog(options) {
       }); // check the z-index for .ms-dlgOverlay
 
 
-      (0, _forEach["default"])(_context3 = wt._SP_MODALDIALOG).call(_context3, function (val) {
+      (0, _forEach.default)(_context3 = wt._SP_MODALDIALOG).call(_context3, function (val) {
         if (val.zIndex > biggestZ) biggestZ = val.zIndex;
       });
       biggestZ--;

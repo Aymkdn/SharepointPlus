@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = _buildBodyForSOAP;
+exports.default = _buildBodyForSOAP;
 
 /**
   @ignore

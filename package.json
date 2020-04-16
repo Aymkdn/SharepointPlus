@@ -59,7 +59,7 @@
   "keywords": [
     "sharepoint"
   ],
-  "browserslist": "defaults",
+  "browserslist": "defaults,ie >= 10",
   "author": "AymKdn",
   "license": "LGPL-3.0",
   "bugs": {

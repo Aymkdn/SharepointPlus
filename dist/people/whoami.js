@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = whoami;
+exports.default = whoami;
 
 var _people = _interopRequireDefault(require("./people.js"));
 
@@ -28,7 +28,7 @@ var _people = _interopRequireDefault(require("./people.js"));
   });
 */
 function whoami(setup) {
-  return _people["default"].call(this, "", setup);
+  return _people.default.call(this, "", setup);
 }
 
 module.exports = exports.default;

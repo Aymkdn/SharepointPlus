@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = ajax;
+exports.default = ajax;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -82,12 +82,12 @@ function ajax(_x) {
 }
 
 function _ajax() {
-  _ajax = (0, _asyncToGenerator2["default"])(
+  _ajax = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(settings) {
+  _regenerator.default.mark(function _callee(settings) {
     var _context, _context2, _context4, addRequestDigest, _context3, requestDigest, ret, code, responseText, request, _context5, body, _requestDigest, _context6, cookie, opts, stg, response, _context7, _context8, DOMParser, result, _context9;
 
-    return _regenerator["default"].wrap(function _callee$(_context10) {
+    return _regenerator.default.wrap(function _callee$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
@@ -95,17 +95,17 @@ function _ajax() {
             _context10.prev = 1;
             addRequestDigest = false; // add "Accept": "application/json;odata=verbose" for headers if there is "_api/" in URL, except for "_api/web/Url"
 
-            if ((0, _indexOf["default"])(_context = settings.url.toLowerCase()).call(_context, "/_api/") > -1 && (0, _indexOf["default"])(_context2 = settings.url.toLowerCase()).call(_context2, "_api/web/url") === -1) {
+            if ((0, _indexOf.default)(_context = settings.url.toLowerCase()).call(_context, "/_api/") > -1 && (0, _indexOf.default)(_context2 = settings.url.toLowerCase()).call(_context2, "_api/web/url") === -1) {
               if (typeof settings.headers["Accept"] === "undefined") settings.headers.Accept = "application/json;odata=" + global._SP_JSON_ACCEPT;
               if (typeof settings.headers["Content-Type"] === "undefined") settings.headers["Content-Type"] = "application/json;odata=" + global._SP_JSON_ACCEPT;
 
-              if (typeof settings.headers["X-RequestDigest"] === "undefined" && (0, _indexOf["default"])(_context3 = settings.url).call(_context3, "contextinfo") === -1) {
+              if (typeof settings.headers["X-RequestDigest"] === "undefined" && (0, _indexOf.default)(_context3 = settings.url).call(_context3, "contextinfo") === -1) {
                 addRequestDigest = true;
               }
             } // if "_vti_bin/client.svc/ProcessQuery" we want to add the RequestDigest
 
 
-            if ((0, _indexOf["default"])(_context4 = settings.url.toLowerCase()).call(_context4, "_vti_bin/client.svc/processquery") > -1 && typeof settings.headers["X-RequestDigest"] === "undefined") {
+            if ((0, _indexOf.default)(_context4 = settings.url.toLowerCase()).call(_context4, "_vti_bin/client.svc/processquery") > -1 && typeof settings.headers["X-RequestDigest"] === "undefined") {
               addRequestDigest = true;
             }
 
@@ -115,7 +115,7 @@ function _ajax() {
             }
 
             _context10.next = 8;
-            return _getRequestDigest["default"].call(this, {
+            return _getRequestDigest.default.call(this, {
               url: settings.url.toLowerCase().split("_api")[0]
             });
 
@@ -137,8 +137,8 @@ function _ajax() {
             if (settings.method === "POST" && !settings.body) settings.body = ""; // eslint-disable-next-line
 
             _context10.next = 16;
-            return new _promise["default"](function (prom_res) {
-              (0, _nanoajax["default"])(settings, function (code, responseText, request) {
+            return new _promise.default(function (prom_res) {
+              (0, _nanoajax.default)(settings, function (code, responseText, request) {
                 prom_res({
                   code: code,
                   responseText: responseText,
@@ -157,12 +157,12 @@ function _ajax() {
             }
 
             body = !request.responseType || request.responseType === 'document' ? request.responseXML || request.responseText : responseText;
-            if ((0, _indexOf["default"])(_context5 = request.getResponseHeader("Content-Type") || "").call(_context5, "/json") > -1 && typeof body === "string") body = JSON.parse(body); // parse JSON
+            if ((0, _indexOf.default)(_context5 = request.getResponseHeader("Content-Type") || "").call(_context5, "/json") > -1 && typeof body === "string") body = JSON.parse(body); // parse JSON
 
-            return _context10.abrupt("return", _promise["default"].resolve(body));
+            return _context10.abrupt("return", _promise.default.resolve(body));
 
           case 24:
-            if (!(code == 403 && (0, _includes["default"])(responseText).call(responseText, "security validation for this page is invalid"))) {
+            if (!(code == 403 && (0, _includes.default)(responseText).call(responseText, "security validation for this page is invalid"))) {
               _context10.next = 33;
               break;
             }
@@ -170,7 +170,7 @@ function _ajax() {
             // then we retry
             delete settings.headers["X-RequestDigest"];
             _context10.next = 28;
-            return _getRequestDigest["default"].call(this, {
+            return _getRequestDigest.default.call(this, {
               cache: false
             });
 
@@ -180,7 +180,7 @@ function _ajax() {
             return _context10.abrupt("return", ajax.call(this, settings));
 
           case 33:
-            return _context10.abrupt("return", _promise["default"].reject({
+            return _context10.abrupt("return", _promise.default.reject({
               statusCode: code,
               responseText: responseText,
               request: request
@@ -226,7 +226,7 @@ function _ajax() {
             throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your authentication method first";
 
           case 51:
-            if (settings.headers['Content-Type'] && (0, _indexOf["default"])(_context6 = settings.headers['Content-Type']).call(_context6, 'xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
+            if (settings.headers['Content-Type'] && (0, _indexOf.default)(_context6 = settings.headers['Content-Type']).call(_context6, 'xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
             if (!settings.method) settings.method = typeof settings.body !== "undefined" ? "POST" : "GET";
             if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body); // add User Agent
 
@@ -260,18 +260,18 @@ function _ajax() {
               break;
             }
 
-            if (!((0, _indexOf["default"])(_context7 = response.headers['content-type'] || "").call(_context7, 'xml') > -1 && (0, _slice["default"])(_context8 = response.body).call(_context8, 0, 5) === '<?xml')) {
+            if (!((0, _indexOf.default)(_context7 = response.headers['content-type'] || "").call(_context7, 'xml') > -1 && (0, _slice.default)(_context8 = response.body).call(_context8, 0, 5) === '<?xml')) {
               _context10.next = 70;
               break;
             }
 
             DOMParser = require('xmldom').DOMParser;
             result = new DOMParser().parseFromString(response.body);
-            return _context10.abrupt("return", _promise["default"].resolve(result));
+            return _context10.abrupt("return", _promise.default.resolve(result));
 
           case 70:
-            if ((0, _indexOf["default"])(_context9 = response.headers['content-type'] || "").call(_context9, 'json') > -1 && typeof response.body === "string") response.body = JSON.parse(response.body);
-            return _context10.abrupt("return", _promise["default"].resolve(response.body));
+            if ((0, _indexOf.default)(_context9 = response.headers['content-type'] || "").call(_context9, 'json') > -1 && typeof response.body === "string") response.body = JSON.parse(response.body);
+            return _context10.abrupt("return", _promise.default.resolve(response.body));
 
           case 72:
             _context10.next = 80;
@@ -288,7 +288,7 @@ function _ajax() {
             return _context10.abrupt("return", ajax.call(this, settings));
 
           case 79:
-            return _context10.abrupt("return", _promise["default"].reject({
+            return _context10.abrupt("return", _promise.default.reject({
               response: response,
               statusCode: response.statusCode,
               responseText: response.body
@@ -301,7 +301,7 @@ function _ajax() {
           case 82:
             _context10.prev = 82;
             _context10.t0 = _context10["catch"](1);
-            return _context10.abrupt("return", _promise["default"].reject({
+            return _context10.abrupt("return", _promise.default.reject({
               error: _context10.t0,
               statusCode: _context10.t0.statusCode,
               response: _context10.t0.response,

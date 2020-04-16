@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = stopWorkflow;
+exports.default = stopWorkflow;
 
 var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
 
@@ -37,15 +37,15 @@ function stopWorkflow(setup) {
   if (!setup.workflowName && !setup.workflowID) throw "[SharepointPlus 'stopWorkflow'] Please provide the workflow name";
   if (!setup.ID) throw "[SharepointPlus 'stopWorkflow'] Please provide the item ID"; // retrieve the workflow instances
 
-  return _getWorkflowID["default"].call(this, {
+  return _getWorkflowID.default.call(this, {
     ID: setup.ID,
     workflowName: setup.workflowName
   }).then(function (params) {
     var lenInstances = params.instances.length;
-    if (lenInstances === 0) return _promise["default"].reject("[SharepointPlus 'stopWorkflow'] No instances found for this workflow");
+    if (lenInstances === 0) return _promise.default.reject("[SharepointPlus 'stopWorkflow'] No instances found for this workflow");
     var lastIntance = params.instances[lenInstances - 1];
-    var idx = (0, _now["default"])();
-    return new _promise["default"](function (prom_res) {
+    var idx = (0, _now.default)();
+    return new _promise.default(function (prom_res) {
       // we use an iframe
       document.body.insertAdjacentHTML('beforeend', '<iframe id="iframe_' + idx + '" />');
       var fr = document.getElementById('iframe_' + idx);
@@ -53,7 +53,7 @@ function stopWorkflow(setup) {
       fr.onload = function () {
         fr.contentWindow.__doPostBack('ctl00$PlaceHolderMain$HtmlAnchorEnd', '');
 
-        (0, _setTimeout2["default"])(function () {
+        (0, _setTimeout2.default)(function () {
           document.body.removeChild(fr);
           prom_res();
         }, 1000);

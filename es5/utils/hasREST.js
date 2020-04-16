@@ -44,7 +44,7 @@ export default function hasREST(settings) {
     }).then(function () {
       global._SP_CACHE_HASREST[url] = true;
       return _Promise.resolve(true);
-    })["catch"](function () {
+    }).catch(function () {
       global._SP_CACHE_HASREST[url] = false;
       return _Promise.resolve(false);
     });

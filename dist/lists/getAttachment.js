@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getAttachment;
+exports.default = getAttachment;
 
 var _ajax = _interopRequireDefault(require("../utils/ajax.js"));
 
@@ -34,9 +34,9 @@ function getAttachment(itemID) {
   if (!this.url) throw "[SharepointPlus 'getAttachment']: not able to find the URL!"; // we cannot determine the url
   // do the request
 
-  return _ajax["default"].call(this, {
+  return _ajax.default.call(this, {
     url: this.url + "/_vti_bin/lists.asmx",
-    body: (0, _buildBodyForSOAP2["default"])("GetAttachmentCollection", "<listName>" + this.listID + "</listName><listItemID>" + itemID + "</listItemID>"),
+    body: (0, _buildBodyForSOAP2.default)("GetAttachmentCollection", "<listName>" + this.listID + "</listName><listItemID>" + itemID + "</listItemID>"),
     headers: {
       'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetAttachmentCollection'
     }

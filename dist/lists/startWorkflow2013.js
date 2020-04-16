@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = startWorkflow2013;
+exports.default = startWorkflow2013;
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
@@ -37,7 +37,7 @@ var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 function startWorkflow2013(setup) {
   var _this = this;
 
-  return new _promise["default"](function (prom_resolve, prom_reject) {
+  return new _promise.default(function (prom_resolve, prom_reject) {
     if (!_this.url) throw "[SharepointPlus 'startWorkflow2013'] not able to find the URL!";
     setup = setup || {};
     setup.platformType = setup.platformType || 2013; // internal use when calling Site Workflow from startWorkflow()

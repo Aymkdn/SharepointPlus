@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = startWorkflow;
+exports.default = startWorkflow;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -57,12 +57,12 @@ function startWorkflow(_x) {
 }
 
 function _startWorkflow() {
-  _startWorkflow = (0, _asyncToGenerator2["default"])(
+  _startWorkflow = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(setup) {
+  _regenerator.default.mark(function _callee(setup) {
     var params, workflowParameters, p, i, _context;
 
-    return _regenerator["default"].wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -82,7 +82,7 @@ function _startWorkflow() {
             }
 
             setup.platformType = 2010;
-            return _context2.abrupt("return", _startWorkflow2["default"].call(this, setup));
+            return _context2.abrupt("return", _startWorkflow2.default.call(this, setup));
 
           case 6:
             setup = setup || {};
@@ -109,7 +109,7 @@ function _startWorkflow() {
             }
 
             _context2.next = 14;
-            return _getWorkflowID["default"].call(this, {
+            return _getWorkflowID.default.call(this, {
               ID: setup.ID,
               workflowName: setup.workflowName
             });
@@ -124,8 +124,8 @@ function _startWorkflow() {
             workflowParameters = "<root />";
 
             if (setup.parameters) {
-              if (!(0, _isArray["default"])(setup.parameters)) setup.parameters = [setup.parameters];
-              p = (0, _slice["default"])(_context = setup.parameters).call(_context, 0);
+              if (!(0, _isArray.default)(setup.parameters)) setup.parameters = [setup.parameters];
+              p = (0, _slice.default)(_context = setup.parameters).call(_context, 0);
               workflowParameters = "<Data>";
 
               for (i = 0; i < p.length; i++) {
@@ -136,21 +136,21 @@ function _startWorkflow() {
             }
 
             _context2.next = 21;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/Workflow.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("StartWorkflow", "<item>" + setup.fileRef + "</item><templateId>" + setup.workflowID + "</templateId><workflowParameters>" + workflowParameters + "</workflowParameters>", "http://schemas.microsoft.com/sharepoint/soap/workflow/"),
+              body: (0, _buildBodyForSOAP2.default)("StartWorkflow", "<item>" + setup.fileRef + "</item><templateId>" + setup.workflowID + "</templateId><workflowParameters>" + workflowParameters + "</workflowParameters>", "http://schemas.microsoft.com/sharepoint/soap/workflow/"),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/workflow/StartWorkflow'
               }
             });
 
           case 21:
-            return _context2.abrupt("return", _promise["default"].resolve());
+            return _context2.abrupt("return", _promise.default.resolve());
 
           case 24:
             _context2.prev = 24;
             _context2.t0 = _context2["catch"](0);
-            return _context2.abrupt("return", _promise["default"].reject(_context2.t0));
+            return _context2.abrupt("return", _promise.default.reject(_context2.t0));
 
           case 27:
           case "end":

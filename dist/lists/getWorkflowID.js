@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getWorkflowID;
+exports.default = getWorkflowID;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -46,12 +46,12 @@ function getWorkflowID(_x) {
 }
 
 function _getWorkflowID() {
-  _getWorkflowID = (0, _asyncToGenerator2["default"])(
+  _getWorkflowID = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(setup) {
+  _regenerator.default.mark(function _callee(setup) {
     var _context, d, fileRef, _context2, _context3, data, res, i, row, rows, context, lists, list, item, workflows, _res;
 
-    return _regenerator["default"].wrap(function _callee$(_context4) {
+    return _regenerator.default.wrap(function _callee$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
@@ -85,7 +85,7 @@ function _getWorkflowID() {
 
           case 8:
             _context4.next = 10;
-            return _get["default"].call(this, {
+            return _get.default.call(this, {
               fields: "FieldRef",
               where: "ID = " + setup.ID
             });
@@ -103,19 +103,19 @@ function _getWorkflowID() {
           case 13:
             fileRef = this.cleanResult(d[0].getAttribute("FileRef"));
 
-            if (!(0, _startsWith["default"])(_context = this.url).call(_context, "http")) {
+            if (!(0, _startsWith.default)(_context = this.url).call(_context, "http")) {
               // we need to find the full path
-              fileRef = (0, _slice["default"])(_context2 = window.location.href.split("/")).call(_context2, 0, 3).join("/") + "/" + fileRef;
+              fileRef = (0, _slice.default)(_context2 = window.location.href.split("/")).call(_context2, 0, 3).join("/") + "/" + fileRef;
             }
 
-            if (!(0, _startsWith["default"])(fileRef).call(fileRef, "http")) {
-              fileRef = (0, _slice["default"])(_context3 = this.url.split("/")).call(_context3, 0, 3).join("/") + "/" + fileRef;
+            if (!(0, _startsWith.default)(fileRef).call(fileRef, "http")) {
+              fileRef = (0, _slice.default)(_context3 = this.url.split("/")).call(_context3, 0, 3).join("/") + "/" + fileRef;
             }
 
             _context4.next = 18;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/Workflow.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetWorkflowDataForItem", '<item>' + fileRef + '</item>', "http://schemas.microsoft.com/sharepoint/soap/workflow/"),
+              body: (0, _buildBodyForSOAP2.default)("GetWorkflowDataForItem", '<item>' + fileRef + '</item>', "http://schemas.microsoft.com/sharepoint/soap/workflow/"),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/workflow/GetWorkflowDataForItem'
               }
@@ -151,7 +151,7 @@ function _getWorkflowID() {
             workflows = list.get_workflowAssociations();
             context.load(workflows);
             _context4.next = 33;
-            return new _promise["default"](function (prom_res, prom_rej) {
+            return new _promise.default(function (prom_res, prom_rej) {
               context.executeQueryAsync(function () {
                 var enumerator = workflows.getEnumerator();
 
@@ -177,7 +177,7 @@ function _getWorkflowID() {
 
           case 33:
             _res = _context4.sent;
-            return _context4.abrupt("return", _promise["default"].resolve(_res));
+            return _context4.abrupt("return", _promise.default.resolve(_res));
 
           case 37:
             for (i = rows.length; i--;) {
@@ -269,7 +269,7 @@ function _getWorkflowID() {
               });
             }
 
-            return _context4.abrupt("return", _promise["default"].resolve(res));
+            return _context4.abrupt("return", _promise.default.resolve(res));
 
           case 43:
             _context4.next = 48;
@@ -278,7 +278,7 @@ function _getWorkflowID() {
           case 45:
             _context4.prev = 45;
             _context4.t0 = _context4["catch"](0);
-            return _context4.abrupt("return", _promise["default"].reject(_context4.t0));
+            return _context4.abrupt("return", _promise.default.reject(_context4.t0));
 
           case 48:
           case "end":

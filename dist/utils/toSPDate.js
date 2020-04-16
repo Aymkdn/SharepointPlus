@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = toSPDate;
+exports.default = toSPDate;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
 
@@ -26,7 +26,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/ty
   $SP().toSPDate(new Date(2012,9,31)); // --> "2012-10-31"
 */
 function toSPDate(oDate, includeTime) {
-  if (!oDate || (0, _typeof2["default"])(oDate) !== "object" || typeof oDate.getFullYear !== "function") return ""; // "oDate instanceof Date" returns false for an unknown reason
+  if (!oDate || (0, _typeof2.default)(oDate) !== "object" || typeof oDate.getFullYear !== "function") return ""; // "oDate instanceof Date" returns false for an unknown reason
 
   var pad = function pad(p_str) {
     if (p_str.toString().length == 1) {

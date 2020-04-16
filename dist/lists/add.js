@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = add;
+exports.default = add;
 
 var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/keys"));
 
@@ -113,14 +113,14 @@ function add(_x, _x2) {
 }
 
 function _add() {
-  _add = (0, _asyncToGenerator2["default"])(
+  _add = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(items, options) {
+  _regenerator.default.mark(function _callee(items, options) {
     var _this = this;
 
     var _context, setup, itemsLength, nextPacket, cutted, itemKey, itemValue, it, i, updates, info, data, result, len, passed, failed, rows;
 
-    return _regenerator["default"].wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -145,14 +145,14 @@ function _add() {
             // we cannot determine the url
             // default values
             setup = {};
-            (0, _cloneObject["default"])(true, setup, options);
+            (0, _cloneObject.default)(true, setup, options);
             setup.escapeChar = setup.escapeChar == undefined ? true : setup.escapeChar;
 
             setup.progress = setup.progress || function () {};
 
             setup.packetsize = setup.packetsize || 30;
             setup.rootFolder = setup.rootFolder || "";
-            if (!(0, _isArray["default"])(items)) items = [items];
+            if (!(0, _isArray.default)(items)) items = [items];
             itemsLength = items.length; // define current and max for the progress
 
             setup.progressVar = setup.progressVar || {
@@ -160,7 +160,7 @@ function _add() {
               max: itemsLength,
               passed: [],
               failed: [],
-              eventID: "spAdd" + (0, _slice["default"])(_context = "" + Math.random()).call(_context, 2)
+              eventID: "spAdd" + (0, _slice.default)(_context = "" + Math.random()).call(_context, 2)
             }; // we cannot add more than 15 items in the same time, so split by 15 elements
             // and also to avoid surcharging the server
 
@@ -169,8 +169,8 @@ function _add() {
               break;
             }
 
-            nextPacket = (0, _slice["default"])(items).call(items, 0);
-            cutted = (0, _splice["default"])(nextPacket).call(nextPacket, 0, setup.packetsize);
+            nextPacket = (0, _slice.default)(items).call(items, 0);
+            cutted = (0, _splice.default)(nextPacket).call(nextPacket, 0, setup.packetsize);
 
             global._SP_ADD_PROGRESSVAR[setup.progressVar.eventID] = function (setup) {
               return add.call(_this, nextPacket, setup);
@@ -188,7 +188,7 @@ function _add() {
             }
 
             setup.progress(1, 1);
-            return _context2.abrupt("return", _promise["default"].resolve({
+            return _context2.abrupt("return", _promise.default.resolve({
               passed: [],
               failed: []
             }));
@@ -208,7 +208,7 @@ function _add() {
 
             updates += '<Method ID="' + (i + 1) + '" Cmd="New">';
             updates += '<Field Name=\'ID\'>New</Field>';
-            _context2.t0 = (0, _keys["default"])(_regenerator["default"]).call(_regenerator["default"], items[i]);
+            _context2.t0 = (0, _keys.default)(_regenerator.default).call(_regenerator.default, items[i]);
 
           case 32:
             if ((_context2.t1 = _context2.t0()).done) {
@@ -226,7 +226,7 @@ function _add() {
             itemKey = it;
             itemValue = items[i][it];
 
-            if ((0, _isArray["default"])(itemValue)) {
+            if ((0, _isArray.default)(itemValue)) {
               if (itemValue.length === 0) itemValue = '';else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
             }
 
@@ -236,13 +236,13 @@ function _add() {
 
           case 41:
             // if we have RecurrenceData, and if it's an object, then we convert it
-            if ((0, _typeof2["default"])(itemValue) === 'object') itemValue = (0, _parseRecurrence["default"])(itemValue); // add additional fields
+            if ((0, _typeof2.default)(itemValue) === 'object') itemValue = (0, _parseRecurrence.default)(itemValue); // add additional fields
             // see https://fatalfrenchy.wordpress.com/2010/07/16/sharepoint-recurrence-data-schema/
             // and https://stackoverflow.com/a/44487221/1134119
 
             if (typeof items[i]['fRecurrence'] === 'undefined') updates += "<Field Name='fRecurrence'>1</Field>";
             if (typeof items[i]['EventType'] === 'undefined') updates += "<Field Name='EventType'>1</Field>";
-            if (typeof items[i]['UID'] === 'undefined') updates += "<Field Name='UID'>{" + (0, _newGuid["default"])() + "}</Field>";
+            if (typeof items[i]['UID'] === 'undefined') updates += "<Field Name='UID'>{" + (0, _newGuid.default)() + "}</Field>";
             if (typeof items[i]['fAllDayEvent'] === 'undefined') updates += "<Field Name='fAllDayEvent'>0</Field>";
 
             if (!(typeof items[i]['TimeZone'] === 'undefined')) {
@@ -261,7 +261,7 @@ function _add() {
 
           case 51:
             _context2.next = 53;
-            return _getTimeZoneInfo["default"].call(this, {
+            return _getTimeZoneInfo.default.call(this, {
               url: this.url
             });
 
@@ -288,7 +288,7 @@ function _add() {
 
           case 58:
             if (typeof itemValue === 'boolean') itemValue = itemValue ? '1' : '0';
-            if (setup.escapeChar && typeof itemValue === "string") itemValue = (0, _cleanString2["default"])(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
+            if (setup.escapeChar && typeof itemValue === "string") itemValue = (0, _cleanString2.default)(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
 
             updates += "<Field Name='" + itemKey + "'>" + itemValue + "</Field>";
 
@@ -308,9 +308,9 @@ function _add() {
             updates += '</Batch>'; // send the request
 
             _context2.next = 70;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/lists.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
+              body: (0, _buildBodyForSOAP2.default)("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'
               }
@@ -357,7 +357,7 @@ function _add() {
             // clean memory
             global._SP_ADD_PROGRESSVAR[setup.progressVar.eventID] = undefined; // and resolve by passing the items resolution
 
-            return _context2.abrupt("return", _promise["default"].resolve({
+            return _context2.abrupt("return", _promise.default.resolve({
               passed: passed,
               failed: failed
             }));
@@ -371,7 +371,7 @@ function _add() {
 
           case 82:
             if (global._SP_ADD_PROGRESSVAR[setup.progressVar.eventID]) global._SP_ADD_PROGRESSVAR[setup.progressVar.eventID] = undefined;
-            return _context2.abrupt("return", _promise["default"].resolve({
+            return _context2.abrupt("return", _promise.default.resolve({
               passed: passed,
               failed: failed
             }));
@@ -383,7 +383,7 @@ function _add() {
           case 86:
             _context2.prev = 86;
             _context2.t3 = _context2["catch"](0);
-            return _context2.abrupt("return", _promise["default"].reject(_context2.t3));
+            return _context2.abrupt("return", _promise.default.reject(_context2.t3));
 
           case 89:
           case "end":

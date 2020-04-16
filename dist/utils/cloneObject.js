@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = cloneObject;
+exports.default = cloneObject;
 
 var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
@@ -42,7 +42,7 @@ function cloneObject() {
   } // Handle case when target is a string or something (possible in deep copy)
 
 
-  if ((0, _typeof2["default"])(target) !== 'object' && typeof target !== 'function') {
+  if ((0, _typeof2.default)(target) !== 'object' && typeof target !== 'function') {
     target = {};
   } // Loop trough arguments.
 
@@ -60,10 +60,10 @@ function cloneObject() {
         } // Recurse if we're merging plain objects or arrays.
 
 
-        if (deep && to_add[name] && (is_plain_object(to_add[name]) || (copy_is_array = (0, _isArray["default"])(to_add[name])))) {
+        if (deep && to_add[name] && (is_plain_object(to_add[name]) || (copy_is_array = (0, _isArray.default)(to_add[name])))) {
           if (copy_is_array) {
             copy_is_array = false;
-            clone = target[name] && (0, _isArray["default"])(target[name]) ? target[name] : [];
+            clone = target[name] && (0, _isArray.default)(target[name]) ? target[name] : [];
           } else {
             clone = target[name] && is_plain_object(target[name]) ? target[name] : {};
           } // Never move original objects, clone them.
@@ -94,7 +94,7 @@ function is_plain_object(obj) {
   // - Any object or value whose internal [[Class]] property is not "[object Object]"
   // - DOM nodes
   // - window
-  if (obj === null || (0, _typeof2["default"])(obj) !== "object" || obj.nodeType || obj !== null && obj === obj.window) {
+  if (obj === null || (0, _typeof2.default)(obj) !== "object" || obj.nodeType || obj !== null && obj === obj.window) {
     return false;
   } // Support: Firefox <20
   // The try/catch suppresses exceptions thrown when attempting to access

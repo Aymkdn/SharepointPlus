@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = parse;
+exports.default = parse;
 
 var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
 
@@ -138,7 +138,7 @@ function parse(q, escapeChar) {
 
         var typeIn = "Text";
 
-        switch ((0, _typeof2["default"])(arrIn[0])) {
+        switch ((0, _typeof2.default)(arrIn[0])) {
           case "number":
             typeIn = "Number";
             break;
@@ -148,11 +148,11 @@ function parse(q, escapeChar) {
               var _context;
 
               // check if it starts with ~ and then it's a number -- lookupid
-              if (arrIn[0].charAt(0) === "~" && typeof ((0, _slice["default"])(_context = arrIn[0]).call(_context, 1) * 1) === "number") {
+              if (arrIn[0].charAt(0) === "~" && typeof ((0, _slice.default)(_context = arrIn[0]).call(_context, 1) * 1) === "number") {
                 typeIn = "Integer"; // change all array values
 
-                (0, _forEach["default"])(arrIn).call(arrIn, function (e, i) {
-                  arrIn[i] = (0, _slice["default"])(e).call(e, 1);
+                (0, _forEach.default)(arrIn).call(arrIn, function (e, i) {
+                  arrIn[i] = (0, _slice.default)(e).call(e, 1);
                 });
               }
             }
@@ -216,11 +216,11 @@ function parse(q, escapeChar) {
           // add the open tag in the array
           closeOperator = "Or";
           i += 3;
-        } else if ((0, _slice["default"])(queryString).call(queryString, i, i + 6).toUpperCase() == " LIKE ") {
+        } else if ((0, _slice.default)(queryString).call(queryString, i, i + 6).toUpperCase() == " LIKE ") {
           i += 5;
           factory.push("<Contains>");
           closeTag = "</Contains>";
-        } else if ((0, _slice["default"])(queryString).call(queryString, i, i + 4).toUpperCase() == " IN ") {
+        } else if ((0, _slice.default)(queryString).call(queryString, i, i + 4).toUpperCase() == " IN ") {
           i += 3;
           factory.push("<In>");
           closeTag = "</In>";
@@ -252,15 +252,15 @@ function parse(q, escapeChar) {
           if (/\d{4}-\d\d?-\d\d?((T| )\d{2}:\d{2}:\d{2})/.test(word)) other = ' IncludeTimeValue="TRUE"';
         }
 
-        if (escapeChar) word = (0, _cleanString2["default"])(word); // special words ([Today] and [Me])
+        if (escapeChar) word = (0, _cleanString2.default)(word); // special words ([Today] and [Me])
 
         if (word === "[Me]") {
           word = '<UserID Type="Integer" />';
           type = "Integer";
-        } else if ((0, _slice["default"])(word).call(word, 0, 6) == "[Today") {
+        } else if ((0, _slice.default)(word).call(word, 0, 6) == "[Today") {
           type = "DateTime"; // find the offset if defined
 
-          word = '<Today OffsetDays="' + 1 * (0, _slice["default"])(word).call(word, 6, -1) + '" />';
+          word = '<Today OffsetDays="' + 1 * (0, _slice.default)(word).call(word, 6, -1) + '" />';
         }
 
         factory[lastIndex] += '<Value Type="' + type + '"' + other + '>' + word + '</Value>';

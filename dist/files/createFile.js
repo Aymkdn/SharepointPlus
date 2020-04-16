@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = createFile;
+exports.default = createFile;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -148,12 +148,12 @@ function createFile(_x) {
 }
 
 function _createFile() {
-  _createFile = (0, _asyncToGenerator2["default"])(
+  _createFile = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(setup) {
+  _regenerator.default.mark(function _callee(setup) {
     var file, infos, rootFolder, folder, filename, _filename, hasRest, fields, i, destination, soapEnv, data, a, _context, urlCall, body, params, items, attr;
 
-    return _regenerator["default"].wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -203,7 +203,7 @@ function _createFile() {
 
             file = {};
             _context2.next = 16;
-            return _info["default"].call(this);
+            return _info.default.call(this);
 
           case 16:
             infos = _context2.sent;
@@ -212,8 +212,8 @@ function _createFile() {
             filename = setup.filename;
 
             if (folder.length > 1) {
-              filename = (0, _slice["default"])(folder).call(folder, -1)[0];
-              folder = "/" + (0, _slice["default"])(folder).call(folder, 0, -1).join("/");
+              filename = (0, _slice.default)(folder).call(folder, -1)[0];
+              folder = "/" + (0, _slice.default)(folder).call(folder, 0, -1).join("/");
             } else folder = "";
 
             folder = rootFolder + folder; // to avoid invalid characters
@@ -223,13 +223,13 @@ function _createFile() {
             _filename = filename.replace(/[\*\?\|:"'<>#{}%~&]/g, "").replace(/^[\. ]+|[\. ]+$/g, "").replace(/ {2,}/g, " ").replace(/\.{2,}/g, ".");
 
             if (_filename.length >= 128) {
-              _filename = (0, _slice["default"])(_filename).call(_filename, 0, 115) + '__' + (0, _slice["default"])(_filename).call(_filename, -8);
+              _filename = (0, _slice.default)(_filename).call(_filename, 0, 115) + '__' + (0, _slice.default)(_filename).call(_filename, -8);
             } // we now decide what to do based on if we have REST
             // if no, then relay on Copy Web Service
 
 
             _context2.next = 26;
-            return _hasREST["default"].call(this);
+            return _hasREST.default.call(this);
 
           case 26:
             hasRest = _context2.sent;
@@ -245,7 +245,7 @@ function _createFile() {
             }
 
             _context2.next = 31;
-            return _info["default"].call(this);
+            return _info.default.call(this);
 
           case 31:
             fields = _context2.sent;
@@ -263,18 +263,18 @@ function _createFile() {
           case 35:
             destination = "/" + folder + "/" + _filename;
             destination = (this.url + destination).replace(/([^:]\/)\//g, "$1");
-            if ((0, _slice["default"])(destination).call(destination, 0, 4) !== "http") destination = window.location.protocol + "//" + window.location.host + destination;
-            setup.content = (0, _arrayBufferToBase["default"])(setup.content); // ArrayBuffer to Base64 String
+            if ((0, _slice.default)(destination).call(destination, 0, 4) !== "http") destination = window.location.protocol + "//" + window.location.host + destination;
+            setup.content = (0, _arrayBufferToBase.default)(setup.content); // ArrayBuffer to Base64 String
 
             soapEnv = "<SourceUrl>http://null</SourceUrl>" + "<DestinationUrls><string>" + destination + "</string></DestinationUrls>" + '<Fields><FieldInformation Type="File" />' + setup.extendedFields + '</Fields>' + "<Stream>" + setup.content + "</Stream>";
-            soapEnv = (0, _buildBodyForSOAP2["default"])("CopyIntoItems", soapEnv);
+            soapEnv = (0, _buildBodyForSOAP2.default)("CopyIntoItems", soapEnv);
             _context2.next = 43;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/copy.asmx",
               body: soapEnv,
               onprogress: function onprogress(evt) {
                 if (evt.lengthComputable) {
-                  setup.progress((0, _parseInt2["default"])(evt.loaded / evt.total * 100));
+                  setup.progress((0, _parseInt2.default)(evt.loaded / evt.total * 100));
                 }
               },
               getXHR: setup.getXHR,
@@ -293,10 +293,10 @@ function _createFile() {
               break;
             }
 
-            return _context2.abrupt("return", _promise["default"].reject("[SharepointPlus 'createFile'] Error creating (" + destination + "): " + a.getAttribute("ErrorCode") + " - " + a.getAttribute("ErrorMessage")));
+            return _context2.abrupt("return", _promise.default.reject("[SharepointPlus 'createFile'] Error creating (" + destination + "): " + a.getAttribute("ErrorCode") + " - " + a.getAttribute("ErrorMessage")));
 
           case 50:
-            return _context2.abrupt("return", _promise["default"].resolve({
+            return _context2.abrupt("return", _promise.default.resolve({
               Url: destination,
               Name: setup.filename
             }));
@@ -314,12 +314,12 @@ function _createFile() {
 
             if (typeof Blob !== "undefined") setup.content = new Blob([setup.content]);
             _context2.next = 57;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: urlCall,
               body: setup.content,
               onprogress: function onprogress(evt) {
                 if (evt.lengthComputable) {
-                  setup.progress((0, _parseInt2["default"])(evt.loaded / evt.total * 100));
+                  setup.progress((0, _parseInt2.default)(evt.loaded / evt.total * 100));
                 }
               },
               getXHR: setup.getXHR
@@ -328,8 +328,8 @@ function _createFile() {
           case 57:
             body = _context2.sent;
             // retrieve the full path
-            (0, _cloneObject["default"])(true, file, body.d);
-            file.Url = (0, _slice["default"])(_context = file.__metadata.uri.split("/")).call(_context, 0, 3).join("/") + body.d.ServerRelativeUrl;
+            (0, _cloneObject.default)(true, file, body.d);
+            file.Url = (0, _slice.default)(_context = file.__metadata.uri.split("/")).call(_context, 0, 3).join("/") + body.d.ServerRelativeUrl;
             file.AllFieldsUrl = body.d.ListItemAllFields.__deferred.uri; // if we want to update some fields
 
             if (!setup.fields) {
@@ -338,19 +338,19 @@ function _createFile() {
             }
 
             _context2.next = 64;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: file.AllFieldsUrl
             });
 
           case 64:
             body = _context2.sent;
-            (0, _cloneObject["default"])(true, file, body.d);
+            (0, _cloneObject.default)(true, file, body.d);
             params = {
               ID: file.ID
             };
-            (0, _cloneObject["default"])(params, setup.fields);
+            (0, _cloneObject.default)(params, setup.fields);
             _context2.next = 70;
-            return _update["default"].call(this, params);
+            return _update.default.call(this, params);
 
           case 70:
             items = _context2.sent;
@@ -360,7 +360,7 @@ function _createFile() {
               break;
             }
 
-            return _context2.abrupt("return", _promise["default"].reject("File '" + file.Url + "' added, but fields not updated: " + items.failed[0].errorMessage));
+            return _context2.abrupt("return", _promise.default.reject("File '" + file.Url + "' added, but fields not updated: " + items.failed[0].errorMessage));
 
           case 75:
             items = items.passed[0];
@@ -369,14 +369,14 @@ function _createFile() {
               file[attr] = items[attr];
             }
 
-            return _context2.abrupt("return", _promise["default"].resolve(file));
+            return _context2.abrupt("return", _promise.default.resolve(file));
 
           case 78:
             _context2.next = 81;
             break;
 
           case 80:
-            return _context2.abrupt("return", _promise["default"].resolve(file));
+            return _context2.abrupt("return", _promise.default.resolve(file));
 
           case 81:
             _context2.next = 86;
@@ -385,7 +385,7 @@ function _createFile() {
           case 83:
             _context2.prev = 83;
             _context2.t0 = _context2["catch"](1);
-            return _context2.abrupt("return", _promise["default"].reject(_context2.t0));
+            return _context2.abrupt("return", _promise.default.reject(_context2.t0));
 
           case 86:
           case "end":

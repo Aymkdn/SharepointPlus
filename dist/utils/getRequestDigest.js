@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getRequestDigest;
+exports.default = getRequestDigest;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -40,11 +40,11 @@ function getRequestDigest(_x) {
 }
 
 function _getRequestDigest() {
-  _getRequestDigest = (0, _asyncToGenerator2["default"])(
+  _getRequestDigest = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(settings) {
+  _regenerator.default.mark(function _callee(settings) {
     var e, digest, url, data;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -53,13 +53,13 @@ function _getRequestDigest() {
             settings.cache = settings.cache === false ? false : true;
             url = settings.url || this.url;
 
-            if (!(!url || !(0, _startsWith["default"])(url).call(url, 'http'))) {
+            if (!(!url || !(0, _startsWith.default)(url).call(url, 'http'))) {
               _context.next = 8;
               break;
             }
 
             _context.next = 7;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 7:
             url = _context.sent;
@@ -80,7 +80,7 @@ function _getRequestDigest() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(digest));
+            return _context.abrupt("return", _promise.default.resolve(digest));
 
           case 13:
             if (!(global._SP_ISBROWSER && document && settings.cache)) {
@@ -98,11 +98,11 @@ function _getRequestDigest() {
             digest = e.value; // cache
 
             global._SP_CACHE_REQUESTDIGEST[url] = digest;
-            return _context.abrupt("return", _promise["default"].resolve(digest));
+            return _context.abrupt("return", _promise.default.resolve(digest));
 
           case 19:
             _context.next = 21;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: url + "/_api/contextinfo",
               method: "POST"
             });
@@ -118,12 +118,12 @@ function _getRequestDigest() {
               if (e) e.value = digest;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(digest));
+            return _context.abrupt("return", _promise.default.resolve(digest));
 
           case 28:
             _context.prev = 28;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 31:
           case "end":

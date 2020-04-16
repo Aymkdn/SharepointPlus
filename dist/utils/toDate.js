@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = toDate;
+exports.default = toDate;
 
 var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
 
@@ -29,7 +29,7 @@ function toDate(strDate, forceUTC) {
 
   if (typeof strDate !== "string" && !isNaN(new Date(strDate))) return strDate; // check if it's a date, more robust than "d instanceof Date"
 
-  if ((0, _slice["default"])(strDate).call(strDate, 0, 10) === "datetime;#") strDate = (0, _slice["default"])(strDate).call(strDate, 10); // if it's a short date like 2020-01-19 then we use new Date()
+  if ((0, _slice.default)(strDate).call(strDate, 0, 10) === "datetime;#") strDate = (0, _slice.default)(strDate).call(strDate, 10); // if it's a short date like 2020-01-19 then we use new Date()
 
   if (strDate.length === 10 && /\d{4}-\d{2}-\d{2}/.test(strDate)) return new Date(strDate);
   if (strDate.length != 19 && strDate.length != 20) throw "[SharepointPlus toDate] '" + strDate + "' is invalid.";
@@ -40,7 +40,7 @@ function toDate(strDate, forceUTC) {
   var min = strDate.substring(14, 16);
   var sec = strDate.substring(17, 19); // check if we have "Z" for UTC date
 
-  return (0, _indexOf["default"])(strDate).call(strDate, "Z") > -1 || forceUTC ? new Date(Date.UTC(year, month - 1, day, hour, min, sec)) : new Date(year, month - 1, day, hour, min, sec);
+  return (0, _indexOf.default)(strDate).call(strDate, "Z") > -1 || forceUTC ? new Date(Date.UTC(year, month - 1, day, hour, min, sec)) : new Date(year, month - 1, day, hour, min, sec);
 }
 
 module.exports = exports.default;

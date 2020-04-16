@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = update;
+exports.default = update;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -94,14 +94,14 @@ function update(_x, _x2) {
 }
 
 function _update() {
-  _update = (0, _asyncToGenerator2["default"])(
+  _update = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(items, options) {
+  _regenerator.default.mark(function _callee(items, options) {
     var _this = this;
 
     var _context4, setup, itemsLength, nextPacket, cutted, itemKey, itemValue, it, _context, getFields, params, _data2, fields, _data, clone, aItems, _it, i, _context2, eventDate, event, updates, _i, data, result, len, passed, failed, _i2, raw;
 
-    return _regenerator["default"].wrap(function _callee$(_context5) {
+    return _regenerator.default.wrap(function _callee$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
@@ -112,7 +112,7 @@ function _update() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].reject("[SharepointPlus 'update'] the list ID/name is required."));
+            return _context5.abrupt("return", _promise.default.reject("[SharepointPlus 'update'] the list ID/name is required."));
 
           case 3:
             if (this.url) {
@@ -120,20 +120,20 @@ function _update() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].reject("[SharepointPlus 'update'] not able to find the URL!"));
+            return _context5.abrupt("return", _promise.default.reject("[SharepointPlus 'update'] not able to find the URL!"));
 
           case 5:
             // we cannot determine the url
             // default values
             setup = {};
-            (0, _cloneObject["default"])(true, setup, options);
+            (0, _cloneObject.default)(true, setup, options);
             setup.where = setup.where || "";
             setup.escapeChar = setup.escapeChar === undefined ? true : setup.escapeChar;
 
             setup.progress = setup.progress || function () {};
 
             setup.packetsize = setup.packetsize || 30;
-            if (!(0, _isArray["default"])(items)) items = [items];
+            if (!(0, _isArray.default)(items)) items = [items];
             itemsLength = items.length; // if there is a WHERE clause
 
             if (!(itemsLength === 1 && setup.where)) {
@@ -160,7 +160,7 @@ function _update() {
             }; // we also need all the columns for the event
 
             _context5.next = 22;
-            return _get["default"].call(this, {
+            return _get.default.call(this, {
               fields: 'ContentType',
               where: setup.where
             });
@@ -173,15 +173,15 @@ function _update() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].reject("[SharepointPlus 'update'] Unable to find an event with `" + setup.where + "`"));
+            return _context5.abrupt("return", _promise.default.reject("[SharepointPlus 'update'] Unable to find an event with `" + setup.where + "`"));
 
           case 25:
             _context5.next = 27;
-            return _getContentTypeInfo["default"].call(this, _data2[0].getAttribute('ContentType') || 'Event');
+            return _getContentTypeInfo.default.call(this, _data2[0].getAttribute('ContentType') || 'Event');
 
           case 27:
             fields = _context5.sent;
-            (0, _forEach["default"])(fields).call(fields, function (field) {
+            (0, _forEach.default)(fields).call(fields, function (field) {
               var fieldID = field.Name || field.StaticName;
 
               if (fieldID === "TimeZone" || field.Group !== '_Hidden' && field.ReadOnly !== 'TRUE' && field.Hidden !== 'TRUE' && typeof items[0][fieldID] === 'undefined') {
@@ -190,9 +190,9 @@ function _update() {
             });
 
           case 29:
-            getFields = (0, _slice["default"])(_context = params.fields).call(_context, 0);
+            getFields = (0, _slice.default)(_context = params.fields).call(_context, 0);
             _context5.next = 32;
-            return _get["default"].call(this, params);
+            return _get.default.call(this, params);
 
           case 32:
             _data = _context5.sent;
@@ -229,11 +229,11 @@ function _update() {
 
           case 42:
             // the treatment is different for `event`
-            eventDate = typeof setup.event !== 'string' ? this.toSPDate(setup.event) : (0, _slice["default"])(_context2 = setup.event).call(_context2, 0, 10);
-            event = (0, _filter["default"])(_data).call(_data, function (d) {
+            eventDate = typeof setup.event !== 'string' ? this.toSPDate(setup.event) : (0, _slice.default)(_context2 = setup.event).call(_context2, 0, 10);
+            event = (0, _filter.default)(_data).call(_data, function (d) {
               var _context3;
 
-              return (0, _indexOf["default"])(_context3 = d.getAttribute("ID")).call(_context3, "." + eventDate + "T") !== -1;
+              return (0, _indexOf.default)(_context3 = d.getAttribute("ID")).call(_context3, "." + eventDate + "T") !== -1;
             });
 
             if (!(event.length === 0)) {
@@ -241,13 +241,13 @@ function _update() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].reject("[SharepointPlus 'update'] No event found on " + eventDate));
+            return _context5.abrupt("return", _promise.default.reject("[SharepointPlus 'update'] No event found on " + eventDate));
 
           case 46:
             event = event[0]; // see https://fatalfrenchy.wordpress.com/2010/07/16/sharepoint-recurrence-data-schema/
 
             _it = clone(items[0]);
-            (0, _forEach["default"])(getFields).call(getFields, function (field) {
+            (0, _forEach.default)(getFields).call(getFields, function (field) {
               if (field !== 'ID' && typeof _it[field] === 'undefined') {
                 var val = event.getAttribute(field);
                 if (val !== undefined && val !== null) _it[field] = val;
@@ -261,7 +261,7 @@ function _update() {
             _it.RecurrenceID = event.getAttribute("RecurrenceID"); // the occurrence event date
 
             _it.TimeZone = event.getAttribute("TimeZone");
-            return _context5.abrupt("return", _add["default"].call(this, _it, setup));
+            return _context5.abrupt("return", _add.default.call(this, _it, setup));
 
           case 57:
             // define current and max for the progress
@@ -270,7 +270,7 @@ function _update() {
               max: itemsLength,
               passed: [],
               failed: [],
-              eventID: "spUpdate" + (0, _slice["default"])(_context4 = "" + Math.random()).call(_context4, 2)
+              eventID: "spUpdate" + (0, _slice.default)(_context4 = "" + Math.random()).call(_context4, 2)
             }; // we cannot add more than 15 items in the same time, so split by 15 elements
             // and also to avoid surcharging the server
 
@@ -279,8 +279,8 @@ function _update() {
               break;
             }
 
-            nextPacket = (0, _slice["default"])(items).call(items, 0);
-            cutted = (0, _splice["default"])(nextPacket).call(nextPacket, 0, setup.packetsize);
+            nextPacket = (0, _slice.default)(items).call(items, 0);
+            cutted = (0, _splice.default)(nextPacket).call(nextPacket, 0, setup.packetsize);
 
             global._SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID] = function (setup) {
               return update.call(_this, nextPacket, setup);
@@ -297,7 +297,7 @@ function _update() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].resolve({
+            return _context5.abrupt("return", _promise.default.resolve({
               passed: [],
               failed: []
             }));
@@ -322,7 +322,7 @@ function _update() {
               break;
             }
 
-            return _context5.abrupt("return", _promise["default"].reject("[SharepointPlus 'update'] you have to provide the item ID called 'ID'"));
+            return _context5.abrupt("return", _promise.default.reject("[SharepointPlus 'update'] you have to provide the item ID called 'ID'"));
 
           case 75:
             for (it in items[_i]) {
@@ -330,25 +330,25 @@ function _update() {
                 itemKey = it;
                 itemValue = items[_i][it];
 
-                if ((0, _isArray["default"])(itemValue)) {
+                if ((0, _isArray.default)(itemValue)) {
                   if (itemValue.length === 0) itemValue = '';else itemValue = ";#" + itemValue.join(";#") + ";#"; // an array should be seperate by ";#"
                 } // if we have RecurrenceData, and if it's an object, then we convert it
 
 
                 if (itemKey === 'RecurrenceData') {
-                  if ((0, _typeof2["default"])(itemValue) === 'object') itemValue = (0, _parseRecurrence["default"])(itemValue); // add additional fields
+                  if ((0, _typeof2.default)(itemValue) === 'object') itemValue = (0, _parseRecurrence.default)(itemValue); // add additional fields
 
                   if (!items[_i]['RecurrenceID']) {
                     if (typeof items[_i]['fRecurrence'] === 'undefined') updates += "<Field Name='fRecurrence'>1</Field>";
                     if (typeof items[_i]['EventType'] === 'undefined') updates += "<Field Name='EventType'>1</Field>";
-                    if (typeof items[_i]['UID'] === 'undefined') updates += "<Field Name='UID'>{" + (0, _newGuid["default"])() + "}</Field>";
+                    if (typeof items[_i]['UID'] === 'undefined') updates += "<Field Name='UID'>{" + (0, _newGuid.default)() + "}</Field>";
                     if (typeof items[_i]['fAllDayEvent'] === 'undefined') updates += "<Field Name='fAllDayEvent'>0</Field>";
                   }
 
                   updates += "<Field Name='" + itemKey + "'><![CDATA[" + itemValue + "]]></Field>";
                 } else {
                   if (typeof itemValue === 'boolean') itemValue = itemValue ? '1' : '0';
-                  if (setup.escapeChar && typeof itemValue === "string") itemValue = (0, _cleanString2["default"])(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
+                  if (setup.escapeChar && typeof itemValue === "string") itemValue = (0, _cleanString2.default)(itemValue); // replace & (and not &amp;) by "&amp;" to avoid some issues
 
                   updates += "<Field Name='" + itemKey + "'>" + itemValue + "</Field>";
                 }
@@ -366,9 +366,9 @@ function _update() {
             updates += '</Batch>'; // send the request
 
             _context5.next = 83;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/lists.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
+              body: (0, _buildBodyForSOAP2.default)("UpdateListItems", "<listName>" + this.listID + "</listName><updates>" + updates + "</updates>"),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'
               }
@@ -412,7 +412,7 @@ function _update() {
             // clean memory
             global._SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID] = undefined; // and resolve by passing the items resolution
 
-            return _context5.abrupt("return", _promise["default"].resolve({
+            return _context5.abrupt("return", _promise.default.resolve({
               passed: passed,
               failed: failed
             }));
@@ -426,7 +426,7 @@ function _update() {
 
           case 95:
             if (global._SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID]) global._SP_UPDATE_PROGRESSVAR[setup.progressVar.eventID] = undefined;
-            return _context5.abrupt("return", _promise["default"].resolve({
+            return _context5.abrupt("return", _promise.default.resolve({
               passed: passed,
               failed: failed
             }));
@@ -438,7 +438,7 @@ function _update() {
           case 99:
             _context5.prev = 99;
             _context5.t0 = _context5["catch"](0);
-            return _context5.abrupt("return", _promise["default"].reject(_context5.t0));
+            return _context5.abrupt("return", _promise.default.reject(_context5.t0));
 
           case 102:
           case "end":

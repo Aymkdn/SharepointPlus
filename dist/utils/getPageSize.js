@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getPageSize;
+exports.default = getPageSize;
 
 /**
   @name $SP().getPageSize

@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = isMember;
+exports.default = isMember;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -49,12 +49,12 @@ function isMember(_x) {
 }
 
 function _isMember() {
-  _isMember = (0, _asyncToGenerator2["default"])(
+  _isMember = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(setup) {
+  _regenerator.default.mark(function _callee(setup) {
     var members, groups, i, m, _i, distrib, _i2;
 
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -85,7 +85,7 @@ function _isMember() {
             }
 
             _context.next = 10;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 10:
             setup.url = _context.sent;
@@ -95,7 +95,7 @@ function _isMember() {
             members = []; // first check with usergroups()
 
             _context.next = 15;
-            return _usergroups["default"].call(this, setup.user, {
+            return _usergroups.default.call(this, setup.user, {
               cache: setup.cache
             });
 
@@ -114,7 +114,7 @@ function _isMember() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(true));
+            return _context.abrupt("return", _promise.default.resolve(true));
 
           case 20:
             _context.next = 17;
@@ -122,7 +122,7 @@ function _isMember() {
 
           case 22:
             _context.next = 24;
-            return _groupMembers["default"].call(this, setup.group, {
+            return _groupMembers.default.call(this, setup.group, {
               cache: setup.cache
             });
 
@@ -135,7 +135,7 @@ function _isMember() {
 
 
             _context.next = 28;
-            return _distributionLists["default"].call(this, setup.user, {
+            return _distributionLists.default.call(this, setup.user, {
               cache: setup.cache
             });
 
@@ -149,24 +149,24 @@ function _isMember() {
               break;
             }
 
-            if (!((0, _indexOf["default"])(members).call(members, distrib[_i2].DisplayName.toLowerCase()) > -1)) {
+            if (!((0, _indexOf.default)(members).call(members, distrib[_i2].DisplayName.toLowerCase()) > -1)) {
               _context.next = 33;
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(true));
+            return _context.abrupt("return", _promise.default.resolve(true));
 
           case 33:
             _context.next = 30;
             break;
 
           case 35:
-            return _context.abrupt("return", _promise["default"].resolve(false));
+            return _context.abrupt("return", _promise.default.resolve(false));
 
           case 38:
             _context.prev = 38;
             _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t0));
+            return _context.abrupt("return", _promise.default.reject(_context.t0));
 
           case 41:
           case "end":

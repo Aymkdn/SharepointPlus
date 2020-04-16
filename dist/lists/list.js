@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = list;
+exports.default = list;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -38,10 +38,10 @@ function list(_x, _x2) {
 }
 
 function _list() {
-  _list = (0, _asyncToGenerator2["default"])(
+  _list = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(list, url) {
-    return _regenerator["default"].wrap(function _callee$(_context) {
+  _regenerator.default.mark(function _callee(list, url) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -53,19 +53,19 @@ function _list() {
             }
 
             // make sure we don't have a '/' at the end
-            this.url = (0, _slice["default"])(url).call(url, -1) === '/' ? (0, _slice["default"])(url).call(url, 0, -1) : url;
+            this.url = (0, _slice.default)(url).call(url, -1) === '/' ? (0, _slice.default)(url).call(url, 0, -1) : url;
             _context.next = 8;
             break;
 
           case 5:
             _context.next = 7;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 7:
             this.url = _context.sent;
 
           case 8:
-            return _context.abrupt("return", _promise["default"].resolve());
+            return _context.abrupt("return", _promise.default.resolve());
 
           case 9:
           case "end":

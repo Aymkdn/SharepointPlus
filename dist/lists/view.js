@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = view;
+exports.default = view;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -47,14 +47,14 @@ function view(_x, _x2) {
 }
 
 function _view() {
-  _view = (0, _asyncToGenerator2["default"])(
+  _view = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(viewID, options) {
+  _regenerator.default.mark(function _callee(viewID, options) {
     var _this = this;
 
     var _context, list, i, found, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, c, _views, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, v, data, node, where, oReturn, arr;
 
-    return _regenerator["default"].wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -65,7 +65,7 @@ function _view() {
               break;
             }
 
-            return _context2.abrupt("return", _promise["default"].reject("[SharepointPlus 'view'] the list ID/Name is required."));
+            return _context2.abrupt("return", _promise.default.reject("[SharepointPlus 'view'] the list ID/Name is required."));
 
           case 3:
             if (viewID) {
@@ -73,7 +73,7 @@ function _view() {
               break;
             }
 
-            return _context2.abrupt("return", _promise["default"].reject("[SharepointPlus 'view'] the view ID/Name is required."));
+            return _context2.abrupt("return", _promise.default.reject("[SharepointPlus 'view'] the view ID/Name is required."));
 
           case 5:
             // default values
@@ -86,7 +86,7 @@ function _view() {
               break;
             }
 
-            return _context2.abrupt("return", _promise["default"].reject("[SharepointPlus 'view'] not able to find the URL!"));
+            return _context2.abrupt("return", _promise.default.reject("[SharepointPlus 'view'] not able to find the URL!"));
 
           case 10:
             if (!options.cache) {
@@ -98,7 +98,7 @@ function _view() {
             _didIteratorError = false;
             _iteratorError = undefined;
             _context2.prev = 14;
-            _iterator = (0, _getIterator2["default"])(global._SP_CACHE_SAVEDVIEW);
+            _iterator = (0, _getIterator2.default)(global._SP_CACHE_SAVEDVIEW);
 
           case 16:
             if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
@@ -114,7 +114,7 @@ function _view() {
             }
 
             found = true;
-            return _context2.abrupt("return", _promise["default"].resolve(c.data));
+            return _context2.abrupt("return", _promise.default.resolve(c.data));
 
           case 21:
             _iteratorNormalCompletion = true;
@@ -135,8 +135,8 @@ function _view() {
             _context2.prev = 30;
             _context2.prev = 31;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 33:
@@ -162,7 +162,7 @@ function _view() {
             }
 
             _context2.next = 41;
-            return _views2["default"].call(this);
+            return _views2.default.call(this);
 
           case 41:
             _views = _context2.sent;
@@ -170,7 +170,7 @@ function _view() {
             _didIteratorError2 = false;
             _iteratorError2 = undefined;
             _context2.prev = 45;
-            _iterator2 = (0, _getIterator2["default"])(_views);
+            _iterator2 = (0, _getIterator2.default)(_views);
 
           case 47:
             if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
@@ -206,8 +206,8 @@ function _view() {
             _context2.prev = 60;
             _context2.prev = 61;
 
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
             }
 
           case 63:
@@ -227,13 +227,13 @@ function _view() {
             return _context2.finish(60);
 
           case 68:
-            return _context2.abrupt("return", _promise["default"].reject("[SharepointPlus 'view'] not able to find the view called '" + viewID + "' for list '" + this.listID + "' at " + this.url));
+            return _context2.abrupt("return", _promise.default.reject("[SharepointPlus 'view'] not able to find the view called '" + viewID + "' for list '" + this.listID + "' at " + this.url));
 
           case 69:
             _context2.next = 71;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: this.url + "/_vti_bin/Views.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("GetView", '<listName>' + this.listID + '</listName><viewName>' + viewID + '</viewName>'),
+              body: (0, _buildBodyForSOAP2.default)("GetView", '<listName>' + this.listID + '</listName><viewName>' + viewID + '</viewName>'),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/GetView'
               }
@@ -287,7 +287,7 @@ function _view() {
 
 
             found = false;
-            (0, _forEach["default"])(_context = global._SP_CACHE_SAVEDVIEW).call(_context, function (c) {
+            (0, _forEach.default)(_context = global._SP_CACHE_SAVEDVIEW).call(_context, function (c) {
               if (c.url === _this.url && c.list === list && (c.viewID === viewID || c.viewName === viewID)) {
                 c.data = oReturn;
                 found = true;
@@ -300,12 +300,12 @@ function _view() {
               viewID: viewID,
               viewName: oReturn.Name
             });
-            return _context2.abrupt("return", _promise["default"].resolve(oReturn));
+            return _context2.abrupt("return", _promise.default.resolve(oReturn));
 
           case 89:
             _context2.prev = 89;
             _context2.t2 = _context2["catch"](0);
-            return _context2.abrupt("return", _promise["default"].reject(_context2.t2));
+            return _context2.abrupt("return", _promise.default.reject(_context2.t2));
 
           case 92:
           case "end":

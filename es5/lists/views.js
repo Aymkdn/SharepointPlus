@@ -109,8 +109,8 @@ function _views() {
             _context2.prev = 28;
             _context2.prev = 29;
 
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
 
           case 31:

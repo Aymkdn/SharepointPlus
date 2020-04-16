@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = waitModalDialog;
+exports.default = waitModalDialog;
 
 var _showModalDialog = _interopRequireDefault(require("./showModalDialog.js"));
 
@@ -24,7 +24,7 @@ var _showModalDialog = _interopRequireDefault(require("./showModalDialog.js"));
  * @param {Number} [width] The modal width
  */
 function waitModalDialog(title, subtitle, height, width) {
-  return _showModalDialog["default"].call(this, {
+  return _showModalDialog.default.call(this, {
     wait: true,
     title: title || "Working...",
     message: subtitle,

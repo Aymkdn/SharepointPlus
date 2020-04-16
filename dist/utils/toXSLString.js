@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = toXSLString;
+exports.default = toXSLString;
 
 /**
   @name $SP().toXSLString

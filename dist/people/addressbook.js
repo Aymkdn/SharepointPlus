@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = addressbook;
+exports.default = addressbook;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -47,9 +47,9 @@ function addressbook(_x, _x2) {
 }
 
 function _addressbook() {
-  _addressbook = (0, _asyncToGenerator2["default"])(
+  _addressbook = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(username, setup) {
+  _regenerator.default.mark(function _callee(username, setup) {
     var data,
         aResult,
         children,
@@ -60,7 +60,7 @@ function _addressbook() {
         j,
         lenC,
         _args = arguments;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -88,7 +88,7 @@ function _addressbook() {
             }
 
             _context.next = 12;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 12:
             setup.url = _context.sent;
@@ -97,9 +97,9 @@ function _addressbook() {
             setup.limit = setup.limit || 10;
             setup.type = setup.type || "User";
             _context.next = 17;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: setup.url + "/_vti_bin/People.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("SearchPrincipals", "<searchText>" + username + "</searchText><maxResults>" + setup.limit + "</maxResults><principalType>" + setup.type + "</principalType>"),
+              body: (0, _buildBodyForSOAP2.default)("SearchPrincipals", "<searchText>" + username + "</searchText><maxResults>" + setup.limit + "</maxResults><principalType>" + setup.type + "</principalType>"),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/SearchPrincipals'
               }
@@ -124,12 +124,12 @@ function _addressbook() {
               }
             }
 
-            return _context.abrupt("return", _promise["default"].resolve(aResult));
+            return _context.abrupt("return", _promise.default.resolve(aResult));
 
           case 24:
             _context.prev = 24;
             _context.t1 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t1));
+            return _context.abrupt("return", _promise.default.reject(_context.t1));
 
           case 27:
           case "end":

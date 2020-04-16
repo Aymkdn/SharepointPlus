@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = workflowStatusToText;
+exports.default = workflowStatusToText;
 
 /**
   @name $SP().workflowStatusToText

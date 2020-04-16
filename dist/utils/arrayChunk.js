@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = arrayChunk;
+exports.default = arrayChunk;
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
@@ -28,7 +28,7 @@ function arrayChunk(b, e) {
   var d = [];
 
   for (var c = 0, a = b.length; c < a; c += e) {
-    d.push((0, _slice["default"])(b).call(b, c, c + e));
+    d.push((0, _slice.default)(b).call(b, c, c + e));
   }
 
   return d;

@@ -6,7 +6,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = getModalDialog;
+exports.default = getModalDialog;
 
 /**
  * @name $SP().getModalDialog

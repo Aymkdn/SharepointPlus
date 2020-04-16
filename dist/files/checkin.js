@@ -8,7 +8,7 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = checkin;
+exports.default = checkin;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -51,11 +51,11 @@ function checkin(_x) {
 }
 
 function _checkin() {
-  _checkin = (0, _asyncToGenerator2["default"])(
+  _checkin = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee(setup) {
+  _regenerator.default.mark(function _callee(setup) {
     var type, data, res;
-    return _regenerator["default"].wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -78,7 +78,7 @@ function _checkin() {
             }
 
             _context.next = 8;
-            return _getURL["default"].call(this);
+            return _getURL.default.call(this);
 
           case 8:
             setup.url = _context.sent;
@@ -100,9 +100,9 @@ function _checkin() {
 
           case 18:
             _context.next = 20;
-            return _ajax["default"].call(this, {
+            return _ajax.default.call(this, {
               url: setup.url + "/_vti_bin/Lists.asmx",
-              body: (0, _buildBodyForSOAP2["default"])("CheckInFile", '<pageUrl>' + setup.destination + '</pageUrl><comment>' + setup.comments + '</comment><CheckinType>' + type + '</CheckinType>'),
+              body: (0, _buildBodyForSOAP2.default)("CheckInFile", '<pageUrl>' + setup.destination + '</pageUrl><comment>' + setup.comments + '</comment><CheckinType>' + type + '</CheckinType>'),
               headers: {
                 'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/CheckInFile'
               }
@@ -118,10 +118,10 @@ function _checkin() {
               break;
             }
 
-            return _context.abrupt("return", _promise["default"].reject(res));
+            return _context.abrupt("return", _promise.default.reject(res));
 
           case 27:
-            return _context.abrupt("return", _promise["default"].resolve());
+            return _context.abrupt("return", _promise.default.resolve());
 
           case 28:
             _context.next = 33;
@@ -130,7 +130,7 @@ function _checkin() {
           case 30:
             _context.prev = 30;
             _context.t1 = _context["catch"](0);
-            return _context.abrupt("return", _promise["default"].reject(_context.t1));
+            return _context.abrupt("return", _promise.default.reject(_context.t1));
 
           case 33:
           case "end":
