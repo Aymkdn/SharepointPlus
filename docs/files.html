@@ -144,7 +144,7 @@
     console.log(file.Url+" has been created")
     // and to get more info, like the ID, you can do:
     $SP().ajax({url:file.AllFieldsUrl}).then(function(body) {
-console.log(body.d)
+      console.log(body.d)
     })
   }, function(error) {
     console.log("Error: ",error)
@@ -155,8 +155,8 @@ console.log(body.d)
     content:"ArrayBuffer*",
     filename:"SubFolder/myfile.txt",
     fields:{
-"Title":"My Document",
-"File_x0020_Description":"This is my file!"
+      "Title":"My Document",
+      "File_x0020_Description":"This is my file!"
     }
   }).then(function(file) {
     alert("File "+file.Name+" created at " + file.Url);
@@ -167,13 +167,13 @@ console.log(body.d)
     content:"*ArrayBuffer*",
     filename:"BigFile.iso",
     progress:function(perc) {
-console.log("percentage of progress => ",perc)
+      console.log("percentage of progress => ",perc)
     },
     getXHR:function(xhr) {
-// automtically abort after 3 seconds
-setTimeout(function() {
-  xhr.abort()
-}, 3000)
+      // automtically abort after 3 seconds
+      setTimeout(function() {
+        xhr.abort()
+      }, 3000)
     }
   }).then(function(file) {
     console.log(file.Url+" has been created")
@@ -188,35 +188,35 @@ setTimeout(function() {
     // retrive file from INPUT
     files = document.querySelector('#file_to_upload').files;
     if (!files || files.length === 0) {
-alert("ERROR: Select a file");
-return;
+      alert("ERROR: Select a file");
+      return;
     }
     files = Array.prototype.slice.call(files);
     // read the files
     Promise.all(files.map(function(file) {
-return new Promise(function(prom_res, prom_rej) {
-  // use fileReader
-  var fileReader = new FileReader();
-  fileReader.onloadend = function(e) {
-    file.content = e.target.result;
-    prom_res(file);
-  }
-  fileReader.onerror = function(e) {
-    prom_rej(e.target.error);
-  }
-  fileReader.readAsArrayBuffer(file);
-})
+      return new Promise(function(prom_res, prom_rej) {
+        // use fileReader
+        var fileReader = new FileReader();
+        fileReader.onloadend = function(e) {
+          file.content = e.target.result;
+          prom_res(file);
+        }
+        fileReader.onerror = function(e) {
+          prom_rej(e.target.error);
+        }
+        fileReader.readAsArrayBuffer(file);
+      })
     })).then(function(files) {
-// upload files
-return Promise.all(files.map(function(file) {
-  return $SP().list("SharepointPlusLibrary").createFile({
-    content:file.content,
-    filename:file.name,
-    progress:function(perc) {
-      console.log("Progress => ",perc+"%")
-    }
-  })
-}))
+      // upload files
+      return Promise.all(files.map(function(file) {
+        return $SP().list("SharepointPlusLibrary").createFile({
+          content:file.content,
+          filename:file.name,
+          progress:function(perc) {
+            console.log("Progress => ",perc+"%")
+          }
+        })
+      }))
     })
   }
 
@@ -225,7 +225,7 @@ return Promise.all(files.map(function(file) {
     content:file.content,
     filename:file.name,
     getXHR:function(xhr) {
-xhr.setRequestHeader('Authorization','Bearer XYZ')
+      xhr.setRequestHeader('Authorization','Bearer XYZ')
     }
   })
 
@@ -298,7 +298,7 @@ xhr.setRequestHeader('Authorization','Bearer XYZ')
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="https://jsdoc.app/">JSDoc</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc on Thu, 16 Apr 2020 10:22:22 GMT</div>
+  <div>Automatically generated with JSDoc on Thu, 23 Apr 2020 10:24:46 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 </body>

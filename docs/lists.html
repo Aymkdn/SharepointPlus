@@ -106,10 +106,10 @@
 
   $SP().list("My List","http://my.sharepoi.nt/dir/").add({Title:"Ok"}).then(function(items) {
     if (items.failed.length > 0) {
-for (let i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title); // the 'errorMessage' attribute is added to the object
+      for (let i=0; i &lt; items.failed.length; i++) console.log("Error '"+items.failed[i].errorMessage+"' with:"+items.failed[i].Title); // the 'errorMessage' attribute is added to the object
     }
     if (items.passed.length > 0) {
-for (let i=0; i &lt; items.passed.length; i++) console.log("Success for:"+items.passed[i].Title+" (ID:"+items.passed[i].ID+")");
+      for (let i=0; i &lt; items.passed.length; i++) console.log("Success for:"+items.passed[i].Title+" (ID:"+items.passed[i].ID+")");
     }
   });
 
@@ -128,13 +128,13 @@ for (let i=0; i &lt; items.passed.length; i++) console.log("Success for:"+items.
     EventDate:"2018-12-20 10:00:00", // the Date part is when the recurrent event starts, and the Time part will be used for each event
     EndDate:"2019-12-31 11:00:00", // it must be the last Date/Time for the meeting, then the Time is used as an end time for each event
     RecurrenceData: {
-"type":"weekly",
-"frequency":1,
-"on":{
-  "monday":true,
-  "friday":true
-},
-"endDate":new Date(2019,11,31,11,0,0) // December 31, 2019, at 11am
+      "type":"weekly",
+      "frequency":1,
+      "on":{
+        "monday":true,
+        "friday":true
+      },
+      "endDate":new Date(2019,11,31,11,0,0) // December 31, 2019, at 11am
     }
   })
 
@@ -363,8 +363,8 @@ for (let i=0; i &lt; items.passed.length; i++) console.log("Success for:"+items.
     rowlimit:5000,
     paging:true,
     progress:function progress(nbItemsLoaded) {
-// for each new page this function will be called
-console.log("It's still loading... already "+nbItemsLoaded+" items have been loaded!");
+      // for each new page this function will be called
+      console.log("It's still loading... already "+nbItemsLoaded+" items have been loaded!");
     }
   }).then(function(data) {
     console.log(data.length); // -> 23587
@@ -407,21 +407,21 @@ console.log("It's still loading... already "+nbItemsLoaded+" items have been loa
     fields:"Expense_x0020_Type",
     where:"Finance_x0020_Category = 'Supplies'",
     join:{
-list:"Purchasing List",
-fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
-where:"Region = 'EMEA' AND Year = 2012",
-orderby:"Expense_x0020_Type,Finance_x0020_Category",
-on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
-join:{
-  list:"Financial Static Data",
-  fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
-  where:"Region = 'EMEA' AND Year = 2012",
-  on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
-}
+      list:"Purchasing List",
+      fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
+      where:"Region = 'EMEA' AND Year = 2012",
+      orderby:"Expense_x0020_Type,Finance_x0020_Category",
+      on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
+      join:{
+        list:"Financial Static Data",
+        fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
+        where:"Region = 'EMEA' AND Year = 2012",
+        on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
+      }
     }
   }).then(function(data) {
     for (var i=0; i&lt;data.length; i++) {
-console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
+      console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
     }
   });
 
@@ -432,21 +432,21 @@ console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttr
     fields:"Expense_x0020_Type",
     where:"Finance_x0020_Category = 'Supplies'",
     join:{
-list:"Purchasing List",
-fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
-where:"Region = 'EMEA' AND Year = 2012",
-orderby:"Expense_x0020_Type,Finance_x0020_Category",
-on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
-outerjoin:{
-  list:"Financial Static Data",
-  fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
-  where:"Region = 'EMEA' AND Year = 2012",
-  on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
-}
+      list:"Purchasing List",
+      fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Cost",
+      where:"Region = 'EMEA' AND Year = 2012",
+      orderby:"Expense_x0020_Type,Finance_x0020_Category",
+      on:"'Purchasing List'.Expense_x0020_Type = 'Finance and Expense'.Expense_x0020_Type",
+      outerjoin:{
+        list:"Financial Static Data",
+        fields:"Region,Year,Expense_x0020_Type,Finance_x0020_Category,Forecast",
+        where:"Region = 'EMEA' AND Year = 2012",
+        on:"'Purchasing List'.Region = 'Financial Static Data'.Region AND 'Purchasing List'.Expense_x0020_Type = 'Financial Static Data'.Expense_x0020_Type"
+      }
     }
   }).then(function(data) {
     for (var i=0; i&lt;data.length; i++)
-console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
+      console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttribute("Purchasing List.Year")+" | "+data[i].getAttribute("Purchasing List.Expense_x0020_Type")+" | "+data[i].getAttribute("Purchasing List.Cost"));
   })
 
   // Another example of "outerjoin", but this time with fields tied to a Lookup ID
@@ -455,19 +455,19 @@ console.log(data[i].getAttribute("Purchasing List.Region")+" | "+data[i].getAttr
     fields:"ID,Project_x0020_Name",
     where:"Status = 'In Progress'",
     outerjoin:{
-list:"Deliverables",
-fields:"ID,Name",
-onLookup:"Project_x0020_ID",
-outerjoin:{
-  list:"Team Members",
-  fields:"ID,Deliverable_x0020_ID,Name",
-  onLookup:"Deliverable_x0020_ID"
-}
+      list:"Deliverables",
+      fields:"ID,Name",
+      onLookup:"Project_x0020_ID",
+      outerjoin:{
+        list:"Team Members",
+        fields:"ID,Deliverable_x0020_ID,Name",
+        onLookup:"Deliverable_x0020_ID"
+      }
     }
   }).then(function(data) {
     var html = '&lt;table class="table default">&lt;thead>&lt;tr>&lt;th>Project ID&lt;/th>&lt;th>Project Name&lt;/th>&lt;th>Deliverable ID&lt;/th>&lt;th>Deliverable Name&lt;/th>&lt;th>Team ID&lt;/th>&lt;th>Member Name&lt;/th>&lt;/tr>&lt;/thead>&lt;tbody>'
     for (var i=0;i&lt;data.length; i++) {
-html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.Name")+'&lt;/td>&lt;/tr>'
+      html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Projects.Project_x0020_Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Deliverables.Name")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.ID")+'&lt;/td>&lt;td>'+data[i].getAttribute("Team Members.Name")+'&lt;/td>&lt;/tr>'
     }
     html += '&lt;/tbody>&lt;/table>';
     $('#part1').html(html);
@@ -480,8 +480,8 @@ html += '&lt;tr>&lt;td>'+data[i].getAttribute("Projects.ID")+'&lt;/td>&lt;td>'+d
   for (var i=1; i&lt;54; i++) {
     q.push("Fiscal_x0020_Week = "+i);
     if (i%8==0 || i == 53) {
-query.push("("+q.join(" OR ")+") AND Fiscal_x0020_Year = 2012");
-q=[]
+      query.push("("+q.join(" OR ")+") AND Fiscal_x0020_Year = 2012");
+      q=[]
     }
   }
   // it returns :
@@ -494,8 +494,8 @@ q=[]
     fields:"Title,Score",
     where:query,
     progress:function progress(current,max) {
-// when we use an array for the WHERE clause we are able to provide `current` and `max`
-console.log("Progress: "+current+" / "+max);
+      // when we use an array for the WHERE clause we are able to provide `current` and `max`
+      console.log("Progress: "+current+" / "+max);
     }
   }).then(function(data) {
     console.log(data.length); // -> 6,523
@@ -513,8 +513,8 @@ console.log("Progress: "+current+" / "+max);
   $SP().list("My Shared Documents").get({
     fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult()), "File_x0020_Size" the filesize in bytes
     folderOptions:{
-path:"My Folder/Sub Folder/",
-show:"FilesOnly_InFolder"
+      path:"My Folder/Sub Folder/",
+      show:"FilesOnly_InFolder"
     }
   });
 
@@ -523,8 +523,8 @@ show:"FilesOnly_InFolder"
   $SP().list("My Different Shared Documents").get({
     fields:"BaseName,FileRef,FSObjType", // "BaseName" is the name of the file/folder; "FileRef" is the full path of the file/folder; "FSObjType" is 0 for a file and 1 for a folder (you need to apply $SP().cleanResult())
     folderOptions:{
-show:"FilesAndFolders_Recursive",
-rootFolder:"https://www.mysite.com/sites/Team/Documents Library/" // this is optional as the tool will otherwise automatically retrieve this full path
+      show:"FilesAndFolders_Recursive",
+      rootFolder:"https://www.mysite.com/sites/Team/Documents Library/" // this is optional as the tool will otherwise automatically retrieve this full path
     }
   });
 
@@ -534,28 +534,28 @@ rootFolder:"https://www.mysite.com/sites/Team/Documents Library/" // this is opt
     fields:"Description",
     calendar:true,
     calendarOptions:{
-referenceDate:new Date(2012,4,4),
-range: "Week"
+      referenceDate:new Date(2012,4,4),
+      range: "Week"
     },
     where:"Category = 'Yellow'"
   }).then(function(data) {
     var events=[];
     for (var i=0; i&lt;data.length; i++) {
-// several information are available -- see below
-events.push({
-  Title:         data[i].getAttribute("Title"),
-  StartDateTime: data[i].getAttribute("EventDate"), // you can use $SP().toDate() to have a JS Date
-  EndDateTime:   data[i].getAttribute("EndDate"), // you can use $SP().toDate() to have a JS Date
-  Recurrence:    (data[i].getAttribute("fRecurrence") == 1 ? true : false),
-  AllDayEvent:   (data[i].getAttribute("fAllDayEvent") == 1 ? true : false),
-  RecurrenceEnd: (data[i].getAttribute("RecurrenceData")||"").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1"), // see the NOTE below
-  ID:            data[i].getAttribute("ID"), // the ID for the recurrence events is special but can be also passed to "Display.aspx?ID="
-  Duration:      1*data[i].getAttribute("Duration") // Duration is in SECONDS
-})
-// NOTE: with data[i].getAttribute("RecurrenceData") you'll find more info about the recurrence (like the end date for the serie, and much more),
-// but because there are a lot of scenario, I won't handle the different cases.
-// e.g. for a daily recurrence you can find the end date of the serie with: data[i].getAttribute("RecurrenceData").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1")
-// --> it will return a SP Date
+      // several information are available -- see below
+      events.push({
+        Title:         data[i].getAttribute("Title"),
+        StartDateTime: data[i].getAttribute("EventDate"), // you can use $SP().toDate() to have a JS Date
+        EndDateTime:   data[i].getAttribute("EndDate"), // you can use $SP().toDate() to have a JS Date
+        Recurrence:    (data[i].getAttribute("fRecurrence") == 1 ? true : false),
+        AllDayEvent:   (data[i].getAttribute("fAllDayEvent") == 1 ? true : false),
+        RecurrenceEnd: (data[i].getAttribute("RecurrenceData")||"").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1"), // see the NOTE below
+        ID:            data[i].getAttribute("ID"), // the ID for the recurrence events is special but can be also passed to "Display.aspx?ID="
+        Duration:      1*data[i].getAttribute("Duration") // Duration is in SECONDS
+      })
+      // NOTE: with data[i].getAttribute("RecurrenceData") you'll find more info about the recurrence (like the end date for the serie, and much more),
+      // but because there are a lot of scenario, I won't handle the different cases.
+      // e.g. for a daily recurrence you can find the end date of the serie with: data[i].getAttribute("RecurrenceData").replace(/.+<windowEnd>([^<]+)<\/windowEnd>.+/,"$1")
+      // --> it will return a SP Date
     }
   })
 
@@ -564,9 +564,9 @@ events.push({
     fields:"ID",
     where:"User_x0020_Name ~= 16358",
     merge:[{
-list:"Requests Archive",
-fields:"ID",
-where:"User_x0020_Name ~= 16358"
+      list:"Requests Archive",
+      fields:"ID",
+      where:"User_x0020_Name ~= 16358"
     }]
   })
   .then(function(data) {
@@ -589,7 +589,7 @@ where:"User_x0020_Name ~= 16358"
   $SP().list("My List").get({fields:"Title", json:true})
   .then(function(data) {
     data.forEach(function(d) {
-console.log("Title = "+d["Title"]);
+      console.log("Title = "+d["Title"]);
     })
   });
 
@@ -877,9 +877,9 @@ console.log("Title = "+d["Title"]);
           
           <pre class="prettyprint lang-js">$SP().list("My List").history({ID:1981, Name:"Critical_x0020_Comments"}).then(function(data) {
     for (var i=0,len=data.length; i&lt;len; i++) {
-console.log("Date: "+data[i].getAttribute("Modified")); // you can use $SP().toDate() to convert it to a JavaScript Date object
-console.log("Editor: "+data[i].getAttribute("Editor")); // it's the long format type, so the result looks like that "328;#Doe,, John,#DOMAIN\john_doe,#John_Doe@example.com,#,#Doe,, John"
-console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use the field name here
+      console.log("Date: "+data[i].getAttribute("Modified")); // you can use $SP().toDate() to convert it to a JavaScript Date object
+      console.log("Editor: "+data[i].getAttribute("Editor")); // it's the long format type, so the result looks like that "328;#Doe,, John,#DOMAIN\john_doe,#John_Doe@example.com,#,#Doe,, John"
+      console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use the field name here
     }
   });</pre>
           
@@ -1124,7 +1124,7 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
     "type":"monthlyByDay",
     "firstDayOfWeek":"monday",
     "on":{
-"weekday":"last"
+      "weekday":"last"
     },
     "frequency":1,
     "endDate":"2019-01-19T16:00:00.000Z"
@@ -1139,7 +1139,7 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
     "type":"daily",
     "firstDayOfWeek":"monday",
     "on":{
-"weekday":true
+      "weekday":true
     }
   }
 
@@ -1155,8 +1155,8 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
     "type":"weekly",
     "firstDayOfWeek":"monday",
     "on":{
-"monday":true,
-"wednesday":true
+      "monday":true,
+      "wednesday":true
     },
     "frequency":1
   }
@@ -1166,7 +1166,7 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
     "type":"monthly",
     "firstDayOfWeek":"monday",
     "on":{
-"day":10
+      "day":10
     },
     "frequency":2
   }
@@ -1176,7 +1176,7 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
     "type":"monthlyByDay",
     "firstDayOfWeek":"monday",
     "on":{
-"tuesday":"second"
+      "tuesday":"second"
     },
     "frequency":6
   }
@@ -1186,8 +1186,8 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
     "type":"yearly",
     "firstDayOfWeek":"monday",
     "on":{
-"month":12,
-"day":25
+      "month":12,
+      "day":25
     },
     "frequency":1
   }
@@ -1197,8 +1197,8 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
     "type":"yearlyByDay",
     "firstDayOfWeek":"monday",
     "on":{
-"month":9,
-"weekday":"third"
+      "month":9,
+      "weekday":"third"
     },
     "frequency":1
   }</pre>
@@ -1361,7 +1361,7 @@ console.log("Content: "+data[i].getAttribute("Critical_x0020_Comments")); // use
   $SP().list("List Name").startWorkflow({ID:15, workflowName:"Workflow for List Name (manual)", parameters:{name:"Message",value:"Welcome here!"}).then(function() {
     alert("Worflow Started!")
   }).catch(function(error) {
-console.log("Error: ",error);
+      console.log("Error: ",error);
   });</pre>
           
           <hr>
@@ -1608,7 +1608,7 @@ console.log("Error: ",error);
           
           <pre class="prettyprint lang-js">$SP().list("My List").views().then(function(view) {
     for (var i=0; i&lt;view.length; i++) {
-console.log("View #"+i+": "+view[i].Name);
+      console.log("View #"+i+": "+view[i].Name);
     }
   });</pre>
           
@@ -1627,7 +1627,7 @@ console.log("View #"+i+": "+view[i].Name);
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="https://jsdoc.app/">JSDoc</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc on Thu, 16 Apr 2020 10:22:22 GMT</div>
+  <div>Automatically generated with JSDoc on Thu, 23 Apr 2020 10:24:46 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 </body>

@@ -89,8 +89,8 @@
           
           <pre class="prettyprint lang-js">var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
     $SP().auth(user1)
-   .list("My List","http://my.sharpoi.nt/other.directory/")
-  .get({...});
+         .list("My List","http://my.sharpoi.nt/other.directory/")
+        .get({...});
     // or :
     var sp = $SP().auth(user1);
     sp.list("My List", "https://web.si.te").get({...});
@@ -98,9 +98,9 @@
 
     // let's say we want to use our own function to set the FedAuth cookie
     var sp = $SP().auth({method:'cookie', function() {
-// we need to return the content of our cookie
-// e.g. if it's a FedAuth we'll return 'FedAuth=YAHeZNEZdfnZEfzfzeKnfze…';
-return myFunctionToGetFedAuth();
+      // we need to return the content of our cookie
+      // e.g. if it's a FedAuth we'll return 'FedAuth=YAHeZNEZdfnZEfzfzeKnfze…';
+      return myFunctionToGetFedAuth();
     });</pre>
           
           <hr>
@@ -146,8 +146,8 @@ return myFunctionToGetFedAuth();
           <pre class="prettyprint lang-js">var user1 = {username:'aymeric', password:'sharepointplus', domain:'kodono'};
     var proxy = "http://" + user1.domain + "%5C" + user1.username + ":" + user1.password + "@proxy:80";
     $SP().proxy(proxy).auth(user1)
-   .list("My List","http://my.sharpoi.nt/other.directory/")
-  .get({...});
+         .list("My List","http://my.sharpoi.nt/other.directory/")
+        .get({...});
     // or :
     var sp = $SP().proxy(proxy).auth(user1);
     sp.list("My List", "https://web.si.te").get({...});
@@ -168,7 +168,7 @@ return myFunctionToGetFedAuth();
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="https://jsdoc.app/">JSDoc</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc on Thu, 16 Apr 2020 10:22:22 GMT</div>
+  <div>Automatically generated with JSDoc on Thu, 23 Apr 2020 10:24:46 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 </body>

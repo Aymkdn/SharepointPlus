@@ -71,7 +71,7 @@
           <?js
             var output="";
             doc.examples.forEach((example) => {
-              output += '<pre class="prettyprint lang-js">'+example.code.replace(/^ {6}/gm,"")+'</pre>'
+              output += '<pre class="prettyprint lang-js">'+example.code+'</pre>'; //.replace(/^ {6}/gm,"")
             })
           ?>
           <?js= output ?>

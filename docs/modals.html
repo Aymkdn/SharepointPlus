@@ -86,7 +86,7 @@
     title:"Hello World",
     html:'&lt;p>This is an example. Click one of the buttons.&lt;/p>&lt;p class="ms-alignCenter">&lt;button onclick="$SP().closeModalDialog(\'Continue has been clicked\')">Continue&lt;/button>&lt;/p>',
     callback:function(res) {
-alert(res)
+      alert(res)
     }
   })
 
@@ -175,8 +175,8 @@ alert(res)
     name:"My 10 seconds notification",
     timeout:10,
     after:function(name,afterDelay) {
-if (afterDelay) alert("OK, you waited during 10 seconds!")
-else alert("Something just removed this notification called '"+name+"'' before the timeout :-(")
+      if (afterDelay) alert("OK, you waited during 10 seconds!")
+      else alert("Something just removed this notification called '"+name+"'' before the timeout :-(")
     }
   })</pre>
           
@@ -264,7 +264,7 @@ else alert("Something just removed this notification called '"+name+"'' before t
           
           <h3>Example:</h3>
           
-          <pre class="prettyprint lang-js">// to have a form opened faster we define a minimal width and height, and then once it's loaded we want to have the correct size$SP().showModalDialog({  id:"inmodal",  url:url,  width:200,  height:100,  allowMaximize:true,  onurlload:function() {    // resize the frame by checking the size of the loaded page    var iframe=window.top.document.getElementById('sp_frame_inmodal').nextSibling.querySelector('iframe');    // define the max size based on the page size    var size = $SP().getPageSize();    var maxWidth = 2*size.vw.width/3; // 2/3 of the viewport width    var maxHeight = 90*size.vw.height/100 // 90% of the viewport height    // find the size we want based on the modal    var e=$(iframe.contentDocument.getElementById('onetIDListForm')); // this element gives the size of our form from the modal    var width=e.outerWidth(true)+100;    var height=e.outerHeight(true)+iframe.contentDocument.getElementById('ms-designer-ribbon').offsetHeight+100;    if (width>maxWidth) width=maxWidth;    if (height>maxHeight) height=maxHeight;    $SP().resizeModalDialog({id:"inmodal",width:width,height:height});    // bind the iframe resize, to make sure an external event won't resize it to 200x100    $(iframe.contentWindow).on('resize', function() {var $this=$(this);if ($this.width() === 200 && $this.height() === 100) { // if it gets the original size, then resize to the new ones  $SP().resizeModalDialog({id:"inmodal",width:width,height:height});}    })  }});</pre>
+          <pre class="prettyprint lang-js">// to have a form opened faster we define a minimal width and height, and then once it's loaded we want to have the correct size$SP().showModalDialog({  id:"inmodal",  url:url,  width:200,  height:100,  allowMaximize:true,  onurlload:function() {    // resize the frame by checking the size of the loaded page    var iframe=window.top.document.getElementById('sp_frame_inmodal').nextSibling.querySelector('iframe');    // define the max size based on the page size    var size = $SP().getPageSize();    var maxWidth = 2*size.vw.width/3; // 2/3 of the viewport width    var maxHeight = 90*size.vw.height/100 // 90% of the viewport height    // find the size we want based on the modal    var e=$(iframe.contentDocument.getElementById('onetIDListForm')); // this element gives the size of our form from the modal    var width=e.outerWidth(true)+100;    var height=e.outerHeight(true)+iframe.contentDocument.getElementById('ms-designer-ribbon').offsetHeight+100;    if (width>maxWidth) width=maxWidth;    if (height>maxHeight) height=maxHeight;    $SP().resizeModalDialog({id:"inmodal",width:width,height:height});    // bind the iframe resize, to make sure an external event won't resize it to 200x100    $(iframe.contentWindow).on('resize', function() {      var $this=$(this);      if ($this.width() === 200 && $this.height() === 100) { // if it gets the original size, then resize to the new ones        $SP().resizeModalDialog({id:"inmodal",width:width,height:height});      }    })  }});</pre>
           
           <hr>
         </div>
@@ -311,7 +311,7 @@ else alert("Something just removed this notification called '"+name+"'' before t
     title:"Dialog",
     html:'&lt;h1>Hello World&lt;/h1>&lt;p>&lt;button type="button" onclick="$SP().closeModalDialog(\'here\')">Close&lt;/button>&lt;/p>',
     callback:function(dialogResult, returnValue) {
-alert("Result="+dialogResult); // -> "here"
+      alert("Result="+dialogResult); // -> "here"
     }
   })
 
@@ -380,7 +380,7 @@ alert("Result="+dialogResult); // -> "here"
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="https://jsdoc.app/">JSDoc</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc on Thu, 16 Apr 2020 10:22:22 GMT</div>
+  <div>Automatically generated with JSDoc on Thu, 23 Apr 2020 10:24:46 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 </body>
