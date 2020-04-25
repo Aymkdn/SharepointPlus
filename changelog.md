@@ -1,5 +1,9 @@
 # Changelog
 
+**Change Log v6.1.1 (April 25, 2020)**
+
+  - Fixed bundle size issue introduced with v6.1.0 (see https://github.com/Aymkdn/SharepointPlus/issues/135)
+
 **Change Log v6.1.0 (April 10, 2020)**
 
   - Added support for short date format ("YYYY-MM-DD") for `$SP().toDate()`

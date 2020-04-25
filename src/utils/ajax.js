@@ -121,17 +121,21 @@ export default async function ajax(settings) {
       }
     } else {
       /* develblock:start */
+      // this block code is for Node only
+      // to avoid having Webpack to inlucde the below modules in bundle I use 'eval' (see https://github.com/webpack/webpack/issues/4175#issuecomment-323023911)
+
       // for Node we need an authentication system:
       //   - either one that is supported with 'sp-request'
       //   - or a custom method (e.g. FedAuth in Cookies), and in that case we use 'request-promise'
       // we use the module 'sp-request' from https://github.com/s-KaiNet/sp-request
       if (this.module_sprequest === null) {
         if (this.credentialOptions !== null) {
-          this.module_sprequest = require('sp-request').create(this.credentialOptions);
+          this.module_sprequest = eval("require('sp-request')"); // avoid Webpack to include it in web bundle
+          this.module_sprequest = this.module_sprequest.create(this.credentialOptions);
         } else if (typeof this.authMethod.cookie === 'function') {
           let cookie = await this.authMethod.cookie();
           cookie = cookie.split(';')[0];
-          this.module_sprequest = require('request-promise');
+          this.module_sprequest = eval("require('request-promise')"); // avoid Webpack to include it in web bundle
           settings.headers.cookie = cookie;
         } else {
           throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your authentication method first";

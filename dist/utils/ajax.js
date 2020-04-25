@@ -187,45 +187,48 @@ function _ajax() {
             }));
 
           case 34:
-            _context10.next = 80;
+            _context10.next = 81;
             break;
 
           case 36:
             if (!(this.module_sprequest === null)) {
-              _context10.next = 51;
+              _context10.next = 52;
               break;
             }
 
             if (!(this.credentialOptions !== null)) {
-              _context10.next = 41;
+              _context10.next = 42;
               break;
             }
 
-            this.module_sprequest = require('sp-request').create(this.credentialOptions);
-            _context10.next = 51;
+            this.module_sprequest = eval("require('sp-request')"); // avoid Webpack to include it in web bundle
+
+            this.module_sprequest = this.module_sprequest.create(this.credentialOptions);
+            _context10.next = 52;
             break;
 
-          case 41:
+          case 42:
             if (!(typeof this.authMethod.cookie === 'function')) {
-              _context10.next = 50;
+              _context10.next = 51;
               break;
             }
 
-            _context10.next = 44;
+            _context10.next = 45;
             return this.authMethod.cookie();
 
-          case 44:
+          case 45:
             cookie = _context10.sent;
             cookie = cookie.split(';')[0];
-            this.module_sprequest = require('request-promise');
+            this.module_sprequest = eval("require('request-promise')"); // avoid Webpack to include it in web bundle
+
             settings.headers.cookie = cookie;
-            _context10.next = 51;
+            _context10.next = 52;
             break;
 
-          case 50:
+          case 51:
             throw "[SharepointPlus 'ajax'] please use `$SP().auth()` to provide your authentication method first";
 
-          case 51:
+          case 52:
             if (settings.headers['Content-Type'] && (0, _indexOf.default)(_context6 = settings.headers['Content-Type']).call(_context6, 'xml') > -1) settings.headers['Accept'] = 'application/xml, text/xml, */*; q=0.01';
             if (!settings.method) settings.method = typeof settings.body !== "undefined" ? "POST" : "GET";
             if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body); // add User Agent
@@ -249,19 +252,19 @@ function _ajax() {
               if (Object.prototype.hasOwnProperty.call(settings, stg) && !opts[stg]) opts[stg] = settings[stg];
             }
 
-            _context10.next = 62;
+            _context10.next = 63;
             return this.module_sprequest(settings.url, opts);
 
-          case 62:
+          case 63:
             response = _context10.sent;
 
             if (!(response.statusCode === 200 && response.statusMessage !== "Error" && response.statusMessage !== "Abort" && response.statusMessage !== "Timeout")) {
-              _context10.next = 74;
+              _context10.next = 75;
               break;
             }
 
             if (!((0, _indexOf.default)(_context7 = response.headers['content-type'] || "").call(_context7, 'xml') > -1 && (0, _slice.default)(_context8 = response.body).call(_context8, 0, 5) === '<?xml')) {
-              _context10.next = 70;
+              _context10.next = 71;
               break;
             }
 
@@ -269,17 +272,17 @@ function _ajax() {
             result = new DOMParser().parseFromString(response.body);
             return _context10.abrupt("return", _promise.default.resolve(result));
 
-          case 70:
+          case 71:
             if ((0, _indexOf.default)(_context9 = response.headers['content-type'] || "").call(_context9, 'json') > -1 && typeof response.body === "string") response.body = JSON.parse(response.body);
             return _context10.abrupt("return", _promise.default.resolve(response.body));
 
-          case 72:
-            _context10.next = 80;
+          case 73:
+            _context10.next = 81;
             break;
 
-          case 74:
+          case 75:
             if (!(response.statusCode === 403)) {
-              _context10.next = 79;
+              _context10.next = 80;
               break;
             }
 
@@ -287,19 +290,19 @@ function _ajax() {
             this.module_sprequest === null;
             return _context10.abrupt("return", ajax.call(this, settings));
 
-          case 79:
+          case 80:
             return _context10.abrupt("return", _promise.default.reject({
               response: response,
               statusCode: response.statusCode,
               responseText: response.body
             }));
 
-          case 80:
-            _context10.next = 85;
+          case 81:
+            _context10.next = 86;
             break;
 
-          case 82:
-            _context10.prev = 82;
+          case 83:
+            _context10.prev = 83;
             _context10.t0 = _context10["catch"](1);
             return _context10.abrupt("return", _promise.default.reject({
               error: _context10.t0,
@@ -308,12 +311,12 @@ function _ajax() {
               responseText: _context10.t0.response ? _context10.t0.response.body : ''
             }));
 
-          case 85:
+          case 86:
           case "end":
             return _context10.stop();
         }
       }
-    }, _callee, this, [[1, 82]]);
+    }, _callee, this, [[1, 83]]);
   }));
   return _ajax.apply(this, arguments);
 }
