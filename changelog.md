@@ -1,5 +1,9 @@
 # Changelog
 
+**Change Log v6.1.2 (June 2, 2020)**
+
+  - Fixed `\\` issue in `$SP().parse()` (see https://github.com/Aymkdn/SharepointPlus/issues/136)
+
 **Change Log v6.1.1 (April 25, 2020)**
 
   - Fixed bundle size issue introduced with v6.1.0 (see https://github.com/Aymkdn/SharepointPlus/issues/135)

@@ -182,7 +182,7 @@ export default function parse(q, escapeChar) {
         var apos = letter;
         var word = "", other="";
         while ((letter = queryString.charAt(++i)) != apos && i < limitMax) {
-          if (letter == "\\") letter = queryString.charAt(++i);
+          if (letter === "\\" && queryString.charAt(i+1) === apos) letter = queryString.charAt(++i);
           word+=letter;
         }
         lastIndex = factory.length-1;
