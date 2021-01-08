@@ -67,6 +67,7 @@ export default class SharepointPlus {
     sp.list("My List", "https://web.si.te").get({...});
     sp.list("Other List"; "http://my.sharpoi.nt/other.directory/").update(...);
 
+    // if you use the AddIn method, it may not work – in that case, you'll need to use the FedAuth method as described there: https://github.com/Aymkdn/SharepointPlus/wiki/Using-the-FedAuth-Cookie#javascript-code
     // let's say we want to use our own function to set the FedAuth cookie
     var sp = $SP().auth({method:'cookie', function() {
       // we need to return the content of our cookie

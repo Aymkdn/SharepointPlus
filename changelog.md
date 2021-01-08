@@ -1,5 +1,16 @@
 # Changelog
 
+**Change Log v6.1.3 (January 8, 2021)**
+
+  - Added `$SP().getServerTime()` to return the server time
+  - Added option `overwrite`  to ` $SP().list().createfile()` (see https://github.com/Aymkdn/SharepointPlus/issues/160)
+  - Changed a behavior: when `$SP().list().get()` was called with some `outerjoin` and if there was a `where`, then the `outerjoin` was changed to `innerjoin`… I don't recall why, but this behavior doesn't seem right so I removed it
+  - Fixed `merge` option with `join` option for `$SP().list().get()`
+  - Fixed `merge` option with `json` option for `$SP().list().get()`
+  - Fixed `view` option for `$SP().list().get()` when a WHERE clause is defined in the view's server
+  - Optimized how `$SP().list().get()` deals with `on` option when the parameters are IDs
+  - Updated `sharepointplus-loader` to support `$SP().getServerTime()`
+
 **Change Log v6.1.2 (June 2, 2020)**
 
   - Fixed `\\` issue in `$SP().parse()` (see https://github.com/Aymkdn/SharepointPlus/issues/136)

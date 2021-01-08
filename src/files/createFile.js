@@ -16,6 +16,7 @@ import cloneObject from '../utils/cloneObject.js'
     @param {ArrayBuffer|String} setup.content The file content
     @param {String} setup.filename The relative path (within the document library) to the file to create
     @param {Object} [setup.fields] If you want to set some fields for the created document
+    @param {Boolean} [setup.overwrite=true] By default, if the file already exists, it will be overwritten
     @param {Function} [setup.progress=function(percentage){}] The upload progress in percentage
     @param {Function} [setup.getXHR=function(xhr){}] To manipulate the XMLHttpRequest object used during the upload
   @return {Promise} resolve(object that represents the file), reject(error)
@@ -126,6 +127,7 @@ export default async function createFile(setup) {
     setup.extendedFields = setup.extendedFields || "";
     setup.progress=setup.progress||function(){};
     setup.getXHR=setup.getXHR||function(){};
+    setup.overwrite = (typeof setup.overwrite === "boolean" ? setup.overwrite : true);
 
     // we need to find the RootFolder for the list
     let file = {};
@@ -197,7 +199,7 @@ export default async function createFile(setup) {
       }
     } else {
       // use REST API
-      let urlCall = this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(_filename)+"',overwrite=true)";
+      let urlCall = this.url+"/_api/web/GetFolderByServerRelativeUrl('"+encodeURIComponent(folder)+"')/files/add(url='"+encodeURIComponent(_filename)+"',overwrite="+(setup.overwrite?"true":"false")+")";
       // the URL must not be longer than 20 characters
       // The browsers could crash if we try to use send() with a large ArrayBuffer (https://stackoverflow.com/questions/46297625/large-arraybuffer-crashes-with-xmlhttprequest-send)
       // so I convert ArrayBuffer into a Blob

@@ -11,7 +11,7 @@ import getURL from '../utils/getURL.js';
   @category people
   @description Find the user details like manager, email, ...
 
-  @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default (if you use the domain, don't forget to use a double \ like "mydomain\\john_doe")
+  @param {String} [username] The username (e.g. domain\\john_doe)
   @param {Object} [setup] Options (see below)
     @param {String} [setup.url='current website'] The website url
   @return {Function} resolve(people), reject(error)

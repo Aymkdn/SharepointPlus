@@ -20,6 +20,7 @@ import cloneObject from '../utils/cloneObject.js';
     @param {ArrayBuffer|String} setup.content The file content
     @param {String} setup.filename The relative path (within the document library) to the file to create
     @param {Object} [setup.fields] If you want to set some fields for the created document
+    @param {Boolean} [setup.overwrite=true] By default, if the file already exists, it will be overwritten
     @param {Function} [setup.progress=function(percentage){}] The upload progress in percentage
     @param {Function} [setup.getXHR=function(xhr){}] To manipulate the XMLHttpRequest object used during the upload
   @return {Promise} resolve(object that represents the file), reject(error)
@@ -175,14 +176,15 @@ function _createFile() {
 
             setup.progress = setup.progress || function () {};
 
-            setup.getXHR = setup.getXHR || function () {}; // we need to find the RootFolder for the list
+            setup.getXHR = setup.getXHR || function () {};
 
+            setup.overwrite = typeof setup.overwrite === "boolean" ? setup.overwrite : true; // we need to find the RootFolder for the list
 
             file = {};
-            _context2.next = 16;
+            _context2.next = 17;
             return info.call(this);
 
-          case 16:
+          case 17:
             infos = _context2.sent;
             rootFolder = infos._List.RootFolder;
             folder = setup.filename.split("/");
@@ -205,26 +207,26 @@ function _createFile() {
             // if no, then relay on Copy Web Service
 
 
-            _context2.next = 26;
+            _context2.next = 27;
             return hasREST.call(this);
 
-          case 26:
+          case 27:
             hasRest = _context2.sent;
 
             if (hasRest) {
-              _context2.next = 53;
+              _context2.next = 54;
               break;
             }
 
             if (!(setup.fields && !setup.extendedFields)) {
-              _context2.next = 35;
+              _context2.next = 36;
               break;
             }
 
-            _context2.next = 31;
+            _context2.next = 32;
             return info.call(this);
 
-          case 31:
+          case 32:
             fields = _context2.sent;
 
             // we use extendedFields to define the Type
@@ -237,7 +239,7 @@ function _createFile() {
             if (!setup.extendedFields) delete setup.fields;
             return _context2.abrupt("return", createFile.call(this, setup));
 
-          case 35:
+          case 36:
             destination = "/" + folder + "/" + _filename;
             destination = (this.url + destination).replace(/([^:]\/)\//g, "$1");
             if (_sliceInstanceProperty(destination).call(destination, 0, 4) !== "http") destination = window.location.protocol + "//" + window.location.host + destination;
@@ -245,7 +247,7 @@ function _createFile() {
 
             soapEnv = "<SourceUrl>http://null</SourceUrl>" + "<DestinationUrls><string>" + destination + "</string></DestinationUrls>" + '<Fields><FieldInformation Type="File" />' + setup.extendedFields + '</Fields>' + "<Stream>" + setup.content + "</Stream>";
             soapEnv = _buildBodyForSOAP("CopyIntoItems", soapEnv);
-            _context2.next = 43;
+            _context2.next = 44;
             return ajax.call(this, {
               url: this.url + "/_vti_bin/copy.asmx",
               body: soapEnv,
@@ -260,37 +262,37 @@ function _createFile() {
               }
             });
 
-          case 43:
+          case 44:
             data = _context2.sent;
             a = data.getElementsByTagName('CopyResult');
             a = a.length > 0 ? a[0] : null;
 
             if (!(a && a.getAttribute("ErrorCode") !== "Success")) {
-              _context2.next = 50;
+              _context2.next = 51;
               break;
             }
 
             return _context2.abrupt("return", _Promise.reject("[SharepointPlus 'createFile'] Error creating (" + destination + "): " + a.getAttribute("ErrorCode") + " - " + a.getAttribute("ErrorMessage")));
 
-          case 50:
+          case 51:
             return _context2.abrupt("return", _Promise.resolve({
               Url: destination,
               Name: setup.filename
             }));
 
-          case 51:
-            _context2.next = 81;
+          case 52:
+            _context2.next = 82;
             break;
 
-          case 53:
+          case 54:
             // use REST API
-            urlCall = this.url + "/_api/web/GetFolderByServerRelativeUrl('" + encodeURIComponent(folder) + "')/files/add(url='" + encodeURIComponent(_filename) + "',overwrite=true)"; // the URL must not be longer than 20 characters
+            urlCall = this.url + "/_api/web/GetFolderByServerRelativeUrl('" + encodeURIComponent(folder) + "')/files/add(url='" + encodeURIComponent(_filename) + "',overwrite=" + (setup.overwrite ? "true" : "false") + ")"; // the URL must not be longer than 20 characters
             // The browsers could crash if we try to use send() with a large ArrayBuffer (https://stackoverflow.com/questions/46297625/large-arraybuffer-crashes-with-xmlhttprequest-send)
             // so I convert ArrayBuffer into a Blob
             // note: we cannot use startUpload/continueUpload/finishUpload because it's only available for Sharepoint Online
 
             if (typeof Blob !== "undefined") setup.content = new Blob([setup.content]);
-            _context2.next = 57;
+            _context2.next = 58;
             return ajax.call(this, {
               url: urlCall,
               body: setup.content,
@@ -302,7 +304,7 @@ function _createFile() {
               getXHR: setup.getXHR
             });
 
-          case 57:
+          case 58:
             body = _context2.sent;
             // retrieve the full path
             cloneObject(true, file, body.d);
@@ -310,36 +312,36 @@ function _createFile() {
             file.AllFieldsUrl = body.d.ListItemAllFields.__deferred.uri; // if we want to update some fields
 
             if (!setup.fields) {
-              _context2.next = 80;
+              _context2.next = 81;
               break;
             }
 
-            _context2.next = 64;
+            _context2.next = 65;
             return ajax.call(this, {
               url: file.AllFieldsUrl
             });
 
-          case 64:
+          case 65:
             body = _context2.sent;
             cloneObject(true, file, body.d);
             params = {
               ID: file.ID
             };
             cloneObject(params, setup.fields);
-            _context2.next = 70;
+            _context2.next = 71;
             return update.call(this, params);
 
-          case 70:
+          case 71:
             items = _context2.sent;
 
             if (!(items.failed.length > 0)) {
-              _context2.next = 75;
+              _context2.next = 76;
               break;
             }
 
             return _context2.abrupt("return", _Promise.reject("File '" + file.Url + "' added, but fields not updated: " + items.failed[0].errorMessage));
 
-          case 75:
+          case 76:
             items = items.passed[0];
 
             for (attr in items) {
@@ -348,28 +350,28 @@ function _createFile() {
 
             return _context2.abrupt("return", _Promise.resolve(file));
 
-          case 78:
-            _context2.next = 81;
+          case 79:
+            _context2.next = 82;
             break;
-
-          case 80:
-            return _context2.abrupt("return", _Promise.resolve(file));
 
           case 81:
-            _context2.next = 86;
+            return _context2.abrupt("return", _Promise.resolve(file));
+
+          case 82:
+            _context2.next = 87;
             break;
 
-          case 83:
-            _context2.prev = 83;
+          case 84:
+            _context2.prev = 84;
             _context2.t0 = _context2["catch"](1);
             return _context2.abrupt("return", _Promise.reject(_context2.t0));
 
-          case 86:
+          case 87:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee, this, [[1, 83]]);
+    }, _callee, this, [[1, 84]]);
   }));
   return _createFile.apply(this, arguments);
 }

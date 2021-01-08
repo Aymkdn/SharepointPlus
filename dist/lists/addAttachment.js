@@ -39,6 +39,31 @@ var _arrayBufferToBase = _interopRequireDefault(require("../utils/arrayBufferToB
   }).then(function(fileURL) {
     alert(fileURL)
   });
+
+  // to read a file and send it
+  // with something like: <input type="file" onchange="addAttachment(event)">
+  function addAttachment(event) {
+    let files = event.target.files;
+    let fileReader = new FileReader();
+    fileReader.onloadend = function(e) {
+      let content = e.target.result;
+      $SP().list("MyList").addAttachment({
+        ID:itemID,
+        filename:files[0].name,
+        attachment:content
+      })
+      .then(function(url) {
+        console.log({url})
+      })
+      .catch(function(err) {
+        console.log(err)
+      })
+    }
+    fileReader.onerror = function(e) {
+      alert('Unexpected error: '+e.target.error);
+    }
+    fileReader.readAsArrayBuffer(files[0]);
+  }
 */
 function addAttachment(setup) {
   var _this = this;

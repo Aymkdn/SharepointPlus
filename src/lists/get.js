@@ -30,7 +30,7 @@ class extendMyObject {
   @description (internal use only) Look at the ON clause to convert it
 
   @param {String} on The ON clause
-  @return {Array} array of clauses
+  @return {Array} array of {ListName1:FieldName1, ListName2:FieldName2}
   @example
   $SP()._parseOn("'List1'.field1 = 'List2'.field2 AND 'List1'.Other_x0020_Field = 'List2'.Some_x0020_Field")
 */
@@ -488,6 +488,8 @@ export default async function get (options) {
         let where;
         if (!Array.isArray(setup.where)) where = [ setup.where ];
         else where = setup.where.slice(0);
+        // if no 'where' provided
+        if (where[0] === "") where=[];
         where = where.map(w => {
           // is our original Where in the setup is already converted in CAML ?
           // If not, we convert it in order to merge with the one from the View
@@ -496,10 +498,15 @@ export default async function get (options) {
 
         // if we have a 'DateRangesOverlap' then we want to move this part at the end -- since v3.0.9
         var mtchDateRanges = _view.WhereCAML.match(/^<And>(<DateRangesOverlap>.*<\/DateRangesOverlap>)(.*)<\/And>$/);
-        if (mtchDateRanges && mtchDateRanges.length === 3) _view.WhereCAML = '<And>'+mtchDateRanges[2]+mtchDateRanges[1]+'</And>'
-        where = where.map(function(w) {
-          return "<And>" + w + _view.WhereCAML + "</And>";
-        });
+        if (mtchDateRanges && mtchDateRanges.length === 3) _view.WhereCAML = '<And>'+mtchDateRanges[2]+mtchDateRanges[1]+'</And>';
+        if (where.length > 0) {
+          where = where.map(function(w) {
+            return "<And>" + w + _view.WhereCAML + "</And>";
+          });
+        } else {
+          where = _view.WhereCAML;
+        }
+
         setup.where=where;
         setup.whereCAML=true;
       }
@@ -509,6 +516,8 @@ export default async function get (options) {
       // disable the calendar option
       setup.calendarViaView=setup.calendar;
       setup.calendar=false;
+
+      setup.view = "";
     }
 
     // if setup.where is an array, then it means we want to do several requests
@@ -799,11 +808,12 @@ export default async function get (options) {
 
       // if there is a WHERE clause then we want to force to an innerjoin
       // except where setup.where equals to setup.onLookupWhere
-      if (setup.where && setup.onLookupWhere && setup.outer) {
+      // EDIT on Sept 7, 2020: I don't recall why I did the below… so I'm commenting it because it's not good in some cases…
+      /*if (setup.where && setup.onLookupWhere && setup.outer) {
         let whereParsed = (setup.where.startsWith('<') ? setup.where : parse(setup.where));
         let onLookupWhereParsed = (setup.onLookupWhere.startsWith('<') ? setup.onLookupWhere : parse(setup.onLookupWhere));
         if (whereParsed!==onLookupWhereParsed) setup.outer=false;
-      }
+      }*/
 
       // if we want to do an outerjoin we link the missing data
       if (setup.outer) {
@@ -833,25 +843,49 @@ export default async function get (options) {
     }
     else if (setup.innerjoin) setup.join=setup.innerjoin;
 
+    // it will contain the fieldID for the join closure which will be used in the where clause with " IN " operator
+    let joinLookupField=false;
     // if we join it with another list
     if (setup.join) {
       joinData=[];
       joinIndex=[];
       joinWhereLookup=[];
       // retrieve the ON clauses
-      if (setup.join.onLookup) setup.join.on="'"+(setup.join.alias||setup.join.list)+"'."+setup.join.onLookup+" = '"+setup.alias+"'.ID";
+      if (setup.join.onLookup) {
+        joinLookupField=setup.join.onLookup;
+        setup.join.on="'"+(setup.join.alias||setup.join.list)+"'."+setup.join.onLookup+" = '"+setup.alias+"'.ID";
+      }
       on=_parseOn(setup.join.on);
       joinData["noindex"]=on; // keep a copy of it for the next treatment in the tied list
       for (i=0,stop=aReturn.length; i<stop; i++) {
         // create an index that will be used in the next list to filter it
         index="",tmp=[];
-        for (j=0; j<on.length; j++) index += "_"+getLookup(aReturn[i].getAttribute(on[j][setup.alias]) || aReturn[i].getAttribute(setup.alias+"."+on[j][setup.alias])).id;
+        let valIndex = "";
+        for (j=0; j<on.length; j++) {
+          valIndex = aReturn[i].getAttribute(on[j][setup.alias]) || aReturn[i].getAttribute(setup.alias+"."+on[j][setup.alias]);
+          index += "_"+getLookup(valIndex).id;
+        }
+
         if (!joinData[index]) {
           joinIndex[index]=joinIndex.length;
           joinIndex.push(index);
           joinData[index] = [];
           // if onLookup then we will store the current ID with the ~ to use it in a where clause with IN operator
-          if (setup.join.onLookup && index!=="_") joinWhereLookup.push("~"+index.slice(1))
+          // if not then we check if it's a lookup field (that contains ";#" and the '.id' is a number)
+          if (index!=="_") {
+            let identifier = index.slice(1);
+            if (setup.join.onLookup) joinWhereLookup.push("~"+identifier);
+            else if (on.length === 1 && valIndex.indexOf(";#") !== -1 && !isNaN(identifier)) {
+              // here the lookup field is not provided by "onLookup" but by the "on" expression
+              // if it's 'ID' then we can optimize
+              for (let o in on[0]) {
+                if (o !== setup.alias && on[0][o] === "ID") {
+                  joinWhereLookup.push("~"+identifier);
+                  joinLookupField="ID";
+                }
+              }
+            }
+          }
         }
         // if we are coming from some other join
         if (setup.joinData) {
@@ -865,14 +899,15 @@ export default async function get (options) {
         }
       }
       setup.joinData=undefined;
+
       // call the joined list to grab data and process them
       // if onLookup then we create a WHERE clause with IN operator
-      if (setup.join.onLookup) {
+      if (joinLookupField) {
         if (joinWhereLookup.length>0) {
           // SP2013 limits to 60 items per IN
           wh=arrayChunk(joinWhereLookup, 60);
           for (j=0; j<wh.length; j++) {
-            wh[j] = setup.join.onLookup+' IN ["'+wh[j].join('","')+'"]'
+            wh[j] = joinLookupField+' IN ["'+wh[j].join('","')+'"]'
           }
           // if the WHERE is too big then the server could run out of memory
           if (wh.length <= global._SP_MAXWHERE_ONLOOKUP) {
@@ -891,20 +926,21 @@ export default async function get (options) {
             setup.join.paging=true;
           }
         }
+
         // make sure the lookup fields is in the fields list
         if (!setup.join.fields) setup.join.fields=[];
         if (!Array.isArray(setup.join.fields)) {
           tmp=setup.join.fields.split(",");
-          tmp.push(setup.join.onLookup);
+          tmp.push(joinLookupField);
           setup.join.fields=tmp.join(",");
-        } else setup.join.fields.push(setup.join.onLookup);
+        } else setup.join.fields.push(joinLookupField);
       }
       this.listID = setup.join.list;
       this.url = setup.join.url||this.url;
       setup.join.json = setup.json;
       setup.join.joinData=joinData;
       setup.join.joinIndex=joinIndex;
-      return get.call(this, setup.join);
+      aReturn = await get.call(this, setup.join);
     }
 
     // if we want to merge other lists
@@ -916,6 +952,7 @@ export default async function get (options) {
       if (setup.merge.length>0) {
         mergeSetup = setup.merge.shift();
         mergeSetup.merge = setup.merge.slice(0);
+        mergeSetup.json = setup.join;
         this.listID = mergeSetup.list;
         this.url = mergeSetup.url||this.url;
         // we need to identify the Source of each set
@@ -923,7 +960,7 @@ export default async function get (options) {
           ret.Source = mergeSource;
           return ret;
         }));
-        return get.call(this, mergeSetup);
+        aReturn = await get.call(this, mergeSetup);
       } else {
         aReturn = setup.mergeData.concat(aReturn.map(function(ret) {
           ret.Source = mergeSource;
@@ -937,10 +974,12 @@ export default async function get (options) {
     // convert to JSON if required
     if (setup.json && !doJSON) {
       let ret = [];
-      for (let i=0, len=aReturn.length; i<len; i++) {
-        ret.push(aReturn[i].getAttributes())
+      if (aReturn.length>0 && typeof aReturn[0].getAttribute === 'function') {
+        for (let i=0, len=aReturn.length; i<len; i++) {
+          ret.push(aReturn[i].getAttributes())
+        }
+        return Promise.resolve(ret);
       }
-      return Promise.resolve(ret);
     }
     return Promise.resolve(aReturn);
   } catch(err) {

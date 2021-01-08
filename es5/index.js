@@ -50,6 +50,7 @@ import getLookup from './utils/getLookup.js';
 import getPageSize from './utils/getPageSize.js';
 import getPeopleLookup from './utils/getPeopleLookup.js';
 import getRequestDigest from './utils/getRequestDigest.js';
+import getServerTime from './utils/getServerTime.js';
 import getTimeZoneInfo from './utils/getTimeZoneInfo.js';
 import getURL from './utils/getURL.js';
 import hasREST from './utils/hasREST.js';
@@ -123,6 +124,7 @@ export default spInit({
   getPageSize: getPageSize,
   getPeopleLookup: getPeopleLookup,
   getRequestDigest: getRequestDigest,
+  getServerTime: getServerTime,
   getTimeZoneInfo: getTimeZoneInfo,
   getURL: getURL,
   hasREST: hasREST,

@@ -114,6 +114,8 @@ var _getPeopleLookup = _interopRequireDefault(require("./utils/getPeopleLookup.j
 
 var _getRequestDigest = _interopRequireDefault(require("./utils/getRequestDigest.js"));
 
+var _getServerTime = _interopRequireDefault(require("./utils/getServerTime.js"));
+
 var _getTimeZoneInfo = _interopRequireDefault(require("./utils/getTimeZoneInfo.js"));
 
 var _getURL = _interopRequireDefault(require("./utils/getURL.js"));
@@ -198,6 +200,7 @@ var _default = spInit({
   getPageSize: _getPageSize.default,
   getPeopleLookup: _getPeopleLookup.default,
   getRequestDigest: _getRequestDigest.default,
+  getServerTime: _getServerTime.default,
   getTimeZoneInfo: _getTimeZoneInfo.default,
   getURL: _getURL.default,
   hasREST: _hasREST.default,

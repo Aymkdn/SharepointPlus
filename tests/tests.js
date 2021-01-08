@@ -789,7 +789,7 @@ describe('People', function() {
 
   it('$SP().isMember()', function() {
     // test isMember()
-    return $SP().isMember({user:username, group:"SharepointPlus"})
+    return $SP().isMember({user:spusername, group:"SharepointPlus"})
     .then(function(isMember) {
       assert(isMember);
     });
