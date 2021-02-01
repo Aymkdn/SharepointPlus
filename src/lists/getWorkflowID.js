@@ -45,7 +45,7 @@ export default async function getWorkflowID(setup) {
     })
 
     // we want to use myElem to change the getAttribute function
-    let res={},i,row, rows=data.getElementsByTagName('WorkflowTemplate');
+    let res={},i,rows=data.getElementsByTagName('WorkflowTemplate');
     if (rows.length===0) {
       if (typeof SP === "undefined") throw "[SharepointPlus 'getWorkflowID'] This function must be executed from a Sharepoint page (JSOM support is required).";
       // depending of the permissions, we couldn't have the WorkflowTemplate data
@@ -83,56 +83,65 @@ export default async function getWorkflowID(setup) {
       return Promise.resolve(res);
     } else {
       for (i=rows.length; i--;) {
+        // check if it's the workflow we want
         if (rows[i].getAttribute("Name") == setup.workflowName) {
+          let templateId = rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId");
           res = {
             "fileRef":fileRef,
             "description":rows[i].getAttribute("Description"),
-            "workflowID":"{"+rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId")+"}",
+            "workflowID":"{"+templateId+"}",
             "instances":[]
           };
+
+          let instances=data.getElementsByTagName("Workflow");
+          for (let j=0; j<instances.length; j++) {
+            let instance=instances[j];
+            if (instance.getAttribute("TemplateId") === templateId) {
+              res.instances.push({
+                "StatusPageUrl":instance.getAttribute("StatusPageUrl"),
+                "Id":instance.getAttribute("Id"),
+                "TemplateId":instance.getAttribute("TemplateId"),
+                "ListId":instance.getAttribute("ListId"),
+                "SiteId":instance.getAttribute("SiteId"),
+                "WebId":instance.getAttribute("WebId"),
+                "ItemId":instance.getAttribute("ItemId"),
+                "ItemGUID":instance.getAttribute("ItemGUID"),
+                "TaskListId":instance.getAttribute("TaskListId"),
+                "AdminTaskListId":instance.getAttribute("AdminTaskListId"),
+                "Author":instance.getAttribute("Author"),
+                "Modified":instance.getAttribute("Modified"),
+                "Created":instance.getAttribute("Created"),
+                "StatusVersion":instance.getAttribute("StatusVersion"),
+                "Status1":{"code":instance.getAttribute("Status1"), "text":this.workflowStatusToText(instance.getAttribute("Status1"))},
+                "Status2":{"code":instance.getAttribute("Status2"), "text":this.workflowStatusToText(instance.getAttribute("Status2"))},
+                "Status3":{"code":instance.getAttribute("Status3"), "text":this.workflowStatusToText(instance.getAttribute("Status3"))},
+                "Status4":{"code":instance.getAttribute("Status4"), "text":this.workflowStatusToText(instance.getAttribute("Status4"))},
+                "Status5":{"code":instance.getAttribute("Status5"), "text":this.workflowStatusToText(instance.getAttribute("Status5"))},
+                "Status6":{"code":instance.getAttribute("Status6"), "text":this.workflowStatusToText(instance.getAttribute("Status6"))},
+                "Status7":{"code":instance.getAttribute("Status7"), "text":this.workflowStatusToText(instance.getAttribute("Status7"))},
+                "Status8":{"code":instance.getAttribute("Status8"), "text":this.workflowStatusToText(instance.getAttribute("Status8"))},
+                "Status9":{"code":instance.getAttribute("Status9"), "text":this.workflowStatusToText(instance.getAttribute("Status9"))},
+                "Status10":{"code":instance.getAttribute("Status10"), "text":this.workflowStatusToText(instance.getAttribute("Status10"))},
+                "TextStatus1":instance.getAttribute("TextStatus1"),
+                "TextStatus2":instance.getAttribute("TextStatus2"),
+                "TextStatus3":instance.getAttribute("TextStatus3"),
+                "TextStatus4":instance.getAttribute("TextStatus4"),
+                "TextStatus5":instance.getAttribute("TextStatus5"),
+                "Modifications":instance.getAttribute("Modifications"),
+                "InternalState":instance.getAttribute("InternalState"),
+                "ProcessingId":instance.getAttribute("ProcessingId")
+              });
+              break;
+            }
+          }
+          break;
         }
       }
+
       if (!res.fileRef) {
         throw "[SharepointPlus 'getWorkflowID'] it seems the requested workflow ('"+setup.workflowName+"') doesn't exist!";
       }
-      rows=data.getElementsByTagName("Workflow");
-      for (i=0; i<rows.length; i++) {
-        row=rows[i];
-        res.instances.push({
-          "StatusPageUrl":row.getAttribute("StatusPageUrl"),
-          "Id":row.getAttribute("Id"),
-          "TemplateId":row.getAttribute("TemplateId"),
-          "ListId":row.getAttribute("ListId"),
-          "SiteId":row.getAttribute("SiteId"),
-          "WebId":row.getAttribute("WebId"),
-          "ItemId":row.getAttribute("ItemId"),
-          "ItemGUID":row.getAttribute("ItemGUID"),
-          "TaskListId":row.getAttribute("TaskListId"),
-          "AdminTaskListId":row.getAttribute("AdminTaskListId"),
-          "Author":row.getAttribute("Author"),
-          "Modified":row.getAttribute("Modified"),
-          "Created":row.getAttribute("Created"),
-          "StatusVersion":row.getAttribute("StatusVersion"),
-          "Status1":{"code":row.getAttribute("Status1"), "text":this.workflowStatusToText(row.getAttribute("Status1"))},
-          "Status2":{"code":row.getAttribute("Status2"), "text":this.workflowStatusToText(row.getAttribute("Status2"))},
-          "Status3":{"code":row.getAttribute("Status3"), "text":this.workflowStatusToText(row.getAttribute("Status3"))},
-          "Status4":{"code":row.getAttribute("Status4"), "text":this.workflowStatusToText(row.getAttribute("Status4"))},
-          "Status5":{"code":row.getAttribute("Status5"), "text":this.workflowStatusToText(row.getAttribute("Status5"))},
-          "Status6":{"code":row.getAttribute("Status6"), "text":this.workflowStatusToText(row.getAttribute("Status6"))},
-          "Status7":{"code":row.getAttribute("Status7"), "text":this.workflowStatusToText(row.getAttribute("Status7"))},
-          "Status8":{"code":row.getAttribute("Status8"), "text":this.workflowStatusToText(row.getAttribute("Status8"))},
-          "Status9":{"code":row.getAttribute("Status9"), "text":this.workflowStatusToText(row.getAttribute("Status9"))},
-          "Status10":{"code":row.getAttribute("Status10"), "text":this.workflowStatusToText(row.getAttribute("Status10"))},
-          "TextStatus1":row.getAttribute("TextStatus1"),
-          "TextStatus2":row.getAttribute("TextStatus2"),
-          "TextStatus3":row.getAttribute("TextStatus3"),
-          "TextStatus4":row.getAttribute("TextStatus4"),
-          "TextStatus5":row.getAttribute("TextStatus5"),
-          "Modifications":row.getAttribute("Modifications"),
-          "InternalState":row.getAttribute("InternalState"),
-          "ProcessingId":row.getAttribute("ProcessingId")
-        });
-      }
+
       return Promise.resolve(res);
     }
   } catch(err) {

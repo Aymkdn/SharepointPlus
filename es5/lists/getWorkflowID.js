@@ -30,7 +30,7 @@ function _getWorkflowID() {
   _getWorkflowID = _asyncToGenerator(
   /*#__PURE__*/
   _regeneratorRuntime.mark(function _callee(setup) {
-    var _context, d, fileRef, _context2, _context3, data, res, i, row, rows, context, lists, list, item, workflows, _res;
+    var _context, d, fileRef, _context2, _context3, data, res, i, rows, context, lists, list, item, workflows, _res, templateId, instances, j, instance;
 
     return _regeneratorRuntime.wrap(function _callee$(_context4) {
       while (1) {
@@ -161,112 +161,146 @@ function _getWorkflowID() {
             return _context4.abrupt("return", _Promise.resolve(_res));
 
           case 37:
-            for (i = rows.length; i--;) {
-              if (rows[i].getAttribute("Name") == setup.workflowName) {
-                res = {
-                  "fileRef": fileRef,
-                  "description": rows[i].getAttribute("Description"),
-                  "workflowID": "{" + rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId") + "}",
-                  "instances": []
-                };
-              }
+            i = rows.length;
+
+          case 38:
+            if (!i--) {
+              _context4.next = 55;
+              break;
             }
 
+            if (!(rows[i].getAttribute("Name") == setup.workflowName)) {
+              _context4.next = 53;
+              break;
+            }
+
+            templateId = rows[i].getElementsByTagName('WorkflowTemplateIdSet')[0].getAttribute("TemplateId");
+            res = {
+              "fileRef": fileRef,
+              "description": rows[i].getAttribute("Description"),
+              "workflowID": "{" + templateId + "}",
+              "instances": []
+            };
+            instances = data.getElementsByTagName("Workflow");
+            j = 0;
+
+          case 44:
+            if (!(j < instances.length)) {
+              _context4.next = 52;
+              break;
+            }
+
+            instance = instances[j];
+
+            if (!(instance.getAttribute("TemplateId") === templateId)) {
+              _context4.next = 49;
+              break;
+            }
+
+            res.instances.push({
+              "StatusPageUrl": instance.getAttribute("StatusPageUrl"),
+              "Id": instance.getAttribute("Id"),
+              "TemplateId": instance.getAttribute("TemplateId"),
+              "ListId": instance.getAttribute("ListId"),
+              "SiteId": instance.getAttribute("SiteId"),
+              "WebId": instance.getAttribute("WebId"),
+              "ItemId": instance.getAttribute("ItemId"),
+              "ItemGUID": instance.getAttribute("ItemGUID"),
+              "TaskListId": instance.getAttribute("TaskListId"),
+              "AdminTaskListId": instance.getAttribute("AdminTaskListId"),
+              "Author": instance.getAttribute("Author"),
+              "Modified": instance.getAttribute("Modified"),
+              "Created": instance.getAttribute("Created"),
+              "StatusVersion": instance.getAttribute("StatusVersion"),
+              "Status1": {
+                "code": instance.getAttribute("Status1"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status1"))
+              },
+              "Status2": {
+                "code": instance.getAttribute("Status2"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status2"))
+              },
+              "Status3": {
+                "code": instance.getAttribute("Status3"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status3"))
+              },
+              "Status4": {
+                "code": instance.getAttribute("Status4"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status4"))
+              },
+              "Status5": {
+                "code": instance.getAttribute("Status5"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status5"))
+              },
+              "Status6": {
+                "code": instance.getAttribute("Status6"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status6"))
+              },
+              "Status7": {
+                "code": instance.getAttribute("Status7"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status7"))
+              },
+              "Status8": {
+                "code": instance.getAttribute("Status8"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status8"))
+              },
+              "Status9": {
+                "code": instance.getAttribute("Status9"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status9"))
+              },
+              "Status10": {
+                "code": instance.getAttribute("Status10"),
+                "text": this.workflowStatusToText(instance.getAttribute("Status10"))
+              },
+              "TextStatus1": instance.getAttribute("TextStatus1"),
+              "TextStatus2": instance.getAttribute("TextStatus2"),
+              "TextStatus3": instance.getAttribute("TextStatus3"),
+              "TextStatus4": instance.getAttribute("TextStatus4"),
+              "TextStatus5": instance.getAttribute("TextStatus5"),
+              "Modifications": instance.getAttribute("Modifications"),
+              "InternalState": instance.getAttribute("InternalState"),
+              "ProcessingId": instance.getAttribute("ProcessingId")
+            });
+            return _context4.abrupt("break", 52);
+
+          case 49:
+            j++;
+            _context4.next = 44;
+            break;
+
+          case 52:
+            return _context4.abrupt("break", 55);
+
+          case 53:
+            _context4.next = 38;
+            break;
+
+          case 55:
             if (res.fileRef) {
-              _context4.next = 40;
+              _context4.next = 57;
               break;
             }
 
             throw "[SharepointPlus 'getWorkflowID'] it seems the requested workflow ('" + setup.workflowName + "') doesn't exist!";
 
-          case 40:
-            rows = data.getElementsByTagName("Workflow");
-
-            for (i = 0; i < rows.length; i++) {
-              row = rows[i];
-              res.instances.push({
-                "StatusPageUrl": row.getAttribute("StatusPageUrl"),
-                "Id": row.getAttribute("Id"),
-                "TemplateId": row.getAttribute("TemplateId"),
-                "ListId": row.getAttribute("ListId"),
-                "SiteId": row.getAttribute("SiteId"),
-                "WebId": row.getAttribute("WebId"),
-                "ItemId": row.getAttribute("ItemId"),
-                "ItemGUID": row.getAttribute("ItemGUID"),
-                "TaskListId": row.getAttribute("TaskListId"),
-                "AdminTaskListId": row.getAttribute("AdminTaskListId"),
-                "Author": row.getAttribute("Author"),
-                "Modified": row.getAttribute("Modified"),
-                "Created": row.getAttribute("Created"),
-                "StatusVersion": row.getAttribute("StatusVersion"),
-                "Status1": {
-                  "code": row.getAttribute("Status1"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status1"))
-                },
-                "Status2": {
-                  "code": row.getAttribute("Status2"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status2"))
-                },
-                "Status3": {
-                  "code": row.getAttribute("Status3"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status3"))
-                },
-                "Status4": {
-                  "code": row.getAttribute("Status4"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status4"))
-                },
-                "Status5": {
-                  "code": row.getAttribute("Status5"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status5"))
-                },
-                "Status6": {
-                  "code": row.getAttribute("Status6"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status6"))
-                },
-                "Status7": {
-                  "code": row.getAttribute("Status7"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status7"))
-                },
-                "Status8": {
-                  "code": row.getAttribute("Status8"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status8"))
-                },
-                "Status9": {
-                  "code": row.getAttribute("Status9"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status9"))
-                },
-                "Status10": {
-                  "code": row.getAttribute("Status10"),
-                  "text": this.workflowStatusToText(row.getAttribute("Status10"))
-                },
-                "TextStatus1": row.getAttribute("TextStatus1"),
-                "TextStatus2": row.getAttribute("TextStatus2"),
-                "TextStatus3": row.getAttribute("TextStatus3"),
-                "TextStatus4": row.getAttribute("TextStatus4"),
-                "TextStatus5": row.getAttribute("TextStatus5"),
-                "Modifications": row.getAttribute("Modifications"),
-                "InternalState": row.getAttribute("InternalState"),
-                "ProcessingId": row.getAttribute("ProcessingId")
-              });
-            }
-
+          case 57:
             return _context4.abrupt("return", _Promise.resolve(res));
 
-          case 43:
-            _context4.next = 48;
+          case 58:
+            _context4.next = 63;
             break;
 
-          case 45:
-            _context4.prev = 45;
+          case 60:
+            _context4.prev = 60;
             _context4.t0 = _context4["catch"](0);
             return _context4.abrupt("return", _Promise.reject(_context4.t0));
 
-          case 48:
+          case 63:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee, this, [[0, 45]]);
+    }, _callee, this, [[0, 60]]);
   }));
   return _getWorkflowID.apply(this, arguments);
 }

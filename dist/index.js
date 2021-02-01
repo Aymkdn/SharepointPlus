@@ -32,6 +32,8 @@ var _getContentTypeInfo = _interopRequireDefault(require("./lists/getContentType
 
 var _getContentTypes = _interopRequireDefault(require("./lists/getContentTypes.js"));
 
+var _getVersions = _interopRequireDefault(require("./lists/getVersions.js"));
+
 var _getWorkflowID = _interopRequireDefault(require("./lists/getWorkflowID.js"));
 
 var _hasPermission = _interopRequireDefault(require("./lists/hasPermission.js"));
@@ -51,6 +53,10 @@ var _parse = _interopRequireDefault(require("./lists/parse.js"));
 var _parseRecurrence = _interopRequireDefault(require("./lists/parseRecurrence.js"));
 
 var _remove = _interopRequireDefault(require("./lists/remove.js"));
+
+var _removeAttachment = _interopRequireDefault(require("./lists/removeAttachment.js"));
+
+var _restoreVersion = _interopRequireDefault(require("./lists/restoreVersion.js"));
 
 var _setReadOnly = _interopRequireDefault(require("./lists/setReadOnly.js"));
 
@@ -159,6 +165,7 @@ var _default = spInit({
   getAttachment: _getAttachment.default,
   getContentTypeInfo: _getContentTypeInfo.default,
   getContentTypes: _getContentTypes.default,
+  getVersions: _getVersions.default,
   getWorkflowID: _getWorkflowID.default,
   hasPermission: _hasPermission.default,
   history: _history.default,
@@ -169,6 +176,8 @@ var _default = spInit({
   parse: _parse.default,
   parseRecurrence: _parseRecurrence.default,
   remove: _remove.default,
+  removeAttachment: _removeAttachment.default,
+  restoreVersion: _restoreVersion.default,
   setReadOnly: _setReadOnly.default,
   startWorkflow: _startWorkflow.default,
   startWorkflow2013: _startWorkflow2.default,

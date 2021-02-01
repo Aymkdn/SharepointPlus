@@ -15,7 +15,7 @@ function str2ab(str) {
 }
 
 describe('Lists', function() {
-  this.timeout(5000);
+  this.timeout(10000);
   it('$SP().parse()', function() {
     assert($SP().parse('ContentType = "My Content Type" OR Description <> null AND Fiscal_x0020_Week >= 43 AND Result_x0020_Date < "2012-02-03"') === '<And><And><Or><Eq><FieldRef Name="ContentType" /><Value Type="Text">My Content Type</Value></Eq><IsNotNull><FieldRef Name="Description" /></IsNotNull></Or><Geq><FieldRef Name="Fiscal_x0020_Week" /><Value Type="Number">43</Value></Geq></And><Lt><FieldRef Name="Result_x0020_Date" /><Value Type="DateTime">2012-02-03</Value></Lt></And>');
   });
@@ -97,10 +97,22 @@ describe('Lists', function() {
     })
   });
 
+  var fileURL;
   it('$SP().list().getAttachment()', function() {
     return $SP().list("SharepointPlus").getAttachment(itemID)
     .then(function(attachments) {
+      if (attachments.length===1) fileURL=attachments[0];
       assert(attachments.length===1 && attachments[0].indexOf("Lists/SharepointPlus/Attachments/"+itemID+"/helloworld with special characters too long. really too long but this is required for testing purposes at 100 a lit__ting.txt") > -1);
+    })
+  });
+
+  it('$SP().list().removeAttachment()', function() {
+    return $SP().list("SharepointPlus").removeAttachment({ID:itemID, fileURL:fileURL})
+    .then(function(res) {
+      return $SP().list("SharepointPlus").getAttachment(itemID)
+    })
+    .then(function(attachments) {
+      assert(attachments.length===0);
     })
   });
 

@@ -1,8 +1,12 @@
+import _regeneratorRuntime from "@babel/runtime-corejs3/regenerator";
 import _Promise from "@babel/runtime-corejs3/core-js-stable/promise";
+import _asyncToGenerator from "@babel/runtime-corejs3/helpers/esm/asyncToGenerator";
 import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/slice";
 import ajax from '../utils/ajax.js';
 import _buildBodyForSOAP from './_buildBodyForSOAP.js';
 import arrayBufferToBase64 from '../utils/arrayBufferToBase64.js';
+import getVersions from './getVersions.js';
+import restoreVersion from './restoreVersion.js';
 /**
   @name $SP().list.addAttachment
   @function
@@ -52,7 +56,6 @@ import arrayBufferToBase64 from '../utils/arrayBufferToBase64.js';
 export default function addAttachment(setup) {
   var _this = this;
 
-  // check if we need to queue it
   if (arguments.length === 0) throw "[SharepointPlus 'addAttachment'] the arguments are mandatory.";
   if (!this.listID) throw "[SharepointPlus 'addAttachment'] the list ID/Name is required.";
   if (!this.url) throw "[SharepointPlus 'addAttachment'] not able to find the URL!"; // we cannot determine the url
@@ -74,11 +77,67 @@ export default function addAttachment(setup) {
     headers: {
       'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/AddAttachment'
     }
-  }).then(function (data) {
-    var res = data.getElementsByTagName('AddAttachmentResult');
-    res = res.length > 0 ? res[0] : null;
-    var fileURL = "";
-    if (res) fileURL = _this.url + "/" + res.firstChild.nodeValue;
-    if (!fileURL) return _Promise.reject(res);else return fileURL;
-  });
+  }).then(
+  /*#__PURE__*/
+  function () {
+    var _ref = _asyncToGenerator(
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function _callee(data) {
+      var res, fileURL, versions, versionID;
+      return _regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              res = data.getElementsByTagName('AddAttachmentResult');
+              res = res.length > 0 ? res[0] : null;
+              fileURL = "";
+              if (res) fileURL = _this.url + "/" + res.firstChild.nodeValue;
+
+              if (fileURL) {
+                _context.next = 6;
+                break;
+              }
+
+              return _context.abrupt("return", _Promise.reject(res));
+
+            case 6:
+              _context.prev = 6;
+              _context.next = 9;
+              return getVersions.call(_this, setup.ID);
+
+            case 9:
+              versions = _context.sent;
+
+              if (!(versions.length > 0)) {
+                _context.next = 14;
+                break;
+              }
+
+              versionID = versions[versions.length - 1].VersionID;
+              _context.next = 14;
+              return restoreVersion.call(_this, {
+                ID: setup.ID,
+                VersionID: versionID
+              });
+
+            case 14:
+              return _context.abrupt("return", fileURL);
+
+            case 17:
+              _context.prev = 17;
+              _context.t0 = _context["catch"](6);
+              return _context.abrupt("return", fileURL);
+
+            case 20:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[6, 17]]);
+    }));
+
+    return function (_x) {
+      return _ref.apply(this, arguments);
+    };
+  }());
 }

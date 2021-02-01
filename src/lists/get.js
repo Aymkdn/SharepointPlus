@@ -12,7 +12,8 @@ import arrayChunk from '../utils/arrayChunk.js'
 
 class extendMyObject {
   constructor(arr) {
-    this.attributes=arr;
+    //this.attributes=arr;
+    this.attributes=Object.assign({}, arr);
   }
 
   getAttribute (attr) {

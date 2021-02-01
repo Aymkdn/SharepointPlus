@@ -30,7 +30,7 @@ var _nanoajax = _interopRequireDefault(require("./_nanoajax.js"));
  * @name $SP().ajax
  * @function
  * @category utils
- * @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax for Browsers, and https://github.com/s-KaiNet/sp-request for NodeKJ
+ * @description Permits to do an Ajax request based on https://github.com/yanatan16/nanoajax for Browsers, and https://github.com/s-KaiNet/sp-request for NodeJS
  * @param {Object} settings (See options below)
  *   @param {String} settings.url The url to call
  *   @param {String} [settings.method="GET"|"POST"] The HTTP Method ("GET" or "POST" if "body" is provided)

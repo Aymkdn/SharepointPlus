@@ -1,6 +1,8 @@
 import ajax from '../utils/ajax.js'
 import _buildBodyForSOAP from './_buildBodyForSOAP.js'
 import arrayBufferToBase64 from '../utils/arrayBufferToBase64.js'
+import getVersions from './getVersions.js'
+import restoreVersion from './restoreVersion.js'
 
 /**
   @name $SP().list.addAttachment
@@ -48,7 +50,6 @@ import arrayBufferToBase64 from '../utils/arrayBufferToBase64.js'
   }
 */
 export default function addAttachment(setup) {
-  // check if we need to queue it
   if (arguments.length===0) throw "[SharepointPlus 'addAttachment'] the arguments are mandatory.";
   if (!this.listID) throw "[SharepointPlus 'addAttachment'] the list ID/Name is required.";
   if (!this.url) throw "[SharepointPlus 'addAttachment'] not able to find the URL!"; // we cannot determine the url
@@ -66,12 +67,24 @@ export default function addAttachment(setup) {
     body: _buildBodyForSOAP("AddAttachment", "<listName>"+this.listID+"</listName><listItemID>"+setup.ID+"</listItemID><fileName>"+filename+"</fileName><attachment>"+arrayBufferToBase64(setup.attachment)+"</attachment>"),
     headers:{'SOAPAction': 'http://schemas.microsoft.com/sharepoint/soap/AddAttachment' }
   })
-  .then(data => {
+  .then(async data => {
     let res = data.getElementsByTagName('AddAttachmentResult');
     res = (res.length>0 ? res[0] : null);
     let fileURL = "";
     if (res) fileURL = this.url + "/" + res.firstChild.nodeValue;
     if (!fileURL) return Promise.reject(res);
-    else return fileURL;
+    // there is a bug with Sharepoint: if the list has the versioning enabled, then add/remove an attachment will created an empty version
+    // which could reset the values for the "Multiple Lines of Text" field with "Append" option
+    // -> to resolve it we will restore the last version each time we add/remove an attachment
+    try {
+      let versions = await getVersions.call(this, setup.ID);
+      if (versions.length > 0) {
+        let versionID = versions[versions.length-1].VersionID;
+        await restoreVersion.call(this, {ID:setup.ID, VersionID:versionID});
+      }
+      return fileURL;
+    } catch(err) {
+      return fileURL;
+    }
   })
 }

@@ -171,11 +171,14 @@ function () {
               case "getAttachment":
               case "getContentTypeInfo":
               case "getContentTypes":
+              case "getVersions":
               case "getWorkflowID":
               case "hasPermission":
               case "history":
               case "moderate":
               case "remove":
+              case "removeAttachment":
+              case "restoreVersion":
               case "startWorkflow":
               case "startWorkflow2013":
               case "stopWorkflow":

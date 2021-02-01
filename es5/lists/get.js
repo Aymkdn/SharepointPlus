@@ -9,6 +9,7 @@ import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instan
 import _Array$isArray from "@babel/runtime-corejs3/core-js-stable/array/is-array";
 import _Promise from "@babel/runtime-corejs3/core-js-stable/promise";
 import _asyncToGenerator from "@babel/runtime-corejs3/helpers/esm/asyncToGenerator";
+import _Object$assign from "@babel/runtime-corejs3/core-js-stable/object/assign";
 import _classCallCheck from "@babel/runtime-corejs3/helpers/esm/classCallCheck";
 import _createClass from "@babel/runtime-corejs3/helpers/esm/createClass";
 import cloneObject from '../utils/cloneObject.js';
@@ -29,7 +30,8 @@ function () {
   function extendMyObject(arr) {
     _classCallCheck(this, extendMyObject);
 
-    this.attributes = arr;
+    //this.attributes=arr;
+    this.attributes = _Object$assign({}, arr);
   }
 
   _createClass(extendMyObject, [{

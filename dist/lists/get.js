@@ -32,6 +32,8 @@ var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
 
+var _assign = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/assign"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
@@ -63,7 +65,8 @@ var extendMyObject =
 function () {
   function extendMyObject(arr) {
     (0, _classCallCheck2.default)(this, extendMyObject);
-    this.attributes = arr;
+    //this.attributes=arr;
+    this.attributes = (0, _assign.default)({}, arr);
   }
 
   (0, _createClass2.default)(extendMyObject, [{

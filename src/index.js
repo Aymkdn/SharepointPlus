@@ -9,6 +9,7 @@ import get from './lists/get.js'
 import getAttachment from './lists/getAttachment.js'
 import getContentTypeInfo from './lists/getContentTypeInfo.js'
 import getContentTypes from './lists/getContentTypes.js'
+import getVersions from './lists/getVersions.js'
 import getWorkflowID from './lists/getWorkflowID.js'
 import hasPermission from './lists/hasPermission.js'
 import history from './lists/history.js'
@@ -19,6 +20,8 @@ import moderate from './lists/moderate.js'
 import parse from './lists/parse.js'
 import parseRecurrence from './lists/parseRecurrence.js'
 import remove from './lists/remove.js'
+import removeAttachment from './lists/removeAttachment.js'
+import restoreVersion from './lists/restoreVersion.js'
 import setReadOnly from './lists/setReadOnly.js'
 import startWorkflow from './lists/startWorkflow.js'
 import startWorkflow2013 from './lists/startWorkflow2013.js'
@@ -83,6 +86,7 @@ export default spInit({
   getAttachment:getAttachment,
   getContentTypeInfo:getContentTypeInfo,
   getContentTypes:getContentTypes,
+  getVersions:getVersions,
   getWorkflowID:getWorkflowID,
   hasPermission:hasPermission,
   history:history,
@@ -93,6 +97,8 @@ export default spInit({
   parse:parse,
   parseRecurrence:parseRecurrence,
   remove:remove,
+  removeAttachment:removeAttachment,
+  restoreVersion:restoreVersion,
   setReadOnly:setReadOnly,
   startWorkflow:startWorkflow,
   startWorkflow2013:startWorkflow2013,
