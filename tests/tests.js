@@ -792,7 +792,7 @@ describe('People', function() {
     .then(function(people) {
       if (people["AccountName"]) {
         username = people["AccountName"].toLowerCase();
-        spusername = "i:0#.w|" + username;
+        spusername = (username.includes("|") ? "" : "i:0#.w|") + username;
         lastname = people["LastName"];
         assert(true);
       }

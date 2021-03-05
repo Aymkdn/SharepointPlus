@@ -100,8 +100,10 @@
           
           <h3>Example:</h3>
           
-          <pre class="prettyprint lang-js">$SP().list("My List").add({Title:"Ok"});
+          <pre class="prettyprint lang-js">// to add 1 item
+  $SP().list("My List").add({Title:"Ok"});
 
+  // to add several items
   $SP().list("List Name").add([{Title:"Ok"}, {Title:"Good"}]).then(function(items) { alert("Done!"); });
 
   $SP().list("My List","http://my.sharepoi.nt/dir/").add({Title:"Ok"}).then(function(items) {
@@ -1665,10 +1667,13 @@
           
           <h3>Example:</h3>
           
-          <pre class="prettyprint lang-js">$SP().list("My List").update({ID:1, Title:"Ok"});
+          <pre class="prettyprint lang-js">// to update 1 item
+  $SP().list("My List").update({ID:1, Title:"Ok"});
+
   // if you use the WHERE then you must not provide the item ID:
   $SP().list("List Name").update({Title:"Ok"},{where:"Status = 'Complete'"});
 
+  // to update several items with a known ID
   $SP().list("My List","http://sharepoint.org/mydir/").update([{ID:5, Title:"Ok"}, {ID: 15, Title:"Good"}]);
 
   $SP().list("List Name").update({ID:43, Title:"Ok"}).then(function(items) {
@@ -1796,7 +1801,7 @@
   <div>Documentation built by <a target="_blank" href="http://twitter.com/aymkdn">@aymkdn</a> (<a href="http://kodono.info">http://kodono.info</a>) with <a href="https://jsdoc.app/">JSDoc</a>.</div>
   <div>This work is licensed under <a rel="license" href="https://github.com/Aymkdn/SharepointPlus/blob/master/license.md">LGPL-3</a>.</div>
   <div>Designed with <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter</a>.</div>
-  <div>Automatically generated with JSDoc on Mon, 01 Feb 2021 16:55:20 GMT</div>
+  <div>Automatically generated with JSDoc on Fri, 05 Mar 2021 13:23:39 GMT</div>
 </footer>
 <script>prettyPrint()</script>
 </body>

@@ -847,7 +847,7 @@ export default async function get (options) {
     // it will contain the fieldID for the join closure which will be used in the where clause with " IN " operator
     let joinLookupField=false;
     // if we join it with another list
-    if (setup.join) {
+    if (setup.join && aReturn.length>0) {
       joinData=[];
       joinIndex=[];
       joinWhereLookup=[];

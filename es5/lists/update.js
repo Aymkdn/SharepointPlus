@@ -33,10 +33,13 @@ import getContentTypeInfo from './getContentTypeInfo.js';
   @return {Promise} resolve({passed, failed}), reject(error)
 
   @example
+  // to update 1 item
   $SP().list("My List").update({ID:1, Title:"Ok"});
+
   // if you use the WHERE then you must not provide the item ID:
   $SP().list("List Name").update({Title:"Ok"},{where:"Status = 'Complete'"});
 
+  // to update several items with a known ID
   $SP().list("My List","http://sharepoint.org/mydir/").update([{ID:5, Title:"Ok"}, {ID: 15, Title:"Good"}]);
 
   $SP().list("List Name").update({ID:43, Title:"Ok"}).then(function(items) {

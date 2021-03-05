@@ -68,8 +68,10 @@ var _getTimeZoneInfo = _interopRequireDefault(require("../utils/getTimeZoneInfo.
   @return {Promise} resolve({passed, failed}), reject(error)
 
   @example
+  // to add 1 item
   $SP().list("My List").add({Title:"Ok"});
 
+  // to add several items
   $SP().list("List Name").add([{Title:"Ok"}, {Title:"Good"}]).then(function(items) { alert("Done!"); });
 
   $SP().list("My List","http://my.sharepoi.nt/dir/").add({Title:"Ok"}).then(function(items) {

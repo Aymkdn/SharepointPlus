@@ -1076,7 +1076,7 @@ function _get() {
 
                       joinLookupField = false; // if we join it with another list
 
-                      if (!setup.join) {
+                      if (!(setup.join && aReturn.length > 0)) {
                         _context14.next = 159;
                         break;
                       }

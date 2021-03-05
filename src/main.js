@@ -45,7 +45,7 @@ export default class SharepointPlus {
 
     @return {String} The current SharepointPlus version
   */
-  getVersion () { return "6.1.2" }
+  getVersion () { return "6.1.5" }
 
   /**
     @name $SP().auth
@@ -137,6 +137,7 @@ export default class SharepointPlus {
             case "remove":
             case "removeAttachment":
             case "restoreVersion":
+            case "setReadOnly":
             case "startWorkflow":
             case "startWorkflow2013":
             case "stopWorkflow":

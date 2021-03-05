@@ -223,23 +223,23 @@ var prompt = require('prompt');
         }
       }
 
-      // check if the permissions grou "SharepointPlus" exists
+      // check if the permissions group "SharepointPlus" exists
       let myself = await sp.whoami({url:optionsCLI.url});
       let accountName = myself.AccountName;
       console.log("Test Environment Setup: checking user group 'SharepointPlus'...");
       try {
         await sp.webService({
-        service:"UserGroup",
-        operation:"AddGroup",
-        webURL:optionsCLI.url,
-        soapURL:"http://schemas.microsoft.com/sharepoint/soap/directory/",
-        properties:{
-          groupName: "SharepointPlus",
-          ownerIdentifier: accountName,
-          ownerType: "user",
-          defaultUserLoginName: accountName,
-          description: "Group for SharepointPlus tests",
-        }
+          service:"UserGroup",
+          operation:"AddGroup",
+          webURL:optionsCLI.url,
+          soapURL:"http://schemas.microsoft.com/sharepoint/soap/directory/",
+          properties:{
+            groupName: "SharepointPlus",
+            ownerIdentifier: accountName,
+            ownerType: "user",
+            defaultUserLoginName: accountName,
+            description: "Group for SharepointPlus tests",
+          }
         });
       } catch(err) {}
 

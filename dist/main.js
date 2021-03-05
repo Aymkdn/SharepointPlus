@@ -76,7 +76,7 @@ function () {
   (0, _createClass2.default)(SharepointPlus, [{
     key: "getVersion",
     value: function getVersion() {
-      return "6.1.2";
+      return "6.1.5";
     }
     /**
       @name $SP().auth
@@ -179,6 +179,7 @@ function () {
               case "remove":
               case "removeAttachment":
               case "restoreVersion":
+              case "setReadOnly":
               case "startWorkflow":
               case "startWorkflow2013":
               case "stopWorkflow":
