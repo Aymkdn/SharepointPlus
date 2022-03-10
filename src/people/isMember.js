@@ -33,7 +33,7 @@ export default async function isMember(setup) {
     setup.group = setup.group.toLowerCase();
     let members=[];
     // first check with usergroups()
-    let groups = await usergroups.call(this, setup.user, {cache:setup.cache})
+    let groups = await usergroups.call(this, setup.user, {cache:setup.cache, url:setup.url})
     for (let i=groups.length; i--;) {
       if (groups[i].toLowerCase() === setup.group) {
         return Promise.resolve(true);
