@@ -22,6 +22,7 @@ global._SP_PLUGINS={};
 global._SP_MODALDIALOG_LOADED=false;
 global._SP_MAXWHERE_ONLOOKUP=30;
 global._SP_ISBROWSER=(new Function("try {return this===window;}catch(e){ return false;}"))();
+global._SP_ISSPO={};
 global._SP_JSON_ACCEPT="verbose"; // other options are "minimalmetadata" and "nometadata"
 
 export default class SharepointPlus {
@@ -45,7 +46,7 @@ export default class SharepointPlus {
 
     @return {String} The current SharepointPlus version
   */
-  getVersion () { return "6.1.5" }
+  getVersion () { return "6.2.0" }
 
   /**
     @name $SP().auth

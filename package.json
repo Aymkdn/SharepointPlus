@@ -1,13 +1,13 @@
 {
   "name": "sharepointplus",
-  "version": "6.1.5",
+  "version": "6.2.0",
   "description": "A library that offers an easy interface to deal with Sharepoint",
   "module": "./es5/index.js",
   "main": "./es5/index.js",
   "scripts": {
-    "start": "NODE_ENV=cjs nodemon --exec npx babel-node test.js",
-    "build:es5": "(if exist es5 rmdir es5 /s /q) && NODE_ENV=es babel src --out-dir es5",
-    "build:dist": "(if exist dist rmdir dist /s /q) && NODE_ENV=dist babel src --out-dir dist",
+    "start": "cross-env NODE_ENV=cjs nodemon --exec npx babel-node test.js",
+    "build:es5": "(if exist es5 rmdir es5 /s /q) && cross-env NODE_ENV=es babel src --out-dir es5",
+    "build:dist": "(if exist dist rmdir dist /s /q) && cross-env NODE_ENV=dist babel src --out-dir dist",
     "build:browser": "npx webpack",
     "build": "npm run lint && npm run build:es5 && npm run build:dist && npm run build:browser && npm run tests && npm run doc",
     "lint": "eslint ./src/",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.7.7",
+    "cross-env": "^7.0.3",
     "sp-request": "^2.1.3"
   },
   "devDependencies": {
@@ -36,6 +37,8 @@
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-add-module-exports": "^1.0.2",
+    "browserslist": "^4.20.4",
+    "caniuse-lite": "^1.0.30001352",
     "cheerio": "^1.0.0-rc.5",
     "command-line-args": "^5.1.1",
     "core-js": "^3.6.1",

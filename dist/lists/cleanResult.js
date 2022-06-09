@@ -24,11 +24,12 @@ exports.default = cleanResult;
   $SP().cleanResult("string;#"); // -> ""
   $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#"); // -> "Paul;Jacques;Aymeric"
   $SP().cleanResult(";#Paul;#Jacques;#Aymeric;#", ", "); // -> "Paul, Jacques, Aymeric"
+  $SP().cleanResult("2022-01-19 00:00:00"); // -> "2022-01-19"
 */
 function cleanResult(str, separator) {
   if (str === null || typeof str === "undefined") return "";
   separator = separator || ";";
-  return typeof str === "string" ? str.replace(/^(string;|float;|datetime;)#?/, "").replace(/;#-?[0-9]+;#/g, separator).replace(/^-?[0-9]+;#/, "").replace(/^;#|;#$/g, "").replace(/;#/g, separator) : str;
+  return typeof str === "string" ? str.replace(/^(string;|float;|datetime;)#?/, "").replace(/^(\d{4}-\d{2}-\d{2}) 00:00:00$/, "$1").replace(/;#-?[0-9]+;#/g, separator).replace(/^-?[0-9]+;#/, "").replace(/^;#|;#$/g, "").replace(/;#/g, separator) : str;
 }
 
 module.exports = exports.default;

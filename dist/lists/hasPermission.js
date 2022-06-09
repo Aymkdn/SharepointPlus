@@ -25,7 +25,7 @@ var _ajax = _interopRequireDefault(require("../utils/ajax.js"));
   @function
   @description This function permits to check if the current user has a specific permission for a list/library
   @param {String|Array} perm Can be one of the values listed on https://docs.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee556747(v%3Doffice.14)
-  return {Promise} A promise with a boolean (TRUE/FALSE) if the requested perm was a string, or an object ({perm1:BOOLEAN, perm2:BOOLEAN}) if it was an array
+  @return {Promise} A promise with a boolean (TRUE/FALSE) if the requested perm was a string, or an object ({perm1:BOOLEAN, perm2:BOOLEAN}) if it was an array
 
   @example
   // check permissions for list 'Travels'

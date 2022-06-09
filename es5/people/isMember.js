@@ -77,7 +77,8 @@ function _isMember() {
 
             _context.next = 15;
             return usergroups.call(this, setup.user, {
-              cache: setup.cache
+              cache: setup.cache,
+              url: setup.url
             });
 
           case 15:
@@ -104,7 +105,8 @@ function _isMember() {
           case 22:
             _context.next = 24;
             return groupMembers.call(this, setup.group, {
-              cache: setup.cache
+              cache: setup.cache,
+              url: setup.url
             });
 
           case 24:
@@ -117,7 +119,8 @@ function _isMember() {
 
             _context.next = 28;
             return distributionLists.call(this, setup.user, {
-              cache: setup.cache
+              cache: setup.cache,
+              url: setup.url
             });
 
           case 28:

@@ -29,7 +29,7 @@ export default function closeModalDialog(dialogResult, returnValue) {
   var fct = function fct() {
     var md;
 
-    if (_typeof(dialogResult) === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "modalDialog") {
+    if (_typeof(dialogResult) === "object" && dialogResult.type === "modalDialog") {
       md = {
         id: dialogResult.id,
         dialogResult: returnValue,

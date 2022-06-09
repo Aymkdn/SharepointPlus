@@ -13,8 +13,8 @@ export default function toDate(strDate, forceUTC) {
   // 2008-10-31(T)00:00:00(Z)
   if (typeof strDate !== "string" && !isNaN(new Date(strDate))) return strDate; // check if it's a date, more robust than "d instanceof Date"
   if (strDate.slice(0,10)==="datetime;#") strDate=strDate.slice(10);
-  // if it's a short date like 2020-01-19 then we use new Date()
-  if (strDate.length === 10 && /\d{4}-\d{2}-\d{2}/.test(strDate)) return new Date(strDate);
+  // if it's a short date like 2020-01-19 then we use new Date() with 'T00:00:00' to avoid timezone issue
+  if (strDate.length === 10 && /\d{4}-\d{2}-\d{2}/.test(strDate)) return new Date(strDate + 'T00:00:00');
   if (strDate.length!=19 && strDate.length!=20) throw "[SharepointPlus toDate] '"+strDate+"' is invalid."
   var year  = strDate.substring(0,4);
   var month = strDate.substring(5,7);

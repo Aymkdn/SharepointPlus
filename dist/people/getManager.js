@@ -14,8 +14,6 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
-var _startsWith = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/starts-with"));
-
 var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
@@ -32,13 +30,14 @@ var _people = _interopRequireDefault(require("./people.js"));
   @category people
   @description Return the manager for the provided user, as a People string
 
-  @param {String} [username] With or without the domain, and you can also use an email address, and if you leave it empty it's the current user by default
+  @param {String} [username] Username with the domain, and if you leave it empty it's the current user by default
   @param {Object} [setup] Options (see below)
     @param {String} [setup.url='current website'] The website url
+    @param {Function} [setup.modify] Permits to modify the manager's username returned by the service
   @return {Function} resolve(manager), reject(error)
 
   @example
-  $SP().getManager("john_doe",{url:"http://my.si.te/subdir/"})
+  $SP().getManager("domain\\john_doe",{url:"http://my.si.te/subdir/"})
   .then(function(manager) {
     console.log(manager); // 42;#Smith,, Jane,#i:0#.w|domain\Jane_Smith,#Jane_Smith@Domain.com,#Jane_Smith@Domain.com,#Smith,, Jane
     manager = $SP().getPeopleLookup(manager);
@@ -47,6 +46,12 @@ var _people = _interopRequireDefault(require("./people.js"));
   .catch(function(err) {
     console.log("Err => ",err)
   });
+
+  $SP().getManager("domain\\john_doe",{
+    modify:function(managerUserName) {
+      return (managerUserName.startsWith('i:0') ? managerUserName : "i:0#.w|" + managerUserName);
+    }
+  })
 */
 function getManager(_x, _x2) {
   return _getManager.apply(this, arguments);
@@ -88,13 +93,16 @@ function _getManager() {
             setup.url = _context.sent;
 
           case 8:
-            _context.next = 10;
+            setup.modify = setup.modify || function (val) {
+              return val;
+            };
+
+            _context.next = 11;
             return _people.default.call(this, username, setup);
 
-          case 10:
+          case 11:
             pres = _context.sent;
-            managerUserName = pres.Manager;
-            if (!(0, _startsWith.default)(managerUserName).call(managerUserName, 'i:0')) managerUserName = "i:0#.w|" + managerUserName;
+            managerUserName = setup.modify(pres.Manager);
             _context.next = 15;
             return _getUserInfo.default.call(this, managerUserName, setup);
 

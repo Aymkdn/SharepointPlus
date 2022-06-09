@@ -8,7 +8,7 @@ SharepointPlus ($SP) is a JavaScript library which offers some extended features
 
 ## Documentation
 
-Browse the [online documentation here](http://aymkdn.github.com/SharepointPlus/).
+Browse the [online documentation here](https://aymkdn.github.io/SharepointPlus/).
 
 ## Quick Start
 
@@ -23,7 +23,7 @@ Then:
 import $SP from 'sharepointplus'
 ```
 
-Please, make sure to read [the documentation](http://aymkdn.github.com/SharepointPlus/) to optimize your bundle size.
+Please, make sure to read [the documentation](https://aymkdn.github.io/SharepointPlus/) to optimize your bundle size.
 
 ### Browser Only
 
@@ -65,4 +65,4 @@ $SP().list('ListName').get({
 
 ## More information
 
-Please visit the [online documentation](http://aymkdn.github.com/SharepointPlus/) to know more.
+Please visit the [online documentation](https://aymkdn.github.io/SharepointPlus/) to know more.

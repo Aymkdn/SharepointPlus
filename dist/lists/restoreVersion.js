@@ -32,7 +32,7 @@ var _getRequestDigest = _interopRequireDefault(require("../utils/getRequestDiges
   @param {Object} [setup] Options (see below)
     @param {Number} setup.ID The item ID
     @param {Number} setup.VersionID The version ID from $SP().list().getVersions()
-  @return {Promise} resolve(htmlPage), reject(errorMessage)
+  @return {Promise} resolve(true), reject(errorMessage)
 
   @example
   $SP().list("My List").restoreVersion({

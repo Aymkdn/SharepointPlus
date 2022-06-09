@@ -33,7 +33,7 @@ class extendMyObject {
   @param {String} on The ON clause
   @return {Array} array of {ListName1:FieldName1, ListName2:FieldName2}
   @example
-  $SP()._parseOn("'List1'.field1 = 'List2'.field2 AND 'List1'.Other_x0020_Field = 'List2'.Some_x0020_Field")
+  _parseOn("'List1'.field1 = 'List2'.field2 AND 'List1'.Other_x0020_Field = 'List2'.Some_x0020_Field")
 */
 function _parseOn(q) {
   var factory = [],  i=0, mtch, queryString = q.replace(/(\s+)?(=)(\s+)?/g,"$2").replace(/==/g,"=").split(" AND ");
@@ -856,6 +856,7 @@ export default async function get (options) {
         joinLookupField=setup.join.onLookup;
         setup.join.on="'"+(setup.join.alias||setup.join.list)+"'."+setup.join.onLookup+" = '"+setup.alias+"'.ID";
       }
+
       on=_parseOn(setup.join.on);
       joinData["noindex"]=on; // keep a copy of it for the next treatment in the tied list
       for (i=0,stop=aReturn.length; i<stop; i++) {
@@ -905,8 +906,7 @@ export default async function get (options) {
       // if onLookup then we create a WHERE clause with IN operator
       if (joinLookupField) {
         if (joinWhereLookup.length>0) {
-          // SP2013 limits to 60 items per IN
-          wh=arrayChunk(joinWhereLookup, 60);
+          wh=arrayChunk(joinWhereLookup, global._SP_MAXWHERE_ONLOOKUP);
           for (j=0; j<wh.length; j++) {
             wh[j] = joinLookupField+' IN ["'+wh[j].join('","')+'"]'
           }

@@ -103,12 +103,20 @@ export default async function ajax(settings) {
         return Promise.resolve(body);
       } else {
         // check if it's an issue with validation code
-        if (code == 403 && responseText.includes("security validation for this page is invalid")) {
+        if (
+          (code == 401 && settings.headers["X-RequestDigest"] && new Date(settings.headers["X-RequestDigest"].split(",")[1]) < new Date())
+          ||
+          (
+            (code == 403 || code == 500) && (responseText.includes("security validation for this page is invalid") || responseText.includes("The security validation for this page has timed out"))
+          )
+        ) {
+
           // then we retry
           delete settings.headers["X-RequestDigest"];
           let requestDigest = await getRequestDigest.call(this, {
             cache: false
-          })
+          });
+
           settings.headers["X-RequestDigest"] = requestDigest;
           return ajax.call(this, settings);
         } else {
@@ -147,13 +155,17 @@ export default async function ajax(settings) {
       if (settings.method.toUpperCase() === "POST" && typeof settings.body !== "undefined") settings.headers['Content-Length'] = Buffer.byteLength(settings.body);
       // add User Agent
       settings.headers['User-Agent'] = 'SharepointPlus'; //'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0';
+      // do some changes in the options: https://github.com/s-KaiNet/sp-request/blob/master/UpgradeTo3x.md
       var opts = {
         json: false,
+        responseType: 'text',
         method: settings.method,
         strictSSL: false,
+        rejectUnauthorized: false,
         headers: settings.headers,
         jar: true,
-        resolveWithFullResponse: true
+        resolveWithFullResponse: true,
+        resolveBodyOnly: false
       };
       if (settings.body) opts.body = settings.body;
       if (this.proxyweb) opts.proxy = this.proxyweb;
@@ -161,7 +173,10 @@ export default async function ajax(settings) {
       if (opts.headers) delete opts.headers["Content-Length"];
       // check if we have some other parameters
       for (var stg in settings) {
-        if (Object.prototype.hasOwnProperty.call(settings, stg) && !opts[stg]) opts[stg] = settings[stg];
+        if (Object.prototype.hasOwnProperty.call(settings, stg) && !opts[stg]) {
+          opts[stg] = settings[stg];
+          if (stg === 'encoding' && settings[stg] === null) opts['responseType']='buffer';
+        }
       }
 
       let response = await this.module_sprequest(settings.url, opts);

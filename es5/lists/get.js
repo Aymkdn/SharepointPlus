@@ -56,7 +56,7 @@ function () {
   @param {String} on The ON clause
   @return {Array} array of {ListName1:FieldName1, ListName2:FieldName2}
   @example
-  $SP()._parseOn("'List1'.field1 = 'List2'.field2 AND 'List1'.Other_x0020_Field = 'List2'.Some_x0020_Field")
+  _parseOn("'List1'.field1 = 'List2'.field2 AND 'List1'.Other_x0020_Field = 'List2'.Some_x0020_Field")
 */
 
 
@@ -1112,8 +1112,7 @@ function _get() {
 
                       if (joinLookupField) {
                         if (joinWhereLookup.length > 0) {
-                          // SP2013 limits to 60 items per IN
-                          wh = arrayChunk(joinWhereLookup, 60);
+                          wh = arrayChunk(joinWhereLookup, global._SP_MAXWHERE_ONLOOKUP);
 
                           for (j = 0; j < wh.length; j++) {
                             wh[j] = joinLookupField + ' IN ["' + wh[j].join('","') + '"]';

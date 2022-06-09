@@ -57,6 +57,7 @@ import getServerTime from './utils/getServerTime.js'
 import getTimeZoneInfo from './utils/getTimeZoneInfo.js'
 import getURL from './utils/getURL.js'
 import hasREST from './utils/hasREST.js'
+import isSPO from './utils/isSPO.js'
 import newGuid from './utils/newGuid.js'
 import regionalDateFormat from './utils/regionalDateFormat.js'
 import regionalSettings from './utils/regionalSettings.js'
@@ -134,6 +135,7 @@ export default spInit({
   getTimeZoneInfo:getTimeZoneInfo,
   getURL:getURL,
   hasREST:hasREST,
+  isSPO:isSPO,
   newGuid:newGuid,
   regionalDateFormat:regionalDateFormat,
   regionalSettings:regionalSettings,

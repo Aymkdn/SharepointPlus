@@ -49,7 +49,7 @@ var _restoreVersion = _interopRequireDefault(require("./restoreVersion.js"));
   });
 
   // to read a file and send it
-  // with something like: <input type="file" onchange="addAttachment(event)">
+  // with something like: &lt;input type="file" onchange="addAttachment(event)"&gt;
   function addAttachment(event) {
     let files = event.target.files;
     let fileReader = new FileReader();

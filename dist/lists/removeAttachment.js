@@ -35,7 +35,7 @@ var _restoreVersion = _interopRequireDefault(require("./restoreVersion.js"));
   @example
   $SP().list("My List").removeAttachment({
     ID:1,
-    filename:"https://mysite.share.point.com/Toolbox/Lists/Tasks/Attachments/2305/image1.png"
+    fileURL:"https://mysite.share.point.com/Toolbox/Lists/Tasks/Attachments/2305/image1.png"
   })
 */
 function removeAttachment(setup) {

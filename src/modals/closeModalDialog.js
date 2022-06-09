@@ -26,7 +26,7 @@
 export default function closeModalDialog(dialogResult, returnValue) {
   var fct = function() {
     var md;
-    if (typeof dialogResult === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "modalDialog") {
+    if (typeof dialogResult === "object" && dialogResult.type === "modalDialog") {
       md = {id:dialogResult.id, dialogResult:returnValue, returnValue:undefined, type:"closeModalDialog"};
       dialogResult.modal.close(md);
       // if it's a wait screen, then we need to remove the <style> using options.dialogReturnValueCallBack

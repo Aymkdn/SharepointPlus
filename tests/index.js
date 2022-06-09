@@ -1,5 +1,5 @@
 // old a previous version to set up the test environment
-const $SP = require('./sharepointplus-5.2.js');
+const $SP = require('../../sharepointplus-online/dist');
 // we load $SP for testing
 const _$SP = require("esm")(module)("../src/index.js").default;
 const commandLineArgs = require('command-line-args');
@@ -86,25 +86,26 @@ var prompt = require('prompt');
     if (list.indexOf("Library") > -1) templateID = "101";
     if (list.indexOf("Calendar") > -1) templateID = "106";
 
-    return sp.webService({
-      service:"Lists",
-      operation: "AddList",
-      webURL:optionsCLI.url,
-      properties:{
-        listName: list,
-        description:"List used for SharepointPlus tests",
-        templateID:templateID
-      }
+    return sp.ajax({
+      url:optionsCLI.url+"/_api/web/lists/",
+      method:"POST",
+      headers:{
+        'Content-Type': 'application/json;odata=verbose;'
+      },
+      body:JSON.stringify({
+        '__metadata': { 'type': 'SP.List' },
+        'BaseTemplate': templateID,
+        'Title': list
+      })
     })
-    .then(res => {
+    .then(async res => {
       // to serialize to a string the result
       // var xmlserializer = require('xmlserializer');
       // console.log(xmlserializer.serializeToString(res.documentElement))
       // for "SharepointPlus" list we want to create the columns too
       if (list === "SharepointPlus") {
         // get the list ID
-        let elems = res.documentElement.getElementsByTagName('List');
-        let listID = elems[0].getAttribute("ID");
+        let listID = res.Id;
 
         console.log("Test Environment Setup: creating columns in 'SharepointPlus' list...");
 
@@ -133,7 +134,7 @@ var prompt = require('prompt');
         fields.push({"DisplayName":"Hyperlink", "Type":"URL", "Format":"Hyperlink" });
         //fields.push({"DisplayName":"Picture", "Type":"URL", "Format":"Image" });
 
-        let fieldsToAdd = '<Fields>', field, i, j, attr, options, opt;
+        /*let fieldsToAdd = '<Fields>', field, i, j, attr, options, opt;
         // for each field we create it into the list
         for (i=0; i<fields.length; i++) {
           fieldsToAdd += '<Method ID="'+(i+1)+'">'
@@ -174,22 +175,59 @@ var prompt = require('prompt');
           fieldsToAdd += ' Description="Field created for tests with SharepointPlus">' + options + '</Field>'
           fieldsToAdd += '</Method>';
         }
-        fieldsToAdd += '</Fields>';
+        fieldsToAdd += '</Fields>';*/
 
-        // add the columns
-        return sp.webService({
-          service: "Lists",
-          operation: "UpdateList",
-          webURL: optionsCLI.url,
-          properties:{
-            listName: list,
-            listProperties:"<List EnableVersioning='TRUE' />",
-            updateFields: "",
-            newFields: fieldsToAdd,
-            deleteFields: "",
-            listVersion: ""
+        // add the columns – https://www.codesharepoint.com/rest-api/create-list-column-in-sharepoint-using-rest-api
+        let getSchema = function(field) {
+          let ret = `<Field`;
+          for (let key in field) {
+            ret += ` ${key}="${field[key]}"`;
           }
-        });
+          return ret + ' />';
+        }
+
+        for (let col of fields) {
+          let props = {
+            '__metadata':{'type': 'SP.Field'},
+            'FieldTypeKind': 0,
+            'Title':col.DisplayName
+          }
+          switch(col.Type) {
+            case "Text": props.FieldTypeKind=2; props.SchemaXml=getSchema(col); break;
+            case "User":
+            case "UserMulti": props.FieldTypeKind=20; props.SchemaXml=getSchema(col); break;
+            case "Note": props.FieldTypeKind=3; props.SchemaXml=getSchema(col); break;
+            case "Choice":
+            case "MultiChoice": props.FieldTypeKind=6; props.SchemaXml=getSchema(col); break;
+            case "Number": props.FieldTypeKind=9; props.SchemaXml=getSchema(col); break;
+            case "Currency": props.FieldTypeKind=10; props.SchemaXml=getSchema(col); break;
+            case "DateTime": props.FieldTypeKind=4; props.SchemaXml=getSchema(col); break;
+            case "Lookup":
+            case "LookupMulti": {
+              props.FieldTypeKind=7;
+              props.SchemaXml=getSchema(col);
+              props.__metadata.type="SP.FieldCreationInformation";
+              props.LookupFieldName=col.ShowField;
+              props.LookupListId=col.List;
+              break;
+            }
+            case "Boolean": props.FieldTypeKind=8; props.SchemaXml=getSchema(col); break;
+            case "URL": props.FieldTypeKind=11; props.SchemaXml=getSchema(col); break;
+          }
+          await sp.ajax({
+            url:optionsCLI.url+"/_api/web/lists/getByTitle('"+list+"')/fields/createfieldasxml",
+            method:"POST",
+            headers:{
+              'Content-Type': 'application/json;odata=verbose;'
+            },
+            body:JSON.stringify({
+              "parameters":{
+                "__metadata": { "type": "SP.XmlSchemaFieldCreationInformation" },
+                "SchemaXml": getSchema(col)
+              }
+            })
+          })
+        }
       } else if (list === "SharepointPlusLookup") {
         // add some items in SharepointPlusLookup
         console.log("Test Environment Setup: adding items in 'SharepointPlusLookup'...");
@@ -203,19 +241,19 @@ var prompt = require('prompt');
     try {
       // check if the test lists already exist, otherwise create them
       let lists = await sp.lists({url:optionsCLI.url});
-      let listNames = lists.map(list => list.Name);
+      let listNames = lists.map(list => list.Title);
       for (let list of ["SharepointPlusLookup", "SharepointPlus", "SharepointPlusLibrary", "SharepointPlus Calendar"]) {
         if (!listNames.includes(list)) {
           await createList(list);
         } else {
           // for SharepointPlusLibrary we want to delete it first, if we have data
           if (list === "SharepointPlusLibrary") {
-            await sp.webService({
-              service:"Lists",
-              operation:"DeleteList",
-              webURL:optionsCLI.url,
-              properties:{
-                listName: "SharepointPlusLibrary"
+            await sp.ajax({
+              url: optionsCLI.url + "/_api/web/lists/GetByTitle('"+list+"')",
+              method:"POST",
+              headers:{
+                "X-HTTP-Method": "DELETE",
+                "IF-MATCH": "*"
               }
             });
             await createList(list);
@@ -224,34 +262,35 @@ var prompt = require('prompt');
       }
 
       // check if the permissions group "SharepointPlus" exists
-      let myself = await sp.whoami({url:optionsCLI.url});
-      let accountName = myself.AccountName;
       console.log("Test Environment Setup: checking user group 'SharepointPlus'...");
       try {
-        await sp.webService({
-          service:"UserGroup",
-          operation:"AddGroup",
-          webURL:optionsCLI.url,
-          soapURL:"http://schemas.microsoft.com/sharepoint/soap/directory/",
-          properties:{
-            groupName: "SharepointPlus",
-            ownerIdentifier: accountName,
-            ownerType: "user",
-            defaultUserLoginName: accountName,
-            description: "Group for SharepointPlus tests",
-          }
+        await sp.ajax({
+          url:optionsCLI.url+"/_api/web/sitegroups",
+          method:"POST",
+          headers:{
+            'Content-Type': 'application/json;odata=verbose;'
+          },
+          body:JSON.stringify({
+            '__metadata':{'type': 'SP.Group'},
+            'Title': "SharepointPlus",
+            'Description': "Group for SharepointPlus tests"
+          })
         });
       } catch(err) {}
 
+      console.log("### PLEASE ADD YOURSELF IN THE 'SharepointPlus' group ###");
+
       console.log("Test Environment Setup: configuring 'Tests.aspx' in 'Site Pages'...");
       // we delete it and readd it with the last version of the library
-      await sp.list("Site Pages", optionsCLI.url).remove({where:"BaseName = 'Tests.aspx' OR BaseName LIKE 'sharepointplus.' OR BaseName LIKE 'sptests.'"});
+      await sp.list("Site Pages", optionsCLI.url).remove({where:"FileLeafRef = 'Tests.aspx' OR FileLeafRef LIKE 'sharepointplus.' OR FileLeafRef LIKE 'sptests.'"});
 
       await sp.list("Site Pages", optionsCLI.url).createFile({
         filename:'Tests.aspx',
-        content:`<%-- _lcid="1033" _version="15.0.4420" _dal="1" --%>
-                <%-- _LocalBinding --%>
-                <%@ Page language="C#" MasterPageFile="~masterurl/default.master"    Inherits="Microsoft.SharePoint.WebPartPages.WebPartPage,Microsoft.SharePoint,Version=15.0.0.0,Culture=neutral,PublicKeyToken=71e9bce111e9429c"  %> <%@ Register Tagprefix="SharePoint" Namespace="Microsoft.SharePoint.WebControls" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Register Tagprefix="Utilities" Namespace="Microsoft.SharePoint.Utilities" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Import Namespace="Microsoft.SharePoint" %> <%@ Assembly Name="Microsoft.Web.CommandUI, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Register Tagprefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+        content:`<%@ Page language="C#" MasterPageFile="~masterurl/default.master"    Inherits="Microsoft.SharePoint.WebPartPages.WebPartPage,Microsoft.SharePoint,Version=16.0.0.0,Culture=neutral,PublicKeyToken=71e9bce111e9429c"  %> <%@ Register Tagprefix="SharePoint" Namespace="Microsoft.SharePoint.WebControls" Assembly="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Register Tagprefix="Utilities" Namespace="Microsoft.SharePoint.Utilities" Assembly="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Import Namespace="Microsoft.SharePoint" %> <%@ Assembly Name="Microsoft.Web.CommandUI, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Register Tagprefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+                <asp:Content ContentPlaceHolderId="PlaceHolderAdditionalPageHead" runat="server">
+                  <link rel="stylesheet" href="/sites/Educate/Style%20Library/Standard/MasterPage.min.css" />
+                  <script src="/sites/Educate/Style%20Library/Standard/MasterPage.min.js" type="text/javascript"></script>
+                </asp:Content>
                 <asp:Content ContentPlaceHolderId="PlaceHolderPageTitle" runat="server">
                   SharepointPlus Tests Page
                 </asp:Content>
@@ -278,7 +317,7 @@ var prompt = require('prompt');
       });
 
       // get mocha et chai from CDN
-      let dependencies = await sp.list("Site Pages", optionsCLI.url).get({fields:"BaseName", where:"BaseName = 'mocha.js' OR BaseName = 'mocha.css' OR BaseName = 'chai.js'"});
+      let dependencies = await sp.list("Site Pages", optionsCLI.url).get({fields:"BaseName", where:"FileLeafRef = 'mocha.js' OR FileLeafRef = 'mocha.css' OR FileLeafRef = 'chai.js'"});
       if (dependencies.length !== 3) {
         console.log("Test Environment Setup: Downloading Mocha/Chai Files...");
         let mocha = await req('https://cdn.jsdelivr.net/npm/mocha/mocha.js');
@@ -299,13 +338,19 @@ var prompt = require('prompt');
       }
 
       // we now add a webpart
-      await _sp.webService({
-        service:"WebPartPages",
-        operation: "AddWebPart",
-        soapURL:"http://microsoft.com/sharepoint/webpartpages/",
-        webURL:optionsCLI.url,
-        properties:{
-          pageUrl: optionsCLI.url+'/SitePages/Tests.aspx',
+      // not available in SPO
+      console.log("### PLEASE ADD A CONTENT EDITOR WEBPART ON "+optionsCLI.url+"/SitePages/Tests.aspx ###");
+      console.log("Content to add:");
+      console.log(`<style>#mocha > #mocha-stats { position:relative; top:auto; right:auto } #mocha > #mocha-stats .progress { float:none }</style>
+          <h1 id="result" style="color: green;"></h1>
+          <div id="mocha" style="margin: 0px;"></div>
+          <link rel="stylesheet" href="mocha.css"/><script src="mocha.js"></script>
+          <script src="chai.js"></script><script src="${spFileName}"></script>
+          <script src="${spTestFile}"></script>`);
+      /*await _sp.ajax({
+        url:optionsCLI.url+"/_api/web/getfilebyserverrelativeurl('/"+optionsCLI.url.split('/').slice(3).join("/")+"/SitePages/Tests.aspx')/getlimitedwebpartmanager(1)/ImportWebPart",
+        method:"POST",
+        body:JSON.stringify({
           webPartXml:`<?xml version="1.0" encoding="utf-8"?>
           <WebPart xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/WebPart/v2">
             <Title>Content Editor</Title>
@@ -332,7 +377,7 @@ var prompt = require('prompt');
             <MissingAssembly>Cannot import this Web Part.</MissingAssembly>
             <PartImageLarge>/_layouts/15/images/mscontl.gif</PartImageLarge>
             <IsIncludedFilter />
-            <Assembly>Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c</Assembly>
+            <Assembly>Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c</Assembly>
             <TypeName>Microsoft.SharePoint.WebPartPages.ContentEditorWebPart</TypeName>
             <ContentLink xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor" />
             <Content xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor"><![CDATA[
@@ -343,10 +388,9 @@ var prompt = require('prompt');
           <script src="chai.js"></script><script src="${spFileName}"></script>
           <script src="${spTestFile}"></script>]]></Content>
             <PartStorage xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor" />
-          </WebPart>`.replace(/</g,"&lt;").replace(/>/g,"&gt;"),
-          storage:"Shared"
-        }
-      })
+          </WebPart>`
+        })
+      })*/
 
       console.log("Test Environment Setup: Completed!");
     } catch(err) {

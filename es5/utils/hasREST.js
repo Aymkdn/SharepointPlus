@@ -1,17 +1,15 @@
-import _parseInt from "@babel/runtime-corejs3/core-js-stable/parse-int";
 import _Promise from "@babel/runtime-corejs3/core-js-stable/promise";
 import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/slice";
-import ajax from './ajax.js';
+
 /**
   @name $SP().hasREST
   @function
   @category utils
-  @description Verify if the website supports REST API (Sharepoint 2013 and later)
+  @description In the earlier version of SharePointPlus, this function was used to check if the REST API was available – these days I assume everyone is now using at least SharePoint 2013, so this function always returns TRUE – if you don't have REST API you can still define _SP_CACHE_HASREST["url to check"]=false
   @param {Object} settings
-    @param {String} [settings.url=current] To check another URL (or if you need on a Node server)
+    @param {String} [settings.url=current] To check another URL
   @return {Promise} A resolved Promise that gives TRUE or FALSE
 */
-
 export default function hasREST(settings) {
   var _context;
 
@@ -24,32 +22,5 @@ export default function hasREST(settings) {
     return _Promise.resolve(global._SP_CACHE_HASREST[url]);
   }
 
-  var hasREST,
-      needAjax = settings.url || !global._SP_ISBROWSER || typeof SP === "undefined" ? true : false;
-
-  if (!needAjax) {
-    if (typeof SP !== "undefined" && SP.ClientSchemaVersions) {
-      // eslint-disable-line
-      // cache
-      hasREST = _parseInt(SP.ClientSchemaVersions.currentVersion) > 14; // eslint-disable-line
-
-      global._SP_CACHE_HASREST[url] = hasREST;
-      return _Promise.resolve(hasREST);
-    } else needAjax = true;
-  }
-
-  if (needAjax) {
-    return ajax.call(this, {
-      url: url + "/_api/web/Url"
-    }).then(function () {
-      global._SP_CACHE_HASREST[url] = true;
-      return _Promise.resolve(true);
-    }).catch(function () {
-      global._SP_CACHE_HASREST[url] = false;
-      return _Promise.resolve(false);
-    });
-  } else {
-    global._SP_CACHE_HASREST[url] = false;
-    return _Promise.resolve(false);
-  }
+  return _Promise.resolve(true);
 }

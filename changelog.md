@@ -1,5 +1,17 @@
 # Changelog
 
+**Change Log v6.2.0 (June 8, 2022)**
+
+  - Added option `modify` to `$SP().getManager()`
+  - Added `$SP().isSPO()`
+  - Changed `$SP().ajax()` to better managed 401 error for the REST API calls
+  - Changed `$SP().cleanResult()` when dealing with a date (`$SP().cleanResult("2022-01-19 00:00:00")` will now return "2022-01-19" instead of "2022-01-19 00:00:00")
+  - Changed `$SP().toDate()` to ignore the timezone (e.g. `$SP().toDate("2022-01-19")` used to return different result based on the user's timezone, but now it returns the correct date at 00:00:00 in the current timezone)
+  - /!\ Changed `$SP().getVersions()`: only compatible with REST API, and it returns a different result/outcome than before
+  - /!\ Changed `$SP().hasREST()`: it will always return TRUE (it's possible to override the value) because REST API is around for a while now and I assume everyone is using at least SP2013 (see issue https://github.com/Aymkdn/SharepointPlus/issues/180)
+  - Fixed `$SP().isMember()` for the `url` option (see issue https://github.com/Aymkdn/SharepointPlus/issues/175)
+  - Removed support for IE10 in the bundle for browsers
+
 **Change Log v6.1.5 (March 5, 2021)**
 
   - Fixed `$SP().list().get()` when using `join` option and when there is no data in the left-list

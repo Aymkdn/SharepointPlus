@@ -41,7 +41,7 @@ function closeModalDialog(dialogResult, returnValue) {
   var fct = function fct() {
     var md;
 
-    if ((0, _typeof2.default)(dialogResult) === "object" && typeof dialogResult.type !== "undefined" && dialogResult.type === "modalDialog") {
+    if ((0, _typeof2.default)(dialogResult) === "object" && dialogResult.type === "modalDialog") {
       md = {
         id: dialogResult.id,
         dialogResult: returnValue,

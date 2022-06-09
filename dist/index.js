@@ -128,6 +128,8 @@ var _getURL = _interopRequireDefault(require("./utils/getURL.js"));
 
 var _hasREST = _interopRequireDefault(require("./utils/hasREST.js"));
 
+var _isSPO = _interopRequireDefault(require("./utils/isSPO.js"));
+
 var _newGuid = _interopRequireDefault(require("./utils/newGuid.js"));
 
 var _regionalDateFormat = _interopRequireDefault(require("./utils/regionalDateFormat.js"));
@@ -213,6 +215,7 @@ var _default = spInit({
   getTimeZoneInfo: _getTimeZoneInfo.default,
   getURL: _getURL.default,
   hasREST: _hasREST.default,
+  isSPO: _isSPO.default,
   newGuid: _newGuid.default,
   regionalDateFormat: _regionalDateFormat.default,
   regionalSettings: _regionalSettings.default,
